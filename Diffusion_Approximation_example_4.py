@@ -1,6 +1,7 @@
 # Attempting to fix solveFwd that returns different plot when run in serial (python3 _.py) and parallel (mpirun -n 4 python3 _.py)
 
 import dolfinx as dlx
+import dolfinx.fem.petsc
 from mpi4py import MPI
 # import matplotlib.pyplot as plt
 # import pyvista
@@ -28,8 +29,10 @@ def vector2Function(x,Vh, **kwargs):
     :code:`kwargs` is optional keywords arguments to be passed to the construction of a dolfin :code:`Function`.
     """
     fun = dlx.fem.Function(Vh,**kwargs)
-    # fun.interpolate(lambda x: np.full((x.shape[1],),0.))
+    print("Casting vector x to a function\n")
     fun.vector.axpy(1., x)
+    # Make sure fun is ready to be used for assembly or plotting
+    fun.x.scatter_forward()
     return fun
 
 @unused_function
@@ -76,15 +79,17 @@ class NonGaussianContinuousMisfit(object):
         self.gauss_newton_approx = False
 
     def cost(self,x):
+        #NO!!! x is a list of PETSc.Vec so you first need to call vector2function on them
         loc_cost = dlx.fem.assemble_scalar(dlx.fem.form(self.form(x[STATE], x[PARAMETER])))
         return self.mesh.comm.allreduce(loc_cost,op=MPI.SUM)
 
 
 
     def grad(self, i, x):
+	#NO!!! x is a list of PETSc.Vec so you first need to call vector2function on them
         x_fun = [x[STATE],x[PARAMETER]] 
-        loc_grad = dlx.fem.assemble.assemble_vector(dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i])) ) #<class 'dolfinx.la.Vector'>
-        loc_grad.scatter_forward()
+        loc_grad = dlx.fem.petsc.assemble.assemble_vector(dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i])) ) #<class 'PETSc.Vec'>
+        loc_grad.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         return loc_grad
       
 
@@ -100,8 +105,8 @@ class NonGaussianContinuousMisfit(object):
         form = self.form(*self.x_lin_fun)
         dir_fun = vector2Function(dir, self.Vh[j])
         action = ufl.derivative( ufl.derivative(form, self.x_lin_fun[i], self.x_test[i]), self.x_lin_fun[j], dir_fun )
-        loc_action = dlx.fem.assemble.assemble_vector(dlx.fem.form(action) ) #<class 'dolfinx.la.Vector'>
-        loc_action.scatter_forward()
+        loc_action = dlx.fem.petsc.assemble.assemble_vector(dlx.fem.form(action) ) #<class 'PETSc.Vec'>
+        loc_action.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         return loc_action
         
 class PDEVariationalProblem:
@@ -130,13 +135,13 @@ class PDEVariationalProblem:
         """ Return a vector in the shape of the state. """
         # return dlx.fem.Function(self.Vh[STATE]).vector
         #return function instead of vector, solveFwd using the function.vector object
-        return dlx.fem.Function(self.Vh[STATE]).vector
+        return dlx.la.create_petsc_vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
 
     @unused_function
     def generate_parameter(self):
         """ Return a vector in the shape of the parameter. """
-        return dlx.fem.Function(self.Vh[PARAMETER]).vector()
-    
+        return dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
+   
     @unused_function   
     def init_parameter(self, m):
         """ Initialize the parameter."""
@@ -147,18 +152,21 @@ class PDEVariationalProblem:
         """ Solve the possibly nonlinear forward problem:
         Given :math:`m`, find :math:`u` such that
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
-        
-        result = vector2Function(state,Vh[STATE])
+
+	
+        mfun = vector2Function(x[PARAMETER],Vh[PARAMETER])
+        print("mfun created")
 
         self.n_calls["forward"] += 1
         if self.solver is None:
             self.solver = self._createLUSolver()
+        print("Solver created")
 
         if self.is_fwd_linear:    
             u = ufl.TrialFunction(self.Vh[STATE])
             p = ufl.TestFunction(self.Vh[ADJOINT])
 
-            res_form = self.varf_handler(u, vector2Function(x[PARAMETER],Vh[PARAMETER]), p) #all 3 arguments-dl.Function types
+            res_form = self.varf_handler(u, mfun, p) #all 3 arguments-dl.Function types
             A_form = ufl.lhs(res_form)
             b_form = ufl.rhs(res_form)
 
@@ -166,21 +174,20 @@ class PDEVariationalProblem:
             
             A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form),bcs=self.bc)
             A.assemble() #petsc4py.PETSc.Mat
+            print("A created")
 
             self.solver.setOperators(A)
+            print("Operator set")
 
             b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form))
 
             dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
             dlx.fem.petsc.set_bc(b,self.bc)
-            b.assemble() 
+            print("RHS assembled")
 
-            self.solver.solve(b,result.vector)
-            result.x.scatter_forward()
+            self.solver.solve(b,state)
 
-            return result #returning a dlx.fem.Function, the .vector attribute (petsc4py vector) contains the
-            #the values of the solution vector
          
     def solveAdj(self, adj, x, adj_rhs):
         
@@ -195,6 +202,7 @@ class PDEVariationalProblem:
         p = dlx.fem.Function(self.Vh[ADJOINT])
         du = ufl.TestFunction(self.Vh[STATE])
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
+        #NO! x[STATE], x[PARAMETER] need to be converted to Function first
         varf = self.varf_handler(x[STATE], x[PARAMETER], p) 
         adj_form = ufl.derivative(ufl.derivative(varf, x[STATE], du), p, dp)
 
@@ -234,7 +242,6 @@ comm = MPI.COMM_WORLD
 rank  = comm.rank
 nproc = comm.size
 
-msh = dlx.cpp.mesh.Mesh
 fname = 'meshes/circle.xdmf'
 fid = dlx.io.XDMFFile(comm,fname,"r")
 msh = fid.read_mesh(name='mesh')
@@ -251,11 +258,12 @@ m_true = dlx.fem.Function(Vh_m)
 
 
 m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+m_true.x.scatter_forward()
 
 #Works - in serial and parallel.
-# with dlx.io.XDMFFile(msh.comm, "testing_m_vector_dolfinx_parallel_try7.xdmf","w") as file:
-#     file.write_mesh(msh)
-#     file.write_function(m_true)
+with dlx.io.XDMFFile(msh.comm, "parameter_np{0:d}.xdmf".format(nproc),"w") as file:
+     file.write_mesh(msh)
+     file.write_function(m_true)
 
 m_true = m_true.vector #<class 'petsc4py.PETSc.Vec'>
 
@@ -266,18 +274,15 @@ u_true = pde.generate_state() #a vector, not a function, <class 'petsc4py.PETSc.
 
 x_true = [u_true, m_true, None]
 
-u_true_func = pde.solveFwd(u_true, x_true) #dlx.fem.Function
+print("Enter solveFwd")
+pde.solveFwd(u_true, x_true) #dlx.fem.Function
+print("Completed solveFwd")
 
-#Both values same as expected from Fenics:
-# print(u_true_func.vector[:].min())
-# print(u_true_func.vector[:].max())
-
-
-
+u_true_func = vector2Function(u_true, Vh[STATE]) 
 #different plots in XDMF File when run using:
 #1. python3 Diffusion_Approximation_example_4.py 
 #2. mpirun -n 4 python3 Diffusion_Approximation_example_4.py 
-with dlx.io.XDMFFile(msh.comm, "parallel_forward_try_8.xdmf","w") as file:
+with dlx.io.XDMFFile(msh.comm, "state_np{0:d}.xdmf".format(nproc),"w") as file:
     file.write_mesh(msh)
     file.write_function(u_true_func)
 
