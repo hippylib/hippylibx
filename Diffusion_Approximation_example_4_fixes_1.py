@@ -186,7 +186,7 @@ class PDEVariationalProblem:
 
             dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-            dlx.fem.petsc.set_bc(b,self.bc)
+            #dlx.fem.petsc.set_bc(b,self.bc) #line is present in the LinearProblem solve method in FenicsX but not needed.
 
             self.solver.solve(b,state)
 
