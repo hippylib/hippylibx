@@ -15,6 +15,8 @@ from NonGaussianContinuousMisfit import NonGaussianContinuousMisfit
 
 import hippylibX as hpx
 
+
+
 class DiffusionApproximation:
     def __init__(self, D, u0, ds):
         """
@@ -83,28 +85,21 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     #LIKELIHOOD
     u_fun_true = hpx.vector2Function(u_true, Vh[hpx.STATE]) 
-
-    # #creating projection: taken from https://github.com/michalhabera/dolfiny/blob/master/dolfiny/projection.py
-
     d = dlx.fem.Function(Vh[hpx.STATE])
-    V = d.function_space
+    expr = u_fun_true * ufl.exp(m_fun_true)
+    hpx.projection(expr,d)
+    hpx.random.parRandom(comm,noise_variance,d)
 
-    dx = ufl.dx(V.mesh)
-    w = ufl.TestFunction(V)
-    Pv = ufl.TrialFunction(V)
-    a = dlx.fem.form(ufl.inner(Pv, w) * dx)
-    L = dlx.fem.form(ufl.inner(u_fun_true*ufl.exp(m_fun_true), w) * dx)
 
-    bcs = []
-    A = dlx.fem.petsc.assemble_matrix(a, bcs)
-    A.assemble()
-    b = dlx.fem.petsc.assemble_vector(L)
-    dlx.fem.petsc.apply_lifting(b, [a], [bcs])
-    b.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    #parRandom normal_perturb 
+    #understanding the idea in hippylib
 
-    solver = petsc4py.PETSc.KSP().create()
-    solver.setOperators(A)
-    solver.solve(b, d.vector)
+    # abspath = os.path.dirname( os.path.abspath(__file__) )
+    # source_directory = os.path.join(abspath,"cpp_rand")
+    # print(source_directory)
+
+
+
 
     # print(d.vector[:].min())
     # print(d.vector[:].max())
@@ -113,8 +108,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     #     file.write_mesh(msh)
     #     file.write_function(d)
 
-
-    
 
 if __name__ == "__main__":
     
