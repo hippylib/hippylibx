@@ -181,158 +181,108 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = NonGaussianContinuousMisfit(msh, Vh, misfit_form)  
 
-    print(rank,":",misfit.cost(x_true))
+    #works as expected
+    # print(rank,":",misfit.cost(x_true))
+
+    # u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
+    # m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
+    # u_fun.x.scatter_forward()
+    # m_fun.x.scatter_forward()
+
+    # x_fun = [u_fun, m_fun]
+    # x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
+
+    # i = 0
+    # # ans = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i])) )
+    # L = dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i]))
 
 
-    # loc_cost = misfit_form(u_fun,m_fun)     
+    # ans = dlx.fem.petsc.create_vector(L)
+    # with ans.localForm() as loc_ans:
+    #     loc_ans.set(0)
+    # dlx.fem.petsc.assemble_vector(ans,L)
+    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+ 
+    # msh.comm.allreduce()
+    # ans.scatter_reverse()
+    ans = misfit.grad(0,x_true)
 
-    # print(rank,":",loc_cost)
+    print(rank,":",min(ans.array))
+    print(rank,":",max(ans.array))
 
-    # loc_cost = misfit_form(u_fun,m_fun) #ufl.form.Form
+    # print(dlx.fem.form(L).function_spaces[0].dofmap.index_map)
 
-    # glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
+    # ans = dlx.fem.petsc.assemble_vector(dlx.fem.form(L))    
+    # ans.scatter_reverse
+    # ans.assemble()
 
-    # glb_cost_proc.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-
-    # print(rank,":",glb_cost_proc)
-    # glb_cost = msh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
+    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
     
-    # print(rank,":",glb_cost)
-
-
-    # glb_cost.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-
-    # V_test = dlx.fem.FunctionSpace(msh,("CG",1))
-    # expr = dlx.fem.Expression( dlx.fem.form(loc_cost) ,  V_test.element.interpolation_points())
+    # ans.assemble()
     
 
-    # glb_cost = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
+    # ans = dlx.fem.petsc.assemble_vector(dlx.fem.form(L) )
+    # ans = dlx.fem.petsc.assemble_vector( L )
 
-    # min_val = msh.comm.allreduce(min(u_fun.x.array), op=MPI.MIN)
-    # max_val = msh.comm.allreduce(max(u_fun.x.array), op=MPI.MAX)
+    # with ans.localForm() as ans_local:
+    #     print(ans_local.array)
+
+
+    # ans = dlx.fem.assemble_vector(dlx.fem.form(L)) #dolfinx.la.Vector
+    # ans.scatter_reverse
+
+
+
+    # print(rank,":",len(ans.array))
+
+    # print(rank,":",ans.get_local())
+    
+    # test_obj = ans.get_local()
+    # print("hello")
+    # print(rank,":",ans.get_local())
+    # print(ans.array[:].min())
+    # print(ans.array[:].max())
+
+    # misfit_grad_func = dlx.fem.Function(Vh[hpx.STATE])
+
+    # print(rank,":",len(ans.array),":",len(misfit_grad_func.x.array[:]))
+
+    # misfit_grad_func.x.array[:] = ans.array
+
+    # with ans.localForm() as ans_local:
+    #     print(rank,":",ans_local.array.max())
+
+    # print(type(ans))
+    # ans.assemble()
+
+    # misfit_grad_func = hpx.vector2Function(ans,Vh[hpx.STATE])
+
+    # misfit_grad_func.x.scatter_forward()
+
+    # min_val = msh.comm.allreduce(min(misfit_grad_func.x.array), op=MPI.MIN)
+    # max_val = msh.comm.allreduce(max(misfit_grad_func.x.array), op=MPI.MAX)
+
+
+    # min_val = msh.comm.allreduce(min(m_fun.x.array), op=MPI.MIN)
+    # max_val = msh.comm.allreduce(max(m_fun.x.array), op=MPI.MAX)
+
     # if msh.comm.rank == 0:
-    #     print(min_val, max_val)
+    #     print(min_val, max_val)    
 
-    # 
-    # print(type(glb_cost))
-    # msh.comm.allreduce(glb_cost,op=MPI.SUM)
 
-    # print(rank,":",glb_cost)
-        
-    # print(u_fun.vector[:].min())
-    # print(u_fun.vector[:].max(),'\n')
+    # with dlx.io.XDMFFile(msh.comm, "attempt_misfit_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(misfit_grad_func)
 
-    # print(m_fun.vector[:].min())
-    # print(m_fun.vector[:].max(),'\n')
 
-    # print(x_true[hpx.STATE].min())
-    # print(x_true[hpx.STATE].max(),'\n')
-
-    # print(x_true[hpx.PARAMETER].min())
-    # print(x_true[hpx.PARAMETER].max(),'\n')
+    # ans  =  ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i])
     
-    #as expected
-    # print(m_fun_true.vector.min())
-    # print(m_fun_true.vector.max())
-        
-    # m_true_3 = m_fun_true.vector
-    # print(m_true.min())
-
-    # print(m_true.max())
-    # temp_vec = dlx.la.create_petsc_vector(Vh[hpx.PARAMETER].dofmap.index_map,Vh[hpx.PARAMETER].dofmap.index_map_bs) 
-    # temp_vec = m_true.copy()
-    # temp_vec[0] = -5
-
-    # print(m_true_org.min())
-    # print(m_true_org.max(),'\n')
-
-    # print(m_true_2.min())
-    # print(m_true_2.max(),'\n')
-
-    # print(m_true_3.min())
-    # print(m_true_3.max(),'\n')
-
-    # print(m_true_4.min())
-    # print(m_true_4.max(),'\n')
-
-    # print(m_true_2_vec.min())
-    # print(m_true_2_vec.max(),'\n')
-
-    # print(m_true_3.min())
-    # print(m_true_3.max(),'\n')
-
-    # print(temp_vec2.min())
-    # print(temp_vec2.max(),'\n')
+    # print('hello')
 
 
-    # print(x_true[hpx.PARAMETER].min())
-    # print(x_true[hpx.PARAMETER].max())
-    
-    # #done to ensure values restored in m_true after solveFwd
-    # x_true[hpx.PARAMETER] = m_fun_true.vector
-
-    # #LIKELIHOOD
-    
-    # u_fun_true = hpx.vector2Function(u_true, Vh[hpx.STATE]) 
-    # d = dlx.fem.Function(Vh[hpx.STATE])
-    # expr = u_fun_true * ufl.exp(m_fun_true)
-    # hpx.projection(expr,d)
-    # hpx.random.parRandom(comm,noise_variance,d)
-    
-    # misfit_form = PACTMisfitForm(d, noise_variance)
-    # misfit = NonGaussianContinuousMisfit(msh, Vh, misfit_form)
-    
-    # # loc_cost = misfit.cost(x_true)
-    # loc_cost = misfit_form(u_fun_true,m_fun_true)
-    # glb_cost = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
-
-    # print(rank,":",glb_cost)
-
-    # print(x_true[hpx.STATE][:].min())
-    # print(x_true[hpx.STATE][:].max(),'\n')
-        
-    # print(x_true[hpx.PARAMETER][:].min())
-    # print(x_true[hpx.PARAMETER][:].max())
-    
-
-    # print(rank,":",cost)
-
-
-    # v = petsc4py.PETSc.Viewer()
-    # v(d.vector)
-    # print(rank,":",d.x.array[:10])
-
-    # noise_variance = dlx.Constant(msh,petsc4py.PETSc.ScalarType(noise_variance))
-
-        
-    # cost = misfit.cost(x_true)
-    # print(rank,":",cost)
-
-    # u_fun_true = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
-    #m_fun_true already made
-
-
-    # print(m_fun_true.x.array[:].min())
-    # print(m_fun_true.x.array[:].max())
-
-    # loc_cost = misfit_form(u_fun,m_fun) #ufl.form.Form
-    # print(rank,":",loc_cost)
-
-    # glb_cost = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
-    # print(rank,"cost 1:",glb_cost)
-
-    # glb_cost = dlx.fem.assemble.assemble_scalar(dlx.fem.form(loc_cost))
-    
-    # print(rank,"cost 2:",glb_cost)
-
-
-    # msh.comm.allreduce(loc_cost,op=MPI.SUM)
-    # glb_cost = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
-
-
-    # print(type(loc_cost))  
-
-
+ 
     # with dlx.io.XDMFFile(msh.comm, "attempt_project_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
     #     file.write_mesh(msh)
     #     file.write_function(d)
