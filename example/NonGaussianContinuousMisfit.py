@@ -58,7 +58,14 @@ class NonGaussianContinuousMisfit(object):
     def apply_ij(self,i,j, dir):
         form = self.form(*self.x_lin_fun)
         dir_fun = hpx.vector2Function(dir, self.Vh[j])
-        action = ufl.derivative( ufl.derivative(form, self.x_lin_fun[i], self.x_test[i]), self.x_lin_fun[j], dir_fun )
-        loc_action = dlx.fem.petsc.assemble.assemble_vector(dlx.fem.form(action) ) #<class 'PETSc.Vec'>
-        loc_action.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        return loc_action
+        action = dlx.fem.form(ufl.derivative( ufl.derivative(form, self.x_lin_fun[i], self.x_test[i]), self.x_lin_fun[j], dir_fun ))
+        
+        apply = dlx.fem.petsc.create_vector(action)
+        with apply.localForm() as loc_apply:
+            loc_apply.set(0)
+        dlx.fem.petsc.assemble_vector(apply,action)
+
+        apply.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+        return apply
+
+        
