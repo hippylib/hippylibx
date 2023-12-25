@@ -60,6 +60,18 @@ class PDEVariationalProblem:
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
 
         mfun = vector2Function(x[PARAMETER],self.Vh[PARAMETER])
+        # print(x[PARAMETER],'\n')
+        # temp_vec = dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map,self.Vh[PARAMETER].dofmap.index_map_bs) 
+        # temp_vec.x.array[:] = x[PARAMETER]
+
+        # temp_m_vec = x[PARAMETER].copy()
+        # mfun = vector2Function(temp_m_vec,self.Vh[PARAMETER])
+
+        #once the function scope ends, the values in the underlying vector also disappear.
+        #As per: https://fenicsproject.discourse.group/t/manipulating-vector-data-of-fem-function/11056/2
+        #Need to find a way to work around this.
+        #Ans: return the function? 
+
 
         self.n_calls["forward"] += 1
         if self.solver is None:
@@ -86,9 +98,12 @@ class PDEVariationalProblem:
 
             self.solver.solve(b,state)
 
+            # x[PARAMETER] = mfun.x.array[:]
+
+            # return mfun
          
     def solveAdj(self, adj, x, adj_rhs):
-        
+
         """ Solve the linear adjoint problem:
         Given :math:`m, u`; find :math:`p` such that
         .. math:: \\delta_u F(u, m, p;\\hat{u}) = 0, \\quad \\forall \\hat{u}.
@@ -98,6 +113,7 @@ class PDEVariationalProblem:
             self.solver = self._createLUSolver()
 
         p = dlx.fem.Function(self.Vh[ADJOINT])
+        p.x.scatter_forward()
         du = ufl.TestFunction(self.Vh[STATE])
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
         x_state_fun = vector2Function(x[STATE],self.Vh[STATE])
@@ -107,7 +123,10 @@ class PDEVariationalProblem:
         Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs=self.bc0)
         Aadj.assemble()
         self.solver.setOperators(Aadj)
+
         self.solver.solve(adj_rhs,adj)
+
+
 
     def evalGradientParameter(self, x):
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
