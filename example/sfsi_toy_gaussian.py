@@ -284,11 +284,11 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     #to solveAdj, need adj_rhs. create dummy??
 
     ##########################################
-    # adj_rhs = dlx.fem.Function(Vh_phi)
-    # adj_rhs.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
-    # adj_rhs.x.scatter_forward()
-    # adj_rhs = adj_rhs.vector
-
+    #works as intended.
+    adj_rhs = dlx.fem.Function(Vh_phi)
+    adj_rhs.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
+    adj_rhs.x.scatter_forward()
+    adj_rhs = adj_rhs.vector
 
 
     # need to do something similar to assemble_vector as in the solveFwd method.
@@ -296,12 +296,13 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     ##########################################
     
     ##########################################
-    ###doesn't work either
-    adj_rhs = pde.generate_state()
-    adj_rhs_func = hpx.vector2Function(adj_rhs,Vh[hpx.ADJOINT])
-    adj_rhs_func.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
-    adj_rhs_func.x.scatter_forward()
-    adj_rhs = adj_rhs_func.vector
+    ###works as intended
+    # adj_rhs = pde.generate_state()
+    # adj_rhs_func = hpx.vector2Function(adj_rhs,Vh[hpx.ADJOINT])
+    # adj_rhs_func.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
+    # adj_rhs_func.x.scatter_forward()
+    # adj_rhs = adj_rhs_func.vector
+
 
     # print(rank,":",adj_rhs.array.min(),":",adj_rhs.array.max())
     
@@ -319,14 +320,27 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     pde.solveAdj(adj_true,x_true,adj_rhs)    
 
     # print(rank,":",adj_rhs.array.min(),":",adj_rhs.array.max())
-    # print(rank,":",adj_true.array.min(),":",adj_true.array.max())
+    
+    print(rank,":",adj_true.array.min(),":",adj_true.array.max())
 
-    adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-    adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+    # adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    # adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
     
     x_true[hpx.ADJOINT] = adj_true
 
     adj_true_func = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])  
+
+
+    u_fun  = hpx.vector2Function(x_true[hpx.STATE],Vh[hpx.STATE])
+    m_fun  = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    p_fun  = hpx.vector2Function(x_true[hpx.ADJOINT],Vh[hpx.ADJOINT])
+    
+
+    # min_val = msh.comm.allreduce(min(p_fun.x.array), op=MPI.MIN)
+    # max_val = msh.comm.allreduce(max(p_fun.x.array), op=MPI.MAX)
+
+    # if msh.comm.rank == 0:
+    #     print(min_val, max_val)    
 
     # min_val = msh.comm.allreduce(min(adj_true_func.x.array), op=MPI.MIN)
     # max_val = msh.comm.allreduce(max(adj_true_func.x.array), op=MPI.MAX)
@@ -342,9 +356,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
 
     #works as intended in both serial and parallel
-    with dlx.io.XDMFFile(msh.comm, "attempt_adjoint_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(adj_true_func)
+    # with dlx.io.XDMFFile(msh.comm, "attempt_adjoint_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(adj_true_func)
 
     # print(rank,":",min(adj_fun_true.x.array),":",max(adj_fun_true.x.array))
 
