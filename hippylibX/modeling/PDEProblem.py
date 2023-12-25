@@ -113,7 +113,6 @@ class PDEVariationalProblem:
             self.solver = self._createLUSolver()
 
         p = dlx.fem.Function(self.Vh[ADJOINT])
-        p.x.scatter_forward()
         du = ufl.TestFunction(self.Vh[STATE])
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
         x_state_fun = vector2Function(x[STATE],self.Vh[STATE])
