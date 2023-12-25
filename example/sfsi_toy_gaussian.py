@@ -321,20 +321,50 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # print(rank,":",adj_rhs.array.min(),":",adj_rhs.array.max())
     
-    print(rank,":",adj_true.array.min(),":",adj_true.array.max())
+    # print(rank,":",adj_true.array.min(),":",adj_true.array.max())
 
     # adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
     # adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
     
     x_true[hpx.ADJOINT] = adj_true
 
-    adj_true_func = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])  
 
-
-    u_fun  = hpx.vector2Function(x_true[hpx.STATE],Vh[hpx.STATE])
-    m_fun  = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    p_fun  = hpx.vector2Function(x_true[hpx.ADJOINT],Vh[hpx.ADJOINT])
+    # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
+    # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
+    # print(x_true[hpx.ADJOINT].min(),":",x_true[hpx.ADJOINT].max())
     
+    eval_grad = pde.evalGradientParameter(x_true)
+    eval_grad_func = hpx.vector2Function(eval_grad,Vh[hpx.PARAMETER])
+
+    #works correctly - in serial and parallel
+    # with dlx.io.XDMFFile(msh.comm, "attempt_eval_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(eval_grad_func)
+
+
+
+
+    # print(rank,":",eval_grad.array.min(),":",eval_grad.array.max())
+
+
+    # print(min(np.array(eval_grad)), ":", max(np.array(eval_grad)) )
+    
+    # adj_true_func = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])  
+
+    # u_fun  = hpx.vector2Function(x_true[hpx.STATE],Vh[hpx.STATE])
+    # m_fun  = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    # p_fun  = hpx.vector2Function(x_true[hpx.ADJOINT],Vh[hpx.ADJOINT])
+
+    # dm = ufl.TestFunction(Vh[hpx.PARAMETER])
+    # res_form = pde_handler(u_fun, m_fun, p_fun)
+
+    # eval_grad = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m_fun, dm)))
+
+    # # print(min(np.array(eval_grad)), ":", max(np.array(eval_grad)) )
+    
+    
+
+    #adjoint made; test evalGradientParameter
 
     # min_val = msh.comm.allreduce(min(p_fun.x.array), op=MPI.MIN)
     # max_val = msh.comm.allreduce(max(p_fun.x.array), op=MPI.MAX)
@@ -342,8 +372,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # if msh.comm.rank == 0:
     #     print(min_val, max_val)    
 
-    # min_val = msh.comm.allreduce(min(adj_true_func.x.array), op=MPI.MIN)
-    # max_val = msh.comm.allreduce(max(adj_true_func.x.array), op=MPI.MAX)
+    # min_val = msh.comm.allreduce(min(eval_grad_func.x.array), op=MPI.MIN)
+    # max_val = msh.comm.allreduce(max(eval_grad_func.x.array), op=MPI.MAX)
 
     # if msh.comm.rank == 0:
     #     print(min_val, max_val)    
