@@ -125,19 +125,20 @@ class PDEVariationalProblem:
 
         self.solver.solve(adj_rhs,adj)
 
-
-
     def evalGradientParameter(self, x):
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
+        
         u = vector2Function(x[STATE], self.Vh[STATE])
         m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
         p = vector2Function(x[ADJOINT], self.Vh[ADJOINT])
         dm = ufl.TestFunction(self.Vh[PARAMETER])
         res_form = self.varf_handler(u, m, p)
 
-        return dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm)))
+        eval_grad = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm)))
+        eval_grad.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        eval_grad.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
-        # dlx.fem.assemble( ufl.derivative(res_form, m, dm), tensor=out)
+        return eval_grad
 
 
     def _createLUSolver(self):
