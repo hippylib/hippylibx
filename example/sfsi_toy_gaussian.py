@@ -192,6 +192,32 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = NonGaussianContinuousMisfit(msh, Vh, misfit_form)  
 
+    # print(rank,":",x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
+    # print(rank,":",x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
+
+    #need same results in serial and parallel.
+    # out = dlx.fem.petsc.vector
+    # out = petsc4py.PETSc.Vec
+    grad = misfit.grad(0,x_true) #not as expected even in serial as fenics and different
+    # results in serial and in parallel.
+
+    # print(type(grad_val))
+    
+    grad_func = hpx.vector2Function(grad,Vh[hpx.STATE])
+
+    print(rank,":",grad_func.x.array.min(),":",grad_func.x.array.max())
+
+    
+
+    # with dlx.io.XDMFFile(msh.comm, "attempt_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(grad_func)
+
+
+    # print(rank,":",grad_val.min(),":",grad_val.max())
+    
+
+
     #implement the gradient evaluation function before implementing the regularization
 
     # PRIOR
@@ -263,25 +289,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # create new vector of needed size (3287)
     new_func = dlx.fem.Function(Vh[hpx.STATE])
 
-    
-    # work_sizes = [818,816,831,822]
-    
-    #But I dont know in what order/ displacement each process has the values in
-    # grad. It may not even be in contiguous blocks. - Cannot use Allgatherv :-(
-
-    # msh.comm.Allgatherv(grad,new_func.vector)
-
-
-    # print(rank,":",len(np.array(u_fun.x.array)),":",len(np.array(grad)))
-    # print(rank, ":",grad.array.min(),":",grad.array.max() ) 
-    # print(rank,":",misfit.cost(x_true))        
-
-    #Question: Are all processes suppsed to have same vector values returned from grad?
-    #No, I guess, because in normal hippylib, they dont have the same values either.
-
-    #move on for now?
-    #eval Gradient function?? -> p from adjoint, then use eval Gradient?
-    #to solveAdj, need adj_rhs. create dummy??
 
     ##########################################
     #works as intended.
@@ -289,52 +296,16 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     adj_rhs.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
     adj_rhs.x.scatter_forward()
     adj_rhs = adj_rhs.vector
-
-
-    # need to do something similar to assemble_vector as in the solveFwd method.
-    # ^ alternative to above
-    ##########################################
-    
-    ##########################################
-    ###works as intended
-    # adj_rhs = pde.generate_state()
-    # adj_rhs_func = hpx.vector2Function(adj_rhs,Vh[hpx.ADJOINT])
-    # adj_rhs_func.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
-    # adj_rhs_func.x.scatter_forward()
-    # adj_rhs = adj_rhs_func.vector
-
-
-    # print(rank,":",adj_rhs.array.min(),":",adj_rhs.array.max())
-    
-    ##########################################
-    
-    # adj_rhs.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-    # adj_rhs_expr = dl.Expression("std::log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) )", degree=1)
-    # adj_rhs = dl.interpolate(adj_rhs_expr, Vh_m).vector()
-
     adj_true = pde.generate_state()
-    
-    # # print(type(adj_rhs))
-    # #need to get this to work in parallel - not working!
-    
     pde.solveAdj(adj_true,x_true,adj_rhs)    
-
-    # print(rank,":",adj_rhs.array.min(),":",adj_rhs.array.max())
-    
-    # print(rank,":",adj_true.array.min(),":",adj_true.array.max())
-
-    # adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-    # adj_true.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
-    
     x_true[hpx.ADJOINT] = adj_true
 
 
-    # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
-    # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
-    # print(x_true[hpx.ADJOINT].min(),":",x_true[hpx.ADJOINT].max())
-    
     eval_grad = pde.evalGradientParameter(x_true)
     eval_grad_func = hpx.vector2Function(eval_grad,Vh[hpx.PARAMETER])
+
+    #REGULARIZATION
+
 
     #works correctly - in serial and parallel
     # with dlx.io.XDMFFile(msh.comm, "attempt_eval_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
