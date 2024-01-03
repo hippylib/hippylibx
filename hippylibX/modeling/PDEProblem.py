@@ -49,6 +49,7 @@ class PDEVariationalProblem:
    
 
     @unused_function   
+    
     def init_parameter(self, m):
         """ Initialize the parameter."""
         dummy = self.generate_parameter()
@@ -97,10 +98,6 @@ class PDEVariationalProblem:
             # dlx.fem.petsc.set_bc(b,self.bc)
 
             self.solver.solve(b,state)
-
-            # x[PARAMETER] = mfun.x.array[:]
-
-            # return mfun
          
     def solveAdj(self, adj, x, adj_rhs):
 
