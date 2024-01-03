@@ -24,21 +24,32 @@ class NonGaussianContinuousMisfit(object):
         return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
 
     def grad(self, i, x):
+
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
+
         u_fun.x.scatter_forward()
         m_fun.x.scatter_forward()
 
         x_fun = [u_fun, m_fun]
         x_test = [ufl.TestFunction(self.Vh[hpx.STATE]), ufl.TestFunction(self.Vh[hpx.PARAMETER])]
 
+        # L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], x_test[i]))
         L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], x_test[i]))
-        grad = dlx.fem.petsc.create_vector(L)
-        with grad.localForm() as loc_grad:
-            loc_grad.set(0)
-        dlx.fem.petsc.assemble_vector(grad,L)
-        grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        return grad
+        
+        #substitute for dl.assemble:
+        out = dlx.fem.petsc.create_vector(L)
+        
+        # print(type(out))
+        # with grad.localForm() as loc_grad:
+        #     loc_grad.set(0)
+        
+        dlx.fem.petsc.assemble_vector(out,L)
+        
+        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+        
+        return out
 
         # x_state_fun,x_par_fun = hpx.vector2Function(x[hpx.STATE],self.Vh[hpx.STATE]), hpx.vector2Function(x[hpx.PARAMETER],self.Vh[hpx.PARAMETER]) 
         # x_fun = [x_state_fun,x_par_fun] 
