@@ -26,8 +26,9 @@ class VariationalRegularization:
     #  2. call symbolic differentation of self.functional_handler(mfun) wrt mfun
     #  3. call assemble, update ghosts, and store the result in out
     
-    def grad(self, m, out):
+    def grad(self, m):
         mfun = vector2Function(m,self.Vh[PARAMETER])
+        #what would the functional_handler look like?
         L = dlx.fem.form(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh[PARAMETER])))
         grad = dlx.fem.petsc.create_vector(L)
         with grad.localForm() as loc_grad:
@@ -36,12 +37,22 @@ class VariationalRegularization:
         grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
         grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
         
-        return grad        
-
-        
+        return grad                
 
     # def setLinearizationPoint(self, m):
     #   1. Cast the petsc4py vector m to a dlx.Function mfun
     #   2. call symbolic differentiation (twice) to get the second variation of self.functional_handler(mfun) wrt mfun
     #   3. assemble the Hessian operator (it's a sparse matrix!) in the attribute self.R
     #   4. set up a linearsolver self.Rsolver that uses CG as Krylov method, gamg as preconditioner and self.R as operator
+
+    def setLinearizationPoint(self, m):
+        mfun = vector2Function(m,self.Vh[PARAMETER])
+        L = ufl.derivative(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh[PARAMETER])), mfun, ufl.TestFunction(self.Vh[PARAMETER]))
+        self.R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
+        self.R.assemble()
+        
+        test_Rsolver = petsc4py.PETSc.KSP().create()
+        test_Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+        test_Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
+    
+        self.Rsolver.setOperators(self.R)
