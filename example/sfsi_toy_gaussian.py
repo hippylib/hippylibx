@@ -197,17 +197,60 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     #need same results in serial and parallel.
     # out = dlx.fem.petsc.vector
-    # out = petsc4py.PETSc.Vec
-    grad = misfit.grad(0,x_true) #not as expected even in serial as fenics and different
-    # results in serial and in parallel.
+            
 
+
+    grad = misfit.grad(0,x_true) #different plots in serial and parallel
+
+    # print(rank,":",len(np.array(grad.getArray())) ) #loc size that each rank owns  
+    # 0 : 818
+    # 1 : 816
+    # 2 : 831
+    # 3 : 822
+
+    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
+    
+    # results in serial and in parallel.
     # print(type(grad_val))
     
-    grad_func = hpx.vector2Function(grad,Vh[hpx.STATE])
+    # grad_func = hpx.vector2Function(grad,Vh[hpx.STATE])
+    # grad_func.x.scatter_forward()
 
-    print(rank,":",grad_func.x.array.min(),":",grad_func.x.array.max())
+        
 
+    # print(rank,":",mfun.x.array.min(),":",mfun.x.array.max())
+
+
+
+    # L = dlx.fem.form(ufl.derivative(pde_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
+    # grad = dlx.fem.petsc.create_vector(L)
+    # with grad.localForm() as loc_grad:
+    #     loc_grad.set(0)
+    # dlx.fem.petsc.assemble_vector(grad,L)
+    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+            
+    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
     
+
+
+
+    # print(rank,":",grad_func.x.array.min(),":",grad_func.x.array.max())
+
+    # print(rank,":",len(grad_func.x.array) )
+    # 0 : 909
+    # 1 : 885
+    # 2 : 910
+    # 3 : 917
+
+
+    # grad_func.x.scatter_forward()
+        
+
+    #objective: get same results for misfit.grad in serial and parallel.
+
+
+
 
     # with dlx.io.XDMFFile(msh.comm, "attempt_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
     #     file.write_mesh(msh)
@@ -300,11 +343,78 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     pde.solveAdj(adj_true,x_true,adj_rhs)    
     x_true[hpx.ADJOINT] = adj_true
 
-
     eval_grad = pde.evalGradientParameter(x_true)
     eval_grad_func = hpx.vector2Function(eval_grad,Vh[hpx.PARAMETER])
 
+
+    p_fun = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])
+
     #REGULARIZATION
+    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    # L = dlx.fem.form(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
+    # grad = dlx.fem.petsc.create_vector(L)
+    # with grad.localForm() as loc_grad:
+    #     loc_grad.set(0)
+    # dlx.fem.petsc.assemble_vector(grad,L)
+    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+   
+
+    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
+
+    mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    # L = dlx.fem.form(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
+    
+
+    # test_obj = pde_handler(u_fun,mfun,p_fun)
+    # print(type(test_obj))
+
+    # L = ufl.derivative(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
+    # L = ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER]))
+    # test_Rsolver = petsc4py.PETSc.KSP().create()
+    # test_Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+    # test_Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
+    
+    # test_Rsolver.setPC("gamg")
+    # test_Rsolver.setType("CG")
+
+
+    # print(L)
+
+
+
+    # R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
+
+
+
+
+
+    # test_obj = dlx.fem.form(L)
+
+
+
+
+    # R = dlx.fem.petsc.assemble_matrix( dlx.fem.form(L) )
+
+
+    # L2 =  dlx.fem.form(   ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER]))    )
+    
+
+    #need to call sym differentiation twice
+
+    
+    # grad = dlx.fem.petsc.create_vector(L)
+    # with grad.localForm() as loc_grad:
+    #     loc_grad.set(0)
+    # dlx.fem.petsc.assemble_vector(grad,L)
+    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+    
+    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
+
+
+
+
 
 
     #works correctly - in serial and parallel
