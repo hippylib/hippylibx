@@ -28,29 +28,44 @@ class NonGaussianContinuousMisfit(object):
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
 
-        u_fun.x.scatter_forward()
-        m_fun.x.scatter_forward()
+        # u_fun.x.scatter_forward()
+        # m_fun.x.scatter_forward()
+
+        # print(self.mesh.comm.rank,":",m_fun.x.array.min(),":",m_fun.x.array.max())
+
+        # u_fun_test = ufl.TestFunction(self.Vh[hpx.STATE])
+        # m_fun_test =  ufl.TestFunction(self.Vh[hpx.PARAMETER])
+        # u_fun_test.x.scatter_forward()
+        # m_fun_test.x.scatter_forward()
 
         x_fun = [u_fun, m_fun]
         x_test = [ufl.TestFunction(self.Vh[hpx.STATE]), ufl.TestFunction(self.Vh[hpx.PARAMETER])]
 
-        # L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], x_test[i]))
         L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], x_test[i]))
-        
+ 
         #substitute for dl.assemble:
-        out = dlx.fem.petsc.create_vector(L)
+
+        #M-1 ###################################
+        # out = dlx.fem.Function(self.Vh[i])
+        # dlx.fem.petsc.assemble_vector(out.vector,L)
+        # out.x.scatter_reverse(dlx.la.ScatterMode.add)
+        # out.x.scatter_forward()
+        # return out.vector
+        # ##################################
         
-        # print(type(out))
-        # with grad.localForm() as loc_grad:
-        #     loc_grad.set(0)
+        #M-2 ###################################
+        out = dlx.fem.petsc.create_vector(L)
+
+        with out.localForm() as loc_grad:
+            loc_grad.set(0)
         
         dlx.fem.petsc.assemble_vector(out,L)
-        
         out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
         out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
         
         return out
-
+    #    ##################################
+ 
         # x_state_fun,x_par_fun = hpx.vector2Function(x[hpx.STATE],self.Vh[hpx.STATE]), hpx.vector2Function(x[hpx.PARAMETER],self.Vh[hpx.PARAMETER]) 
         # x_fun = [x_state_fun,x_par_fun] 
         # loc_grad = dlx.fem.petsc.assemble.assemble_vector(dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i])) ) #<class 'PETSc.Vec'>
