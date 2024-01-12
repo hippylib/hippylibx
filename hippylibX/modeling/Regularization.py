@@ -20,7 +20,6 @@ class VariationalRegularization:
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
         return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
     
-
     # def grad(self, m, out):
     #  1. Cast the petsc4py vector m to a dlx.Function mfun
     #  2. call symbolic differentation of self.functional_handler(mfun) wrt mfun
@@ -45,14 +44,22 @@ class VariationalRegularization:
     #   3. assemble the Hessian operator (it's a sparse matrix!) in the attribute self.R
     #   4. set up a linearsolver self.Rsolver that uses CG as Krylov method, gamg as preconditioner and self.R as operator
 
-    def setLinearizationPoint(self, m):
+    def setLinearizationPoint(self, m, rel_tol=1e-12, max_iter=1000):
         mfun = vector2Function(m,self.Vh[PARAMETER])
-        L = ufl.derivative(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh[PARAMETER])), mfun, ufl.TestFunction(self.Vh[PARAMETER]))
+        L = ufl.derivative(ufl.derivative(self.functional_handler(mfun),mfun), mfun)
         self.R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
         self.R.assemble()
         
-        test_Rsolver = petsc4py.PETSc.KSP().create()
-        test_Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-        test_Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
-    
+        #for Rsolver:
+        #have to call _BilaplacianRsolver(self.Asolver,self.M)
+        #so have to construct self.Asolver, self.M first
+        
+        self.Rsolver = petsc4py.PETSc.KSP().create()
+        self.Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+        self.Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
+        self.Rsolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
+        self.Rsolver.setTolerances(rtol=rel_tol)
+        self.Rsolver.setErrorIfNotConverged(True)
+        self.Rsolver.setInitialGuessNonZero(False)
         self.Rsolver.setOperators(self.R)
+        
