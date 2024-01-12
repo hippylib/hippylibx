@@ -221,7 +221,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(rank,":",mfun.x.array.min(),":",mfun.x.array.max())
 
 
-
     # L = dlx.fem.form(ufl.derivative(pde_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
     # grad = dlx.fem.petsc.create_vector(L)
     # with grad.localForm() as loc_grad:
@@ -315,8 +314,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     x_fun = [u_fun, m_fun]
     x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
+    
     i = 0
-
     L = dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i]))
     grad = dlx.fem.petsc.create_vector(L)
     
@@ -332,7 +331,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # create new vector of needed size (3287)
     new_func = dlx.fem.Function(Vh[hpx.STATE])
 
-
     ##########################################
     #works as intended.
     adj_rhs = dlx.fem.Function(Vh_phi)
@@ -345,7 +343,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     eval_grad = pde.evalGradientParameter(x_true)
     eval_grad_func = hpx.vector2Function(eval_grad,Vh[hpx.PARAMETER])
-
 
     p_fun = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])
 
@@ -365,6 +362,87 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
     # L = dlx.fem.form(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
     
+    #testing the Regularization.py file functions
+    test_func_handler = H1TikhonvFunctional(3.,4.,5.)
+    test_var_reg = hpx.VariationalRegularization(msh,Vh,test_func_handler,False)
+
+    test_cost = test_var_reg.cost(x_true[hpx.PARAMETER])
+    
+    # print(rank,":",test_cost)
+
+    test_grad = test_var_reg.grad(x_true[hpx.PARAMETER])
+    test_grad_func = hpx.vector2Function(test_grad,Vh[hpx.PARAMETER])
+
+    #setLinearizationPoint
+    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    # L = ufl.derivative(ufl.derivative(test_func_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
+    
+    # print(type(L))
+
+    #following line gives error - assemble Hessian operator in a self.R variable
+    # R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
+    
+    #impementing Rsolver as from prior.py in Hippylib (_BiLaplacianRsolver):
+    
+    # Asolver = PETScKrylovSolver(Vh[hpx.PARAMETER].mesh().mpi_comm(), "cg", amg_method())
+    
+    max_iter = 100
+    rel_tol = 1e-6
+
+    Asolver = petsc4py.PETSc.KSP().create()
+    Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+    Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
+    Asolver.setIterationNumber(max_iter)
+    Asolver.setTolerances(rtol=rel_tol)
+    Asolver.setErrorIfNotConverged(True)
+    Asolver.setInitialGuessNonzero(False)
+
+    mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+
+    test_func_handler = H1TikhonvFunctional(3.,4.,5.)
+
+    # L = ufl.derivative(ufl.derivative(test_func_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
+
+
+    # print(type(Asolver))
+
+    # Asolver = 
+    # Asolver.set_operator(A)
+    # Asolver.parameters["maximum_iterations"] = max_iter
+    # Asolver.parameters["relative_tolerance"] = rel_tol
+    # Asolver.parameters["error_on_nonconvergence"] = True
+    # Asolver.parameters["nonzero_initial_guess"] = False
+
+
+
+
+    # R.assemble()
+    
+    # test_Rsolver = petsc4py.PETSc.KSP().create()
+    # test_Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+    # test_Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
+
+    # test_Rsolver.setOperators(R)
+
+
+
+    # with dlx.io.XDMFFile(msh.comm, "attempt_reg_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        # file.write_mesh(msh)
+        # file.write_function(test_grad_func)
+
+
+
+    # print(type(x_true[hpx.PARAMETER]))
+
+    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
+        
+    # print(type(mfun))
+
+    # print(rank, ":" , np.array(x_true[hpx.PARAMETER].getArray()).min(), ":", np.array(x_true[hpx.PARAMETER].getArray()).max()   )   #loc size that each rank owns  
+
+
+    # print(type(m_true))
+
 
     # test_obj = pde_handler(u_fun,mfun,p_fun)
     # print(type(test_obj))
@@ -378,21 +456,11 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # test_Rsolver.setPC("gamg")
     # test_Rsolver.setType("CG")
 
-
     # print(L)
-
-
 
     # R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
 
-
-
-
-
     # test_obj = dlx.fem.form(L)
-
-
-
 
     # R = dlx.fem.petsc.assemble_matrix( dlx.fem.form(L) )
 
