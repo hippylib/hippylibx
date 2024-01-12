@@ -83,7 +83,7 @@ class PDEVariationalProblem:
             p = ufl.TestFunction(self.Vh[ADJOINT])
 
             res_form = self.varf_handler(u, mfun, p) #all 3 arguments-dl.Function types
-            A_form = ufl.lhs(res_form)
+            A_form = ufl.lhs(res_form) #ufl.form.Form
             b_form = ufl.rhs(res_form)
             
             A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form),bcs=self.bc)
