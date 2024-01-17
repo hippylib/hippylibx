@@ -401,6 +401,17 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     test_func_handler = H1TikhonvFunctional(3.,4.,5.)
 
+    # x = petsc4py.PETSc.Vec
+
+    test_obj = dlx.la.create_petsc_vector(Vh[hpx.STATE].dofmap.index_map, Vh[hpx.STATE].dofmap.index_map_bs) 
+    #petsc4py.PETSc.Vec
+
+    #sorting out the vec2func thing - 
+
+
+
+    # print('hello from rank',rank,'\n')
+
     # L = ufl.derivative(ufl.derivative(test_func_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
 
 
