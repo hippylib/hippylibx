@@ -4,13 +4,13 @@ def parRandom(comm,noise_variance,d):
     """
     comm -> communicator
     noise_variance -> the variance of the normal distribution used to perturb the vector associated with the function d
-    d -> the vector associated with this function will be perturbed with the noise
+    d -> this vector will be perturbed with the noise #petsc4py.PETSc.Vec object
     """
 
     rank  = comm.rank
     nproc = comm.size
 
-    glb_num_vals = d.vector.getSize()
+    glb_num_vals = d.getSize()
     
     #setting seed value
     master_seed = 123
@@ -39,13 +39,8 @@ def parRandom(comm,noise_variance,d):
     
     loc_random_numbers = np.random.default_rng(rng).normal(loc=0,scale= np.sqrt(noise_variance),size=loc_size)
     indices = np.arange(lower_index,upper_index,dtype=np.int32)
-    d.vector.setValues(indices,loc_random_numbers,addv=True)
-    d.vector.assemblyBegin()
-    d.vector.assemblyEnd()
-
-
-    # v = petsc4py.PETSc.Viewer()
-    # v(d.vector)
-    
+    d.setValues(indices,loc_random_numbers,addv=True)
+    d.assemblyBegin()
+    d.assemblyEnd()
 
 
