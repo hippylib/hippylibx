@@ -34,8 +34,7 @@ class VariationalRegularization:
             loc_grad.set(0)
         dlx.fem.petsc.assemble_vector(grad,L)
         grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-        
+        # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
         return grad                
 
     # def setLinearizationPoint(self, m):
