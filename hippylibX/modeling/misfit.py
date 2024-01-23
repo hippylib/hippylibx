@@ -23,6 +23,7 @@ class NonGaussianContinuousMisfit(object):
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
         return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
 
+    # self.misfit.grad(STATE, x, rhs)        
     def grad(self, i, x):
 
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
