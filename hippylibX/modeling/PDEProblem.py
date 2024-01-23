@@ -42,14 +42,13 @@ class PDEVariationalProblem:
         #return function instead of vector, solveFwd using the function.vector object
         return dlx.la.create_petsc_vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
 
-    @unused_function
+    # @unused_function #now being used in mode.generate_vector() in modelVerify.py
     def generate_parameter(self):
         """ Return a vector in the shape of the parameter. """
         return dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
    
 
     @unused_function   
-    
     def init_parameter(self, m):
         """ Initialize the parameter."""
         dummy = self.generate_parameter()
@@ -61,6 +60,11 @@ class PDEVariationalProblem:
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
 
         mfun = vector2Function(x[PARAMETER],self.Vh[PARAMETER])
+
+        # print("first:")
+        # print(x[PARAMETER].min())
+        # print(x[PARAMETER].max())
+
         # print(x[PARAMETER],'\n')
         # temp_vec = dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map,self.Vh[PARAMETER].dofmap.index_map_bs) 
         # temp_vec.x.array[:] = x[PARAMETER]
@@ -83,21 +87,39 @@ class PDEVariationalProblem:
             p = ufl.TestFunction(self.Vh[ADJOINT])
 
             res_form = self.varf_handler(u, mfun, p) #all 3 arguments-dl.Function types
+
+            # print("second:")
+            # print(x[PARAMETER].min())
+            # print(x[PARAMETER].max())
+        
             A_form = ufl.lhs(res_form) #ufl.form.Form
+            
+            # print("third:")
+            # print(x[PARAMETER].min())
+            # print(x[PARAMETER].max()) #garbage
+
             b_form = ufl.rhs(res_form)
             
-            A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form),bcs=self.bc)
+            # print("fourth:")
+            # print(x[PARAMETER].min()) 
+            # print(x[PARAMETER].max()) #garbage
+        
+            A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc) #petsc4py.PETSc.Mat
+            
+            # print("fifth:")
+            # print(x[PARAMETER].min()) #garbage
+            # print(x[PARAMETER].max()) #garbage
+        
             A.assemble() #petsc4py.PETSc.Mat
-
             self.solver.setOperators(A)
-
-            b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form))
-
+            b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form)) #petsc4py.PETSc.Vec
+        
             dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
             # dlx.fem.petsc.set_bc(b,self.bc)
-
             self.solver.solve(b,state)
+            
+            return A
          
     def solveAdj(self, adj, x, adj_rhs):
 
@@ -122,6 +144,8 @@ class PDEVariationalProblem:
 
         self.solver.solve(adj_rhs,adj)
 
+    # self.problem.evalGradientParameter(x, mg)
+        
     def evalGradientParameter(self, x):
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
         
@@ -133,7 +157,6 @@ class PDEVariationalProblem:
 
         eval_grad = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm)))
         eval_grad.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        eval_grad.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
         return eval_grad
 
