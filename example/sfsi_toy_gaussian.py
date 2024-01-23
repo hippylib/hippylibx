@@ -6,6 +6,11 @@ import petsc4py
 
 import sys
 import os
+import matplotlib
+
+# matplotlib.use('Agg')
+
+from matplotlib import pyplot as plt
 
 # sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../hippylibX") )
 
@@ -14,7 +19,6 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 from NonGaussianContinuousMisfit import NonGaussianContinuousMisfit
 
 import hippylibX as hpx
-
 
 
 class DiffusionApproximation:
@@ -90,557 +94,416 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
     m_true.x.scatter_forward() 
 
+
     #to preserve values after using solveFwd
     m_fun_true = dlx.fem.Function(Vh_m)
     m_fun_true.x.array[:] = m_true.x.array[:]
 
     m_true = m_true.vector #<class 'petsc4py.PETSc.Vec'>
+    
     # print(m_true.min())
     # print(m_true.max())
     
     u_true = pde.generate_state()   #a vector, not a function, <class 'petsc4py.PETSc.Vec'>
-    # x_true = [u_true, m_true_org, None]     #list of petsc vectors
+    x_true = [u_true, m_true, None]     #list of petsc vectors    
+    A_mat = pde.solveFwd(u_true, x_true) #petsc4py.PETSc.Vec
 
-    # temp_vec = m_true.copy()
-    # m_true_2 = dlx.la.create_petsc_vector(Vh[hpx.PARAMETER].dofmap.index_map,Vh[hpx.PARAMETER].dofmap.index_map_bs) 
-    # m_true_2.axpy(1,m_true_org)
-    
-    # m_true_3 = m_true_2.copy()
-
-    #only original vector gets messed up if you do 1 or 2 levels.
-
-    #what if use vetor associated with a duplicate function - still doesn't work
-    # m_true_2_func = dlx.fem.Function(Vh_m)
-    # m_true_2_vec = m_true_2_func.vector
-    # m_true_2_vec.axpy(1,m_true_org)
-
-    # m_true_2 = dlx.fem.Function(Vh_m)
-    # m_true_2.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    # m_true_2.x.scatter_forward()  
-    # m_fun_true = dlx.fem.Function(Vh_m)
-    # m_fun_true.x.array[:] = m_true.x.array[:]
-
-    # m_true_2 = m_true_2.vector #<class 'petsc4py.PETSc.Vec'>
-    
-    # m_true_4 = dlx.fem.Function(Vh_m)
-    # m_true_4.interpolate(lambda x: np.log(0.1) + 4.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1 ) )) # <class 'dolfinx.fem.function.Function'>
-    # m_true_4.x.scatter_forward()  
-    # m_true_4 = m_true_4.vector 
-
-    # print(m_true_4.min())
-    # print(m_true_4.max())
-      
-    #created 2 entriely different vectors, pass any one to solveFwd
-    #then why are both turned to garbage??
-    
-    # print(m_true_org)
-    # print(m_true_2)
-    
-    # print("m_true_org",m_true_org,'\n')
-    # print("m_true2",m_true_2,'\n')
-    # print("m_true3",m_true_3,'\n')
-    
-    
-    # print(temp_vec)
-    # print(temp_vec2)
-    
-    # print(temp_vec.min())
-    # print(temp_vec.max(),'\n')
-    
     # print(m_true.min())
-    # print(m_true.max(),'\n')
-
-    x_true = [u_true, m_true, None]     #list of petsc vectors
-
-    # x_true2 = [u_true,m_true_2,None]
+    # print(m_true.max())
     
-    #M-1
-    # m_true_fun = pde.solveFwd(u_true, x_true) #petsc4py.PETSc.Vec
-    # print(m_true_fun.vector[:].min())
-    # print(m_true_fun.vector[:].max())
-    
-    #M-2
-    # print(m_true_org.min())
-    # print(m_true_org.max(),'\n')
-
-    # print(m_true_2.min())
-    # print(m_true_2.max(),'\n')
-    
-    pde.solveFwd(u_true, x_true) #petsc4py.PETSc.Vec
-
-    #to preserve values in x_true        
+    # #to preserve values in x_true        
     x_true[hpx.STATE] = u_true
-
-
     x_true[hpx.PARAMETER] = m_fun_true.vector
 
-    u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
-    u_fun.x.scatter_forward()
-    m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
-    m_fun.x.scatter_forward()
+    m_true = x_true[hpx.PARAMETER]
     
-    # print(rank,":",min(u_fun.x.array),":",max(u_fun.x.array))
-
-
-    # LIKELIHOOD
+    # print(m_true.min())
+    # print(m_true.max())
+    
+    u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
+    m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
+    
+    # # LIKELIHOOD
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun * ufl.exp(m_fun)
     hpx.projection(expr,d)
-    hpx.random.parRandom(comm,np.sqrt(noise_variance),d)
+    # hpx.random.parRandom(comm,np.sqrt(noise_variance),d) #fix this so it uses SeedSequence    
+    # print(rank,":",d.x.array[:])
+
+    hpx.random.parRandom(comm,np.sqrt(noise_variance),d.vector) #fix this so it uses SeedSequence    
+    # print(rank,":",d.x.array[:])
+    
     d.x.scatter_forward()
 
+
+    # print(rank,":",d.x.array.min(),":",d.x.array.max())
+
     misfit_form = PACTMisfitForm(d, noise_variance)
-    misfit = NonGaussianContinuousMisfit(msh, Vh, misfit_form)  
+    misfit = NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
-    # print(rank,":",x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
-    # print(rank,":",x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
-
-    #need same results in serial and parallel.
-    # out = dlx.fem.petsc.vector
-            
-
-
+    # # PRIOR
     grad = misfit.grad(0,x_true) #different plots in serial and parallel
+    u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
+    m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
 
-    # print(rank,":",len(np.array(grad.getArray())) ) #loc size that each rank owns  
-    # 0 : 818
-    # 1 : 816
-    # 2 : 831
-    # 3 : 822
+    # ones = dl.interpolate(one_constant, Qh).vector()
 
-    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
+    # cannot implement prior as class _Prior uses Multivector which derives from 
+    # a cpp_module.Multivector c++ something. So, this won't work. Try to use the
+    # methods from the Regularization.py file to move ahead with the modelVerify.py
+
+    #dummy, haven't created a prior.
+
+    # prior = pde.generate_state()
+    # prior = hpx.test_prior()
+    # m0 = prior.init_vector(0)
+
+    # model = hpx.Model(pde,prior,misfit)
+
+    # hpx.modelVerify(model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+
+    trial = ufl.TrialFunction(Vh_phi)
+    test  = ufl.TestFunction(Vh_phi)
+    varfM = ufl.inner(trial,test)*ufl.dx       
+    M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM)) #used as set_Operator, so must be matrix
+
+
+    Vh = Vh_phi #dolfinx.fem.function.FunctionSpace
+    # test_obj = Vh._ufl_element.degree() #1
+    # print(test_obj)
+    qdegree = 2*Vh._ufl_element.degree()
+    metadata = {"quadrature_degree" : qdegree}
+
+    # print(type(Vh))
+
+    num_sub_spaces = Vh.num_sub_spaces #0
+    # print(num_sub_spaces)
+
+    element = ufl.FiniteElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default")
+    # element = ufl.VectorElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, dim=num_sub_spaces, quad_scheme="default")
+
+    # Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     
-    # results in serial and in parallel.
-    # print(type(grad_val))
+    Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
+
+    # Qh = dlx.fem.FunctionSpace(msh, ("CG",1))
     
-    # grad_func = hpx.vector2Function(grad,Vh[hpx.STATE])
-    # grad_func.x.scatter_forward()
+    ph = ufl.TrialFunction(Qh)
+    qh = ufl.TestFunction(Qh)
+    Mqh = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.inner(ph,qh)*ufl.dx(metadata=metadata)) ) #petsc4py.PETSc.Mat
 
-        
-
-    # print(rank,":",mfun.x.array.min(),":",mfun.x.array.max())
-
-
-    # L = dlx.fem.form(ufl.derivative(pde_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
-    # grad = dlx.fem.petsc.create_vector(L)
-    # with grad.localForm() as loc_grad:
-    #     loc_grad.set(0)
-    # dlx.fem.petsc.assemble_vector(grad,L)
-    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-            
-    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
+    # print(Mqh.getBlockSizes()) #(1,1)
+    # print(Mqh.getLocalSize()) #(19206, 19206)
     
+    ones = Mqh.createVecRight()
+    ones.set(1.)
+    dMqh = Mqh.createVecLeft()
+    Mqh.assemble()
+    Mqh.mult(ones,dMqh)
+
+    # test_obj = Mqh.createVecLeft()
 
 
+    # if(rank == 0):
+    #     print(dMqh.getArray())
 
-    # print(rank,":",grad_func.x.array.min(),":",grad_func.x.array.max())
+    dMqh.setArray(ones.getArray()/np.sqrt(dMqh.getArray()))
+    
+    # if(rank == 0):
+    #     print(dMqh.getArray())
 
-    # print(rank,":",len(grad_func.x.array) )
-    # 0 : 909
-    # 1 : 885
-    # 2 : 910
-    # 3 : 917
-
-
-    # grad_func.x.scatter_forward()
-        
-
-    #objective: get same results for misfit.grad in serial and parallel.
-
-
-
-
-    # with dlx.io.XDMFFile(msh.comm, "attempt_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(grad_func)
-
-
-    # print(rank,":",grad_val.min(),":",grad_val.max())
+    # if(rank == 0):
+    #     Mqh.getDiagonal(test_obj)
+    #     print(test_obj.getArray())
+    
+    Mqh.setDiagonal(dMqh)
+    
+    # if(rank == 0):
+    #     Mqh.getDiagonal(test_obj)
+    #     print(test_obj.getArray())
     
 
+    # if(rank == 0):
+    #     print(dMqh.getArray())
 
-    #implement the gradient evaluation function before implementing the regularization
+    MixedM = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.inner(ph,test)*ufl.dx(metadata=metadata)))
+    MixedM.assemble()
+    # print(MixedM.getLocalSize())
+    # print(Mqh.getLocalSize())
+    
+    # sqrtM = MixedM.matMult(Mqh)
+    
+    # sqrtM = MixedM.matMult(Mqh,None,None)
+    sqrtM = MixedM.matMult(Mqh)
+    sqrtM.assemble() #may not be needed
 
-    # PRIOR
+    # print(type(dMqh))
 
-    #works as expected
-    # print(rank,":",misfit.cost(x_true))
+    prior = hpx.BiLaplacianPrior(Vh_phi,3.,4.,5.)
 
-    # u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
-    # m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
-    # u_fun.x.scatter_forward()
-    # m_fun.x.scatter_forward()
+    model = hpx.Model(pde, prior, misfit)
+    noise = prior.init_vector("noise")
+    m0 = prior.init_vector(0)
+
+
+    # noise_func 
+    hpx.random.parRandom(comm,1.,noise) #fix this so it uses SeedSequence
+    # print(rank,":",m0.getArray())
+    prior.sample(noise,m0)
+    # print(rank,":",m0.getArray())
+
+
+    eps, err_grad, _ = hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+    # hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+    
+    if(rank == 0):
+        print(eps,'\n')
+        print(err_grad)
+        # scale_val = err_grad[0]/eps[0]
+        # second_val = [value*scale_val for value in eps]
+        # plt.figure()
+        # plt.subplot(121)
+        # plt.loglog(eps, err_grad, "-ob", eps, second_val, "-.k")
+        # plt.title("FD Gradient Check")
+        # plt.show()
+
+
+
+
+    # print(rank,":",err_grad,'\n')
+    # print(err_grad)
+
+    # print(eps,'\n')
+    # print(err_grad)
+
+    #make the log-log plot of the above 2 lists
+    
+    # if(rank == 0):
+        # print("Hello")
+        # plt.figure()
+        # plt.subplot(121)
+        # plt.show()
+    
+    # if rank == 0: 
+
+    # plt.figure()
+    
+    # plt.subplot(121)
+    # plt.show()
+
+
+    # print(rank,":",noise.getArray())
+
+    # self.R = _BilaplacianR(self.A, self.Msolver)      
+    # self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
+    
+    # print(sqrtM.getLocalSize())
+    
+    # print(MixedM.getDiagonal())
+
+    # print(type(MixedM))
+    # print(type(dMqh))
+    # print(rank,":",len(dMqh.getArray()))
+
+    # Mqh.zero()
+
+
+
+
+
+
+
+
+    # print(type(Mqh))
+
+    # one_constant = dlx.fem.Constant(Vh.mesh, petsc4py.PETSc.ScalarType(1.))
+
+    # print(type(Vh_phi))
+    # print(type(Qh))
+    
+    #interpolate 1 over Qh - how to?    
+    
+    # print(Qh)
+
+    # ones = dlx.fem.Function(Qh)
+    # ones.interpolate(lambda x: np.ones(x.shape[1]))
+
+    # ones.interpolate(lambda x: np.full((x.shape[1.) )
+
+    # two_constant = dlx.fem.Constant( Vh.mesh, petsc4py.PETSc.ScalarType(tuple( [1.]*num_sub_spaces) ))
+    # print(two_constant)
+
+    # m_true = dlx.fem.Function(Vh_m)
+    # m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # m_true.x.scatter_forward() 
+
+    # ones = dlx.fem.Function(Qh)
+    # ones.interpolate(lambda x: np.full((x.shape[1],),1.) )
+
+    # print(type(element))
+
+
+    
+    
+    # print(type(Vh_phi))
+    # print(type(Qh))
+
+    # ones.sub(0).interpolate( one_constant, Vh )
+    # ones.interpolate(lambda x: np.full((x.shape[1],),one_constant) )
+    # ones.interpolate(lambda x: np.full((x.shape[1],),1.) )
+
+    # ones.interpolate(lambda x: np.full((x.shape[1],),0.))
+
+    # ones = dl.interpolate(one_constant, Qh).vector()
+    # print(one_constant)
+
+    # print(Vh.mesh.comm)
+
+
+
+
+    # print(type(element))
+
+
+
+    # test_obj = Vh.mesh
+    # test_obj = Vh.mesh.ufl_cell #method
+    # test_obj = Vh.mesh.ufl_cell() #ufl.cell.Cell
+
+
+
+
+    #following 2 lines not needed
+    # num_sub_spaces = Vh.element.num_sub_elements
+    # print(num_sub_spaces)
+
+    # model = model(pde,prior,misfit)
+
+    #how to get the Vh assc with the petsc4py Vec object - for example u_true?
+    #I need it to access the dofmap.index_map_ds to create a vector in the prior.py methods needed.
+
+    #multiplying a petsc4py Mat with a petsc4py Vec
+    # print(type(A_mat))
+    # print(type(u_true))
+
+    
+
+    
+    # print(type(A_mat))
+    # print(A_mat.comm())
+    # help1 = A_mat.createVecLeft()
+    # print(len(help1.getArray()))
+    # print(type(help1))
+
+    # print(A_mat.getSizes())
+
+    
+    # dm = u_true.getDM()
+
+
+    # dm = u_true.getDM()
+    # fs = dlx.cpp.mesh.create_functionspace( dm, )
+
+    # print(type(u_true))
+    # print(u_fun.x.array.min(),":",u_fun.x.array.max())
+
+    # print(rank,":",len(u_fun.x.array))
+
+    # print(rank,":",len(u_true.getArray()))
+
+    # test_obj = u_true.duplicate()
+    # print(rank,":",len(test_obj.getArray()))
+
+    # print(test_obj.getArray())
+
+    # print(type(dm))    
+    # fs = dm.getFunctionSpace()
+
+    # test_obj = dlx.la.create_petsc_vector(Vh[hpx.STATE].dofmap.index_map, Vh[hpx.STATE].dofmap.index_map_bs) 
+    # print(type(u_true))
+
+    # print(type(u_true.comm)) #petsc4py.PETSc.Comm
+    # print(type(comm)) #mpi4py.MPI.Intracomm
+
+
+    # print(test_obj.comm)
+    # print(test_obj)
+    # model.py testing
+    #1. need prior - only have Regularization.py
+
+
+    # test_model = hpx.model(pde,  )
+
+
+    #scaling a petsc4py Vec object
+    # test_vec = pde.generate_state() #petsc4py.PETSc.Vec
+    # test_vec.setArray(1.)
+    # test_vec.scale(4.)
+    # print(test_vec.getArray())
+ 
+
+    #testing value preservation
+    # print(rank,":",u_fun.x.array.min(),":",u_fun.x.array.max())
+    # print(rank,":",m_fun.x.array.min(),":",m_fun.x.array.max())
+    
+
 
     # x_fun = [u_fun, m_fun]
     # x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
-
+    
     # i = 0
-    # # ans = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i])) )
     # L = dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i]))
-
-
-    # ans = dlx.fem.petsc.create_vector(L)
-    # with ans.localForm() as loc_ans:
-    #     loc_ans.set(0)
-    # dlx.fem.petsc.assemble_vector(ans,L)
-    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
- 
-    # msh.comm.allreduce()
-    # ans.scatter_reverse()
-
-    # print(x_true[hpx.STATE].min())
-    # print(x_true[hpx.STATE].max())
-
-    # print(x_true[hpx.PARAMETER].min())
-    # print(x_true[hpx.PARAMETER].max())
-    
-    # ans = misfit.grad(0,x_true)
-
-    u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
-    m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
-    
-    # print(rank,":",len(u_fun.x.array))
-
-    # print(rank,":",u_fun.vector.min())
-    # print(rank,":",u_fun.vector.max())
-
-    # print(rank,":",m_fun.vector.min())
-    # print(rank,":",m_fun.vector.max())
-    
-    u_fun.x.scatter_forward()
-    m_fun.x.scatter_forward()
-
-    x_fun = [u_fun, m_fun]
-    x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
-    
-    i = 0
-    L = dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i]))
-    grad = dlx.fem.petsc.create_vector(L)
-    
-    # print(rank,":",len(np.array(u_fun.x.array)),":",len(np.array(grad)))
-
-    with grad.localForm() as loc_grad:
-        loc_grad.set(0)
-    
-    dlx.fem.petsc.assemble_vector(grad,L)
-    grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-
-    #try to allreduce values in grad for each process to all others?
-    # create new vector of needed size (3287)
-    new_func = dlx.fem.Function(Vh[hpx.STATE])
-
-    ##########################################
-    #works as intended.
-    adj_rhs = dlx.fem.Function(Vh_phi)
-    adj_rhs.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
-    adj_rhs.x.scatter_forward()
-    adj_rhs = adj_rhs.vector
-    adj_true = pde.generate_state()
-    pde.solveAdj(adj_true,x_true,adj_rhs)    
-    x_true[hpx.ADJOINT] = adj_true
-
-    eval_grad = pde.evalGradientParameter(x_true)
-    eval_grad_func = hpx.vector2Function(eval_grad,Vh[hpx.PARAMETER])
-
-    p_fun = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])
-
-    #REGULARIZATION
-    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    # L = dlx.fem.form(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
     # grad = dlx.fem.petsc.create_vector(L)
-    # with grad.localForm() as loc_grad:
-    #     loc_grad.set(0)
-    # dlx.fem.petsc.assemble_vector(grad,L)
-    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
    
-
-    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
-
-    mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    # L = dlx.fem.form(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])))
-    
-    #testing the Regularization.py file functions
-    test_func_handler = H1TikhonvFunctional(3.,4.,5.)
-    test_var_reg = hpx.VariationalRegularization(msh,Vh,test_func_handler,False)
-
-    test_cost = test_var_reg.cost(x_true[hpx.PARAMETER])
-    
-    # print(rank,":",test_cost)
-
-    test_grad = test_var_reg.grad(x_true[hpx.PARAMETER])
-    test_grad_func = hpx.vector2Function(test_grad,Vh[hpx.PARAMETER])
-
-    #setLinearizationPoint
-    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    # L = ufl.derivative(ufl.derivative(test_func_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
-    
-    # print(type(L))
-
-    #following line gives error - assemble Hessian operator in a self.R variable
-    # R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
-    
-    #impementing Rsolver as from prior.py in Hippylib (_BiLaplacianRsolver):
-    
-    # Asolver = PETScKrylovSolver(Vh[hpx.PARAMETER].mesh().mpi_comm(), "cg", amg_method())
-    
-    max_iter = 100
-    rel_tol = 1e-6
-
-    Asolver = petsc4py.PETSc.KSP().create()
-    Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-    Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
-    Asolver.setIterationNumber(max_iter)
-    Asolver.setTolerances(rtol=rel_tol)
-    Asolver.setErrorIfNotConverged(True)
-    Asolver.setInitialGuessNonzero(False)
-
-    mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-
-    test_func_handler = H1TikhonvFunctional(3.,4.,5.)
-
-    # x = petsc4py.PETSc.Vec
-
-    test_obj = dlx.la.create_petsc_vector(Vh[hpx.STATE].dofmap.index_map, Vh[hpx.STATE].dofmap.index_map_bs) 
-    #petsc4py.PETSc.Vec
-
-    #sorting out the vec2func thing - 
-
-
-
-    # print('hello from rank',rank,'\n')
-
-    # L = ufl.derivative(ufl.derivative(test_func_handler(mfun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
-
-
-    # print(type(Asolver))
-
-    # Asolver = 
-    # Asolver.set_operator(A)
-    # Asolver.parameters["maximum_iterations"] = max_iter
-    # Asolver.parameters["relative_tolerance"] = rel_tol
-    # Asolver.parameters["error_on_nonconvergence"] = True
-    # Asolver.parameters["nonzero_initial_guess"] = False
-
-
-
-
-    # R.assemble()
-    
-    # test_Rsolver = petsc4py.PETSc.KSP().create()
-    # test_Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-    # test_Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
-
-    # test_Rsolver.setOperators(R)
-
-
-
-    # with dlx.io.XDMFFile(msh.comm, "attempt_reg_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-        # file.write_mesh(msh)
-        # file.write_function(test_grad_func)
-
-
-
-    # print(type(x_true[hpx.PARAMETER]))
-
-    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-        
-    # print(type(mfun))
-
-    # print(rank, ":" , np.array(x_true[hpx.PARAMETER].getArray()).min(), ":", np.array(x_true[hpx.PARAMETER].getArray()).max()   )   #loc size that each rank owns  
-
-
-    # print(type(m_true))
-
-
-    # test_obj = pde_handler(u_fun,mfun,p_fun)
-    # print(type(test_obj))
-
-    # L = ufl.derivative(ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER])), mfun, ufl.TestFunction(Vh[hpx.PARAMETER]))
-    # L = ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER]))
-    # test_Rsolver = petsc4py.PETSc.KSP().create()
-    # test_Rsolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-    # test_Rsolver.setType(petsc4py.PETSc.KSP.Type.CG)
-    
-    # test_Rsolver.setPC("gamg")
-    # test_Rsolver.setType("CG")
-
-    # print(L)
-
-    # R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
-
-    # test_obj = dlx.fem.form(L)
-
-    # R = dlx.fem.petsc.assemble_matrix( dlx.fem.form(L) )
-
-
-    # L2 =  dlx.fem.form(   ufl.derivative(pde_handler(u_fun,mfun,p_fun),mfun,ufl.TestFunction(Vh[hpx.PARAMETER]))    )
-    
-
-    #need to call sym differentiation twice
-
-    
-    # grad = dlx.fem.petsc.create_vector(L)
     # with grad.localForm() as loc_grad:
     #     loc_grad.set(0)
+    
     # dlx.fem.petsc.assemble_vector(grad,L)
     # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-    # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
     
-    # print(rank, ":" , np.array(grad.getArray()).min(), ":", np.array(grad.getArray()).max()   )   #loc size that each rank owns  
+    # new_func = dlx.fem.Function(Vh[hpx.STATE])
 
+    # ##########################################
+    # #works as intended.
+    # adj_rhs = dlx.fem.Function(Vh_phi)
+    # adj_rhs.interpolate( lambda x: np.log(0.1) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < .5) ) )
+    # adj_rhs.x.scatter_forward()
+    # adj_rhs = adj_rhs.vector
+    # adj_true = pde.generate_state()
+    # pde.solveAdj(adj_true,x_true,adj_rhs)    
+    # x_true[hpx.ADJOINT] = adj_true
 
+    # eval_grad = pde.evalGradientParameter(x_true)
+    # eval_grad_func = hpx.vector2Function(eval_grad,Vh[hpx.PARAMETER])
 
+    # p_fun = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])
 
+    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
 
+    # test_func_handler = H1TikhonvFunctional(3.,4.,5.)
+    # test_var_reg = hpx.VariationalRegularization(msh,Vh,test_func_handler,False)
 
-    #works correctly - in serial and parallel
-    # with dlx.io.XDMFFile(msh.comm, "attempt_eval_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(eval_grad_func)
+    # test_cost = test_var_reg.cost(x_true[hpx.PARAMETER])
 
+    # test_grad = test_var_reg.grad(x_true[hpx.PARAMETER])
+    # test_grad_func = hpx.vector2Function(test_grad,Vh[hpx.PARAMETER])
 
+    # max_iter = 100
+    # rel_tol = 1e-6
 
+    # Asolver = petsc4py.PETSc.KSP().create()
+    # Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+    # Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
+    # Asolver.setIterationNumber(max_iter)
+    # Asolver.setTolerances(rtol=rel_tol)
+    # Asolver.setErrorIfNotConverged(True)
+    # Asolver.setInitialGuessNonzero(False)
 
-    # print(rank,":",eval_grad.array.min(),":",eval_grad.array.max())
+    # mfun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
 
+    # test_func_handler = H1TikhonvFunctional(3.,4.,5.)
 
-    # print(min(np.array(eval_grad)), ":", max(np.array(eval_grad)) )
-    
-    # adj_true_func = hpx.vector2Function(adj_true,Vh[hpx.ADJOINT])  
-
-    # u_fun  = hpx.vector2Function(x_true[hpx.STATE],Vh[hpx.STATE])
-    # m_fun  = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    # p_fun  = hpx.vector2Function(x_true[hpx.ADJOINT],Vh[hpx.ADJOINT])
-
-    # dm = ufl.TestFunction(Vh[hpx.PARAMETER])
-    # res_form = pde_handler(u_fun, m_fun, p_fun)
-
-    # eval_grad = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m_fun, dm)))
-
-    # # print(min(np.array(eval_grad)), ":", max(np.array(eval_grad)) )
-    
-    
-
-    #adjoint made; test evalGradientParameter
-
-    # min_val = msh.comm.allreduce(min(p_fun.x.array), op=MPI.MIN)
-    # max_val = msh.comm.allreduce(max(p_fun.x.array), op=MPI.MAX)
-
-    # if msh.comm.rank == 0:
-    #     print(min_val, max_val)    
-
-    # min_val = msh.comm.allreduce(min(eval_grad_func.x.array), op=MPI.MIN)
-    # max_val = msh.comm.allreduce(max(eval_grad_func.x.array), op=MPI.MAX)
-
-    # if msh.comm.rank == 0:
-    #     print(min_val, max_val)    
-
-    # print(rank,":",x_true[hpx.STATE].array.min(),":",x_true[hpx.STATE].array.max())
-    # print(rank,":",x_true[hpx.PARAMETER].array.min(),":",x_true[hpx.PARAMETER].array.max())    
-
-    # adj_fun_true = hpx.vector2Function(x_true[hpx.ADJOINT],Vh[hpx.ADJOINT])
-    # adj_fun_true.x.scatter_forward()
-
-
-    #works as intended in both serial and parallel
-    # with dlx.io.XDMFFile(msh.comm, "attempt_adjoint_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(adj_true_func)
-
-    # print(rank,":",min(adj_fun_true.x.array),":",max(adj_fun_true.x.array))
-
-    # print(rank,":",min(adj_true.array),":",max(adj_true.array))
-    
-    # print(rank,":",min(ans.array))
-    # print(rank,":",max(ans.array))
-
-    # ans_func = hpx.vector2Function(ans,Vh[hpx.STATE])
-
-    # with dlx.io.XDMFFile(msh.comm, "attempt_misfit_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(ans_func)
-
-    # print(rank,":",min(ans_func.x.array))
-    # print(rank,":",max(ans_func.x.array))
-
-    # print(rank,":",min(ans.array))
-    # print(rank,":",max(ans.array))
-
-    # print(dlx.fem.form(L).function_spaces[0].dofmap.index_map)
-
-    # ans = dlx.fem.petsc.assemble_vector(dlx.fem.form(L))    
-    # ans.scatter_reverse
-    # ans.assemble()
-
-    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-    # ans.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-    
-    # ans.assemble()
-    
-    # ans = dlx.fem.petsc.assemble_vector(dlx.fem.form(L) )
-    # ans = dlx.fem.petsc.assemble_vector( L )
-
-    # with ans.localForm() as ans_local:
-    #     print(ans_local.array)
-
-
-    # ans = dlx.fem.assemble_vector(dlx.fem.form(L)) #dolfinx.la.Vector
-    # ans.scatter_reverse
-
-    # print(rank,":",len(ans.array))
-
-    # print(rank,":",ans.get_local())
-    
-    # test_obj = ans.get_local()
-    # print("hello")
-    # print(rank,":",ans.get_local())
-    # print(ans.array[:].min())
-    # print(ans.array[:].max())
-
-    # misfit_grad_func = dlx.fem.Function(Vh[hpx.STATE])
-
-    # print(rank,":",len(ans.array),":",len(misfit_grad_func.x.array[:]))
-
-    # misfit_grad_func.x.array[:] = ans.array
-
-    # with ans.localForm() as ans_local:
-    #     print(rank,":",ans_local.array.max())
-
-    # print(type(ans))
-    # ans.assemble()
-
-    # misfit_grad_func = hpx.vector2Function(ans,Vh[hpx.STATE])
-
-    # misfit_grad_func.x.scatter_forward()
-
-    # min_val = msh.comm.allreduce(min(misfit_grad_func.x.array), op=MPI.MIN)
-    # max_val = msh.comm.allreduce(max(misfit_grad_func.x.array), op=MPI.MAX)
-
-
-    # min_val = msh.comm.allreduce(min(m_fun.x.array), op=MPI.MIN)
-    # max_val = msh.comm.allreduce(max(m_fun.x.array), op=MPI.MAX)
-
-    # if msh.comm.rank == 0:
-    #     print(min_val, max_val)    
-
-
-    # with dlx.io.XDMFFile(msh.comm, "attempt_misfit_grad_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(misfit_grad_func)
-
-
-    # ans  =  ufl.derivative( misfit_form(*x_fun), x_fun[i], x_test[i])
-    
-    # print('hello')
-
-
- 
-    # with dlx.io.XDMFFile(msh.comm, "attempt_project_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(d)
+    # test_obj = dlx.la.create_petsc_vector(Vh[hpx.STATE].dofmap.index_map, Vh[hpx.STATE].dofmap.index_map_bs) 
 
 
 if __name__ == "__main__":
