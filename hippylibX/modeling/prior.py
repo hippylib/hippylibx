@@ -21,8 +21,9 @@ import math
 from .variables import STATE, PARAMETER, ADJOINT
 import numbers
 import petsc4py
+from mpi4py import MPI
 
-
+# self.R = _BilaplacianR(self.A, self.Msolver)      
 class _BilaplacianR:
     """
     Operator that represent the action of the regularization/precision matrix
@@ -58,11 +59,10 @@ class _BilaplacianR:
         # return self.A.mpi_comm()
         return self.A.comm
         
-        
+    # self.R.mult(d,Rd)
     def mult(self,x,y):
         self.A.mult(x,self.help1)
         # self.A.mult(x, self.help1)
-
         # self.Msolver.solve(self.help2, self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
@@ -128,6 +128,7 @@ class test_prior:
         
         varfM = ufl.inner(trial,test)*ufl.dx       
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
+        self.M.assemble()
         # self.Msolver = PETScKrylovSolver(self.Vh.mesh().mpi_comm(), "cg", "jacobi")
         self.Msolver = petsc4py.PETSc.KSP().create()
         self.Msolver.getPC().setType(petsc4py.PETSc.PC.Type.JACOBI)
@@ -144,6 +145,7 @@ class test_prior:
         # self.Msolver.parameters["nonzero_initial_guess"] = False
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
+        self.A.assemble()
         self.Asolver = petsc4py.PETSc.KSP().create()
         self.Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
         self.Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
@@ -273,6 +275,29 @@ class test_prior:
         
         if add_mean:
             s.axpy(1., self.mean)
+
+
+    #from Class _Prior that SqrtPrecisionPDE_Prior derives methods from
+    #prior.cost is used in modelVerify in model.cost
+    def cost(self,m):
+        d = self.mean.copy()
+        d.axpy(-1., m)
+
+        # Rd = dl.Vector(self.R.mpi_comm())
+        # self.init_vector(Rd,0)    
+        # Rd = self.R.createVecLeft()
+
+        Rd = self.init_vector(0)
+        self.R.mult(d,Rd)
+
+        # return .5*Rd.inner(d)
+        # return .5*Rd.dot(d)
+        loc_cost = .5*Rd.dot(d)
+        
+        return self.Vh.mesh.comm.allreduce(loc_cost, op=MPI.SUM )
+
+        
+    
 
 
 def BiLaplacianPrior(Vh, gamma, delta, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False):
