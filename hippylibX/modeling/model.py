@@ -152,21 +152,27 @@ class Model:
         tmp = self.generate_vector(PARAMETER)
         # self.problem.evalGradientParameter(x, mg)
         mg = self.problem.evalGradientParameter(x)
-        
-        # self.misfit.grad(PARAMETER,x,tmp)
-        tmp = self.misfit.grad(PARAMETER,x)
-        
+        # print(mg.min(),":",mg.max())
+        # # self.misfit.grad(PARAMETER,x,tmp)
+        tmp = self.misfit.grad(PARAMETER,x)        
+        # print(tmp.min(),":",tmp.max())
         mg.axpy(1., tmp)
+        # print(mg.min(),":",mg.max())
+
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
             mg.axpy(1., tmp)
         
-        self.prior.Msolver.solve(tmp, mg)
+        # self.prior.Msolver.solve(tmp, mg)
+        # print(tmp.min(),":",tmp.max()) #(114, -13.377925313892392) : (978, 509353.8643973592)
+    
+        self.prior.Msolver.solve(mg, tmp)
+        # print(tmp.min(),":",tmp.max()) #(3085, -4490252.342492111) : (7, 23510578.715353236)
         
         #self.prior.Rsolver.solve(tmp, mg)
         # return math.sqrt(mg.inner(tmp))
-    
-        return math.sqrt(mg.dot(tmp))
+        # print(math.sqrt(mg.dot(tmp))) #11972566.111908454, #4889042.271239927
+        return math.sqrt(mg.dot(tmp)), mg
     
         
     
