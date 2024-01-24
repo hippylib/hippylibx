@@ -129,6 +129,7 @@ class test_prior:
         varfM = ufl.inner(trial,test)*ufl.dx       
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         self.M.assemble()
+
         # self.Msolver = PETScKrylovSolver(self.Vh.mesh().mpi_comm(), "cg", "jacobi")
         self.Msolver = petsc4py.PETSc.KSP().create()
         self.Msolver.getPC().setType(petsc4py.PETSc.PC.Type.JACOBI)
@@ -197,7 +198,8 @@ class test_prior:
         
         # Mqh = dl.assemble(ufl.inner(ph,qh)*ufl.dx(metadata=metadata))
         Mqh = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.inner(ph,qh)*ufl.dx(metadata=metadata)) )
-
+        Mqh.assemble()
+    
         #one_constant not needed
         # if num_sub_spaces <= 1:
         #     # one_constant = dl.Constant(1.)
@@ -216,7 +218,6 @@ class test_prior:
         ones = Mqh.createVecRight()
         ones.set(1.)
         dMqh = Mqh.createVecLeft()
-        Mqh.assemble()
         Mqh.mult(ones,dMqh)
         dMqh.setArray(ones.getArray()/np.sqrt(dMqh.getArray()))
         Mqh.setDiagonal(dMqh)
@@ -226,6 +227,18 @@ class test_prior:
         MixedM.assemble()
 
         self.sqrtM = MixedM.matMult(Mqh)
+
+        # nrows, ncols = self.sqrtM.getSize()
+
+        # dense_array = np.zeros((nrows, ncols), dtype=float)        
+        # row_indices, col_indices, csr_values = self.sqrtM.getValuesCSR()
+
+        # for i in range(nrows):
+        #     start = row_indices[i]
+        #     end = row_indices[i + 1]
+        #     dense_array[i, col_indices[start:end]] = csr_values[start:end]
+
+        # print(np.max(dense_array),np.min(dense_array))
 
         # dl.parameters["form_compiler"]["quadrature_degree"] = old_qr
         # dl.parameters["form_compiler"]["representation"] = representation_old
@@ -242,14 +255,14 @@ class test_prior:
             self.mean = self.init_vector(0)
 
     # def init_vector(self,x,dim):
-    def init_vector(self,dim):
-            
+    def init_vector(self,dim):            
+        
         """
         Inizialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
-
         If :code:`dim == "noise"` inizialize :code:`x` to be compatible with the size of
         white noise used for sampling.
         """
+
         if dim == "noise":
             # self.sqrtM.init_vector(x, 1)
             return self.sqrtM.createVecRight()
@@ -272,7 +285,6 @@ class test_prior:
         rhs = self.sqrtM*noise
         # self.Asolver.solve(s, rhs)
         self.Asolver.solve(rhs,s)
-        
         if add_mean:
             s.axpy(1., self.mean)
 
@@ -293,12 +305,8 @@ class test_prior:
         # return .5*Rd.inner(d)
         # return .5*Rd.dot(d)
         loc_cost = .5*Rd.dot(d)
-        
+
         return self.Vh.mesh.comm.allreduce(loc_cost, op=MPI.SUM )
-
-        
-    
-
 
 def BiLaplacianPrior(Vh, gamma, delta, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False):
     """
