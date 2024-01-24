@@ -12,6 +12,7 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     It will produce two loglog plots of the finite difference checks for the gradient and for the Hessian.
     It will also check for symmetry of the Hessian.
     """
+    # print(comm.rank,":",verbose)
 
     if misfit_only:
         index = 2
@@ -21,19 +22,31 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     h = model.generate_vector(PARAMETER)
     # parRandom.normal(1., h)
     parRandom(comm, 1., h) #supply comm to this method
-
+    
+    # print(comm.rank,":",h.getArray())
+    
     x = model.generate_vector()
     x[PARAMETER] = m0
+    
     model.solveFwd(x[STATE], x)
+    
+    # print(comm.rank,":",x[STATE].min(),":",x[STATE].max())
+    
     model.solveAdj(x[ADJOINT], x)
+
+    # print(comm.rank,":",x[ADJOINT].getArray())
+    
     cx = model.cost(x)
     
     grad_x = model.generate_vector(PARAMETER)
-    model.evalGradientParameter(x, grad_x,misfit_only=misfit_only)
+    _,grad_x = model.evalGradientParameter(x, grad_x,misfit_only=misfit_only)
     # grad_xh = grad_x.inner( h )
     
+    # print(grad_x.min(),":",grad_x.max()) #(2992, -4729.582595240499) : (978, 162508.4367134074)
+
     grad_xh = grad_x.dot( h )
-    
+    # print(grad_xh) #27663.37064562618
+
     # model.setPointForHessianEvaluations(x)
     # H = ReducedHessian(model, misfit_only=misfit_only)
     # Hh = model.generate_vector(PARAMETER)
@@ -53,6 +66,7 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     # print(comm.rank,":",m0.min(),":",m0.max())
 
     # for i in range(n_eps):
+    
     for i in range(n_eps):
         my_eps = eps[i]
         
@@ -74,9 +88,10 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
         # print(comm.rank,":",x_plus[PARAMETER].min(),":",x_plus[PARAMETER].max())
         
         dc = model.cost(x_plus)[index] - cx[index]
+        
         err_grad[i] = abs(dc/my_eps - grad_xh)
         
-    #     # Check the Hessian
+        # Check the Hessian
         grad_xplus = model.generate_vector(PARAMETER)
 
     #    # model.evalGradientParameter(x_plus, grad_xplus,misfit_only=misfit_only)
@@ -93,7 +108,6 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
         # print(err_grad)
     # print(comm.rank, ":" , "hello-1")
     
-
     # if verbose: #true only for rank == 0
     #     modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H)
 
