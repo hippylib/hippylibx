@@ -88,7 +88,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     pde_handler = DiffusionApproximation(D, u0, ufl.ds)     #returns a ufl form
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
 
-
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
@@ -108,6 +107,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     x_true = [u_true, m_true, None]     #list of petsc vectors    
     A_mat = pde.solveFwd(u_true, x_true) #petsc4py.PETSc.Vec
 
+    # print(u_true.min(),":",u_true.max()) #same as fenics
+
     # print(m_true.min())
     # print(m_true.max())
     
@@ -116,7 +117,12 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     x_true[hpx.PARAMETER] = m_fun_true.vector
 
     m_true = x_true[hpx.PARAMETER]
-    
+
+    # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
+    # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
+
+    # print(m_true.min(),":",m_true.max()) #same as fenics
+
     # print(m_true.min())
     # print(m_true.max())
     
@@ -130,11 +136,16 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # hpx.random.parRandom(comm,np.sqrt(noise_variance),d) #fix this so it uses SeedSequence    
     # print(rank,":",d.x.array[:])
 
+    # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
+    # d.x.scatter_forward()
+    # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
+
+    #values from normal dist have to be added to d
     hpx.random.parRandom(comm,np.sqrt(noise_variance),d.vector) #fix this so it uses SeedSequence    
     # print(rank,":",d.x.array[:])
     
     d.x.scatter_forward()
-
+    # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
 
     # print(rank,":",d.x.array.min(),":",d.x.array.max())
 
@@ -143,6 +154,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # # PRIOR
     grad = misfit.grad(0,x_true) #different plots in serial and parallel
+    # print(grad.getArray().min(),":",grad.getArray().max())
+
     u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
     m_fun = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
 
@@ -239,28 +252,71 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # print(type(dMqh))
 
-    prior = hpx.BiLaplacianPrior(Vh_phi,3.,4.,5.)
+    # prior = hpx.BiLaplacianPrior(Vh_phi,3.,4.,5.)
+    prior = hpx.BiLaplacianPrior(Vh_phi,prior_param["gamma"],prior_param["delta"])
 
+
+    # test_obj = prior.A
+    # test_obj = prior.A.getDenseArray()
+    
+    ########################################   
+    # nrows, ncols = prior.M.getSize()
+
+    # dense_array = np.zeros((nrows, ncols), dtype=float)        
+    # row_indices, col_indices, csr_values = prior.M.getValuesCSR()
+
+    # for i in range(nrows):
+    #     start = row_indices[i]
+    #     end = row_indices[i + 1]
+    #     dense_array[i, col_indices[start:end]] = csr_values[start:end]
+
+    # print(np.max(dense_array),np.min(dense_array))
+    ########################################   
+    
     model = hpx.Model(pde, prior, misfit)
     noise = prior.init_vector("noise")
+
     m0 = prior.init_vector(0)
 
-
-    # noise_func 
+    # # # noise_func 
+    #values from normal distribution have to be inserted in noise
     hpx.random.parRandom(comm,1.,noise) #fix this so it uses SeedSequence
-    # print(rank,":",m0.getArray())
-    prior.sample(noise,m0)
-    # print(rank,":",m0.getArray())
+    
+    # # # print(m0.getArray().min(),":",m0.getArray().max())
+    
+    # # # print(rank,":",m0.getArray())
+    
+    # # print(m0.getArray().min(),":",m0.getArray().max())
 
+    prior.sample(noise,m0)
+
+    # print(m0.getArray().min(),":",m0.getArray().max())
+    
+    # # print(m0.getArray().min(),":",m0.getArray().max())
+    # # print(m0.getLocalSize())
+    # # print(rank,":",m0.getArray())
 
     eps, err_grad, _ = hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+
+    # print(rank,":",err_grad,'\n')
+    print(err_grad)
     # hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
     
-    if(rank == 0):
-        print(eps,'\n')
-        print(err_grad)
+    # if(rank == 0):
+
         # scale_val = err_grad[0]/eps[0]
         # second_val = [value*scale_val for value in eps]
+        # plt.figure()
+        # plt.subplot(121)
+        # plt.loglog(eps, err_grad, "-ob", eps, second_val, "-.k")
+        # plt.title("FD Gradient Check")
+        # plt.show()
+
+        # print(eps,'\n')
+        # print(err_grad)
+        # scale_val = err_grad[0]/eps[0]
+        # second_val = [value*scale_val for value in eps]
+
         # plt.figure()
         # plt.subplot(121)
         # plt.loglog(eps, err_grad, "-ob", eps, second_val, "-.k")
