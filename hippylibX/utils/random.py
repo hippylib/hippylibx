@@ -27,7 +27,6 @@ def parRandom(comm,noise_variance,d):
 
     loc_size = glb_num_vals//nproc
     num_procs_type1 = glb_num_vals%nproc 
-    
 
     if(rank < num_procs_type1):
         loc_size += 1
