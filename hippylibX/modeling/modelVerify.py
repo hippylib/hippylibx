@@ -39,7 +39,13 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     cx = model.cost(x)
     
     grad_x = model.generate_vector(PARAMETER)
-    _,grad_x = model.evalGradientParameter(x, grad_x,misfit_only=misfit_only)
+
+
+    # print(x[STATE].min(),":",x[STATE].max())
+    # print(x[PARAMETER].min(),":",x[PARAMETER].max())
+
+    _,grad_x = model.evalGradientParameter(x,misfit_only=misfit_only)
+    
     # grad_xh = grad_x.inner( h )
     
     # print(grad_x.min(),":",grad_x.max()) #(2992, -4729.582595240499) : (978, 162508.4367134074)
