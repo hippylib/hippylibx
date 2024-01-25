@@ -139,7 +139,8 @@ class Model:
         # rhs *= -1.
         self.problem.solveAdj(out, x, rhs)
     
-    def evalGradientParameter(self,x, mg, misfit_only=False):
+    # def evalGradientParameter(self,x, mg, misfit_only=False):
+    def evalGradientParameter(self,x, misfit_only=False):
         """
         Evaluate the gradient for the variational parameter equation at the point :code:`x=[u,m,p]`.
 
