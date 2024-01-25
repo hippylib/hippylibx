@@ -121,28 +121,60 @@ class PDEVariationalProblem:
             
             return A
          
+
+    # pde.solveAdj(adj_vec, x_true, adj_rhs)
     def solveAdj(self, adj, x, adj_rhs):
 
         """ Solve the linear adjoint problem:
         Given :math:`m, u`; find :math:`p` such that
         .. math:: \\delta_u F(u, m, p;\\hat{u}) = 0, \\quad \\forall \\hat{u}.
         """
+
         self.n_calls["adjoint"] += 1
         if self.solver is None:
             self.solver = self._createLUSolver()
 
+        u = vector2Function(x[STATE], self.Vh[STATE])
+        m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
         p = dlx.fem.Function(self.Vh[ADJOINT])
         du = ufl.TestFunction(self.Vh[STATE])
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
-        x_state_fun = vector2Function(x[STATE],self.Vh[STATE])
-        varf = self.varf_handler(x_state_fun, vector2Function(x[PARAMETER],self.Vh[PARAMETER]), p) 
-        adj_form = ufl.derivative(ufl.derivative(varf, x_state_fun, du), p, dp)
+        varf = self.varf_handler(u, m, p)
+        adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
+        print(adj_rhs.min(),":",adj_rhs.max()) #-1.0788096613719298, 1.9211903386280702
+        Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
+        print(adj_rhs.min(),":",adj_rhs.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
 
-        Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs=self.bc0)
         Aadj.assemble()
-        self.solver.setOperators(Aadj)
 
-        self.solver.solve(adj_rhs,adj)
+        self.solver.setOperators(Aadj)
+        
+
+        self.solver.solve(adj_rhs, adj)
+
+        # print(adj_rhs.min(),":",adj_rhs.max())
+
+        ######################################
+        # p = dlx.fem.Function(self.Vh[ADJOINT])
+        # du = ufl.TestFunction(self.Vh[STATE])
+        # dp = ufl.TrialFunction(self.Vh[ADJOINT])
+        # x_state_fun = vector2Function(x[STATE],self.Vh[STATE])
+        # varf = self.varf_handler(x_state_fun, vector2Function(x[PARAMETER],self.Vh[PARAMETER]), p) 
+        # adj_form = ufl.derivative(ufl.derivative(varf, x_state_fun, du), p, dp)
+
+        # Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs=self.bc0)
+        # Aadj.assemble()
+        # self.solver.setOperators(Aadj)
+
+        # #b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form)) #petsc4py.PETSc.Vec
+
+        # dlx.fem.petsc.apply_lifting(adj_rhs,[dlx.fem.form(adj_form)],[self.bc0])
+        # adj_rhs.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+
+        # self.solver.solve(adj_rhs,adj)
+        # ######################################
+        
+
 
     # self.problem.evalGradientParameter(x, mg)
         
