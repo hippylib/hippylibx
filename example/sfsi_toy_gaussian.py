@@ -107,6 +107,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     x_true = [u_true, m_true, None]     #list of petsc vectors    
     A_mat = pde.solveFwd(u_true, x_true) #petsc4py.PETSc.Vec
 
+    # u_true_func = hpx.vector2Function(u_true,Vh[hpx.STATE])
+    # print(rank,":",u_true_func.x.array[:].min(),":",u_true_func.x.array[:].max())
+
     # print(u_true.min(),":",u_true.max()) #same as fenics
 
     # print(m_true.min())
@@ -118,8 +121,79 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     m_true = x_true[hpx.PARAMETER]
 
+    adj_vec = pde.generate_state()
+    #a test vector
+    adj_rhs = pde.generate_state()
+
+    # hpx.random.parRandom(comm,np.sqrt(noise_variance),adj_rhs) #fix this so it uses SeedSequence    
+    #adj_rhs needs to consistantly have the same values when using different number of 
+    #processes, so interpolate using expressions
+    
+    adj_rhs = dlx.fem.Function(Vh_m)
+    adj_rhs.interpolate(lambda x: np.log(0.34) + 3.*( ( ( (x[0]-1.5)*(x[0]-1.5) + (x[1]-1.5)*(x[1]-1.5) ) < 0.75) )) # <class 'dolfinx.fem.function.Function'>
+    adj_rhs.x.scatter_forward() 
+    adj_rhs = adj_rhs.vector
+
+    # print(rank,":",adj_rhs.min(),":",adj_rhs.max())            
+    # print(adj_rhs.min(),":",adj_rhs.max())
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())
+
+    pde.solveAdj(adj_vec, x_true, adj_rhs)
+
+    # u = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
+    # m = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
+    # p = dlx.fem.Function(Vh[hpx.ADJOINT])
+    # du = ufl.TestFunction(Vh[hpx.STATE])
+    # dp = ufl.TrialFunction(Vh[hpx.ADJOINT])
+    # varf = pde_handler(u, m, p)
+    # adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
+    # print(adj_rhs.min(),":",adj_rhs.max()) #-1.0788096613719298, 1.9211903386280702
+    # Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = [])
+    # print(adj_rhs.min(),":",adj_rhs.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
+    # Aadj.assemble()
+   
+    # self.solver.setOperators(Aadj)
+    
+
+    # self.solver.solve(adj_rhs, adj)
+
+
+
+
+    # print(rank,":",adj_rhs.min(),":",adj_rhs.max())            
+    
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())
+    
+    # print(type(adj_vec))
+    # print(rank,":",adj_rhs.min(),":",adj_rhs.max())
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())
+    # print(rank,":",adj_vec.getLocalSize())
+
+    #gather the adj_vec computed by each process to 0 and see if that vector is
+    #same as the vector generated using mpirun -n 1
+
+    #gathering the adj_vec to process 0:
+    # adj_result = comm.gather(adj_vec,0 )
+    #plots for adj_vec - in serial and parallel
+
+    # adj_vec_func = hpx.vector2Function(adj_vec,Vh[hpx.ADJOINT])    
+    # print(rank,":",adj_vec_func.x.array[:].min(),":",adj_vec_func.x.array[:].max())
+
+
+    #different values in serial and parallel
+    # with dlx.io.XDMFFile(msh.comm, "attempt_adj_vec_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(adj_vec_func)
+
+
+    # pde_grad = pde.evalGradientParameter(x_true)
+
     # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
     # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
+
+    # grad = pde.evalGradientParameter(x_true)
+    # print(rank,":",grad.min(),":",grad.max())
+
 
     # print(m_true.min(),":",m_true.max()) #same as fenics
 
@@ -133,15 +207,17 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun * ufl.exp(m_fun)
     hpx.projection(expr,d)
+    
     # hpx.random.parRandom(comm,np.sqrt(noise_variance),d) #fix this so it uses SeedSequence    
     # print(rank,":",d.x.array[:])
-
     # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
     # d.x.scatter_forward()
     # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
 
     #values from normal dist have to be added to d
+    
     hpx.random.parRandom(comm,np.sqrt(noise_variance),d.vector) #fix this so it uses SeedSequence    
+    
     # print(rank,":",d.x.array[:])
     
     d.x.scatter_forward()
@@ -180,7 +256,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     varfM = ufl.inner(trial,test)*ufl.dx       
     M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM)) #used as set_Operator, so must be matrix
 
-
     Vh = Vh_phi #dolfinx.fem.function.FunctionSpace
     # test_obj = Vh._ufl_element.degree() #1
     # print(test_obj)
@@ -193,8 +268,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(num_sub_spaces)
 
     element = ufl.FiniteElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default")
-    # element = ufl.VectorElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, dim=num_sub_spaces, quad_scheme="default")
 
+    # element = ufl.VectorElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, dim=num_sub_spaces, quad_scheme="default")
     # Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     
     Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
@@ -241,6 +316,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     MixedM = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.inner(ph,test)*ufl.dx(metadata=metadata)))
     MixedM.assemble()
+
     # print(MixedM.getLocalSize())
     # print(Mqh.getLocalSize())
     
@@ -254,7 +330,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # prior = hpx.BiLaplacianPrior(Vh_phi,3.,4.,5.)
     prior = hpx.BiLaplacianPrior(Vh_phi,prior_param["gamma"],prior_param["delta"])
-
 
     # test_obj = prior.A
     # test_obj = prior.A.getDenseArray()
@@ -283,9 +358,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     hpx.random.parRandom(comm,1.,noise) #fix this so it uses SeedSequence
     
     # # # print(m0.getArray().min(),":",m0.getArray().max())
-    
     # # # print(rank,":",m0.getArray())
-    
     # # print(m0.getArray().min(),":",m0.getArray().max())
 
     prior.sample(noise,m0)
@@ -296,10 +369,12 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # # print(m0.getLocalSize())
     # # print(rank,":",m0.getArray())
 
-    eps, err_grad, _ = hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+
+    # eps, err_grad, _ = hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+
 
     # print(rank,":",err_grad,'\n')
-    print(err_grad)
+    # print(err_grad)
     # hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
     
     # if(rank == 0):
@@ -322,9 +397,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
         # plt.loglog(eps, err_grad, "-ob", eps, second_val, "-.k")
         # plt.title("FD Gradient Check")
         # plt.show()
-
-
-
 
     # print(rank,":",err_grad,'\n')
     # print(err_grad)
@@ -363,13 +435,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # Mqh.zero()
 
-
-
-
-
-
-
-
     # print(type(Mqh))
 
     # one_constant = dlx.fem.Constant(Vh.mesh, petsc4py.PETSc.ScalarType(1.))
@@ -397,9 +462,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # ones.interpolate(lambda x: np.full((x.shape[1],),1.) )
 
     # print(type(element))
-
-
-    
     
     # print(type(Vh_phi))
     # print(type(Qh))
@@ -415,19 +477,11 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # print(Vh.mesh.comm)
 
-
-
-
     # print(type(element))
-
-
 
     # test_obj = Vh.mesh
     # test_obj = Vh.mesh.ufl_cell #method
     # test_obj = Vh.mesh.ufl_cell() #ufl.cell.Cell
-
-
-
 
     #following 2 lines not needed
     # num_sub_spaces = Vh.element.num_sub_elements
@@ -562,8 +616,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # test_obj = dlx.la.create_petsc_vector(Vh[hpx.STATE].dofmap.index_map, Vh[hpx.STATE].dofmap.index_map_bs) 
 
 
-if __name__ == "__main__":
-    
+if __name__ == "__main__":    
     nx = 64
     ny = 64
     noise_variance = 1e-6
