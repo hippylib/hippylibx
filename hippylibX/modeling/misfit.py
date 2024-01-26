@@ -62,7 +62,7 @@ class NonGaussianContinuousMisfit(object):
         
         dlx.fem.petsc.assemble_vector(out,L)
         out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
         
         return out
     #    ##################################
