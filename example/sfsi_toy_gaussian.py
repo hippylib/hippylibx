@@ -132,13 +132,20 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     adj_rhs = dlx.fem.Function(Vh_m)
     adj_rhs.interpolate(lambda x: np.log(0.34) + 3.*( ( ( (x[0]-1.5)*(x[0]-1.5) + (x[1]-1.5)*(x[1]-1.5) ) < 0.75) )) # <class 'dolfinx.fem.function.Function'>
     adj_rhs.x.scatter_forward() 
-    adj_rhs = adj_rhs.vector
 
+    # adj_rhs = adj_rhs.vector
     # print(rank,":",adj_rhs.min(),":",adj_rhs.max())            
     # print(adj_rhs.min(),":",adj_rhs.max())
     # print(rank,":",adj_vec.min(),":",adj_vec.max())
 
+    # print(rank,":",adj_rhs.vector.min(),":",adj_rhs.vector.max())            
+
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
+    
     pde.solveAdj(adj_vec, x_true, adj_rhs)
+    
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
+
 
     # u = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
     # m = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
@@ -154,13 +161,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
    
     # self.solver.setOperators(Aadj)
     
-
     # self.solver.solve(adj_rhs, adj)
 
-
-
-
-    # print(rank,":",adj_rhs.min(),":",adj_rhs.max())            
+    # print(rank,":",adj_rhs.vector.min(),":",adj_rhs.vector.max())            
     
     # print(rank,":",adj_vec.min(),":",adj_vec.max())
     
@@ -496,9 +499,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(type(A_mat))
     # print(type(u_true))
 
-    
-
-    
     # print(type(A_mat))
     # print(A_mat.comm())
     # help1 = A_mat.createVecLeft()
