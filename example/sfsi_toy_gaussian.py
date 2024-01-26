@@ -133,8 +133,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     adj_rhs.interpolate(lambda x: np.log(0.34) + 3.*( ( ( (x[0]-1.5)*(x[0]-1.5) + (x[1]-1.5)*(x[1]-1.5) ) < 0.75) )) # <class 'dolfinx.fem.function.Function'>
     adj_rhs.x.scatter_forward() 
 
+
     # adj_rhs = adj_rhs.vector
-    # print(rank,":",adj_rhs.min(),":",adj_rhs.max())            
+    # print(rank,":",adj_rhs.vector.min(),":",adj_rhs.vector.max())            
     # print(adj_rhs.min(),":",adj_rhs.max())
     # print(rank,":",adj_vec.min(),":",adj_vec.max())
 
@@ -143,9 +144,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(rank,":",adj_vec.min(),":",adj_vec.max())            
     
     pde.solveAdj(adj_vec, x_true, adj_rhs)
-    
-    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
 
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
 
     # u = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
     # m = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
@@ -179,24 +179,24 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # adj_result = comm.gather(adj_vec,0 )
     #plots for adj_vec - in serial and parallel
 
-    # adj_vec_func = hpx.vector2Function(adj_vec,Vh[hpx.ADJOINT])    
+    adj_vec_func = hpx.vector2Function(adj_vec,Vh[hpx.ADJOINT])    
+    # adj_vec_func.x.scatter_forward()
+
     # print(rank,":",adj_vec_func.x.array[:].min(),":",adj_vec_func.x.array[:].max())
 
-
     #different values in serial and parallel
+    
     # with dlx.io.XDMFFile(msh.comm, "attempt_adj_vec_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
     #     file.write_mesh(msh)
     #     file.write_function(adj_vec_func)
 
-
-    # pde_grad = pde.evalGradientParameter(x_true)
+    # pde_grad = pde.evalGradientParameter(x_true)  
 
     # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
     # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
 
     # grad = pde.evalGradientParameter(x_true)
     # print(rank,":",grad.min(),":",grad.max())
-
 
     # print(m_true.min(),":",m_true.max()) #same as fenics
 
@@ -216,7 +216,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
     # d.x.scatter_forward()
     # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
-
     #values from normal dist have to be added to d
     
     hpx.random.parRandom(comm,np.sqrt(noise_variance),d.vector) #fix this so it uses SeedSequence    
@@ -224,8 +223,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(rank,":",d.x.array[:])
     
     d.x.scatter_forward()
+    
     # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
-
     # print(rank,":",d.x.array.min(),":",d.x.array.max())
 
     misfit_form = PACTMisfitForm(d, noise_variance)
@@ -293,8 +292,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     Mqh.mult(ones,dMqh)
 
     # test_obj = Mqh.createVecLeft()
-
-
     # if(rank == 0):
     #     print(dMqh.getArray())
 
@@ -313,7 +310,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     #     Mqh.getDiagonal(test_obj)
     #     print(test_obj.getArray())
     
-
     # if(rank == 0):
     #     print(dMqh.getArray())
 
@@ -623,3 +619,70 @@ if __name__ == "__main__":
     prior_param = {"gamma": 0.05, "delta": 1.}
     
     run_inversion(nx, ny, noise_variance, prior_param)
+
+    # def solveFwd(self, state, x): #state is a vector
+    #     """ Solve the possibly nonlinear forward problem:
+    #     Given :math:`m`, find :math:`u` such that
+    #         .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
+
+    #     mfun = vector2Function(x[PARAMETER],self.Vh[PARAMETER])
+
+    #     # print("first:")
+    #     # print(x[PARAMETER].min())
+    #     # print(x[PARAMETER].max())
+
+    #     # print(x[PARAMETER],'\n')
+    #     # temp_vec = dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map,self.Vh[PARAMETER].dofmap.index_map_bs) 
+    #     # temp_vec.x.array[:] = x[PARAMETER]
+
+    #     # temp_m_vec = x[PARAMETER].copy()
+    #     # mfun = vector2Function(temp_m_vec,self.Vh[PARAMETER])
+
+    #     #once the function scope ends, the values in the underlying vector also disappear.
+    #     #As per: https://fenicsproject.discourse.group/t/manipulating-vector-data-of-fem-function/11056/2
+    #     #Need to find a way to work around this.
+    #     #Ans: return the function? 
+
+
+    #     self.n_calls["forward"] += 1
+    #     if self.solver is None:
+    #         self.solver = self._createLUSolver()
+
+    #     if self.is_fwd_linear:    
+    #         u = ufl.TrialFunction(self.Vh[STATE])   
+    #         p = ufl.TestFunction(self.Vh[ADJOINT])
+
+    #         res_form = self.varf_handler(u, mfun, p) #all 3 arguments-dl.Function types
+
+    #         # print("second:")
+    #         # print(x[PARAMETER].min())
+    #         # print(x[PARAMETER].max())
+        
+    #         A_form = ufl.lhs(res_form) #ufl.form.Form
+            
+    #         # print("third:")
+    #         # print(x[PARAMETER].min())
+    #         # print(x[PARAMETER].max()) #garbage
+
+    #         b_form = ufl.rhs(res_form)
+            
+    #         # print("fourth:")
+    #         # print(x[PARAMETER].min()) 
+    #         # print(x[PARAMETER].max()) #garbage
+        
+    #         A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc) #petsc4py.PETSc.Mat
+            
+    #         # print("fifth:")
+    #         # print(x[PARAMETER].min()) #garbage
+    #         # print(x[PARAMETER].max()) #garbage
+        
+    #         A.assemble() #petsc4py.PETSc.Mat
+    #         self.solver.setOperators(A)
+    #         b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form)) #petsc4py.PETSc.Vec
+        
+    #         dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
+    #         b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    #         # dlx.fem.petsc.set_bc(b,self.bc)
+    #         self.solver.solve(b,state)
+            
+    #         return A
