@@ -141,16 +141,19 @@ class PDEVariationalProblem:
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
         varf = self.varf_handler(u, m, p)
         adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
-        print(adj_rhs.min(),":",adj_rhs.max()) #-1.0788096613719298, 1.9211903386280702
+        
+        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-1.0788096613719298, 1.9211903386280702
+        
         Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
-        print(adj_rhs.min(),":",adj_rhs.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
+        
+        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
 
         Aadj.assemble()
 
         self.solver.setOperators(Aadj)
         
 
-        self.solver.solve(adj_rhs, adj)
+        self.solver.solve(adj_rhs.vector, adj)
 
         # print(adj_rhs.min(),":",adj_rhs.max())
 
