@@ -151,9 +151,31 @@ class PDEVariationalProblem:
         Aadj.assemble()
 
         self.solver.setOperators(Aadj)
-        
 
+        #not needed:        
+        # dlx.fem.petsc.apply_lifting(adj_rhs.vector,[dlx.fem.form(adj_form)],[self.bc0])            
+        # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+                    
         self.solver.solve(adj_rhs.vector, adj)
+
+
+        ####################################
+        # u = vector2Function(x[STATE], self.Vh[STATE])
+        # m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+        # p = dl.Function(self.Vh[ADJOINT])
+        # du = dl.TestFunction(self.Vh[STATE])
+        # dp = dl.TrialFunction(self.Vh[ADJOINT])
+        # varf = self.varf_handler(u, m, p)
+        # adj_form = dl.derivative( dl.derivative(varf, u, du), p, dp )
+        # Aadj, dummy = dl.assemble_system(adj_form, ufl.inner(u,du)*ufl.dx, self.bc0)
+        # self.solver.set_operator(Aadj)
+        # self.solver.solve(adj, adj_rhs)
+        ####################################
+
+
+
+
 
         # print(adj_rhs.min(),":",adj_rhs.max())
 
