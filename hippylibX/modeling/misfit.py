@@ -55,15 +55,26 @@ class NonGaussianContinuousMisfit(object):
         # ##################################
         
         #M-2 ###################################
-        out = dlx.fem.petsc.create_vector(L)
+        # out = dlx.fem.petsc.create_vector(L)
+        # out = dlx.la.create_petsc_vector(self.Vh[i].dofmap.index_map, self.Vh[i].dofmap.index_map_bs) 
 
-        with out.localForm() as loc_grad:
-            loc_grad.set(0)
+        # with out.localForm() as loc_grad:
+        #     loc_grad.set(0)
         
-        dlx.fem.petsc.assemble_vector(out,L)
-        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+        # dlx.fem.petsc.assemble_vector(out,L)
         
+        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+        # # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+        # ##################################
+        
+        #M-3 ###################################
+        out = dlx.fem.assemble_vector(L)
+        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)        
+        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+        # ##################################
+        
+
+
         return out
     #    ##################################
  
