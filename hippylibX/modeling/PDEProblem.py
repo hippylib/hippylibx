@@ -157,7 +157,8 @@ class PDEVariationalProblem:
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
                     
-        self.solver.solve(adj_rhs.vector, adj)
+        self.solver.solve(adj_rhs, adj)
+        # self.solver.solve(adj_rhs, adj)
 
 
         ####################################
@@ -222,3 +223,39 @@ class PDEVariationalProblem:
         ksp = petsc4py.PETSc.KSP().create()
         return ksp
 
+
+    def solveAdj_2(self, adj, x, adj_rhs):
+
+        """ Solve the linear adjoint problem:
+        Given :math:`m, u`; find :math:`p` such that
+        .. math:: \\delta_u F(u, m, p;\\hat{u}) = 0, \\quad \\forall \\hat{u}.
+        """
+
+        self.n_calls["adjoint"] += 1
+        if self.solver is None:
+            self.solver = self._createLUSolver()
+
+        u = vector2Function(x[STATE], self.Vh[STATE])
+        m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+        p = dlx.fem.Function(self.Vh[ADJOINT])
+        du = ufl.TestFunction(self.Vh[STATE])
+        dp = ufl.TrialFunction(self.Vh[ADJOINT])
+        varf = self.varf_handler(u, m, p)
+        adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
+        
+        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-1.0788096613719298, 1.9211903386280702
+        
+        Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
+        
+        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
+
+        Aadj.assemble()
+
+        self.solver.setOperators(Aadj)
+
+        #not needed:        
+        # dlx.fem.petsc.apply_lifting(adj_rhs.vector,[dlx.fem.form(adj_form)],[self.bc0])            
+        # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+                    
+        self.solver.solve(adj_rhs.vector, adj)
