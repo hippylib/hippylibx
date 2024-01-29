@@ -143,7 +143,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # print(rank,":",adj_vec.min(),":",adj_vec.max())            
     
-    pde.solveAdj(adj_vec, x_true, adj_rhs)
+    pde.solveAdj_2(adj_vec, x_true, adj_rhs)
+
+    x_true[hpx.ADJOINT] = adj_vec
 
     # print(rank,":",adj_vec.min(),":",adj_vec.max())            
 
@@ -179,16 +181,32 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # adj_result = comm.gather(adj_vec,0 )
     #plots for adj_vec - in serial and parallel
 
-    adj_vec_func = hpx.vector2Function(adj_vec,Vh[hpx.ADJOINT])    
-    # adj_vec_func.x.scatter_forward()
+    adj_vec_func = hpx.vector2Function(adj_vec,Vh[hpx.ADJOINT])   
 
+    # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
+    # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
+    # print(x_true[hpx.ADJOINT].min(),":",x_true[hpx.ADJOINT].max())
+
+    grad_val = pde.evalGradientParameter(x_true)
+    
+    # print(grad_val.getLocalSize())
+    # print(grad_val.min(),":",grad_val.max())
+    # adj_vec_func.x.scatter_forward()  
     # print(rank,":",adj_vec_func.x.array[:].min(),":",adj_vec_func.x.array[:].max())
 
-    #different values in serial and parallel
+    #same values in serial and parallel
     
-    # with dlx.io.XDMFFile(msh.comm, "attempt_adj_vec_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    grad_func = hpx.vector2Function(grad_val,Vh[hpx.STATE])
+
+    # print(rank,":",grad_func.x.array[:].min(),":",grad_func.x.array[:].max())
+
+    # adj_func = hpx.vector2Function(x_true[hpx.ADJOINT],Vh[hpx.ADJOINT])
+    
+    # print(rank,":",adj_vec_func.x.array[:].min(),":",adj_vec_func.x.array[:].max())   
+
+    # with dlx.io.XDMFFile(msh.comm, "attempt_p_true_vec_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
     #     file.write_mesh(msh)
-    #     file.write_function(adj_vec_func)
+    #     file.write_function(adj_func)
 
     # pde_grad = pde.evalGradientParameter(x_true)  
 
@@ -258,23 +276,24 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     varfM = ufl.inner(trial,test)*ufl.dx       
     M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM)) #used as set_Operator, so must be matrix
 
-    Vh = Vh_phi #dolfinx.fem.function.FunctionSpace
+
+    # Vh = Vh_phi #dolfinx.fem.function.FunctionSpace
     # test_obj = Vh._ufl_element.degree() #1
     # print(test_obj)
-    qdegree = 2*Vh._ufl_element.degree()
+    qdegree = 2*Vh_phi._ufl_element.degree()
     metadata = {"quadrature_degree" : qdegree}
 
     # print(type(Vh))
 
-    num_sub_spaces = Vh.num_sub_spaces #0
+    num_sub_spaces = Vh_phi.num_sub_spaces #0
     # print(num_sub_spaces)
 
-    element = ufl.FiniteElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default")
+    element = ufl.FiniteElement("Quadrature", Vh_phi.mesh.ufl_cell(), qdegree, quad_scheme="default")
 
     # element = ufl.VectorElement("Quadrature", Vh.mesh.ufl_cell(), qdegree, dim=num_sub_spaces, quad_scheme="default")
     # Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     
-    Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
+    Qh = dlx.fem.FunctionSpace(Vh_phi.mesh, element)
 
     # Qh = dlx.fem.FunctionSpace(msh, ("CG",1))
     
@@ -322,12 +341,14 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # sqrtM = MixedM.matMult(Mqh)
     
     # sqrtM = MixedM.matMult(Mqh,None,None)
+
     sqrtM = MixedM.matMult(Mqh)
     sqrtM.assemble() #may not be needed
 
     # print(type(dMqh))
 
     # prior = hpx.BiLaplacianPrior(Vh_phi,3.,4.,5.)
+    
     prior = hpx.BiLaplacianPrior(Vh_phi,prior_param["gamma"],prior_param["delta"])
 
     # test_obj = prior.A
@@ -343,11 +364,17 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     #     start = row_indices[i]
     #     end = row_indices[i + 1]
     #     dense_array[i, col_indices[start:end]] = csr_values[start:end]
-
     # print(np.max(dense_array),np.min(dense_array))
     ########################################   
     
     model = hpx.Model(pde, prior, misfit)
+
+    # model_obj = hpx.Model(pde, prior, misfit)
+
+    # #a different model_obj to implement the modelVerify method from scratch here,
+    # #created here as noise and m0 are perturbed in the following lines.
+    # model_obj = hpx.Model(pde,prior,misfit)
+
     noise = prior.init_vector("noise")
 
     m0 = prior.init_vector(0)
@@ -363,19 +390,81 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     prior.sample(noise,m0)
 
     # print(m0.getArray().min(),":",m0.getArray().max())
-    
     # # print(m0.getArray().min(),":",m0.getArray().max())
     # # print(m0.getLocalSize())
     # # print(rank,":",m0.getArray())
 
-
     # eps, err_grad, _ = hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
-
 
     # print(rank,":",err_grad,'\n')
     # print(err_grad)
-    # hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+
+    # eps,err_grad, _ = hpx.modelVerify(comm, model,m0, is_quadratic = False, misfit_only=True, verbose = (rank==0))
+    # print(eps,'\n')
+
+    # if(rank == 0):
+    #     print(err_grad)
+
+    #####################################
+    #modelVerify here - step by step to see where the results of serial diverge from those in parallel.
+    index = 2
+    # #create a dummy model object
+    model_obj = hpx.Model(pde,prior,misfit)
+
+
+    h = model_obj.generate_vector(hpx.PARAMETER)
+    hpx.parRandom(comm, 1., h) #supply comm to this method
+    # # print(h.min(),":",h.max())
+
+    x = model_obj.generate_vector()
+    x[hpx.PARAMETER] = m0
+    model_obj.solveFwd(x[hpx.STATE], x)
+
+    # print(rank,":",x[hpx.STATE].min(),":",x[hpx.STATE].max())
+
+    # #self implement adj method to see if the values calculated in model.solveadj
+    # #are correct. This is because solveAdj in model passes rhs as a vector while
+    # #in self implemented case, solveAdj needed rhs to be passed as a function 
+    # #for correct values to be preserved in adj solution vector.
+    # #same answers for solveAdj (takes in rhs vector) and solveAdj2 (takes in rhs function)
+     
+
+    # #model.solveAdj
+    rhs = model_obj.problem.generate_state() #petsc Vec
+    # # print(rhs.getLocalSize()) #3287
+    rhs = model_obj.misfit.grad(hpx.STATE, x) #different in serial and parallel.
+    rhs.scale(-1.)
+
+    print(rank,":",rhs.getArray().min(),":",rhs.getArray().max())
+
+    # model_obj.problem.solveAdj(x[hpx.ADJOINT], x, rhs)
+    # print(x[hpx.ADJOINT].min(),":",x[hpx.ADJOINT].max()) #-6989207.061176334, 312016.12408125534
     
+    # # print(type(x[hpx.ADJOINT]))
+    # # u_fun = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
+
+    # # test_adj_func = dlx.fem.Function(Vh[hpx.STATE])
+
+
+    # # test_adj_func = hpx.vector2Function(x[hpx.ADJOINT], Vh[hpx.ADJOINT])
+    # test_adj_ans = pde.generate_state()
+
+    # #the values in test_adj_func.vector has to be same as rhs
+    # # test_adj_func.vector[:] = rhs.getArray()
+    
+    # # print(rhs.getArray(),'\n')
+    # # print(test_adj_func.vector[:])
+
+    # # print(type(test_adj_func))
+
+    # # test_adj_func.x.scatter_forward()
+
+    # test_adj_func = hpx.vector2Function(rhs,Vh[hpx.ADJOINT])
+    # pde.solveAdj_2(test_adj_ans,x,test_adj_func)
+
+    # print(test_adj_ans.min(),":",test_adj_ans.max()) #-6989207.061176334, 312016.12408125534
+
+
     # if(rank == 0):
 
         # scale_val = err_grad[0]/eps[0]
