@@ -137,7 +137,12 @@ class Model:
         
         rhs.scale(-1.)
         # rhs *= -1.
+        #need to pass rhs as a function to solveAdj method in pde class, else get errors. 
+        # print(out.min(),":",out.max())
         self.problem.solveAdj(out, x, rhs)
+        # print(out.min(),":",out.max())
+        
+        # rhs_vec = hpx.vector2Function(rhs,Vh[hpx.PARAMETER])
     
     # def evalGradientParameter(self,x, mg, misfit_only=False):
     def evalGradientParameter(self,x, misfit_only=False):
