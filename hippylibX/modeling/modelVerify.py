@@ -27,10 +27,12 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     
     x = model.generate_vector()
     x[PARAMETER] = m0
-    
+
+    # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
+
     model.solveFwd(x[STATE], x)
     
-    # print(comm.rank,":",x[STATE].min(),":",x[STATE].max())
+    # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
     
     model.solveAdj(x[ADJOINT], x)
 
@@ -115,7 +117,7 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     # print(comm.rank, ":" , "hello-1")
     
     # if verbose: #true only for rank == 0
-    #     modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H)
+        # modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H)
 
     # xx = model.generate_vector(PARAMETER)
     # parRandom.normal(1., xx)
