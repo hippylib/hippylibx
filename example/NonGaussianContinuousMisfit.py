@@ -28,6 +28,9 @@ class NonGaussianContinuousMisfit(object):
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
 
+        #This needs to be parallelized:
+        # dl.assemble(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]), tensor=out )
+        
         # u_fun.x.scatter_forward()
         # m_fun.x.scatter_forward()
 
@@ -61,7 +64,7 @@ class NonGaussianContinuousMisfit(object):
         
         dlx.fem.petsc.assemble_vector(out,L)
         out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
         
         return out
     #    ##################################
