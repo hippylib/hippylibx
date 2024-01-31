@@ -146,7 +146,7 @@ class PDEVariationalProblem:
         
         Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
         
-        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
+        # print(adj_rhs.min(),":",adj_rhs.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
 
         Aadj.assemble()
 
@@ -200,8 +200,6 @@ class PDEVariationalProblem:
         # self.solver.solve(adj_rhs,adj)
         # ######################################
         
-
-
     # self.problem.evalGradientParameter(x, mg)
         
     def evalGradientParameter(self, x):
