@@ -136,6 +136,7 @@ class Model:
         rhs = self.misfit.grad(STATE, x)
         
         rhs.scale(-1.)
+        
         # rhs *= -1.
         #need to pass rhs as a function to solveAdj method in pde class, else get errors. 
         # print(out.min(),":",out.max())
