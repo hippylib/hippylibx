@@ -122,7 +122,8 @@ class test_prior:
         """
 
         self.Vh = Vh
-        
+        self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
+
         trial = ufl.TrialFunction(Vh)
         test  = ufl.TestFunction(Vh)
         
@@ -277,17 +278,38 @@ class test_prior:
     #need to construct sqrtM and Asolver from the prior in hippylib
 
     def sample(self, noise, s, add_mean=True):
+        
         """
         Given :code:`noise` :math:`\\sim \\mathcal{N}(0, I)` compute a sample :code:`s` from the prior.
 
         If :code:`add_mean == True` add the prior mean value to :code:`s`.
         """
+
         rhs = self.sqrtM*noise
+
+        # rhs = self.sqrtM.createVecLeft()
+        # self.sqrtM.mult(noise,rhs)
+        
         # self.Asolver.solve(s, rhs)
+        # print(rhs.min(),":",rhs.max())
+
+        #this method not giving same results in serial and parallel.
         self.Asolver.solve(rhs,s)
+        # print(s.min(),":",s.max())
+        
+
+        # trial = ufl.TrialFunction(self.Vh)
+        # test  = ufl.TestFunction(self.Vh)
+
+        # dlx.fem.p9etsc.apply_lifting(rhs,[dlx.fem.form(self.sqrt_precision_varf_handler(trial, test) )],[[]])            
+        # rhs.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+                    
+        # self.Asolver.solve(rhs,s)
+
+        # print(type(rhs))
         if add_mean:
             s.axpy(1., self.mean)
-
+        
 
     #from Class _Prior that SqrtPrecisionPDE_Prior derives methods from
     #prior.cost is used in modelVerify in model.cost
