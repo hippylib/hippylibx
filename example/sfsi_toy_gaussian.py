@@ -133,6 +133,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     adj_rhs.interpolate(lambda x: np.log(0.34) + 3.*( ( ( (x[0]-1.5)*(x[0]-1.5) + (x[1]-1.5)*(x[1]-1.5) ) < 0.75) )) # <class 'dolfinx.fem.function.Function'>
     adj_rhs.x.scatter_forward() 
 
+    # print(rank,":",adj_rhs.x.array.min(),":",adj_rhs.x.array.max())
 
     # adj_rhs = adj_rhs.vector
     # print(rank,":",adj_rhs.vector.min(),":",adj_rhs.vector.max())            
@@ -140,14 +141,35 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(rank,":",adj_vec.min(),":",adj_vec.max())
 
     # print(rank,":",adj_rhs.vector.min(),":",adj_rhs.vector.max())            
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
+    
+    ##############################   
+    pde.solveAdj_2(adj_vec, x_true, adj_rhs)
+    x_true[hpx.ADJOINT] = adj_vec
+
+    # print(rank,":",adj_rhs.x.array.min(),":",adj_rhs.x.array.max())
+
+    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
+    ##############################
+
+    ##############################
+    # adj_rhs = adj_rhs.vector
+    # adj_vec_2 = pde.generate_state()
+
+    # print(rank,":",adj_rhs.min(),":",adj_rhs.max())            
+    # print(x_true[hpx.STATE].min(),":",x_true[hpx.STATE].max())
+    # print(x_true[hpx.PARAMETER].min(),":",x_true[hpx.PARAMETER].max())
+    # pde.solveAdj(adj_vec_2, x_true, adj_rhs)
+    
+    # print(rank,":",adj_vec_2.min(),":",adj_vec_2.max())            
+
+
+
+    # x_true[hpx.ADJOINT] = adj_vec
 
     # print(rank,":",adj_vec.min(),":",adj_vec.max())            
     
-    pde.solveAdj_2(adj_vec, x_true, adj_rhs)
-
-    x_true[hpx.ADJOINT] = adj_vec
-
-    # print(rank,":",adj_vec.min(),":",adj_vec.max())            
+    ##############################
 
     # u = hpx.vector2Function(x_true[hpx.STATE], Vh[hpx.STATE])
     # m = hpx.vector2Function(x_true[hpx.PARAMETER], Vh[hpx.PARAMETER])
@@ -236,7 +258,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(d.x.array[:].min(),":",d.x.array[:].max()) #same as fenics
     #values from normal dist have to be added to d
     
-    hpx.random.parRandom(comm,np.sqrt(noise_variance),d.vector) #fix this so it uses SeedSequence    
+    #comment out the random perturbation to see if you get same values in serial and parallel runnning
+    #with multiple processes.
+    # hpx.random.parRandom(comm,np.sqrt(noise_variance),d.vector) #fix this so it uses SeedSequence    
     
     # print(rank,":",d.x.array[:])
     
@@ -378,18 +402,253 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     noise = prior.init_vector("noise")
 
     m0 = prior.init_vector(0)
+    # print(m0.getArray().min(),":",m0.getArray().max())
 
     # # # noise_func 
     #values from normal distribution have to be inserted in noise
-    hpx.random.parRandom(comm,1.,noise) #fix this so it uses SeedSequence
-    
+    # hpx.random.parRandom(comm,1.,noise) #fix this so it uses SeedSequence
+
+    #set values in noise to some constant value
+    noise.set(3.)
+
+    # print(noise.getArray().min(),":",noise.getArray().max())
     # # # print(m0.getArray().min(),":",m0.getArray().max())
     # # # print(rank,":",m0.getArray())
     # # print(m0.getArray().min(),":",m0.getArray().max())
 
+    
+    ################################
     prior.sample(noise,m0)
 
+    #modelVerify now:
+    index = 2
+    h = model.generate_vector(hpx.PARAMETER)
+    
+    #Fix h with a constant value or a function (interp) that is consistent across
+    #runs of 1 or more processes.
+    # hpx.parRandom(comm,1.,h)
+
+    h.set(5.)
+
+    # print(h.min(),":",h.max())
+
+    x = model.generate_vector()
+
+    # modify m0 so you can have non-zero vector solution of x[STATE]    
+    m0 = dlx.fem.Function(Vh_m)
+    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m0.x.scatter_forward() 
+    # m0 = m0.vector
+    # m0_dupl = m0
+
+    
+    # print(m0.min(),":",m0.max())
+    
+    m_fun_true = dlx.fem.Function(Vh_m)
+    m_fun_true.x.array[:] = m0.x.array[:]
+
+    # m_true = m_true.vector #<class 'petsc4py.PETSc.Vec'>
+    m0 = m0.vector
+    x[hpx.PARAMETER] = m0
+
+    model.solveFwd(x[hpx.STATE], x)
+    
+    # print(x[hpx.STATE].min(),":",x[hpx.STATE].max())
+    
+    # print(m0.min(),":",m0.max()) #values are messed up here.
+    
+    # print(x[hpx.PARAMETER].min(),":",x[hpx.PARAMETER].max())
+    
+    x[hpx.PARAMETER] = m_fun_true.vector
+    m0 = m_fun_true.vector
+    # print(x[hpx.PARAMETER].min(),":",x[hpx.PARAMETER].max())
+
+    # print(x[hpx.STATE].min(),":",x[hpx.STATE].max())
+    # print(x[hpx.PARAMETER].min(),":",x[hpx.PARAMETER].max())
+
+    rhs = model.problem.generate_state()
+    
+    # rhs = model.misfit.grad(hpx.STATE, x)
+    
+    ##########################
+    u_fun = hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE])
+    m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER])
+    x_fun = [u_fun, m_fun]
+    x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
+    # dl.assemble(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]), tensor=out )
+
+    L = dlx.fem.form(ufl.derivative( misfit_form(*x_fun), x_fun[hpx.STATE], x_test[hpx.STATE]))
+
+    rhs = dlx.fem.petsc.create_vector(L)
+
+    with rhs.localForm() as loc_grad:
+        loc_grad.set(0)
+
+    dlx.fem.petsc.assemble_vector(rhs,L)
+
+    rhs.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    # rhs.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+    ##########################
+    
+    rhs.scale(-1.) #slight difference in values.
+
+    # print(x[hpx.ADJOINT].min(),":",x[hpx.ADJOINT].max())
+    
+    ################commented out from here
+    ####################################################
+    rhs_func = hpx.vector2Function(rhs,Vh[hpx.ADJOINT])
+    # model.problem.solveAdj(x[hpx.ADJOINT],x,rhs)
+    model.problem.solveAdj_2(x[hpx.ADJOINT],x,rhs_func)
+    
+    # print(rank,":",x[hpx.ADJOINT].min(),":",x[hpx.ADJOINT].max())
+
+    # print(x[hpx.STATE].min(),":",x[hpx.STATE].max())
+    # print(x[hpx.PARAMETER].min(),":",x[hpx.PARAMETER].max())
+    # print(x[hpx.ADJOINT].min(),":",x[hpx.ADJOINT].max())
+
+    cx = model.cost(x)
+
+    # print(rank,":",cx)    
+    grad_x = model.generate_vector(hpx.PARAMETER)
+    calc_val,grad_x = model.evalGradientParameter(x,misfit_only=True)
+
+    # print(rank,":",calc_val,":",grad_x.min(),":",grad_x.max())
+    grad_xh = grad_x.dot( h )
+
+    # print(rank,":",grad_xh)
+    eps = None
+
+    if eps is None:
+        n_eps = 32
+        eps = np.power(.5, np.arange(n_eps))
+        eps = eps[::-1]
+    else:
+        n_eps = eps.shape[0]
+    
+    err_grad = np.zeros(n_eps)
+    err_H = np.zeros(n_eps)
+
+
+
+    # x_plus = model.generate_vector()
+    # x_plus[hpx.PARAMETER].axpy(1., m0 )
+    # x_plus[hpx.PARAMETER].axpy(eps[0], h)
+
+    # print(m0.min(),":",m0.max())
+
+    # print(x_plus[hpx.PARAMETER].min(),":",x_plus[hpx.PARAMETER].max())
+
+    for i in range(n_eps):
+        my_eps = eps[i]
+        
+        x_plus = model.generate_vector()
+        x_plus[hpx.PARAMETER].axpy(1., m0 )
+        x_plus[hpx.PARAMETER].axpy(my_eps, h)
+
+        # print(comm.rank,":",x_plus[STATE].min(),":",x_plus[STATE].max())    
+        # print(comm.rank,":",x_plus[PARAMETER].min(),":",x_plus[PARAMETER].max())
+        
+        model.solveFwd(x_plus[hpx.STATE], x_plus)
+
+        # print(comm.rank,":",x_plus[STATE].min(),":",x_plus[STATE].max())
+        # print(comm.rank,":",x_plus[PARAMETER].min(),":",x_plus[PARAMETER].max())
+
+        # model.solveAdj(x_plus[ADJOINT], x_plus)
+
+        # print(comm.rank,":",x_plus[STATE].min(),":",x_plus[STATE].max())        
+        # print(comm.rank,":",x_plus[PARAMETER].min(),":",x_plus[PARAMETER].max())
+        
+        dc = model.cost(x_plus)[index] - cx[index]
+        
+        err_grad[i] = abs(dc/my_eps - grad_xh)
+        
+        if(i == 1):
+            print(i,":",rank,":",dc,":",my_eps,":",grad_xh,":",err_grad[i])
+            # print(i,":",rank,":",my_eps)
+            # print(i,":",rank,":",err_grad[i])
+            
+        # Check the Hessian
+        # grad_xplus = model.generate_vector(hpx.PARAMETER)
+
+    ####################################################
+
+    # if(rank == 0):
+        # print(err_grad)
+
+    # print(rank,":",x_plus[hpx.PARAMETER].min(),":",x_plus[hpx.PARAMETER].max())
+
+    # print(rhs.min(),":",rhs.max())
+    # rhs_func = hpx.vector2Function(rhs,Vh[hpx.STATE])
+    # rhs_func.x.scatter_forward()
+
+    #check if m0 is correct for 1 and multiple processes - is correct
+    # m0_func = hpx.vector2Function(m0,Vh[hpx.PARAMETER])
+    # adjoint_func = hpx.vector2Function(x[hpx.ADJOINT],Vh[hpx.ADJOINT])
+    
+    # with dlx.io.XDMFFile(msh.comm, "attempt_plot_adj_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(adjoint_func)
+
+    # print(m0.min(),":",m0.max())
+
+    # m0_func = hpx.vector2Function(m0,Vh[hpx.PARAMETER])
+    # m0_func.x.scatter_forward()
+
+    # print(rank,":",m0.getArray().min(),":",m0.getArray().max())
+
+    # print(rank,":",m0_func.x.array.min(),":",m0_func.x.array.max())
+    ################################
+    
+    #implementing prior.sample here manually to check for same values in serial and
+    #parallel case
+    # mat_sqrtM = prior.sqrtM
+    # # print(rank,":",mat_sqrtM.getLocalSize())
+    # rhs = mat_sqrtM.createVecLeft()
+    # # print(rank,":",rhs.getArray().min(),":",rhs.getArray().max())
+
+    
+    # # print(rank,":",rhs.getLocalSize())
+    # mat_sqrtM.mult(noise,rhs)
+    
+    # op_Asolver = prior.Asolver
+    
+    # #need to check if prior.A has been distrbuted correctly to the processes,
+    # #i.e. min,max values same in 1, 4 process run.
+
+    # mat_A = prior.A
+    # # print(mat_A.getLocalSize())
+
+    # # print(np.min(mat_A.getValuesCSR()[2]),":",np.max(mat_A.getValuesCSR()[2]))
+
+
+    # op_Asolver.solve(rhs,m0)
+
+
     # print(m0.getArray().min(),":",m0.getArray().max())
+
+
+    # numpy_mat_A = mat_A.convert("dense")
+    # numpy_mat_A.getDenseArray()
+    
+    # numpy_mat_A = mat_A.getArray()
+    
+    # print(type(numpy_mat_A))
+
+    # print(numpy_mat_A.view())
+
+
+    # print(numpy_mat_A.getLocalSize())
+
+    # print(rank,":",A_mat.getLocalSize())
+
+    # print(rank,":",mat_A.getLocalSize())
+
+    # print(type(Asolver))p
+
+    # print(rank,":",rhs.getArray().min(),":",rhs.getArray().max())
+
+    # print(rank,":",m0.getArray().min(),":",m0.getArray().max())
+
     # # print(m0.getArray().min(),":",m0.getArray().max())
     # # print(m0.getLocalSize())
     # # print(rank,":",m0.getArray())
@@ -407,18 +666,18 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     #####################################
     #modelVerify here - step by step to see where the results of serial diverge from those in parallel.
-    index = 2
-    # #create a dummy model object
-    model_obj = hpx.Model(pde,prior,misfit)
+    # index = 2
+    # # #create a dummy model object
+    # model_obj = hpx.Model(pde,prior,misfit)
 
+    # h = model_obj.generate_vector(hpx.PARAMETER)
+    # hpx.parRandom(comm, 1., h) #supply comm to this method
+    # # # print(h.min(),":",h.max())
 
-    h = model_obj.generate_vector(hpx.PARAMETER)
-    hpx.parRandom(comm, 1., h) #supply comm to this method
-    # # print(h.min(),":",h.max())
+    # x = model_obj.generate_vector()
+    # x[hpx.PARAMETER] = m0
+    # model_obj.solveFwd(x[hpx.STATE], x)
 
-    x = model_obj.generate_vector()
-    x[hpx.PARAMETER] = m0
-    model_obj.solveFwd(x[hpx.STATE], x)
 
     # print(rank,":",x[hpx.STATE].min(),":",x[hpx.STATE].max())
 
@@ -430,12 +689,20 @@ def run_inversion(nx, ny, noise_variance, prior_param):
      
 
     # #model.solveAdj
-    rhs = model_obj.problem.generate_state() #petsc Vec
-    # # print(rhs.getLocalSize()) #3287
-    rhs = model_obj.misfit.grad(hpx.STATE, x) #different in serial and parallel.
-    rhs.scale(-1.)
+    # rhs = model_obj.problem.generate_state() #petsc Vec
+    # # # print(rhs.getLocalSize()) #3287
+    # rhs = model_obj.misfit.grad(hpx.STATE, x) #different in serial and parallel.
+    # rhs.scale(-1.)
 
-    print(rank,":",rhs.getArray().min(),":",rhs.getArray().max())
+    # print(rank,":",rhs.getArray().min(),":",rhs.getArray().max()) #-3787918.8718535625, 40569.35882166516
+
+    #checking grad from pdeProblem.py
+    #grad_pde = pde.evalGradientParameter(x_true)
+    
+
+    # print(grad_pde.getLocalSize())
+
+    # print(rank,":",grad_pde.getArray().min(),":",grad_pde.getArray().max())
 
     # model_obj.problem.solveAdj(x[hpx.ADJOINT], x, rhs)
     # print(x[hpx.ADJOINT].min(),":",x[hpx.ADJOINT].max()) #-6989207.061176334, 312016.12408125534
@@ -463,7 +730,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # pde.solveAdj_2(test_adj_ans,x,test_adj_func)
 
     # print(test_adj_ans.min(),":",test_adj_ans.max()) #-6989207.061176334, 312016.12408125534
-
 
     # if(rank == 0):
 
