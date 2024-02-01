@@ -529,7 +529,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     err_H = np.zeros(n_eps)
 
 
-
     # x_plus = model.generate_vector()
     # x_plus[hpx.PARAMETER].axpy(1., m0 )
     # x_plus[hpx.PARAMETER].axpy(eps[0], h)
@@ -562,8 +561,8 @@ def run_inversion(nx, ny, noise_variance, prior_param):
         
         err_grad[i] = abs(dc/my_eps - grad_xh)
         
-        if(i == 1):
-            print(i,":",rank,":",dc,":",my_eps,":",grad_xh,":",err_grad[i])
+        # if(i == 1):
+            # print(i,":",rank,":",dc,":",my_eps,":",grad_xh,":",err_grad[i])
             # print(i,":",rank,":",my_eps)
             # print(i,":",rank,":",err_grad[i])
             
@@ -572,8 +571,9 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     ####################################################
 
-    # if(rank == 0):
-        # print(err_grad)
+    if(rank == 0):
+        print(err_grad)
+
 
     # print(rank,":",x_plus[hpx.PARAMETER].min(),":",x_plus[hpx.PARAMETER].max())
 
