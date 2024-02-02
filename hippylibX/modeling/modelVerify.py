@@ -4,8 +4,10 @@ from .variables import STATE, PARAMETER, ADJOINT
 # from .reducedHessian import ReducedHessian
 from ..utils.random import parRandom
     
+import dolfinx as dlx
+
 # def modelVerify(model,m0, is_quadratic = False, misfit_only=False, verbose = True, eps = None):
-def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose = True, eps = None):
+def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, verbose = True, eps = None):
 
     """
     Verify the reduced Gradient and the Hessian of a model.
@@ -21,20 +23,29 @@ def modelVerify(comm, model,m0, is_quadratic = False, misfit_only=False, verbose
     
     h = model.generate_vector(PARAMETER)
     # parRandom.normal(1., h)
-    parRandom(comm, 1., h) #supply comm to this method
-    
+    # parRandom(comm, 1., h) #supply comm to this method
+    h.set(5.)
+
     # print(comm.rank,":",h.getArray())
     
     x = model.generate_vector()
-    x[PARAMETER] = m0
+    x[PARAMETER] = m0.vector
 
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
+
+    #below will destroy values in x[PARAMETER], so have to preserve it before calling
+
+    m_fun_true = dlx.fem.Function(Vh[PARAMETER])
+    m_fun_true.x.array[:] = m0.x.array[:]
 
     model.solveFwd(x[STATE], x)
     
+    x[PARAMETER] = m_fun_true.vector
+    m0 = m0.vector
+
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
     
-    model.solveAdj(x[ADJOINT], x)
+    model.solveAdj(x[ADJOINT], x ,Vh[ADJOINT])
 
     # print(comm.rank,":",x[ADJOINT].getArray())
     
