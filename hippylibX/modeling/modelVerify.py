@@ -1,7 +1,7 @@
 import numpy as np
 
 from .variables import STATE, PARAMETER, ADJOINT
-from .reducedHessian import ReducedHessian
+# from .reducedHessian import ReducedHessian
 from ..utils.random import parRandom
     
 # def modelVerify(model,m0, is_quadratic = False, misfit_only=False, verbose = True, eps = None):
