@@ -39,7 +39,6 @@ class PDEVariationalProblem:
     def generate_state(self):
         """ Return a vector in the shape of the state. """
         # return dlx.fem.Function(self.Vh[STATE]).vector
-        #return function instead of vector, solveFwd using the function.vector object
         return dlx.la.create_petsc_vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
 
     # @unused_function #now being used in mode.generate_vector() in modelVerify.py
