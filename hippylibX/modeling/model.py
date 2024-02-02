@@ -116,7 +116,7 @@ class Model:
         self.problem.solveFwd(out, x)
 
     
-    def solveAdj(self, out, x):
+    def solveAdj(self, out, x, Vh):
         """
         Solve the linear adjoint problem.
 
@@ -129,6 +129,8 @@ class Model:
                 2) the state variable :code:`u` for assembling the adjoint right hand side
                 .. note:: :code:`p` is not accessed
         """
+        # print(x[STATE].min(),":",x[STATE].max())
+        # print(x[PARAMETER].min(),":",x[PARAMETER].max())
 
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
@@ -136,12 +138,24 @@ class Model:
         rhs = self.misfit.grad(STATE, x)
         
         rhs.scale(-1.)
-        
+        # print(rhs.getArray().min(),":",rhs.getArray().max())
+
         # rhs *= -1.
         #need to pass rhs as a function to solveAdj method in pde class, else get errors. 
         # print(out.min(),":",out.max())
-        self.problem.solveAdj(out, x, rhs)
-        # print(out.min(),":",out.max())
+        
+        # self.problem.solveAdj(out, x, rhs)
+        # rhs_func = vector2Function(rhs,Vh)
+
+        rhs_func = dlx.fem.Function(Vh)
+        # fun.vector.axpy(1., x)
+        rhs_func.vector.setArray(rhs.getArray())
+        rhs_func.x.scatter_forward()
+
+
+        self.problem.solveAdj_2(out, x, rhs_func)
+        
+        # print(out.getArray().min(),":",out.getArray().max())
         
         # rhs_vec = hpx.vector2Function(rhs,Vh[hpx.PARAMETER])
     
