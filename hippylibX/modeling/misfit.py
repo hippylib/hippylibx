@@ -23,12 +23,14 @@ class NonGaussianContinuousMisfit(object):
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
         return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
 
-    # self.misfit.grad(STATE, x, rhs)        
     def grad(self, i, x):
 
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
 
+        #This needs to be parallelized:
+        # dl.assemble(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]), tensor=out )
+        
         # u_fun.x.scatter_forward()
         # m_fun.x.scatter_forward()
 
@@ -55,30 +57,15 @@ class NonGaussianContinuousMisfit(object):
         # ##################################
         
         #M-2 ###################################
-        # out = dlx.fem.petsc.create_vector(L)
-        # out = dlx.la.create_petsc_vector(self.Vh[i].dofmap.index_map, self.Vh[i].dofmap.index_map_bs) 
+        out = dlx.fem.petsc.create_vector(L)
 
-        # with out.localForm() as loc_grad:
-        #     loc_grad.set(0)
+        with out.localForm() as loc_grad:
+            loc_grad.set(0)
         
-        # dlx.fem.petsc.assemble_vector(out,L)
-        
-        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        # # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-        # ##################################
-        
-        #M-3 ###################################
-        # out = dlx.fem.assemble_vector(L)
-        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)        
+        dlx.fem.petsc.assemble_vector(out,L)
+        out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
         # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-        # # ##################################
         
-        #M-4 ###################################
-        out = dlx.fem.petsc.assemble_vector(L)
-        out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        # out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-        # # ##################################
-
         return out
     #    ##################################
  
