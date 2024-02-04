@@ -98,7 +98,7 @@ class Model:
             
         return [misfit_cost+reg_cost, reg_cost, misfit_cost]
     
-    def solveFwd(self, out, x):
+    def solveFwd(self, out, x,comm):
         """
         Solve the (possibly non-linear) forward problem.
         
@@ -113,10 +113,12 @@ class Model:
                 .. note:: :code:`p` is not accessed.
         """
         self.n_fwd_solve = self.n_fwd_solve + 1
-        self.problem.solveFwd(out, x)
+        self.problem.solveFwd(out, x,comm)
 
     
-    def solveAdj(self, out, x, Vh):
+    # def solveAdj(self, out, x, Vh):
+    def solveAdj(self, out, x, comm):
+        
         """
         Solve the linear adjoint problem.
 
@@ -129,6 +131,7 @@ class Model:
                 2) the state variable :code:`u` for assembling the adjoint right hand side
                 .. note:: :code:`p` is not accessed
         """
+        
         # print(x[STATE].min(),":",x[STATE].max())
         # print(x[PARAMETER].min(),":",x[PARAMETER].max())
 
@@ -147,13 +150,22 @@ class Model:
         # self.problem.solveAdj(out, x, rhs)
         # rhs_func = vector2Function(rhs,Vh)
 
-        rhs_func = dlx.fem.Function(Vh)
-        # fun.vector.axpy(1., x)
-        rhs_func.vector.setArray(rhs.getArray())
-        rhs_func.x.scatter_forward()
+
+        ###previous
+        # rhs_func = dlx.fem.Function(Vh)
+        # # fun.vector.axpy(1., x)
+        # rhs_func.vector.setArray(rhs.getArray())
+        # rhs_func.x.scatter_forward()
 
 
-        self.problem.solveAdj_2(out, x, rhs_func)
+        # self.problem.solveAdj_2(out, x, rhs_func)
+        ###
+
+        ###new
+        self.problem.solveAdj(out, x, rhs, comm)
+
+        ###
+
         
         # print(out.getArray().min(),":",out.getArray().max())
         
