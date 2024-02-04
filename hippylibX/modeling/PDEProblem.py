@@ -4,7 +4,7 @@ import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
 #from ..algorithms.linalg import Transpose #not yet used
 from ..algorithms.linSolvers import PETScLUSolver
-from ..utils.vector2function import vector2Function
+from ..utils.vector2function import vector2Function, create_petsc_vector_wrap
 
 
 #decorator for functions in classes that are not used -> may not be needed in the final
@@ -39,13 +39,16 @@ class PDEVariationalProblem:
     def generate_state(self):
         """ Return a vector in the shape of the state. """
         # return dlx.fem.Function(self.Vh[STATE]).vector
-        return dlx.la.create_petsc_vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
-
+        # return dlx.la.create_petsc_vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
+        
+        return dlx.la.vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
+        
     # @unused_function #now being used in mode.generate_vector() in modelVerify.py
     def generate_parameter(self):
         """ Return a vector in the shape of the parameter. """
-        return dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
-   
+        # return dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
+        return dlx.la.vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
+        
 
     @unused_function   
     def init_parameter(self, m):
@@ -53,7 +56,7 @@ class PDEVariationalProblem:
         dummy = self.generate_parameter()
         m.init(dummy.mpi_comm(), dummy.dofmap.index_map)
 
-    def solveFwd(self, state, x): #state is a vector
+    def solveFwd(self, state, x, comm): #state is a vector
         """ Solve the possibly nonlinear forward problem:
         Given :math:`m`, find :math:`u` such that
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
@@ -116,13 +119,21 @@ class PDEVariationalProblem:
             dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
             # dlx.fem.petsc.set_bc(b,self.bc)
-            self.solver.solve(b,state)
             
-            return A
+            # self.solver.solve(b,state)
+            state_vec = create_petsc_vector_wrap(state, comm)
+            self.solver.solve(b,state_vec)
+            
+            state_vec.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+            state_vec.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+                    
+            # print(state.array.min(),":",state.array.max())
+    
+            # return A
          
 
     # pde.solveAdj(adj_vec, x_true, adj_rhs)
-    def solveAdj(self, adj, x, adj_rhs):
+    def solveAdj(self, adj, x, adj_rhs, comm):
 
         """ Solve the linear adjoint problem:
         Given :math:`m, u`; find :math:`p` such that
@@ -155,8 +166,17 @@ class PDEVariationalProblem:
         # dlx.fem.petsc.apply_lifting(adj_rhs.vector,[dlx.fem.form(adj_form)],[self.bc0])            
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
-                    
-        self.solver.solve(adj_rhs, adj)
+        
+        # adj_rhs = create_petsc_vector_wrap(adj_rhs.x,comm)
+        adj_vec = create_petsc_vector_wrap(adj,comm)
+
+        # self.solver.solve(adj_rhs, adj)
+        self.solver.solve(adj_rhs, adj_vec)
+
+        adj_vec.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        adj_vec.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+            
+
         # self.solver.solve(adj_rhs, adj)
 
 
