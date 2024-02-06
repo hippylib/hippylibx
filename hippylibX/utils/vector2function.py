@@ -1,14 +1,14 @@
 import dolfinx as dlx
 import petsc4py
 
-def create_petsc_vector_wrap(x, comm):
-    #x -> dolfinx.la.Vector object
-    u_map = x.map
-    ghosts = u_map.ghosts.astype(petsc4py.PETSc.IntType)
-    bs = x.bs
-    u_size = (u_map.size_local *bs, u_map.size_global*bs)
+# def create_petsc_vector_wrap(x, comm):
+#     #x -> dolfinx.la.Vector object
+#     u_map = x.map
+#     ghosts = u_map.ghosts.astype(petsc4py.PETSc.IntType)
+#     bs = x.bs
+#     u_size = (u_map.size_local *bs, u_map.size_global*bs)
 
-    return petsc4py.PETSc.Vec().createGhostWithArray(ghosts, x.array, size=u_size, bsize=bs, comm = comm)
+#     return petsc4py.PETSc.Vec().createGhostWithArray(ghosts, x.array, size=u_size, bsize=bs, comm = comm)
     
 
 def vector2Function(vec,Vh, **kwargs):
