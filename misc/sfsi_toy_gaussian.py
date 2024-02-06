@@ -1,5 +1,3 @@
-
-
 import ufl
 import dolfinx as dlx
 from mpi4py import MPI
@@ -9,6 +7,7 @@ import petsc4py
 import sys
 import os
 import matplotlib
+import dolfinx.fem.petsc
 
 # matplotlib.use('Agg')
 
@@ -19,7 +18,6 @@ from matplotlib import pyplot as plt
 sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 # from NonGaussianContinuousMisfit import NonGaussianContinuousMisfit
-
 
 
 import hippylibX as hpx
@@ -95,7 +93,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
 
     # GROUND TRUTH
-    m_true = dlx.fem.Function(Vh_m)
+    m_true = dlx.fem.Function(Vh_m) 
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
     m_true.x.scatter_forward() 
     m_true = m_true.x
@@ -142,7 +140,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # print(u_true_func.getArray().min(),":",u_true_func.getArray().max())
 
-
     # print(type(test_obj),type(m_true)) 
     # print(type(u_true))
 
@@ -187,10 +184,19 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # m_true_func_from_petsc = hpx.vector2Function(m_true_petsc, Vh[hpx.PARAMETER])
 
-    pde.solveFwd(u_true, x_true, comm) #petsc4py.PETSc.Vec
+    # print(type(x_true[hpx.PARAMETER]))
+    #creating a petsc vector wrap of x_true[hpx.PARAMETER] -> dlx.la.Vector
 
-########################################################
+    # test_obj = hpx.create_petsc_vector_wrap(x_true[hpx.PARAMETER],comm)
+
+    # test_obj = dlx.la.create_petsc_vector_wrap(x_true[hpx.PARAMETER])
+    # print(type(test_obj))
+
+#############################################################
+
+    pde.solveFwd(u_true, x_true) 
     
+
     x_true[hpx.STATE] = u_true
     adj_vec = pde.generate_state()
     #a test vector
@@ -200,11 +206,10 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     adj_rhs = dlx.fem.Function(Vh_m)
     adj_rhs.interpolate(lambda x: np.log(0.34) + 3.*( ( ( (x[0]-1.5)*(x[0]-1.5) + (x[1]-1.5)*(x[1]-1.5) ) < 0.75) )) # <class 'dolfinx.fem.function.Function'>
     adj_rhs.x.scatter_forward() 
-    adj_rhs = hpx.create_petsc_vector_wrap(adj_rhs.x,comm)
+    adj_rhs = dlx.la.create_petsc_vector_wrap(adj_rhs.x)
 
     pde.solveAdj(adj_vec, x_true, adj_rhs, comm)
     x_true[hpx.ADJOINT] = adj_vec
-
 
     # print(rank,":",adj_vec.array.min(),":",adj_vec.array.max())
 
@@ -241,19 +246,169 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     m0 = prior.init_vector(0)
 
-    noise.set(3.)
+    # noise.set(3.)
+    noise.array[:] = 3.
+
+    # print(rank,":",len(noise.array))
 
     prior.sample(noise,m0)
 
-    # # _, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0),eps=None)
-    index = 2
-    h = model.generate_vector(hpx.PARAMETER)
-    # print(type(h))
-    h.array[:] = 5
-    x = model.generate_vector()
-    x[hpx.PARAMETER] = m0 #petsc4py.PETSc.Vec
+
+    # print(type(m0),type(noise))
+    # print(type(prior.sqrtM))
+
+    # noise_petsc = dlx.la.create_petsc_vector_wrap(noise)
+
+    # print(rank,":",noise_petsc.getArray().min(),":",noise_petsc.getArray().max())
+
+    # print(rank,":",len(noise_petsc.getArray()))
+
+    # rhs = prior.sqrtM * noise_petsc
+
+    # print(type(noise_petsc))
+
+    # rhs = prior.sqrtM*dlx.la.create_petsc_vector_wrap(noise)
 
 
+    # print(rank,":",m0.array.min(),":",m0.array.max())
+
+
+################################
+    
+    #dummy example for non-zero values in x[STATE] after solveFwd
+    m0 = dlx.fem.Function(Vh_m) 
+    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m0.x.scatter_forward() 
+    m0 = m0.x
+
+
+    # prior.sample(noise,m0)
+
+    eps, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0),eps=None)
+    # index = 2
+    # h = model.generate_vector(hpx.PARAMETER)
+    # # # print(type(h))
+    # h.array[:] = 5
+    # x = model.generate_vector()
+
+
+    # x[hpx.PARAMETER] = m0 #dlx.la.Vector
+
+    # model.solveFwd(x[hpx.STATE], x)
+    # model.solveAdj(x[hpx.ADJOINT], x ,Vh[hpx.ADJOINT])
+    
+    # # print(rank,":",x[hpx.ADJOINT].array.min(),":",x[hpx.ADJOINT].array.max())
+    
+    # cx = model.cost(x)
+    # # misfit_cost = model.misfit.cost(x)
+    # # reg_cost = model.cost(x[hpx.PARAMETER])
+
+    # # print(type(x[hpx.STATE]),type(x[hpx.PARAMETER]),type(x[hpx.ADJOINT]))
+    # # reg_cost = model.cost(x)
+
+    # _,grad_x = model.evalGradientParameter(x,misfit_only=True)
+    # # print(rank,":",grad_x.array.min(),":",grad_x.array.max())
+
+    # grad_xh = grad_x.dot( dlx.la.create_petsc_vector_wrap(h) )
+    # # print(rank,":",grad_xh)
+
+    # eps = None
+    # if eps is None:
+    #     n_eps = 32
+    #     eps = np.power(.5, np.arange(n_eps))
+    #     eps = eps[::-1]
+    # else:
+    #     n_eps = eps.shape[0]
+    
+    # err_grad = np.zeros(n_eps)
+    # err_H = np.zeros(n_eps)
+    
+    # # print(type(x[hpx.STATE]),type(x[hpx.PARAMETER]), type(x[hpx.ADJOINT]),type(h),type(m0) )
+
+
+    # # print(rank,":",m0.array.min(),":",m0.array.max())
+    # # x_plus = model.generate_vector()
+
+    # # dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
+    
+    # # dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    # # dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+    # # print(rank,":",x_plus[hpx.PARAMETER].array.min(),":",x_plus[hpx.PARAMETER].array.max())
+
+
+    # for i in range(n_eps):
+    #     my_eps = eps[i]
+        
+    #     x_plus = model.generate_vector()
+    #     # x_plus[hpx.PARAMETER].axpy(1., m0 )
+
+    #     dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
+    
+    #     dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    #     dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+    #     # x_plus[hpx.PARAMETER].axpy(my_eps, h)
+
+    #     # if(i == 0):
+    #     #     # print(dc,grad_xh)
+    #     #     print(rank,":",x_plus[hpx.PARAMETER].array.min(),":",x_plus[hpx.PARAMETER].array.max())
+
+    #     dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).axpy(my_eps,dlx.la.create_petsc_vector_wrap(h))
+    
+    #     dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    #     dlx.la.create_petsc_vector_wrap(x_plus[hpx.PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+    #     # if(i == 0):
+    #     #     # print(dc,grad_xh)
+    #     #     print(rank,":",x_plus[hpx.PARAMETER].array.min(),":",x_plus[hpx.PARAMETER].array.max())
+
+    #     model.solveFwd(x_plus[hpx.STATE], x_plus)
+
+    #     dc = model.cost(x_plus)[index] - cx[index]
+                
+    #     err_grad[i] = abs(dc/my_eps - grad_xh)
+        
+        # if(i == 0):
+        #     # print(dc,grad_xh)
+        #     print(rank,":",x_plus[hpx.STATE].array.min(),":",x_plus[hpx.STATE].array.max())
+
+
+        # Check the Hessian
+        # grad_xplus = model.generate_vector(hpx.PARAMETER)
+
+    # if(rank == 0):
+    #     print(err_grad)
+
+    # ytHx = H.inner(yy,xx)
+    # xtHy = H.inner(xx,yy)
+    # if np.abs(ytHx + xtHy) > 0.: 
+    #     rel_symm_error = 2*abs(ytHx - xtHy)/(ytHx + xtHy)
+    # else:
+    #     rel_symm_error = abs(ytHx - xtHy)
+    # if verbose:
+    #     print( "(yy, H xx) - (xx, H yy) = ", rel_symm_error)
+    #     if rel_symm_error > 1e-10:
+    #         print( "HESSIAN IS NOT SYMMETRIC!!")
+            
+    # return eps, err_grad, err_H
+
+
+
+    # print(rank,":",misfit_cost)
+    # print(rank,":",reg_cost)
+    
+    # print(rank,":",cx)
+
+
+    # print(rank,":",x[hpx.PARAMETER].array.min(),":",x[hpx.PARAMETER].array.max())
+    # model.solveAdj(x[ADJOINT], x)
+
+    # m_fun_true = dlx.fem.Function(Vh[hpx.PARAMETER])
+    # m_fun_true.x.array[:] = m0.x.array[:]
+
+################################
+    # print(type(m0))
 
     # m0.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
     # m0.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
@@ -270,18 +425,133 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # mfun = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
 
-    fun = dlx.fem.Function(Vh[hpx.PARAMETER])
-    test_object = Vh[hpx.PARAMETER].tabulate_dof_coordinates()
-    
+    # fun = dlx.fem.Function(Vh[hpx.PARAMETER])
+    # test_object = Vh[hpx.PARAMETER].tabulate_dof_coordinates()
     # print(rank,":",m0.array.min(),":",m0.array.max())
 ########################################################
+    # print(type(m0))
+
+    # test_obj = prior.sqrtM #3287, 19206
+    # ncols_1 = test_obj.getSize()[1]
+    # nrows_1 = test_obj.getSize()[0]
+
+    # #need to make a dlx.la.Vector type object given a certain size.
+    # t2 = pde.generate_parameter()
+    # # print(t2.index_map.size_local)
+    # # print(type(t2))
+
+    # test_obj2 = prior.A #3287, 3287
+    # ncols_2 = test_obj2.getSize()[1]
+    # nrows_2 = test_obj2.getSize()[0]
+
+    # # print(nrows_1,ncols_1)
+    # # print(nrows_2,ncols_2)
     
+    # m_length = ncols_2
+    
+    # # m0 = dlx.la.Vector(#index_map that describes size and distribution of Vector)
+    # # m0 = dlx.la.Vector(m_true.index_map)
+    # # print(type(m_true.index_map))
+
+    # custom_index_map = dlx.cpp.common.IndexMap(comm, ncols_2)
+    
+    # m0_cust_2 = dlx.la.vector(custom_index_map) #dolfinx.la.Vector
+
+    # # print(custom_index_map,custom_index_map.local_to_global)    
+
+    # m0_cust_3 = dlx.la.vector(custom_index_map) #dolfinx.la.Vector
+    
+    # # print(Vh_phi._ufl_element.degree())    
+
+    # # print(Vh_phi.num_sub_spaces)
+
+
+    # qdegree = 2*Vh_phi._ufl_element.degree()
+
+    # element = ufl.FiniteElement("Quadrature", Vh_phi.mesh.ufl_cell(), qdegree, quad_scheme="default")
+
+    # Vh_test = dlx.fem.FunctionSpace(msh, element) 
+    
+    # # print(Vh_test.dofmap.index_map)
+    # m_test = dlx.la.vector(Vh_test.dofmap.index_map)
+    # print(rank,":",len(m_test.array))
+
+    # help(dlx.fem.FunctionSpace)
+
+    # print(Vh_test.)
+
+    # m_test = dlx.fem.Function(Vh_test) 
+    # m_test.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    
+
+    # m_test.x.scatter_forward() 
+    # m_test = m_test.x
+
+    # print(rank,":",len(m_test.array))
+
+
+
+
+
+    #testing global distribution:
+    # m0_cust_2 = dolfinx.la.createVectorGlobal(ncols_1, comm)
+    # custom_index_map_2 = m_true.index_map
+
+    # m0_cust_3 = dlx.la.vector(custom_index_map_2) #dolfinx.la.Vector    
+    # print(rank,":",len(m0_cust_3.array))
+
+    #get the comm assc with Vh passed to prior
+    # print(type(Vh_phi))
+    # help(dolfinx.fem.function.FunctionSpaceBase)
+    # print(Vh_phi.mesh.comm)
+
+
+    # m0_cust_2.x = 2.
+
+    # local_size = m0_cust.local_size
+
+    # local_indices = m0_cust.local_indices
+
+    # print(rank,":",local_size,":")
+
+    # m0_cust.array[:] = 5.
+    # print(type(m_true))
+    # m_true_petsc = dlx.la.create_petsc_vector_wrap(m_true) #works
+    # m_true_petsc = dlx.la.create_petsc_vector_wrap(m0_cust) #doesn't work
+
+    # print(type(m_true),type(m0_cust_2))
+
+    # print(rank,":",m_true.array.min(),":",m_true.array.max())            
+    # m_true.x = 3.
+    # print(type(m_true.x))
+
+    # help(dlx.la.Vector)
+    # print(rank,":",m_true.array.min(),":",m_true.array.max())            
+    
+    # print(rank,":",m0_cust_2.array.min(),":",m0_cust_2.array.max())            
+
+    # print(type(m0_cust_2))
+    # print(rank,":",m0_cust_2.min_local,":",m0_cust_2.max_local)            
+
+    # print(type(m0_cust_2))
+
+    # m0_petsc_vec = dlx.la.create_petsc_vector_wrap(m0_cust)
+
+    # m0_petsc_vec = dlx.la.create_petsc_vector_wrap(m_true)
+
+    # print(type(m0))
+
+    # print(rank,":",len(m0.array))
+    # print(len(m_true.array))
+    
+
     # print(rank,":",len(x[hpx.PARAMETER].array))
 
     #x[hpx.PARAMETER] has to be modified to have the same mapping as Vh[hpx.PARAMETER] function space
     # m0_mod = dlx.la.create_petsc_vector(Vh[hpx.PARAMETER].dofmap.index_map, Vh[hpx.STATE].dofmap.index_map_bs) 
-    # test_obj = hpx.create_petsc_vector_wrap(x[hpx.PARAMETER],comm)
+    # test_obj = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
     
+
     # print(type(x[hpx.PARAMETER]))
 
     #take values in m0
