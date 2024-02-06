@@ -98,7 +98,7 @@ class Model:
             
         return [misfit_cost+reg_cost, reg_cost, misfit_cost]
     
-    def solveFwd(self, out, x,comm):
+    def solveFwd(self, out, x):
         """
         Solve the (possibly non-linear) forward problem.
         
@@ -113,7 +113,7 @@ class Model:
                 .. note:: :code:`p` is not accessed.
         """
         self.n_fwd_solve = self.n_fwd_solve + 1
-        self.problem.solveFwd(out, x,comm)
+        self.problem.solveFwd(out, x)
 
     
     # def solveAdj(self, out, x, Vh):
