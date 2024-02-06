@@ -16,7 +16,7 @@
 import dolfinx as dlx
 import ufl
 import numpy as np
-import scipy.linalg as scila
+# import scipy.linalg as scila
 import math
 from .variables import STATE, PARAMETER, ADJOINT
 import numbers
@@ -190,6 +190,8 @@ class test_prior:
 
         # Qh = dl.FunctionSpace(Vh.mesh(), element)
         Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
+        #for prior.init_vector method, we need to preserve Qh to get its dofmap.index_map
+
 
         # ph = dl.TrialFunction(Qh)
         # qh = dl.TestFunction(Qh)
@@ -229,6 +231,10 @@ class test_prior:
 
         self.sqrtM = MixedM.matMult(Mqh)
 
+        #for prior.init_vector method, we need to preserve Qh to get its dofmap.index_map
+        self.sqrtM_function_space = Qh
+
+
         # nrows, ncols = self.sqrtM.getSize()
 
         # dense_array = np.zeros((nrows, ncols), dtype=float)        
@@ -241,7 +247,7 @@ class test_prior:
 
         # print(np.max(dense_array),np.min(dense_array))
 
-        # dl.parameters["form_compiler"]["quadrature_degree"] = old_qr
+           # dl.parameters["form_compiler"]["quadrature_degree"] = old_qr
         # dl.parameters["form_compiler"]["representation"] = representation_old
                              
         self.R = _BilaplacianR(self.A, self.Msolver)      
@@ -266,14 +272,25 @@ class test_prior:
 
         if dim == "noise":
             # self.sqrtM.init_vector(x, 1)
-            return self.sqrtM.createVecRight()
+            
+            # return self.sqrtM.createVecRight()
+            
+            # return a dlx.la.Vector type object
+            # return dlx.la.vector( dlx.cpp.common.IndexMap( self.Vh.mesh.comm, self.sqrtM.getSize()[1]  )    )
+            return dlx.la.vector( self.sqrtM_function_space.dofmap.index_map    )
+
         else:
             # self.A.init_vector(x,dim)   
             if(dim == 0):
-                return self.A.createVecLeft()
+                # return self.A.createVecLeft()
+                # return dlx.la.vector( dlx.cpp.common.IndexMap( self.Vh.mesh.comm, self.A.getSize()[0]  )    )
+                return dlx.la.vector( self.Vh.dofmap.index_map)
+                
             else:
-                return self.A.createVecRight()
-
+                # return self.A.createVecRight()
+                # return dlx.la.vector( dlx.cpp.common.IndexMap( self.Vh.mesh.comm, self.A.getSize()[1]  )    )
+                return dlx.la.vector( self.Vh.dofmap.index_map )
+            
 
     #need to construct sqrtM and Asolver from the prior in hippylib
 
@@ -285,7 +302,8 @@ class test_prior:
         If :code:`add_mean == True` add the prior mean value to :code:`s`.
         """
 
-        rhs = self.sqrtM*noise
+        # rhs = self.sqrtM*noise
+        rhs = self.sqrtM*dlx.la.create_petsc_vector_wrap(noise)
 
         # rhs = self.sqrtM.createVecLeft()
         # self.sqrtM.mult(noise,rhs)
@@ -294,7 +312,15 @@ class test_prior:
         # print(rhs.min(),":",rhs.max())
 
         #this method not giving same results in serial and parallel.
-        self.Asolver.solve(rhs,s)
+        # self.Asolver.solve(rhs,s)
+        s_petsc = dlx.la.create_petsc_vector_wrap(s)
+        self.Asolver.solve(rhs,s_petsc)
+
+        s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+
+
         # print(s.min(),":",s.max())
         
 
@@ -307,21 +333,27 @@ class test_prior:
         # self.Asolver.solve(rhs,s)
 
         # print(type(rhs))
+        
+        # if add_mean:
+        #     s.axpy(1., self.mean)
+        
         if add_mean:
-            s.axpy(1., self.mean)
+            s_petsc.axpy(1., dlx.la.create_petsc_vector_wrap(self.mean))
         
 
     #from Class _Prior that SqrtPrecisionPDE_Prior derives methods from
     #prior.cost is used in modelVerify in model.cost
     def cost(self,m):
-        d = self.mean.copy()
-        d.axpy(-1., m)
+
+        # d = self.mean.copy()
+        d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
+        d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))
 
         # Rd = dl.Vector(self.R.mpi_comm())
         # self.init_vector(Rd,0)    
         # Rd = self.R.createVecLeft()
 
-        Rd = self.init_vector(0)
+        Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
         self.R.mult(d,Rd)
 
         # return .5*Rd.inner(d)
