@@ -5,6 +5,7 @@ from .variables import STATE, PARAMETER, ADJOINT
 from ..utils.random import parRandom
     
 import dolfinx as dlx
+import petsc4py
 
 # def modelVerify(model,m0, is_quadratic = False, misfit_only=False, verbose = True, eps = None):
 def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, verbose = True, eps = None):
@@ -24,24 +25,26 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
     h = model.generate_vector(PARAMETER)
     # parRandom.normal(1., h)
     # parRandom(comm, 1., h) #supply comm to this method
-    h.set(5.)
+    h.array[:] = 5.
 
     # print(comm.rank,":",h.getArray())
     
     x = model.generate_vector()
-    x[PARAMETER] = m0.vector
+    
+    
+    x[PARAMETER] = m0
 
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
 
     #below will destroy values in x[PARAMETER], so have to preserve it before calling
 
-    m_fun_true = dlx.fem.Function(Vh[PARAMETER])
-    m_fun_true.x.array[:] = m0.x.array[:]
+    # m_fun_true = dlx.fem.Function(Vh[PARAMETER])
+    # m_fun_true.x.array[:] = m0.x.array[:]
 
     model.solveFwd(x[STATE], x)
     
-    x[PARAMETER] = m_fun_true.vector
-    m0 = m0.vector
+    # x[PARAMETER] = m_fun_true.vector
+    # m0 = m0.vector
 
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
     
@@ -51,7 +54,7 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
     
     cx = model.cost(x)
     
-    grad_x = model.generate_vector(PARAMETER)
+    # grad_x = model.generate_vector(PARAMETER)
 
 
     # print(x[STATE].min(),":",x[STATE].max())
@@ -63,7 +66,9 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
     
     # print(grad_x.min(),":",grad_x.max()) #(2992, -4729.582595240499) : (978, 162508.4367134074)
 
-    grad_xh = grad_x.dot( h )
+    grad_xh = grad_x.dot( dlx.la.create_petsc_vector_wrap(h) )
+    
+    # grad_xh = grad_x.dot( h )
     # print(grad_xh) #27663.37064562618
 
     # model.setPointForHessianEvaluations(x)
@@ -90,8 +95,20 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
         my_eps = eps[i]
         
         x_plus = model.generate_vector()
-        x_plus[PARAMETER].axpy(1., m0 )
-        x_plus[PARAMETER].axpy(my_eps, h)
+        # x_plus[PARAMETER].axpy(1., m0 )
+        
+        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
+    
+        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+        # x_plus[PARAMETER].axpy(my_eps, h)
+        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(my_eps,dlx.la.create_petsc_vector_wrap(h))
+    
+        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+
 
         # print(comm.rank,":",x_plus[STATE].min(),":",x_plus[STATE].max())    
         # print(comm.rank,":",x_plus[PARAMETER].min(),":",x_plus[PARAMETER].max())
@@ -127,8 +144,8 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
         # print(err_grad)
     # print(comm.rank, ":" , "hello-1")
     
-    # if verbose: #true only for rank == 0
-        # modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H)
+    if verbose: #true only for rank == 0
+        modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H)
 
     # xx = model.generate_vector(PARAMETER)
     # parRandom.normal(1., xx)
