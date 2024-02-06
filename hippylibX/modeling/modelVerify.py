@@ -99,16 +99,10 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
         
         dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
     
-        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
         # x_plus[PARAMETER].axpy(my_eps, h)
         dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(my_eps,dlx.la.create_petsc_vector_wrap(h))
     
-        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
-
-
 
         # print(comm.rank,":",x_plus[STATE].min(),":",x_plus[STATE].max())    
         # print(comm.rank,":",x_plus[PARAMETER].min(),":",x_plus[PARAMETER].max())

@@ -124,9 +124,6 @@ class PDEVariationalProblem:
             state_vec = dlx.la.create_petsc_vector_wrap(state)
             self.solver.solve(b,state_vec)
             
-            state_vec.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-            state_vec.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
-                    
             # print(state.array.min(),":",state.array.max())
     
             # return A
@@ -173,9 +170,6 @@ class PDEVariationalProblem:
         # self.solver.solve(adj_rhs, adj)
         self.solver.solve(adj_rhs, adj_vec)
 
-        adj_vec.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        adj_vec.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
-            
 
         # self.solver.solve(adj_rhs, adj)
 
