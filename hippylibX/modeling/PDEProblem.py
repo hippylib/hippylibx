@@ -4,7 +4,7 @@ import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
 #from ..algorithms.linalg import Transpose #not yet used
 from ..algorithms.linSolvers import PETScLUSolver
-from ..utils.vector2function import vector2Function, create_petsc_vector_wrap
+from ..utils.vector2function import vector2Function
 
 
 #decorator for functions in classes that are not used -> may not be needed in the final
@@ -12,7 +12,6 @@ from ..utils.vector2function import vector2Function, create_petsc_vector_wrap
 
 def unused_function(func):
     return None
-
 
 class PDEVariationalProblem:
     def __init__(self, Vh, varf_handler, bc=[], bc0=[], is_fwd_linear=False):
@@ -56,7 +55,7 @@ class PDEVariationalProblem:
         dummy = self.generate_parameter()
         m.init(dummy.mpi_comm(), dummy.dofmap.index_map)
 
-    def solveFwd(self, state, x, comm): #state is a vector
+    def solveFwd(self, state, x): #state is a vector
         """ Solve the possibly nonlinear forward problem:
         Given :math:`m`, find :math:`u` such that
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
@@ -121,7 +120,8 @@ class PDEVariationalProblem:
             # dlx.fem.petsc.set_bc(b,self.bc)
             
             # self.solver.solve(b,state)
-            state_vec = create_petsc_vector_wrap(state, comm)
+            # print(type(state))
+            state_vec = dlx.la.create_petsc_vector_wrap(state)
             self.solver.solve(b,state_vec)
             
             state_vec.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
@@ -168,7 +168,7 @@ class PDEVariationalProblem:
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
         
         # adj_rhs = create_petsc_vector_wrap(adj_rhs.x,comm)
-        adj_vec = create_petsc_vector_wrap(adj,comm)
+        adj_vec = dlx.la.create_petsc_vector_wrap(adj)
 
         # self.solver.solve(adj_rhs, adj)
         self.solver.solve(adj_rhs, adj_vec)
