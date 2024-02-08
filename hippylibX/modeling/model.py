@@ -140,7 +140,7 @@ class Model:
         # self.misfit.grad(STATE, x, rhs)
         rhs = self.misfit.grad(STATE, x)
         
-        rhs.scale(-1.)
+        dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
         # print(rhs.getArray().min(),":",rhs.getArray().max())
 
         # rhs *= -1.
@@ -162,7 +162,7 @@ class Model:
         ###
 
         ###new
-        self.problem.solveAdj(out, x, rhs, comm)
+        self.problem.solveAdj(out, x, dlx.la.create_petsc_vector_wrap(rhs), comm)
 
         ###
 
@@ -189,7 +189,10 @@ class Model:
         # # self.misfit.grad(PARAMETER,x,tmp)
         tmp = self.misfit.grad(PARAMETER,x)        
         # print(tmp.min(),":",tmp.max())
-        mg.axpy(1., tmp)
+        mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
+        tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
+        
+        mg_petsc.axpy(1., tmp_petsc)
         # print(mg.min(),":",mg.max())
 
         if not misfit_only:
@@ -199,16 +202,15 @@ class Model:
         # self.prior.Msolver.solve(tmp, mg)
         # print(tmp.min(),":",tmp.max()) #(114, -13.377925313892392) : (978, 509353.8643973592)
     
-        self.prior.Msolver.solve(mg, tmp)
+        self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         # print(tmp.min(),":",tmp.max()) #(3085, -4490252.342492111) : (7, 23510578.715353236)
         
         #self.prior.Rsolver.solve(tmp, mg)
         # return math.sqrt(mg.inner(tmp))
         # print(math.sqrt(mg.dot(tmp))) #11972566.111908454, #4889042.271239927
-        return math.sqrt(mg.dot(tmp)), mg
+        return math.sqrt(mg_petsc.dot(tmp_petsc)), mg_petsc
     
-        
-    
+            
     def setPointForHessianEvaluations(self, x, gauss_newton_approx=False):
         """
         Specify the point :code:`x = [u,m,p]` at which the Hessian operator (or the Gauss-Newton approximation)
