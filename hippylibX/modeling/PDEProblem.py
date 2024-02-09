@@ -293,20 +293,22 @@ from ..utils.vector2function import vector2Function
 def unused_function(func):
     return None
 
+
 class PDEVariationalProblem:
-    def __init__(self, Vh, varf_handler, bc=[], bc0=[], is_fwd_linear=False):
+    def __init__(self, Vh : dlx.fem.FunctionSpace, varf_handler, bc=[], bc0=[], is_fwd_linear=False):
         self.Vh = Vh
         self.varf_handler = varf_handler
 
         self.bc = bc        
         self.bc0 = bc0
 
-        self.A = None
-        self.At = None
-        self.C = None
-        self.Wmu = None
-        self.Wmm = None
-        self.Wuu = None
+        # self.A = None
+        # self.At = None
+        # self.C = None
+        
+        # self.Wmu = None
+        # self.Wmm = None
+        # self.Wuu = None
 
         self.solver = None
         self.solver_fwd_inc = None
@@ -315,14 +317,14 @@ class PDEVariationalProblem:
         self.is_fwd_linear = is_fwd_linear
         self.n_calls = {"forward": 0, "adjoint": 0, "incremental_forward": 0, "incremental_adjoint": 0}
 
-    def generate_state(self):
+    def generate_state(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the state. """
         # return dlx.fem.Function(self.Vh[STATE]).vector
         # return dlx.la.create_petsc_vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
         return dlx.la.vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
         
     # @unused_function #now being used in mode.generate_vector() in modelVerify.py
-    def generate_parameter(self):
+    def generate_parameter(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the parameter. """
         # return dlx.la.create_petsc_vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
         return dlx.la.vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
@@ -334,7 +336,7 @@ class PDEVariationalProblem:
         dummy = self.generate_parameter()
         m.init(dummy.mpi_comm(), dummy.dofmap.index_map)
 
-    def solveFwd(self, state, x): #state is a vector
+    def solveFwd(self, state : dlx.la.Vector, x : dlx.la.Vector) -> None: #state is a vector
         """ Solve the possibly nonlinear forward problem:
         Given :math:`m`, find :math:`u` such that
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
@@ -409,7 +411,7 @@ class PDEVariationalProblem:
          
 
     # pde.solveAdj(adj_vec, x_true, adj_rhs)
-    def solveAdj(self, adj, x, adj_rhs, comm):
+    def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : petsc4py.PETSc.Vec ) -> None: 
 
         """ Solve the linear adjoint problem:
         Given :math:`m, u`; find :math:`p` such that
@@ -443,15 +445,14 @@ class PDEVariationalProblem:
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
         
-        # adj_rhs = create_petsc_vector_wrap(adj_rhs.x,comm)
-        adj_vec = dlx.la.create_petsc_vector_wrap(adj)
+        #Working
+        # adj_vec = dlx.la.create_petsc_vector_wrap(adj)
+        # self.solver.solve(adj_rhs, adj_vec)
+
+        #Also works
+        self.solver.solve(adj_rhs,dlx.la.create_petsc_vector_wrap(adj) )
 
         # self.solver.solve(adj_rhs, adj)
-        self.solver.solve(adj_rhs, adj_vec)
-
-
-        # self.solver.solve(adj_rhs, adj)
-
 
         ####################################
         # u = vector2Function(x[STATE], self.Vh[STATE])
@@ -465,10 +466,6 @@ class PDEVariationalProblem:
         # self.solver.set_operator(Aadj)
         # self.solver.solve(adj, adj_rhs)
         ####################################
-
-
-
-
 
         # print(adj_rhs.min(),":",adj_rhs.max())
 
@@ -494,7 +491,7 @@ class PDEVariationalProblem:
         
     # self.problem.evalGradientParameter(x, mg)
         
-    def evalGradientParameter(self, x):
+    def evalGradientParameter(self, x : list) -> dlx.la.Vector:
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
         
         u = vector2Function(x[STATE], self.Vh[STATE])
@@ -508,49 +505,57 @@ class PDEVariationalProblem:
         dlx.la.create_petsc_vector_wrap(eval_grad).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         return eval_grad
     
-        # eval_grad = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm)))
-        # eval_grad.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    # def evalGradientParameter(self, x, out):
+    #     """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
+        
+    #     u = vector2Function(x[STATE], self.Vh[STATE])
+    #     m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+    #     p = vector2Function(x[ADJOINT], self.Vh[ADJOINT])
+    #     dm = ufl.TestFunction(self.Vh[PARAMETER])
+    #     res_form = self.varf_handler(u, m, p)
 
-        # return eval_grad
+    #     dlx.fem.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm)), tensor = out)
+    #     # eval_grad.assemble()
+    #     dlx.la.create_petsc_vector_wrap(out).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
 
 
-    def _createLUSolver(self):
+    def _createLUSolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create()
         return ksp
 
+    #not needed
+    # def solveAdj_2(self, adj, x, adj_rhs):
 
-    def solveAdj_2(self, adj, x, adj_rhs):
+    #     """ Solve the linear adjoint problem:
+    #     Given :math:`m, u`; find :math:`p` such that
+    #     .. math:: \\delta_u F(u, m, p;\\hat{u}) = 0, \\quad \\forall \\hat{u}.
+    #     """
 
-        """ Solve the linear adjoint problem:
-        Given :math:`m, u`; find :math:`p` such that
-        .. math:: \\delta_u F(u, m, p;\\hat{u}) = 0, \\quad \\forall \\hat{u}.
-        """
+    #     self.n_calls["adjoint"] += 1
+    #     if self.solver is None:
+    #         self.solver = self._createLUSolver()
 
-        self.n_calls["adjoint"] += 1
-        if self.solver is None:
-            self.solver = self._createLUSolver()
-
-        u = vector2Function(x[STATE], self.Vh[STATE])
-        m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
-        p = dlx.fem.Function(self.Vh[ADJOINT])
-        du = ufl.TestFunction(self.Vh[STATE])
-        dp = ufl.TrialFunction(self.Vh[ADJOINT])
-        varf = self.varf_handler(u, m, p)
-        adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
+    #     u = vector2Function(x[STATE], self.Vh[STATE])
+    #     m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+    #     p = dlx.fem.Function(self.Vh[ADJOINT])
+    #     du = ufl.TestFunction(self.Vh[STATE])
+    #     dp = ufl.TrialFunction(self.Vh[ADJOINT])
+    #     varf = self.varf_handler(u, m, p)
+    #     adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
         
-        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-1.0788096613719298, 1.9211903386280702
+    #     # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-1.0788096613719298, 1.9211903386280702
         
-        Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
+    #     Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
         
-        # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
+    #     # print(adj_rhs.vector.min(),":",adj_rhs.vector.max()) #-3.420763640362111e+306, 1.1652105010162572e+301
 
-        Aadj.assemble()
+    #     Aadj.assemble()
 
-        self.solver.setOperators(Aadj)
+    #     self.solver.setOperators(Aadj)
 
-        #not needed:        
-        # dlx.fem.petsc.apply_lifting(adj_rhs.vector,[dlx.fem.form(adj_form)],[self.bc0])            
-        # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+    #     #not needed:        
+    #     # dlx.fem.petsc.apply_lifting(adj_rhs.vector,[dlx.fem.form(adj_form)],[self.bc0])            
+    #     # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+    #     # adj_rhs.vector.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
                     
-        self.solver.solve(adj_rhs.vector, adj)
+    #     self.solver.solve(adj_rhs.vector, adj)

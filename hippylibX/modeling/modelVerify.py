@@ -1,4 +1,4 @@
-=# import numpy as np
+# import numpy as np
 
 # from .variables import STATE, PARAMETER, ADJOINT
 # # from .reducedHessian import ReducedHessian
@@ -234,7 +234,6 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
     
     x = model.generate_vector()
     
-    
     x[PARAMETER] = m0
 
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
@@ -251,7 +250,7 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
 
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
     
-    model.solveAdj(x[ADJOINT], x ,Vh[ADJOINT])
+    model.solveAdj(x[ADJOINT], x)
 
     # print(comm.rank,":",x[ADJOINT].getArray())
     
@@ -262,15 +261,22 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
 
     # print(x[STATE].min(),":",x[STATE].max())
     # print(x[PARAMETER].min(),":",x[PARAMETER].max())
-
-    _,grad_x = model.evalGradientParameter(x,misfit_only=misfit_only)
+    
+    # grad_x = model.generate_vector(PARAMETER)
+    
+    # model.evalGradientParameter(x, grad_x, misfit_only=misfit_only)
+    
+    _,grad_x = model.evalGradientParameter(x, misfit_only=misfit_only)
     
     # grad_xh = grad_x.inner( h )
     
     # print(grad_x.min(),":",grad_x.max()) #(2992, -4729.582595240499) : (978, 162508.4367134074)
 
-    grad_xh = grad_x.dot( dlx.la.create_petsc_vector_wrap(h) )
-    
+    # grad_xh = grad_x.dot( dlx.la.create_petsc_vector_wrap(h) )
+    grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot( dlx.la.create_petsc_vector_wrap(h) )
+
+
+
     # grad_xh = grad_x.dot( h )
     # print(grad_xh) #27663.37064562618
 
@@ -387,7 +393,15 @@ def modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H):
         plt.subplot(121)
         plt.loglog(eps, err_grad, "-ob", eps, second_val, "-.k")
         plt.title("FD Gradient Check")
-        plt.show()
+        plt.ion()
+        plt.show() #uncommenting this will return control to the user
+        
+        
+        # plt.pause(0.001)
+        
+        # plt.show(block = False)
+        # plt.pause(5)
+        # plt.close()
 
 
         # plt.loglog(eps, err_grad, "-ob", eps, eps*(err_grad[0]/eps[0]), "-.k")
