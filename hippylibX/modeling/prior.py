@@ -341,7 +341,6 @@ class test_prior:
     #     dlx.la.create_petsc_vector_wrap(self.R).mult(d,Rd)
     #     return .5*Rd.inner(d)
 
-
     def cost(self,m : dlx.la.Vector) -> float:  
         d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))

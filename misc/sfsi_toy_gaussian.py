@@ -203,6 +203,11 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     # print(f'hello from rank {comm.rank}')
 
+    h = model.generate_vector(hpx.PARAMETER)
+    hpx.parRandom(comm,1., h,addv=False)
+    # print(rank,":",h.array.min(),":",h.array.max())
+
+
 
 if __name__ == "__main__":    
   nx = 64

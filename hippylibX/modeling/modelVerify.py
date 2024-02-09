@@ -275,8 +275,6 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
     # grad_xh = grad_x.dot( dlx.la.create_petsc_vector_wrap(h) )
     grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot( dlx.la.create_petsc_vector_wrap(h) )
 
-
-
     # grad_xh = grad_x.dot( h )
     # print(grad_xh) #27663.37064562618
 
