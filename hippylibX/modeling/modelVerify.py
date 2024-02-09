@@ -393,7 +393,7 @@ def modelVerifyPlotErrors(comm, is_quadratic, eps, err_grad, err_H):
         plt.subplot(121)
         plt.loglog(eps, err_grad, "-ob", eps, second_val, "-.k")
         plt.title("FD Gradient Check")
-        plt.ion()
+        # plt.ion()
         plt.show() #uncommenting this will return control to the user
         
         

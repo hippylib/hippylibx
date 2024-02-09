@@ -197,10 +197,11 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     m0 = m0.x
 
     eps, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0),eps=None)
-    if(rank == 0):
-        print(err_grad)
+    
+    # if(rank == 0):
+    #     print(err_grad)
 
-    print(f'hello from rank {comm.rank}')
+    # print(f'hello from rank {comm.rank}')
 
 
 if __name__ == "__main__":    
