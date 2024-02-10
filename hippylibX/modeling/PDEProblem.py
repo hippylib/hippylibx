@@ -491,7 +491,7 @@ class PDEVariationalProblem:
         
     # self.problem.evalGradientParameter(x, mg)
         
-    def evalGradientParameter(self, x : list) -> dlx.la.Vector:
+    def evalGradientParameter(self, x : list, out : dlx.la.Vector) -> None:
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
         
         u = vector2Function(x[STATE], self.Vh[STATE])
@@ -500,10 +500,9 @@ class PDEVariationalProblem:
         dm = ufl.TestFunction(self.Vh[PARAMETER])
         res_form = self.varf_handler(u, m, p)
 
-        eval_grad = dlx.fem.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm)))
-        # eval_grad.assemble()
-        dlx.la.create_petsc_vector_wrap(eval_grad).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        return eval_grad
+        tmp = dlx.la.create_petsc_vector_wrap(dlx.fem.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm))) )
+        tmp.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        dlx.la.create_petsc_vector_wrap(out).axpy(1.,tmp)
     
     # def evalGradientParameter(self, x, out):
     #     """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """

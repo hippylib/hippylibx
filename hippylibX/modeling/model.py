@@ -190,11 +190,17 @@ class Model:
         """ 
         tmp = self.generate_vector(PARAMETER)
         # self.problem.evalGradientParameter(x, mg)
-        mg = self.problem.evalGradientParameter(x)
+        
+        mg = self.problem.generate_parameter()
+        self.problem.evalGradientParameter(x, mg)
+
         # print(mg.min(),":",mg.max())
         # # self.misfit.grad(PARAMETER,x,tmp)
+
         tmp = self.misfit.grad(PARAMETER,x)        
+        
         # print(tmp.min(),":",tmp.max())
+        
         mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
         tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
         

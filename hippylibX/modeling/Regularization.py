@@ -14,6 +14,11 @@ class VariationalRegularization:
         self.isQuadratic = isQuadratic #Whether the functional is a quadratic form (i.e. the Hessian is constant) or not (the Hessian dependes on m
         self.mesh = mesh #to allreduce over the entire mesh in the cost function
 
+    # def cost(self, m):
+    # 1. Cast the petsc4py vector m to a dlx.Function mfun
+    # 2. Compute the cost by calling assemble on self.functional_handler(mfun)
+    # 3. Return the value of the cost (Make sure to call a AllReduce for parallel computations
+
     def cost(self,m):
         mfun = vector2Function(m,self.Vh[PARAMETER])
         loc_cost = self.functional_handler(mfun)
@@ -25,17 +30,32 @@ class VariationalRegularization:
     #  2. call symbolic differentation of self.functional_handler(mfun) wrt mfun
     #  3. call assemble, update ghosts, and store the result in out
     
-    def grad(self, m):
+    # def grad(self, m, out):
+    #     mfun = vector2Function(m,self.Vh[PARAMETER])
+    #     #what would the functional_handler look like?
+    #     L = dlx.fem.form(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh[PARAMETER])))
+    #     grad = dlx.fem.petsc.create_vector(L)
+    #     with grad.localForm() as loc_grad:
+    #         loc_grad.set(0)
+    #     dlx.fem.petsc.assemble_vector(grad,L)
+    #     grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    #     # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
+    #     return grad                
+
+    def grad(self, m : dlx.la.Vector, out : dlx.la.Vector):
         mfun = vector2Function(m,self.Vh[PARAMETER])
         #what would the functional_handler look like?
         L = dlx.fem.form(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh[PARAMETER])))
-        grad = dlx.fem.petsc.create_vector(L)
-        with grad.localForm() as loc_grad:
-            loc_grad.set(0)
-        dlx.fem.petsc.assemble_vector(grad,L)
-        grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+        tmp = dlx.la.create_petsc_vector_wrap(dlx.fem.assemble_vector(L))
+        # with grad.localForm() as loc_grad:
+        #     loc_grad.set(0)
+        # dlx.fem.petsc.assemble_vector(grad,L)
+        tmp.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+        dlx.la.create_petsc_vector_wrap(out).axpy(1.,tmp)
+    
         # grad.ghostUpdate(addv=petsc4py.PETSc.InsertMode.INSERT, mode=petsc4py.PETSc.ScatterMode.FORWARD)
-        return grad                
+        # return grad                
+
 
     # def setLinearizationPoint(self, m):
     #   1. Cast the petsc4py vector m to a dlx.Function mfun
@@ -61,4 +81,14 @@ class VariationalRegularization:
         self.Rsolver.setErrorIfNotConverged(True)
         self.Rsolver.setInitialGuessNonZero(False)
         self.Rsolver.setOperators(self.R)
-        
+
+
+class H1TikhonvFunctional:
+    def __init__(self, gamma, delta, m0):
+        self.gamma = gamma #These are dlx Constant, Expression, or Function
+        self.delta = delta
+        self.m0 = m0
+
+    def __call__(self, m): #Here m is a dlx Function
+        return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *ufl.dx + \
+                ufl.inner(self.delta * m, m)*ufl.dx

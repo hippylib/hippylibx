@@ -75,43 +75,45 @@ class _BilaplacianR:
         self.A.mult(self.help2, y)
 
 
-# class _BilaplacianRsolver():
-#     """
-#     Operator that represent the action of the inverse the regularization/precision matrix
-#     for the Bilaplacian prior.
-#     """
+class _BilaplacianRsolver():
+    """
+    Operator that represent the action of the inverse the regularization/precision matrix
+    for the Bilaplacian prior.
+    """
 
-#     def __init__(self, Asolver, M):
-#         self.Asolver = Asolver
-#         self.M = M
+    def __init__(self, Asolver, M):
+        self.Asolver = Asolver
+        self.M = M
         
-#         # self.help1, self.help2 = dl.Vector(self.M.mpi_comm()), dl.Vector(self.M.mpi_comm())
-#         # self.init_vector(self.help1, 0)
-#         # self.init_vector(self.help2, 0)
+        # self.help1, self.help2 = dl.Vector(self.M.mpi_comm()), dl.Vector(self.M.mpi_comm())
+        # self.init_vector(self.help1, 0)
+        # self.init_vector(self.help2, 0)
         
-#         # self.help1 = self.M.createVecLeft()
-#         # self.help2 = self.M.createVecLeft()
-#         self.help1, self.help2 = self.init_vector(1), self.init_vector(1)
+        # self.help1 = self.M.createVecLeft()
+        # self.help2 = self.M.createVecLeft()
 
-#     # def init_vector(self,x, dim):
-#     def init_vector(self,dim):        
-#         # self.M.init_vector(x,1)
-#         if(dim == 0):
-#             x = self.M.createVecLeft()
-#         else:
-#             x = self.M.createVecRight() 
-#         #will the x be reflected outside the function call?
-#         return x
-        
-#     def solve(self,x,b):
-#         # nit = self.Asolver.solve(self.help1, b)
-#         nit = self.Asolver.solve(b, self.help1)
-#         self.M.mult(self.help1, self.help2)
-        
-#         # nit += self.Asolver.solve(x, self.help2)
-#         nit += self.Asolver.solve(self.help2, x)
+        self.help1, self.help2 = self.M.createVecLeft(), self.M.createVecLeft()
 
-#         return nit
+    # def init_vector(self,x, dim):
+    @unused_function
+    def init_vector(self,dim):        
+        # self.M.init_vector(x,1)
+        if(dim == 0):
+            x = self.M.createVecLeft()
+        else:
+            x = self.M.createVecRight() 
+        #will the x be reflected outside the function call?
+        return x
+        
+    def solve(self,x,b):
+        # nit = self.Asolver.solve(self.help1, b)
+        nit = self.Asolver.solve(b, self.help1)
+        self.M.mult(self.help1, self.help2)
+        
+        # nit += self.Asolver.solve(x, self.help2)
+        nit += self.Asolver.solve(self.help2, x)
+
+        return nit
 
 
 class test_prior:
@@ -246,7 +248,7 @@ class test_prior:
         # dl.parameters["form_compiler"]["representation"] = representation_old
                              
         self.R = _BilaplacianR(self.A, self.Msolver)      
-        # self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
+        self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         
         self.mean = mean
         
@@ -257,7 +259,7 @@ class test_prior:
             self.mean = self.init_vector(0)
 
     # def init_vector(self,x,dim):
-    def init_vector(self,dim) -> dlx.la.Vector:            
+    def init_vector(self, dim : int) -> dlx.la.Vector:            
         
         """
         Inizialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
@@ -273,6 +275,9 @@ class test_prior:
             # return a dlx.la.Vector type object
             # return dlx.la.vector( dlx.cpp.common.IndexMap( self.Vh.mesh.comm, self.sqrtM.getSize()[1]  )    )
             return dlx.la.vector( self.sqrtM_function_space.dofmap.index_map    )
+            # tmp = dlx.la.vector(self.sqrtM_function_space.dofmap.index_map)
+            # x = tmp
+            # dlx.la.create_petsc_vector_wrap(x).axpy(1.,tmp)
 
         else:
             # self.A.init_vector(x,dim)   
