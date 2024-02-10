@@ -15,16 +15,16 @@ class NonGaussianContinuousMisfit(object):
         self.x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
         self.gauss_newton_approx = False
 
-    def cost(self,x):
+    def cost(self,x : list) -> float:
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
-        u_fun.x.scatter_forward()
+        # u_fun.x.scatter_forward()
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
-        m_fun.x.scatter_forward()  
+        # m_fun.x.scatter_forward()  
         loc_cost = self.form(u_fun,m_fun)
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
         return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
 
-    def grad(self, i, x):
+    def grad(self, i : int, x : list) -> dlx.la.Vector:
 
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
@@ -44,9 +44,7 @@ class NonGaussianContinuousMisfit(object):
 
         x_fun = [u_fun, m_fun]
         x_test = [ufl.TestFunction(self.Vh[hpx.STATE]), ufl.TestFunction(self.Vh[hpx.PARAMETER])]
-
         L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], x_test[i]))
-    
         out =  dlx.fem.assemble_vector(L)
         dlx.la.create_petsc_vector_wrap(out).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         return out
@@ -146,7 +144,7 @@ class NonGaussianContinuousMisfit(object):
 
 
     
-    def setLinearizationPoint(self,x, gauss_newton_approx=False):
+    def setLinearizationPoint(self,x : list, gauss_newton_approx=False):
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
         self.x_lin_fun = [u_fun, m_fun]

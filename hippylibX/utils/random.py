@@ -20,21 +20,15 @@ class parRandom():
         # num_local_values = d.array.shape[0]
         num_local_values = out.index_map.size_local + out.index_map.num_ghosts
         loc_random_numbers = np.random.default_rng(self.rng).normal(loc=0,scale= np.sqrt(sigma),size=num_local_values)
-        out.array[:] += loc_random_numbers
+        out.array[:] = loc_random_numbers
+        dlx.la.create_petsc_vector_wrap(out).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
     def normal_perturb(self,sigma, out):
         # num_local_values = d.array.shape[0]
         num_local_values = out.index_map.size_local + out.index_map.num_ghosts
         loc_random_numbers = np.random.default_rng(self.rng).normal(loc=0,scale= np.sqrt(sigma),size=num_local_values)
-        out.array[:] = loc_random_numbers
-        
-
-
-
-
-
-
-
+        out.array[:] += loc_random_numbers
+        dlx.la.create_petsc_vector_wrap(out).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
 
 # def parRandom(comm,noise_variance,d,addv=True):

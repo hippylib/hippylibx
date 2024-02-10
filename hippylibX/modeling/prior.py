@@ -258,7 +258,7 @@ class test_prior:
             
             self.mean = self.init_vector(0)
 
-    # def init_vector(self,x,dim):
+    #Old version
     def init_vector(self, dim : int) -> dlx.la.Vector:            
         
         """
@@ -290,7 +290,23 @@ class test_prior:
                 # return self.A.createVecRight()
                 # return dlx.la.vector( dlx.cpp.common.IndexMap( self.Vh.mesh.comm, self.A.getSize()[1]  )    )
                 return dlx.la.vector( self.Vh.dofmap.index_map )
-            
+
+    #Modified version of above init_vector
+    def generate_parameter(self, dim : int) -> dlx.la.Vector:      
+        """
+        Inizialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
+        If :code:`dim == "noise"` inizialize :code:`x` to be compatible with the size of
+        white noise used for sampling.
+        """
+        if(dim == "noise"):
+            return dlx.la.vector( self.sqrtM_function_space.dofmap.index_map )
+        else:
+            return dlx.la.vector( self.Vh.dofmap.index_map )
+
+
+
+
+    
 
     #need to construct sqrtM and Asolver from the prior in hippylib
 
@@ -319,7 +335,6 @@ class test_prior:
         s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
-        
         # print(s.min(),":",s.max())
         
 
