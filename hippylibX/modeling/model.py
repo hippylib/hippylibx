@@ -101,7 +101,7 @@ class Model:
         """
         misfit_cost = self.misfit.cost(x)
         reg_cost = self.prior.cost(x[PARAMETER])
-            
+        
         return [misfit_cost+reg_cost, reg_cost, misfit_cost]
     
     def solveFwd(self, out : dlx.la.Vector, x : list) -> None:
@@ -115,7 +115,6 @@ class Model:
 
                 1) the parameter variable :code:`m` for the solution of the forward problem
                 2) the initial guess :code:`u` if the forward problem is non-linear
-        
                 .. note:: :code:`p` is not accessed.
         """
         self.n_fwd_solve = self.n_fwd_solve + 1
@@ -214,7 +213,9 @@ class Model:
         # self.prior.Msolver.solve(tmp, mg)
         # print(tmp.min(),":",tmp.max()) #(114, -13.377925313892392) : (978, 509353.8643973592)
     
-        self.prior.Msolver.solve(mg_petsc, tmp_petsc)
+        # self.prior.Msolver.solve(mg_petsc, tmp_petsc)
+        self.prior.Rsolver.solve(mg_petsc, tmp_petsc)
+        
         # print(tmp.min(),":",tmp.max()) #(3085, -4490252.342492111) : (7, 23510578.715353236)
         
         #self.prior.Rsolver.solve(tmp, mg)

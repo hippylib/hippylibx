@@ -44,13 +44,10 @@ class PACTMisfitForm:
     def __init__(self, d, sigma2):
         self.sigma2 = sigma2
         self.d = d
-        # self.mesh = mesh
         
     def __call__(self,u,m):   
 
-        # return dlx.fem.Constant(self.mesh, petsc4py.PETSc.ScalarType(.5)) /self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*ufl.dx
         return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*ufl.dx
-        # return dl.Constant(.5)/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*ufl.dx
 
 
 class H1TikhonvFunctional:
@@ -83,7 +80,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     rank  = comm.rank
     nproc = comm.size
 
-    fname = '../example/meshes/circle.xdmf'
+    fname = 'meshes/circle.xdmf'
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
 
@@ -109,27 +106,76 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     pde.solveFwd(u_true,x_true)
 
+
+
+############################################################
     # print(rank,":",u_true.array.min(),":",u_true.array.max())
 
     # LIKELIHOOD
-    u_fun = hpx.vector2Function(x_true[hpx.STATE],Vh[hpx.STATE])
-    m_fun = hpx.vector2Function(x_true[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    
+    u_fun = hpx.vector2Function(u_true,Vh[hpx.STATE])
+    m_fun = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun * ufl.exp(m_fun)
     hpx.projection(expr,d)
+    # print(d.x.array.min(),":",d.x.array.max())
+
+    hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
+    
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
+    # misfit_form = H1TikhonvFunctional(3.,4.,noise_variance)
+    # misfit = hpx.VariationalRegularization(msh, Vh, misfit_form)
+    # print(misfit.cost())
+
+    #pde.solveAdj not working correctly
+
+    # print(x_true[hpx.STATE].array.min(),":",x_true[hpx.STATE].array.max())
+    # print(x_true[hpx.PARAMETER].array.min(),":",x_true[hpx.PARAMETER].array.max())
 
 
+    # misfit_grad = misfit.grad(hpx.STATE,x_true)
+    # print(misfit_grad.array.min(),":",misfit_grad.array.max())
+
+    # misfit_cost = misfit.cost(x_true)
+    
+    # print(rank,":",misfit_cost)
+
+    # p_true = pde.generate_state()
+    # x_true[hpx.STATE] = u_true
+    # x_true[hpx.PARAMETER] = m_true
+
+    # # print(x_true[hpx.STATE].array.min(),":",x_true[hpx.STATE].array.max())
+    # # print(x_true[hpx.PARAMETER].array.min(),":",x_true[hpx.PARAMETER].array.max())
+    
+    # rhs = misfit.grad(hpx.STATE, x_true)
+        
+    # dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
+    # pde.solveAdj(p_true,x_true,dlx.la.create_petsc_vector_wrap(rhs))
+
+    # print(p_true.array.min(),":",p_true.array.max())
+
+    #plot
+    # test_func = hpx.vector2Function(p_true,Vh[hpx.ADJOINT])
+    # with dlx.io.XDMFFile(msh.comm, "ADJOINT_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(test_func)
+    
     # PRIOR
+    # prior_mean = dlx.fem.Function(Vh_m)
+    # prior_mean.interpolate(lambda x: np.full((x.shape[1],),0.01))
+    # prior_mean.x.scatter_forward()
+    # prior_mean = prior_mean.x
+    
+    #Method - original
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.interpolate(lambda x: np.full((x.shape[1],),0.01))
-    prior_mean.x.scatter_forward()
+    # prior_mean.interpolate(lambda x: np.full((x.shape[1],),0.))
+    prior_mean.x.array[:] = 0.01
+    # prior_mean.x.scatter_forward() #not needed
     prior_mean = prior_mean.x
-    prior = hpx.BiLaplacianPrior(Vh_phi,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
+
+    prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     # print(prior.cost(x_true[hpx.PARAMETER]))    
 
 
@@ -163,14 +209,14 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     #Fixing PRNG
 
 
-    prior_mean = dlx.fem.Function(Vh_m)
-    # prior_mean.interpolate(lambda x: np.full((x.shape[1],),0.))
-    prior_mean.x.array[:] = 0.01
-    # prior_mean.x.scatter_forward() #not needed
-    prior_mean = prior_mean.x
+    # prior_mean = dlx.fem.Function(Vh_m)
+    # # prior_mean.interpolate(lambda x: np.full((x.shape[1],),0.))
+    # prior_mean.x.array[:] = 0.01
+    # # prior_mean.x.scatter_forward() #not needed
+    # prior_mean = prior_mean.x
 
 
-    prior = hpx.BiLaplacianPrior(Vh_phi,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
+    # prior = hpx.BiLaplacianPrior(Vh_phi,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
 
     # noise = prior.init_vector("noise")
     #create some dummy "noise" vector
@@ -193,48 +239,66 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(type(noise))
     # print(noise)
 
-
-
     #testing the methods in prior
     #init, sample, cost, grad
 
     model = hpx.Model(pde, prior, misfit)
 
-    noise = prior.init_vector("noise")
-    m0 = prior.init_vector(0)    
-    noise.array[:] = 3.
+    # noise = prior.init_vector("noise")
+    # m0 = prior.init_vector(0)
+    noise = prior.generate_parameter("noise")
+    m0 = prior.generate_parameter(0)    
+    # noise.array[:] = 3.
+    hpx.parRandom(comm).normal(1.,noise)
+    # print(noise.array.min(),":",noise.array.max())
     prior.sample(noise,m0)
 
+    # print(m0.array.min(),":",m0.array.max())
+    #create dummy m0:
 
-    #dummy example for non-zero values in x[STATE] after solveFwd
-    m0 = dlx.fem.Function(Vh_m) 
-    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    m0.x.scatter_forward() 
-    m0 = m0.x
+    # m0 = dlx.fem.Function(Vh_m) 
+    # m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # m0.x.scatter_forward() 
+    # m0 = m0.x
 
-    # test_obj = dlx.fem.Function(Vh[hpx.PARAMETER])
-    # test_obj = test_obj.x
+    eps, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0),eps=None)
+    # if(rank == 0):
+    #     print(err_grad)
 
-    # pde.evalGradientParameter(x_true)
 
-    index = 2
-    h = model.generate_vector(hpx.PARAMETER)
-    h.array[:] = 5
-    x = model.generate_vector()
+##################################################################
 
-    x[hpx.PARAMETER] = m0 #dlx.la.Vector
-    model.solveFwd(x[hpx.STATE], x)
-    # model.solveAdj(x[hpx.ADJOINT], x ,Vh[hpx.ADJOINT])
-    model.solveAdj(x[hpx.ADJOINT], x)
 
-    # test_pde_eval_grad = pde.evalGradientParameter(x)
-    test_pde_eval_grad = pde.generate_parameter()
-    pde.evalGradientParameter(x,test_pde_eval_grad)
+    # #dummy example for non-zero values in x[STATE] after solveFwd
+    # m0 = dlx.fem.Function(Vh_m) 
+    # m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # m0.x.scatter_forward() 
+    # m0 = m0.x
 
-    # print(test_pde_eval_grad.array.min(),":",test_pde_eval_grad.array.max())
-    # print(len(test_pde_eval_grad.array))
+    # # test_obj = dlx.fem.Function(Vh[hpx.PARAMETER])
+    # # test_obj = test_obj.x
+
+    # # pde.evalGradientParameter(x_true)
     
-    test_func = hpx.vector2Function(test_pde_eval_grad,Vh[hpx.PARAMETER])
+    # index = 2
+    # h = model.generate_vector(hpx.PARAMETER)
+    # h.array[:] = 5
+    # x = model.generate_vector()
+
+    # x[hpx.PARAMETER] = m0 #dlx.la.Vector
+    # model.solveFwd(x[hpx.STATE], x)
+    # # model.solveAdj(x[hpx.ADJOINT], x ,Vh[hpx.ADJOINT])
+    # model.solveAdj(x[hpx.ADJOINT], x)
+
+    # # test_pde_eval_grad = pde.evalGradientParameter(x)
+    # test_pde_eval_grad = pde.generate_parameter()
+    # pde.evalGradientParameter(x,test_pde_eval_grad)
+
+    # # print(test_pde_eval_grad.array.min(),":",test_pde_eval_grad.array.max())
+    # # print(len(test_pde_eval_grad.array))
+    
+    # test_func = hpx.vector2Function(test_pde_eval_grad,Vh[hpx.PARAMETER])
+##################################################################
 
     #have plots to compare to when you modify:
     #True function plot - correct
@@ -248,31 +312,54 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     # print(rank,":",x[hpx.ADJOINT].array.min(),":",x[hpx.ADJOINT].array.max())
     #all correct plots in Paraview
 
-##################################################################
     # print(rank,":",misfit.cost(x))
     # misfit_form = PACTMisfitForm(d, noise_variance)
     # misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
     #reg is supposed to be like misfit
-    ufun = hpx.vector2Function(x[hpx.STATE],Vh[hpx.STATE])
-    misfit_form_reg = H1TikhonvFunctional(ufun,d,noise_variance)
-    test_obj = hpx.VariationalRegularization(msh,Vh,misfit_form_reg)   
-    # print(test_obj.cost(x[hpx.PARAMETER]))
+    # ufun = hpx.vector2Function(x[hpx.STATE],Vh[hpx.STATE])
+    # # misfit_form_reg = H1TikhonvFunctional(ufun,d,noise_variance)
+    # misfit_form_reg = H1TikhonvFunctional(3.,4.,noise_variance)
     
-    #trying to do the above
-    mfun = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    loc_cost = misfit_form_reg(mfun)
+    # test_obj = hpx.VariationalRegularization(msh,Vh,misfit_form_reg)   
+    # # print(test_obj.cost(x[hpx.PARAMETER]))
+    
+    # #trying to do the above
+    # mfun = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    # loc_cost = misfit_form_reg(mfun)
     # glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
 
-    print(loc_cost,'\n')
-        
+    # # print(loc_cost,'\n')
+    # print(glb_cost_proc)
+
+    # misfit_form = H1TikhonvFunctional(3.,4.,noise_variance)
+    # misfit = hpx.VariationalRegularization(msh,Vh,misfit_form)
+
+    # # print(rank,":",misfit.cost(x[hpx.PARAMETER]))
+    # out = pde.generate_parameter()
+    # misfit.grad(x[hpx.PARAMETER],out)
+
+    # print(out.array.min(),":",out.array.max())
+
+    # test_func = hpx.vector2Function(out,Vh[hpx.PARAMETER])
+
+    #have plots to compare to when you modify:
+    # #True function plot - correct
+    # with dlx.io.XDMFFile(msh.comm, "VAR_REG_MISFIT_GRAD_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(test_func)
+
+
+
+
     #compare loc_cost to one from misfit.py
-    misfit_form_misfit = PACTMisfitForm(d, noise_variance)
-    u_fun = hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE])
-    m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER])
-    loc_cost = misfit_form_misfit(u_fun,m_fun)
+    # misfit_form_misfit = PACTMisfitForm(d, noise_variance)
+    # u_fun = hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE])
+    # m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER])
+    # loc_cost = misfit_form_misfit(u_fun,m_fun)
     
-    print(loc_cost)
+    # print(loc_cost)
+
 
     # glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
     # print(glb_cost_proc)
@@ -325,6 +412,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 #     # with dlx.io.XDMFFile(msh.comm, "CURRENT_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
 #     #     file.write_mesh(msh)
 #     #     file.write_function(test_func)
+
 
 
 

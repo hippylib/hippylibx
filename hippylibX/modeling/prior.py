@@ -258,7 +258,8 @@ class test_prior:
             
             self.mean = self.init_vector(0)
 
-    #Old version
+    #replaced function init_vector with generate_parameter
+    @unused_function
     def init_vector(self, dim : int) -> dlx.la.Vector:            
         
         """
@@ -303,10 +304,6 @@ class test_prior:
         else:
             return dlx.la.vector( self.Vh.dofmap.index_map )
 
-
-
-
-    
 
     #need to construct sqrtM and Asolver from the prior in hippylib
 
@@ -364,12 +361,14 @@ class test_prior:
     def cost(self,m : dlx.la.Vector) -> float:  
         d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))
-        Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
+        # Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
+        Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
+        
         self.R.mult(d,Rd)
         return .5*Rd.dot(d)
     
 
-    def grad(self,m : dlx.la.Vector, out) -> None:
+    def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
         d = dlx.la.create_petsc_vector_wrap(m).copy()
         d.axpy(-1., dlx.la.create_petsc_vector_wrap(self.mean))
         self.R.mult(d,dlx.la.create_petsc_vector_wrap(out))
@@ -382,19 +381,16 @@ class test_prior:
     #     # d = self.mean.copy()
     #     d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
     #     d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))
-
     #     # Rd = dl.Vector(self.R.mpi_comm())
     #     # self.init_vector(Rd,0)    
     #     # Rd = self.R.createVecLeft()
-
     #     Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
     #     self.R.mult(d,Rd)
-
     #     # return .5*Rd.inner(d)
     #     # return .5*Rd.dot(d)
     #     loc_cost = .5*Rd.dot(d)
-
     #     return self.Vh.mesh.comm.allreduce(loc_cost, op=MPI.SUM )
+
 
 def BiLaplacianPrior(Vh, gamma : float, delta : float, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False) -> test_prior:
     """

@@ -226,9 +226,10 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    # parRandom.normal(1., h)
+    parRandom(comm).normal(1., h)
     # parRandom(comm, 1., h) #supply comm to this method
-    h.array[:] = 5.
+    # h.array[:] = 1.
+    # parRandom(comm).normal(1., h)
 
     # print(comm.rank,":",h.getArray())
     
@@ -251,6 +252,10 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
     # print(comm.rank,":",x[PARAMETER].min(),":",x[PARAMETER].max())
     
     model.solveAdj(x[ADJOINT], x)
+
+    # print(x[STATE].array.min(),":",x[STATE].array.max())
+    # print(x[PARAMETER].array.min(),":",x[PARAMETER].array.max())
+    # print(x[ADJOINT].array.min(),":",x[ADJOINT].array.max())
 
     # print(comm.rank,":",x[ADJOINT].getArray())
     
@@ -330,7 +335,7 @@ def modelVerify(Vh, comm, model,m0, is_quadratic = False, misfit_only=False, ver
         
         # Check the Hessian
         grad_xplus = model.generate_vector(PARAMETER)
-
+        
     #    # model.evalGradientParameter(x_plus, grad_xplus,misfit_only=misfit_only)
 
     #     # err  = grad_xplus - grad_x
