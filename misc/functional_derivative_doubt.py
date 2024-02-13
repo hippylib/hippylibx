@@ -62,6 +62,7 @@ class H1TikhonvFunctional:
 
 
 
+
         # return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *ufl.dx + ufl.inner(self.delta * m, m)*ufl.dx
         # return self.delta * ufl.inner( self.gamma *ufl.exp(m), ufl.exp(m) ) *ufl.dx 
         # return ufl.inner(self.gamma * ufl.exp(m), self.gamma * ufl.exp(m) ) *ufl.dx 
@@ -148,7 +149,7 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     #this line gives error, I am guessing have to choose appropriate 
     #variable types (not just constants) in line 127
 
-    # prior_R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L2))
+    prior_R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L2))
 
 if __name__ == "__main__":    
   nx = 64
