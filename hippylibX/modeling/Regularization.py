@@ -51,15 +51,10 @@ class VariationalRegularization:
      
     def grad(self, x : dlx.la.Vector, out: dlx.la.Vector) -> None:
         mfun = vector2Function(x,self.Vh)
-        #what would the functional_handler look like?
         L = dlx.fem.form(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh)))
-        tmp = dlx.la.create_petsc_vector_wrap(dlx.fem.assemble_vector(L))
-        # with grad.localForm() as loc_grad:
-        #     loc_grad.set(0)
-        # dlx.fem.petsc.assemble_vector(grad,L)
+        tmp = dlx.fem.petsc.assemble_vector(L)
         tmp.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-        # dlx.la.create_petsc_vector_wrap(out).axpy(1.,tmp)
-        # return tmp
+        dlx.la.create_petsc_vector_wrap(out).scale(0.)
         dlx.la.create_petsc_vector_wrap(out).axpy(1., tmp)
 
     # def setLinearizationPoint(self, m):
