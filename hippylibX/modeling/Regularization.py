@@ -84,7 +84,7 @@ class VariationalRegularization:
         self.Rsolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Rsolver.setTolerances(rtol=rel_tol)
         self.Rsolver.setErrorIfNotConverged(True)
-        self.Rsolver.setInitialGuessNonZero(False)
+        self.Rsolver.setInitialGuessNonzero(False)
         self.Rsolver.setOperators(self.R)
         
         
