@@ -113,26 +113,40 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
 
-    # prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
-
-    # noise = prior.generate_parameter("noise")
-    # m0 = prior.generate_parameter(0)    
-    # hpx.parRandom(comm).normal(1.,noise)
-    # prior.sample(noise,m0)
-    m0 = m_true
-
-    #the methods in old prior have to be in new prior
-    
-    prior_functional = H1TikhonvFunctional(3.,4)
-    prior = hpx.VariationalRegularization(msh, Vh_m, prior_functional)
-   
+    prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
-    eps, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0),eps=None)
-    if(rank == 0):
-        print(err_grad)
+    noise = prior.generate_parameter("noise")
+    m0 = prior.generate_parameter(0)    
+    hpx.parRandom(comm).normal(1.,noise)
+
+    # mfunc = hpx.vector2Function(m0,Vh[hpx.PARAMETER])
+
+    # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(mfunc)    
+
+
+    eps, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0),eps=None)
+    # if(rank == 0):
+    #     print(err_grad)
 
 ##################################################################
+    x = [model.generate_vector(hpx.STATE), prior.mean , model.generate_vector(hpx.ADJOINT)]
+    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    parameters["rel_tolerance"] = 1e-6
+    parameters["abs_tolerance"] = 1e-9
+    parameters["max_iter"]      = 500
+    parameters["cg_coarse_tolerance"] = 5e-1
+    parameters["globalization"] = "LS"
+    parameters["GN_iter"] = 20
+
+    if rank != 0:
+        parameters["print_level"] = -1
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    # x = solver.solve(x)
+    
+
 
 
 if __name__ == "__main__":    
@@ -142,3 +156,4 @@ if __name__ == "__main__":
   prior_param = {"gamma": 0.05, "delta": 1.}
 
   run_inversion(nx, ny, noise_variance, prior_param)
+

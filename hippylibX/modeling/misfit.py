@@ -24,7 +24,7 @@ class NonGaussianContinuousMisfit(object):
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
         return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
 
-    def grad(self, i : int, x : list) -> dlx.la.Vector:
+    def grad(self, i : int, x : list, out: dlx.la.Vector) -> dlx.la.Vector:
 
         u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
@@ -45,10 +45,11 @@ class NonGaussianContinuousMisfit(object):
         x_fun = [u_fun, m_fun]
         # x_test = [ufl.TestFunction(self.Vh[hpx.STATE]), ufl.TestFunction(self.Vh[hpx.PARAMETER])]
         L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))
-        out =  dlx.fem.assemble_vector(L)
-        dlx.la.create_petsc_vector_wrap(out).ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        return out
-    
+        tmp =  dlx.fem.petsc.assemble_vector(L)
+        tmp.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        dlx.la.create_petsc_vector_wrap(out).scale(0.)
+        dlx.la.create_petsc_vector_wrap(out).axpy(1., tmp)
+
         #need to return a dlx.la.Vector object instead
 
 

@@ -137,47 +137,16 @@ class Model:
                 .. note:: :code:`p` is not accessed
         """
         
-        # print(x[STATE].min(),":",x[STATE].max())
-        # print(x[PARAMETER].min(),":",x[PARAMETER].max())
 
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
-        # self.misfit.grad(STATE, x, rhs)
-        rhs = self.misfit.grad(STATE, x)
+        self.misfit.grad(STATE, x, rhs)
         
         dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
-        # print(rhs.getArray().min(),":",rhs.getArray().max())
 
-        # rhs *= -1.
-        #need to pass rhs as a function to solveAdj method in pde class, else get errors. 
-        # print(out.min(),":",out.max())
-        
-        # self.problem.solveAdj(out, x, rhs)
-        # rhs_func = vector2Function(rhs,Vh)
-
-
-        ###previous
-        # rhs_func = dlx.fem.Function(Vh)
-        # # fun.vector.axpy(1., x)
-        # rhs_func.vector.setArray(rhs.getArray())
-        # rhs_func.x.scatter_forward()
-
-
-        # self.problem.solveAdj_2(out, x, rhs_func)
-        ###
-
-        ###new
         self.problem.solveAdj(out, x, dlx.la.create_petsc_vector_wrap(rhs))
 
-        ###
-
-        
-        # print(out.getArray().min(),":",out.getArray().max())
-        
-        # rhs_vec = hpx.vector2Function(rhs,Vh[hpx.PARAMETER])
-    
-    # def evalGradientParameter(self,x, mg, misfit_only=False):
-    def evalGradientParameter(self,x : list, misfit_only=False) -> tuple[float, dlx.la.Vector]:
+    def evalGradientParameter(self,x : list, mg: dlx.la.Vector, misfit_only=False) -> tuple[float, dlx.la.Vector]:
         """
         Evaluate the gradient for the variational parameter equation at the point :code:`x=[u,m,p]`.
 
@@ -188,45 +157,27 @@ class Model:
         Returns the norm of the gradient in the correct inner product :math:`g_norm = sqrt(g,g)`
         """ 
         tmp = self.generate_vector(PARAMETER)
-        # self.problem.evalGradientParameter(x, mg)
         
-        mg = self.problem.generate_parameter()
         self.problem.evalGradientParameter(x, mg)
 
-        # print(mg.min(),":",mg.max())
-        # # self.misfit.grad(PARAMETER,x,tmp)
-
-        tmp = self.misfit.grad(PARAMETER,x)        
-        
-        # print(tmp.min(),":",tmp.max())
-        
+        self.misfit.grad(PARAMETER,x,tmp)        
+                
         mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
         tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
         
         mg_petsc.axpy(1., tmp_petsc)
-        # print(mg.min(),":",mg.max())
-
+        
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
             mg_petsc.axpy(1., tmp_petsc)
         
-        # self.prior.Msolver.solve(tmp, mg)
-        # print(tmp.min(),":",tmp.max()) #(114, -13.377925313892392) : (978, 509353.8643973592)
-    
-        # self.prior.Msolver.solve(mg_petsc, tmp_petsc)
-        self.prior.Rsolver.solve(mg_petsc, tmp_petsc)
         
-        # print(tmp.min(),":",tmp.max()) #(3085, -4490252.342492111) : (7, 23510578.715353236)
+        self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         
-        #self.prior.Rsolver.solve(tmp, mg)
-        # return math.sqrt(mg.inner(tmp))
-        # print(math.sqrt(mg.dot(tmp))) #11972566.111908454, #4889042.271239927
-        # return math.sqrt(mg_petsc.dot(tmp_petsc)), mg_petsc
-        #Question if return mg, are all the operations related to mg_petsc reflected in mg?? -> Yes
-        return math.sqrt(mg_petsc.dot(tmp_petsc)), mg
+        return math.sqrt(mg_petsc.dot(tmp_petsc))
     
 
-    @unused_function
+    # @unused_function - now used in solver.solve
     def setPointForHessianEvaluations(self, x, gauss_newton_approx=False):
         """
         Specify the point :code:`x = [u,m,p]` at which the Hessian operator (or the Gauss-Newton approximation)
