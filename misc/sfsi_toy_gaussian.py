@@ -6,21 +6,17 @@ import petsc4py
 
 import sys
 import os
-import matplotlib
 import dolfinx.fem.petsc
 
-# matplotlib.use('Agg')
 
 from matplotlib import pyplot as plt
-
-# sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../hippylibX") )
 
 sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
 class DiffusionApproximation:
-    def __init__(self, D, u0, ds):
+    def __init__(self, D : float, u0 : float, ds : ufl.measure.Measure):
         """
         Define the forward model for the diffusion approximation to radiative transfer equations
         
@@ -35,18 +31,17 @@ class DiffusionApproximation:
         self.u0 = u0
         self.ds = ds
         
-    def __call__(self, u, m, p):
+    def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, p : dlx.fem.Function) -> ufl.form.Form:
         return ufl.inner(self.D*ufl.grad(u), ufl.grad(p))*ufl.dx + \
             ufl.exp(m)*ufl.inner(u,p)*ufl.dx + \
             .5*ufl.inner(u-self.u0,p)*self.ds
 
 class PACTMisfitForm:
-    def __init__(self, d, sigma2):
+    def __init__(self, d : float, sigma2 : float):
         self.sigma2 = sigma2
         self.d = d
         
-    def __call__(self,u,m):   
-
+    def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*ufl.dx
 
 
@@ -55,12 +50,12 @@ class H1TikhonvFunctional:
         self.gamma = gamma #These are dlx Constant, Expression, or Function
         self.delta = delta
 
-    def __call__(self, m): #Here m is a dlx Function
+    def __call__(self, m : dlx.fem.Function) -> ufl.form.Form: #Here m is a dlx Function
         return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *ufl.dx + \
         ufl.inner(self.delta * m, m)*ufl.dx
         
 
-def run_inversion(nx, ny, noise_variance, prior_param):
+def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
     comm = MPI.COMM_WORLD
@@ -70,7 +65,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     fname = '../example/meshes/circle.xdmf'
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
-
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
@@ -93,7 +87,6 @@ def run_inversion(nx, ny, noise_variance, prior_param):
 
     pde.solveFwd(u_true,x_true)
 
-############################################################
 
     # LIKELIHOOD
     u_fun = hpx.vector2Function(u_true,Vh[hpx.STATE])
@@ -101,14 +94,12 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun * ufl.exp(m_fun)
     hpx.projection(expr,d)
-    # print(d.x.array.min(),":",d.x.array.max())
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
     
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
-    #Method - original
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
@@ -120,19 +111,19 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     m0 = prior.generate_parameter(0)    
     hpx.parRandom(comm).normal(1.,noise)
 
-    # mfunc = hpx.vector2Function(m0,Vh[hpx.PARAMETER])
-
-    # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(mfunc)    
-
-
-    eps, err_grad, _ = hpx.modelVerify(Vh,comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0),eps=None)
+    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0),eps=None)
     # if(rank == 0):
-    #     print(err_grad)
+    #     plt.show()    
 
-##################################################################
-    x = [model.generate_vector(hpx.STATE), prior.mean , model.generate_vector(hpx.ADJOINT)]
+    prior_mean_copy = prior.generate_parameter(0)
+    dlx.la.create_petsc_vector_wrap(prior_mean_copy).scale(0.)
+    dlx.la.create_petsc_vector_wrap(prior_mean_copy).axpy(1., dlx.la.create_petsc_vector_wrap(prior_mean))
+    
+    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+
+    # if rank == 0:
+    #     print( sep, "Find the MAP point", sep)    
+           
     parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
     parameters["rel_tolerance"] = 1e-6
     parameters["abs_tolerance"] = 1e-9
@@ -140,12 +131,13 @@ def run_inversion(nx, ny, noise_variance, prior_param):
     parameters["cg_coarse_tolerance"] = 5e-1
     parameters["globalization"] = "LS"
     parameters["GN_iter"] = 20
-
     if rank != 0:
         parameters["print_level"] = -1
-    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
-    # x = solver.solve(x)
     
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    x = solver.solve(x)
+
+
 
 
 

@@ -48,7 +48,6 @@ class _BilaplacianR:
         x = self.A.createVecRight() 
         return x
 
-    @unused_function
     def mpi_comm(self):
         return self.A.comm
         
@@ -64,7 +63,7 @@ class _BilaplacianRsolver():
     for the Bilaplacian prior.
     """
 
-    def __init__(self, Asolver, M):
+    def __init__(self, Asolver : petsc4py.PETSc.KSP, M : petsc4py.PETSc.Mat):
         self.Asolver = Asolver
         self.M = M
         
@@ -77,18 +76,19 @@ class _BilaplacianRsolver():
         else:
             x = self.M.createVecRight() 
         return x
-        
-    def solve(self,x,b):
-        nit = self.Asolver.solve(b, self.help1)
-        self.M.mult(self.help1, self.help2)
-        
-        nit += self.Asolver.solve(self.help2, x)
+    
 
+    def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
+        self.Asolver.solve(dlx.la.create_petsc_vector_wrap(b), self.help1)
+        nit = self.Asolver.its
+        self.M.mult(self.help1, self.help2)
+        self.Asolver.solve(self.help2,dlx.la.create_petsc_vector_wrap(x))
+        nit += self.Asolver.its
         return nit
 
 
 class test_prior:
-    def __init__(self, Vh, sqrt_precision_varf_handler, mean=None, rel_tol=1e-12, max_iter=1000):
+    def __init__(self, Vh : dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None, rel_tol=1e-12, max_iter=1000):
         """
         Construct the prior model.
         Input:
@@ -146,10 +146,10 @@ class test_prior:
             element = ufl.VectorElement("Quadrature", Vh.mesh.ufl_cell(),
                                        qdegree, dim=num_sub_spaces, quad_scheme="default")
 
-        Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
+        self.Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
 
-        ph = ufl.TrialFunction(Qh)
-        qh = ufl.TestFunction(Qh)
+        ph = ufl.TrialFunction(self.Qh)
+        qh = ufl.TestFunction(self.Qh)
         
         Mqh = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.inner(ph,qh)*ufl.dx(metadata=metadata)) )
         Mqh.assemble()
@@ -166,7 +166,7 @@ class test_prior:
 
         self.sqrtM = MixedM.matMult(Mqh)
 
-        self.sqrtM_function_space = Qh
+        # self.sqrtM_function_space = Qh
                          
         self.R = _BilaplacianR(self.A, self.Msolver)      
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
@@ -207,7 +207,7 @@ class test_prior:
         white noise used for sampling.
         """
         if(dim == "noise"):
-            return dlx.la.vector( self.sqrtM_function_space.dofmap.index_map )
+            return dlx.la.vector( self.Qh.dofmap.index_map )
         else:
             return dlx.la.vector( self.Vh.dofmap.index_map )
 
@@ -249,7 +249,7 @@ class test_prior:
         self.R.mult(d,dlx.la.create_petsc_vector_wrap(out))
 
 
-def BiLaplacianPrior(Vh, gamma : float, delta : float, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False) -> test_prior:
+def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False) -> test_prior:
     """
     This function construct an instance of :code"`SqrtPrecisionPDE_Prior`  with covariance matrix
     :math:`C = (\\delta I + \\gamma \\mbox{div } \\Theta \\nabla) ^ {-2}`.
@@ -270,7 +270,7 @@ def BiLaplacianPrior(Vh, gamma : float, delta : float, Theta = None, mean=None, 
     - :code:`robin_bc`:        whether to use Robin boundary condition to remove boundary artifacts
     """
     
-    def sqrt_precision_varf_handler(trial, test): 
+    def sqrt_precision_varf_handler(trial : ufl.TrialFunction, test : ufl.TestFunction) -> ufl.form.Form: 
         if Theta == None:
             varfL = ufl.inner(ufl.grad(trial), ufl.grad(test))*ufl.dx
         else:
@@ -285,7 +285,7 @@ def BiLaplacianPrior(Vh, gamma : float, delta : float, Theta = None, mean=None, 
             
         else:
             robin_coeff = 0.
-
+        
         return gamma*varfL + delta*varfM + robin_coeff*varf_robin
 
     return test_prior(Vh, sqrt_precision_varf_handler, mean, rel_tol, max_iter)

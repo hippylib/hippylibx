@@ -22,6 +22,12 @@ class PDEVariationalProblem:
         self.bc = bc        
         self.bc0 = bc0
 
+        self.Wuu = None
+        self.Wmu = None
+        self.Wmm = None
+        self.A = None
+        self.C = None
+        
         self.solver = None
         self.solver_fwd_inc = None
         self.solver_adj_inc = None
@@ -33,12 +39,10 @@ class PDEVariationalProblem:
         """ Return a vector in the shape of the state. """
         return dlx.la.vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
         
-    # @unused_function #now being used in mode.generate_vector() in modelVerify.py
     def generate_parameter(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the parameter. """
         return dlx.la.vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
         
-
     @unused_function   
     def init_parameter(self, m):
         """ Initialize the parameter."""
@@ -60,23 +64,24 @@ class PDEVariationalProblem:
             u = ufl.TrialFunction(self.Vh[STATE])   
             p = ufl.TestFunction(self.Vh[ADJOINT])
 
-            res_form = self.varf_handler(u, mfun, p) #all 3 arguments-dl.Function types
+            res_form = self.varf_handler(u, mfun, p)
 
-            A_form = ufl.lhs(res_form) #ufl.form.Form
+            A_form = ufl.lhs(res_form)
             
             b_form = ufl.rhs(res_form)
-
-            A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc) #petsc4py.PETSc.Mat
         
-            A.assemble() #petsc4py.PETSc.Mat
+            A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+        
+            A.assemble()
             self.solver.setOperators(A)
-            b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form)) #petsc4py.PETSc.Vec
+            b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form))
         
             dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
 
             state_vec = dlx.la.create_petsc_vector_wrap(state)
-            self.solver.solve(b,state_vec)                     
+            self.solver.solve(b,state_vec)  
+        
 
     def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : petsc4py.PETSc.Vec ) -> None: 
 
@@ -96,15 +101,13 @@ class PDEVariationalProblem:
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
         varf = self.varf_handler(u, m, p)
         adj_form = ufl.derivative( ufl.derivative(varf, u, du), p, dp )
-        
-        
+                
         Aadj = dlx.fem.petsc.assemble_matrix(dlx.fem.form(adj_form),bcs = self.bc0)
             
         Aadj.assemble()
 
         self.solver.setOperators(Aadj)
 
-        #Also works
         self.solver.solve(adj_rhs,dlx.la.create_petsc_vector_wrap(adj) )
         
     def evalGradientParameter(self, x : list, out : dlx.la.Vector) -> None:
@@ -126,8 +129,8 @@ class PDEVariationalProblem:
         ksp = petsc4py.PETSc.KSP().create()
         return ksp
     
-    @unused_function
-    def setLinearizationPoint(self,x, gauss_newton_approx):
+
+    def setLinearizationPoint(self,x : list, gauss_newton_approx) -> None:
         """ Set the values of the state and parameter
             for the incremental forward and adjoint solvers. """
             
@@ -137,32 +140,106 @@ class PDEVariationalProblem:
         
         g_form = [None,None,None]
         for i in range(3):
-            g_form[i] = dl.derivative(f_form, x_fun[i])
+            g_form[i] = ufl.derivative(f_form, x_fun[i])
             
-        self.A, dummy = dl.assemble_system(dl.derivative(g_form[ADJOINT],x_fun[STATE]), g_form[ADJOINT], self.bc0)
-        self.At, dummy = dl.assemble_system(dl.derivative(g_form[STATE],x_fun[ADJOINT]),  g_form[STATE], self.bc0)
-        self.C = dl.assemble(dl.derivative(g_form[ADJOINT],x_fun[PARAMETER]))
-        [bc.zero(self.C) for bc in self.bc0]
-                
+
+        self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE] )  ), self.bc0 )
+        self.A.assemble()
+
+        self.At = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative( g_form[STATE],x_fun[ADJOINT] )  ), self.bc0 )
+        self.At.assemble()
+
+        self.C = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])), self.bc0)
+        self.C.assemble()
+
         if self.solver_fwd_inc is None:
             self.solver_fwd_inc = self._createLUSolver()
             self.solver_adj_inc = self._createLUSolver()
         
-        self.solver_fwd_inc.set_operator(self.A)
-        self.solver_adj_inc.set_operator(self.At)
+        self.solver_fwd_inc.setOperators(self.A)
+        self.solver_adj_inc.setOperators(self.At)
 
         if gauss_newton_approx:
             self.Wuu = None
             self.Wmu = None
             self.Wmm = None
         else:
-            self.Wuu = dl.assemble(dl.derivative(g_form[STATE],x_fun[STATE]))
-            [bc.zero(self.Wuu) for bc in self.bc0]
-            Wuu_t = Transpose(self.Wuu)
-            [bc.zero(Wuu_t) for bc in self.bc0]
-            self.Wuu = Transpose(Wuu_t)
-            self.Wmu = dl.assemble(dl.derivative(g_form[PARAMETER],x_fun[STATE]))
-            Wmu_t = Transpose(self.Wmu)
-            [bc.zero(Wmu_t) for bc in self.bc0]
-            self.Wmu = Transpose(Wmu_t)
-            self.Wmm = dl.assemble(dl.derivative(g_form[PARAMETER],x_fun[PARAMETER]))
+            self.Wuu = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.derivative(g_form[STATE],x_fun[STATE])), self.bc0)
+            self.Wuu.assemble()
+            
+            Wuu_t = self.Wuu.copy()
+            Wuu_t.transpose()            
+
+            # [bc.zero(Wuu_t) for bc in self.bc0] I am assuming this is not needed as self.Wuu 
+            # was assembled incorporating the boundary conditions in self.bc0, so they would be 
+            # reflected in Wuu_t
+            
+            # self.Wuu = Transpose(Wuu_t)
+            self.Wuu = Wuu_t.copy()
+            self.Wuu.transpose()
+
+
+            self.Wmu = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])),self.bc0)
+            self.Wmu.assemble()
+
+            Wmu_t = self.Wmu.copy()
+            Wmu_t.transpose()
+            
+            self.Wmu = Wmu_t.copy()
+            self.Wmu.transpose()
+            
+            self.Wmm = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.derivative(g_form[PARAMETER],x_fun[PARAMETER])))
+            self.Wmm.assemble()
+
+    def apply_ij(self,i : int, j : int, dir : dlx.la.Vector, out : dlx.la.Vector) ->  None:   
+        """
+            Given :math:`u, m, p`; compute 
+            :math:`\\delta_{ij} F(u, m, p; \\hat{i}, \\tilde{j})` in the direction :math:`\\tilde{j} =` :code:`dir`,
+            :math:`\\forall \\hat{i}`.
+        """
+        KKT = {}
+        KKT[STATE,STATE] = self.Wuu
+        KKT[PARAMETER, STATE] = self.Wmu
+        KKT[PARAMETER, PARAMETER] = self.Wmm    
+        KKT[ADJOINT, STATE] = self.A
+        KKT[ADJOINT, PARAMETER] = self.C
+        
+        if i >= j:
+            if KKT[i,j] is None:
+                dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            else:
+                KKT[i,j].mult(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
+                
+        else:
+            if KKT[j,i] is None:
+                dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            else:
+                KKT[j,i].multTranspose(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
+                
+    
+
+    def solveIncremental(self, out : dlx.la.Vector, rhs : dlx.la.Vector, is_adj : bool) -> None:        
+        """ If :code:`is_adj == False`:
+
+            Solve the forward incremental system:
+            Given :math:`u, m`, find :math:`\\tilde{u}` such that
+            
+                .. math:: \\delta_{pu} F(u, m, p; \\hat{p}, \\tilde{u}) = \\mbox{rhs},\\quad \\forall \\hat{p}.
+            
+            If :code:`is_adj == True`:
+
+            Solve the adjoint incremental system:
+            Given :math:`u, m`, find :math:`\\tilde{p}` such that
+            
+                .. math:: \\delta_{up} F(u, m, p; \\hat{u}, \\tilde{p}) = \\mbox{rhs},\\quad \\forall \\hat{u}.
+        """
+
+        if is_adj:
+            self.n_calls["incremental_adjoint"] += 1
+            self.solver_adj_inc.solve(dlx.la.create_petsc_vector_wrap(rhs), dlx.la.create_petsc_vector_wrap(out))
+        
+        else:
+            self.n_calls["incremental_forward"] += 1
+            self.solver_fwd_inc.solve(dlx.la.create_petsc_vector_wrap(rhs), dlx.la.create_petsc_vector_wrap(out))
+    
+

@@ -82,12 +82,13 @@ class Model:
             
         return x
     
-    @unused_function
-    def init_parameter(self, m):
+
+    def init_parameter(self, m) -> dlx.la.Vector:
         """
         Reshape :code:`m` so that it is compatible with the parameter variable
         """
-        self.prior.init_vector(m,0)
+        # self.prior.init_vector(m,0)
+        return self.prior.generate_parameter(0)
             
     def cost(self, x : list) -> list:
         """
@@ -121,7 +122,6 @@ class Model:
         self.problem.solveFwd(out, x)
 
     
-    # def solveAdj(self, out, x, Vh):
     def solveAdj(self, out : dlx.la.Vector, x : list) -> None:
         
         """
@@ -156,6 +156,7 @@ class Model:
             (Output parameter)
         Returns the norm of the gradient in the correct inner product :math:`g_norm = sqrt(g,g)`
         """ 
+
         tmp = self.generate_vector(PARAMETER)
         
         self.problem.evalGradientParameter(x, mg)
@@ -170,15 +171,13 @@ class Model:
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
             mg_petsc.axpy(1., tmp_petsc)
-        
-        
+                
         self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         
         return math.sqrt(mg_petsc.dot(tmp_petsc))
     
 
-    # @unused_function - now used in solver.solve
-    def setPointForHessianEvaluations(self, x, gauss_newton_approx=False):
+    def setPointForHessianEvaluations(self, x : list, gauss_newton_approx=False):
         """
         Specify the point :code:`x = [u,m,p]` at which the Hessian operator (or the Gauss-Newton approximation)
         needs to be evaluated.
@@ -196,8 +195,8 @@ class Model:
         if hasattr(self.prior, "setLinearizationPoint"):
             self.prior.setLinearizationPoint(x[PARAMETER], self.gauss_newton_approx)
 
-    @unused_function
-    def solveFwdIncremental(self, sol, rhs):
+
+    def solveFwdIncremental(self, sol : dlx.la.Vector, rhs : dlx.la.Vector):
         """
         Solve the linearized (incremental) forward problem for a given right-hand side
         Parameters:
@@ -207,7 +206,7 @@ class Model:
         self.n_inc_solve = self.n_inc_solve + 1
         self.problem.solveIncremental(sol,rhs, False)
     
-    @unused_function
+
     def solveAdjIncremental(self, sol, rhs):
         """
         Solve the incremental adjoint problem for a given right-hand side
@@ -220,7 +219,6 @@ class Model:
         self.n_inc_solve = self.n_inc_solve + 1
         self.problem.solveIncremental(sol,rhs, True)
     
-    @unused_function
     def applyC(self, dm, out):
         """
         Apply the :math:`C` block of the Hessian to a (incremental) parameter variable, i.e.
@@ -233,9 +231,10 @@ class Model:
             
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
+        
         self.problem.apply_ij(ADJOINT,PARAMETER, dm, out)
     
-    @unused_function
+    
     def applyCt(self, dp, out):
         """
         Apply the transpose of the :math:`C` block of the Hessian to a (incremental) adjoint variable.
@@ -250,7 +249,7 @@ class Model:
         """
         self.problem.apply_ij(PARAMETER,ADJOINT, dp, out)
 
-    @unused_function
+
     def applyWuu(self, du, out):
         """
         Apply the :math:`W_{uu}` block of the Hessian to a (incremental) state variable.
@@ -267,9 +266,9 @@ class Model:
         if not self.gauss_newton_approx:
             tmp = self.generate_vector(STATE)
             self.problem.apply_ij(STATE,STATE, du, tmp)
-            out.axpy(1., tmp)
+            dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
     
-    @unused_function
+
     def applyWum(self, dm, out):
         """
         Apply the :math:`W_{um}` block of the Hessian to a (incremental) parameter variable.
@@ -283,14 +282,16 @@ class Model:
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
         if self.gauss_newton_approx:
-            out.zero()
+            dlx.la.create_petsc_vector_wrap(out).scale(0.)
+
         else:
             self.problem.apply_ij(STATE,PARAMETER, dm, out)
             tmp = self.generate_vector(STATE)
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
-            out.axpy(1., tmp)
+            dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+            
 
-    @unused_function
+
     def applyWmu(self, du, out):
         """
         Apply the :math:`W_{mu}` block of the Hessian to a (incremental) state variable.
@@ -304,14 +305,14 @@ class Model:
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
         if self.gauss_newton_approx:
-            out.zero()
+            dlx.la.create_petsc_vector_wrap(out).scale(0.)
         else:
             self.problem.apply_ij(PARAMETER, STATE, du, out)
             tmp = self.generate_vector(PARAMETER)
             self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
-            out.axpy(1., tmp)
+            dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+
     
-    @unused_function
     def applyR(self, dm, out):
         """
         Apply the regularization :math:`R` to a (incremental) parameter variable.
@@ -324,9 +325,9 @@ class Model:
         
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
-        self.prior.R.mult(dm, out)
+        self.prior.R.mult(dlx.la.create_petsc_vector_wrap(dm), dlx.la.create_petsc_vector_wrap(out))
     
-    @unused_function
+
     def Rsolver(self):
         """
         Return an object :code:`Rsovler` that is a suitable solver for the regularization
@@ -337,7 +338,7 @@ class Model:
         """
         return self.prior.Rsolver
 
-    @unused_function
+    
     def applyWmm(self, dm, out):
         """
         Apply the :math:`W_{mm}` block of the Hessian to a (incremental) parameter variable.
@@ -351,12 +352,12 @@ class Model:
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
         if self.gauss_newton_approx:
-            out.zero()
+            dlx.la.create_petsc_vector_wrap(out).scale(0.)
         else:
             self.problem.apply_ij(PARAMETER,PARAMETER, dm, out)
             tmp = self.generate_vector(PARAMETER)
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
-            out.axpy(1., tmp)
+            dlx.la.create_petsc_vector_wrap(out).axpy(1.,dlx.la.create_petsc_vector_wrap(tmp))
     
     @unused_function
     def apply_ij(self, i, j, d, out):
