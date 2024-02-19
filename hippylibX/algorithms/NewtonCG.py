@@ -225,10 +225,17 @@ class ReducedSpaceNewtonCG:
             # tmp = dlx.la.create_petsc_vector_wrap(mg)
             # tmp.scale(-1.)
             # print(type(tmp))
+            
+            mg_neg = self.model.generate_vector(PARAMETER)
 
-            mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
-            mg_petsc.scale(-1.)
-            solver.solve(mhat, mg_petsc)
+            mg_neg.array[:] = -1*mg.array[:]
+
+            # test_obj = -mg
+            # print(type(test_obj))
+
+            # mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
+            # mg_petsc.scale(-1.)
+            solver.solve(mhat,mg_neg)
              
             self.total_cg_iter += HessApply.ncalls
             
@@ -237,7 +244,7 @@ class ReducedSpaceNewtonCG:
             n_backtrack = 0
             
             # mg_mhat = mg.inner(mhat)
-            mg_mhat = mg_petsc.dot(dlx.la.create_petsc_vector_wrap(mhat))
+            mg_mhat = dlx.la.create_petsc_vector_wrap(mg).dot(dlx.la.create_petsc_vector_wrap(mhat))
             
             while descent == 0 and n_backtrack < max_backtracking_iter:
                 # update m and u

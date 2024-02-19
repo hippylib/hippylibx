@@ -160,7 +160,7 @@ class CGSolverSteihaug:
         
     def solve(self,x,b):
         # x -> dlx.Vector
-        # b -> petsc4pyVec
+        # b -> dlx.Vector
         """
         Solve the linear system :math:`Ax = b`
         """
@@ -177,7 +177,7 @@ class CGSolverSteihaug:
             # self.r.zero()
             # self.r.axpy(1.0, b)
             dlx.la.create_petsc_vector_wrap(self.r).scale(0.)
-            dlx.la.create_petsc_vector_wrap(self.r).axpy(1.0, b)
+            dlx.la.create_petsc_vector_wrap(self.r).axpy(1.0, dlx.la.create_petsc_vector_wrap(b))
             
             # x.zero()
             dlx.la.create_petsc_vector_wrap(x).scale(0.)
@@ -282,12 +282,17 @@ class CGSolverSteihaug:
                 break
             
             beta = betanom/nom
-            self.d *= beta
-            self.d.axpy(1., self.z)  #d = z + beta d
+            # self.d *= beta
+            dlx.la.create_petsc_vector_wrap(self.d).scale(beta)
+            
+            # self.d.axpy(1., self.z)  #d = z + beta d
+            dlx.la.create_petsc_vector_wrap(self.d).axpy(1., dlx.la.create_petsc_vector_wrap(self.z))  #d = z + beta d
+            
             
             self.A.mult(self.d,self.Ad)
             
-            den = self.d.inner(self.Ad)
+            # den = self.d.inner(self.Ad)
+            den = dlx.la.create_petsc_vector_wrap(self.d).dot(dlx.la.create_petsc_vector_wrap(self.Ad))
             
             if den <= 0.0:
                 self.converged = True
