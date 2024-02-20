@@ -15,6 +15,10 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
+def master_print(comm, *args, **kwargs):
+    if comm.rank == 0:
+        print(*args, **kwargs)
+
 class DiffusionApproximation:
     def __init__(self, D : float, u0 : float, ds : ufl.measure.Measure):
         """
@@ -69,6 +73,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
+    # ndofs = [Vh_phi.dim(), Vh_m.dim()]
+    ndofs = [Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs, Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs ]
+    master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
+    master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
+
     # FORWARD MODEL
     u0 = 1.
     D = 1./24.
@@ -87,16 +96,31 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     pde.solveFwd(u_true,x_true)
 
+    xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
     # LIKELIHOOD
-    u_fun = hpx.vector2Function(u_true,Vh[hpx.STATE])
-    m_fun = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
+    # u_fun = hpx.vector2Function(u_true,Vh[hpx.STATE])
+    # m_fun = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
+
+    hpx.updateFromVector(xfun[hpx.STATE],u_true)
+    u_fun = xfun[hpx.STATE]
+
+    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
+    m_fun = xfun[hpx.PARAMETER]
+    
+    print(m_true.array.min(),":",m_true.array.max())
+
+    #does it look correct??
+    # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    #     file.write_mesh(msh)
+    #     file.write_function(m_fun) 
+
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun * ufl.exp(m_fun)
     hpx.projection(expr,d)
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
-    
+
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
@@ -107,11 +131,23 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
+    # print(model.problem.Vh[0].mesh.comm)
+
+    #extract mesh from model
+
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)    
     hpx.parRandom(comm).normal(1.,noise)
+    prior.sample(noise,m0)
 
-    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0),eps=None)
+    # print(m0.array.min(),":",m0.array.max())
+
+    m0 = dlx.fem.Function(Vh_m) 
+    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m0.x.scatter_forward() 
+    m0 = m0.x
+
+    # hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0),eps=None)
     # if(rank == 0):
     #     plt.show()    
 
@@ -121,8 +157,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
-    # if rank == 0:
-    #     print( sep, "Find the MAP point", sep)    
+    if rank == 0:
+        print( sep, "Find the MAP point", sep)    
            
     parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
     parameters["rel_tolerance"] = 1e-6
@@ -135,8 +171,20 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
         parameters["print_level"] = -1
     
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    #failing with multiple procs: fix this
     x = solver.solve(x)
 
+
+    
+    # if solver.converged:
+    #     master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    # else:
+    #     master_print(comm, "\nNot Converged")
+
+    # master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    # master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    # master_print (comm, "Final cost: ", solver.final_cost)
+    
 
 
 

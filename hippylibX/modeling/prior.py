@@ -77,7 +77,6 @@ class _BilaplacianRsolver():
             x = self.M.createVecRight() 
         return x
     
-
     def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
         self.Asolver.solve(dlx.la.create_petsc_vector_wrap(b), self.help1)
         nit = self.Asolver.its
@@ -89,6 +88,7 @@ class _BilaplacianRsolver():
 
 class test_prior:
     def __init__(self, Vh : dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None, rel_tol=1e-12, max_iter=1000):
+        
         """
         Construct the prior model.
         Input:
@@ -133,7 +133,6 @@ class test_prior:
         self.Asolver.setInitialGuessNonzero(False)        
         self.Asolver.setOperators(self.A)
 
-     
         qdegree = 2*Vh._ufl_element.degree()
         metadata = {"quadrature_degree" : qdegree}
 
@@ -211,9 +210,7 @@ class test_prior:
         else:
             return dlx.la.vector( self.Vh.dofmap.index_map )
 
-
     #need to construct sqrtM and Asolver from the prior in hippylib
-
     def sample(self, noise : dlx.la.Vector, s : dlx.la.Vector, add_mean=True) -> None:
 
         """

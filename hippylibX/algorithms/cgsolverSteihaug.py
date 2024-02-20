@@ -17,6 +17,7 @@ import dolfinx as dlx
 from ..utils.parameterList import ParameterList
 import math
 import mpi4py
+from ..utils import vector2Function
 
 def CGSolverSteihaug_ParameterList():
     """
@@ -86,6 +87,8 @@ class CGSolverSteihaug:
 
         self.update_x = self.update_x_without_TR
         
+        self.comm = comm
+
         # self.r = dl.Vector(comm)
         # self.z = dl.Vector(comm)
         # self.Ad = dl.Vector(comm)
@@ -158,9 +161,10 @@ class CGSolverSteihaug:
 
             return  True
         
-    def solve(self,x,b):
+    def solve(self,x,b, it_count, model):
         # x -> dlx.Vector
         # b -> dlx.Vector
+        #it_count -> int
         """
         Solve the linear system :math:`Ax = b`
         """
@@ -221,9 +225,6 @@ class CGSolverSteihaug:
         self.A.mult(self.d, self.Ad)
         # den = self.Ad.inner(self.d)
         den = dlx.la.create_petsc_vector_wrap(self.Ad).dot(dlx.la.create_petsc_vector_wrap(self.d))
-        
-        
-
 
         if den <= 0.0:
             self.converged = True
@@ -255,6 +256,19 @@ class CGSolverSteihaug:
             # self.r.axpy(-alpha, self.Ad) # r = r - alpha A d
             dlx.la.create_petsc_vector_wrap(self.r).axpy(-alpha, dlx.la.create_petsc_vector_wrap(self.Ad)) # r = r - alpha A d
             
+            # if(it_count == 21):
+            #     print(self.r.array.min(),":",self.r.array.max())
+                # test_func = vector2Function(self.r,model.problem.Vh[0])         
+                # with dlx.io.XDMFFile(model.problem.Vh[0].mesh.comm, "TEST_ORG_SELFR_true_func_np{0:d}_X.xdmf".format(self.comm.size),"w") as file: #works!!
+                #     file.write_mesh(model.problem.Vh[0].mesh)
+                #     file.write_function(test_func) 
+
+                # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+                #     file.write_mesh(msh)
+                #     file.write_function(m_fun) 
+                # print(model.problem.Vh[0].mesh.comm)
+
+
             self.B_solver.solve(self.z, self.r)     # z = B^-1 r
             # betanom = self.r.inner(self.z)
             betanom = dlx.la.create_petsc_vector_wrap(self.r).dot(dlx.la.create_petsc_vector_wrap(self.z))
@@ -287,7 +301,6 @@ class CGSolverSteihaug:
             
             # self.d.axpy(1., self.z)  #d = z + beta d
             dlx.la.create_petsc_vector_wrap(self.d).axpy(1., dlx.la.create_petsc_vector_wrap(self.z))  #d = z + beta d
-            
             
             self.A.mult(self.d,self.Ad)
             

@@ -123,6 +123,7 @@ class ReducedSpaceNewtonCG:
                optional callback function to be called at the end of each iteration. Takes as input the iteration number, and
                the list of vectors for the state, parameter, adjoint.
         """
+
         self.model = model
         self.parameters = parameters
         
@@ -189,6 +190,10 @@ class ReducedSpaceNewtonCG:
         cost_old, _, _ = self.model.cost(x)
         
         while (self.it < max_iter) and (self.converged == False):
+            
+            # if(self.it == 45):
+            #     break
+
             self.model.solveAdj(x[ADJOINT], x)
             
             self.model.setPointForHessianEvaluations(x, gauss_newton_approx=(self.it < GN_iter) )
@@ -197,17 +202,20 @@ class ReducedSpaceNewtonCG:
             if self.it == 0:
                 gradnorm_ini = gradnorm
                 tol = max(abs_tol, gradnorm_ini*rel_tol)
-                
+            
+            # print(tol)
+            
             # check if solution is reached
             if (gradnorm < tol) and (self.it > 0):
                 self.converged = True
                 self.reason = 1
                 break
             
-            self.it += 1
             
+            self.it += 1            
+
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
-            
+        
             HessApply = ReducedHessian(self.model)
             solver = CGSolverSteihaug(comm = self.model.prior.R.mpi_comm())
             solver.set_operator(HessApply)
@@ -216,7 +224,8 @@ class ReducedSpaceNewtonCG:
             solver.parameters["max_iter"] = cg_max_iter
             solver.parameters["zero_initial_guess"] = True
             solver.parameters["print_level"] = print_level-1
-            
+
+        ####################################################
             # solver.solve(mhat, -mg)
             # test_obj = dlx.la.create_petsc_vector_wrap(mg).scale(-1.)
             # print(type(test_obj))
@@ -225,55 +234,60 @@ class ReducedSpaceNewtonCG:
             # tmp = dlx.la.create_petsc_vector_wrap(mg)
             # tmp.scale(-1.)
             # print(type(tmp))
-            
+        ####################################################
+
+
             mg_neg = self.model.generate_vector(PARAMETER)
 
             mg_neg.array[:] = -1*mg.array[:]
 
+        ####################################################
             # test_obj = -mg
             # print(type(test_obj))
 
             # mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
             # mg_petsc.scale(-1.)
-            solver.solve(mhat,mg_neg)
-             
+        ####################################################
+
+
+            solver.solve(mhat,mg_neg,self.it,self.model)         
             self.total_cg_iter += HessApply.ncalls
-            
+
             alpha = 1.0
             descent = 0
             n_backtrack = 0
             
             # mg_mhat = mg.inner(mhat)
             mg_mhat = dlx.la.create_petsc_vector_wrap(mg).dot(dlx.la.create_petsc_vector_wrap(mhat))
-            
+
             while descent == 0 and n_backtrack < max_backtracking_iter:
                 # update m and u
                 # x_star[PARAMETER].zero()
                 dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).scale(0.)
-                
+        
                 # x_star[PARAMETER].axpy(1., x[PARAMETER])
                 dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x[PARAMETER]))
-                
+
                 # x_star[PARAMETER].axpy(alpha, mhat)
                 dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(alpha, dlx.la.create_petsc_vector_wrap(mhat))
                 
                 # x_star[STATE].zero()
                 dlx.la.create_petsc_vector_wrap(x_star[STATE]).scale(0.)
-                
+
                 # x_star[STATE].axpy(1., x[STATE])
                 dlx.la.create_petsc_vector_wrap(x_star[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x[STATE]))
                 
                 self.model.solveFwd(x_star[STATE], x_star)
-                
+                            
                 cost_new, reg_new, misfit_new = self.model.cost(x_star)
-                  
+
                 # Check if armijo conditions are satisfied
                 if (cost_new < cost_old + alpha * c_armijo * mg_mhat) or (-mg_mhat <= self.parameters["gdm_tolerance"]):
                     cost_old = cost_new
                     descent = 1
                     # x[PARAMETER].zero()
                     dlx.la.create_petsc_vector_wrap(x[PARAMETER]).scale(0.)
-                    
+
                     # x[PARAMETER].axpy(1., x_star[PARAMETER])
                     dlx.la.create_petsc_vector_wrap(x[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]))
                     
@@ -286,7 +300,7 @@ class ReducedSpaceNewtonCG:
                 else:
                     n_backtrack += 1
                     alpha *= 0.5
-                            
+            
             if(print_level >= 0) and (self.it == 1):
                 print( "\n{0:3} {1:3} {2:15} {3:15} {4:15} {5:15} {6:14} {7:14} {8:14}".format(
                       "It", "cg_it", "cost", "misfit", "reg", "(g,dm)", "||g||L2", "alpha", "tolcg") )
@@ -294,10 +308,10 @@ class ReducedSpaceNewtonCG:
             if print_level >= 0:
                 print( "{0:3d} {1:3d} {2:15e} {3:15e} {4:15e} {5:15e} {6:14e} {7:14e} {8:14e}".format(
                         self.it, HessApply.ncalls, cost_new, misfit_new, reg_new, mg_mhat, gradnorm, alpha, tolcg) )
-                
+
+
             if self.callback:
                 self.callback(self.it, x)
-                
                 
             if n_backtrack == max_backtracking_iter:
                 self.converged = False
@@ -308,9 +322,10 @@ class ReducedSpaceNewtonCG:
                 self.converged = True
                 self.reason = 3
                 break
-                            
+      
         self.final_grad_norm = gradnorm
-        self.final_cost      = cost_new
+        self.final_cost   = cost_new
+        
         return x
     
     def _solve_tr(self,x):

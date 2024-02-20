@@ -22,13 +22,18 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
+
     parRandom(comm).normal(1., h)
 
     x = model.generate_vector()
     
     x[PARAMETER] = m0
     model.solveFwd(x[STATE], x)
-    model.solveAdj(x[ADJOINT], x)    
+
+    model.solveAdj(x[ADJOINT], x)
+
+    # print(x[ADJOINT].array.min(),":",x[ADJOINT].array.max())
+
     cx = model.cost(x)
     
     grad_x = model.generate_vector(PARAMETER)
@@ -39,7 +44,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
-
 
     if eps is None:
         n_eps = 32

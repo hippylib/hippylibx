@@ -5,7 +5,7 @@ import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
 #from ..algorithms.linalg import Transpose #not yet used
 from ..algorithms.linSolvers import PETScLUSolver
-from ..utils.vector2function import vector2Function
+from ..utils.vector2function import vector2Function, updateFromVector
 
 
 #decorator for functions in classes that are not used -> may not be needed in the final
@@ -15,9 +15,11 @@ def unused_function(func):
 
 
 class PDEVariationalProblem:
-    def __init__(self, Vh : dlx.fem.FunctionSpace, varf_handler, bc=[], bc0=[], is_fwd_linear=False):
+    def __init__(self, Vh : list, varf_handler, bc=[], bc0=[], is_fwd_linear=False):
         self.Vh = Vh
         self.varf_handler = varf_handler
+
+        self.xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
         self.bc = bc        
         self.bc0 = bc0
@@ -49,12 +51,16 @@ class PDEVariationalProblem:
         dummy = self.generate_parameter()
         m.init(dummy.mpi_comm(), dummy.dofmap.index_map)
 
-    def solveFwd(self, state : dlx.la.Vector, x : dlx.la.Vector) -> None: #state is a vector
+    def solveFwd(self, state : dlx.la.Vector, x : list) -> None: #state is a vector
         """ Solve the possibly nonlinear forward problem:
         Given :math:`m`, find :math:`u` such that
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""
 
-        mfun = vector2Function(x[PARAMETER],self.Vh[PARAMETER])
+        # mfun = vector2Function(x[PARAMETER],self.Vh[PARAMETER])
+
+        updateFromVector(self.xfun[PARAMETER], x[PARAMETER])
+        mfun = self.xfun[PARAMETER]
+
 
         self.n_calls["forward"] += 1
         if self.solver is None:
@@ -94,8 +100,15 @@ class PDEVariationalProblem:
         if self.solver is None:
             self.solver = self._createLUSolver()
 
-        u = vector2Function(x[STATE], self.Vh[STATE])
-        m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+        # u = vector2Function(x[STATE], self.Vh[STATE])
+        # m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+        
+        updateFromVector(self.xfun[STATE],x[STATE])
+        u = self.xfun[STATE]
+
+        updateFromVector(self.xfun[PARAMETER],x[PARAMETER])
+        m = self.xfun[PARAMETER]
+                
         p = dlx.fem.Function(self.Vh[ADJOINT])
         du = ufl.TestFunction(self.Vh[STATE])
         dp = ufl.TrialFunction(self.Vh[ADJOINT])
@@ -113,9 +126,19 @@ class PDEVariationalProblem:
     def evalGradientParameter(self, x : list, out : dlx.la.Vector) -> None:
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
         
-        u = vector2Function(x[STATE], self.Vh[STATE])
-        m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
-        p = vector2Function(x[ADJOINT], self.Vh[ADJOINT])
+        # u = vector2Function(x[STATE], self.Vh[STATE])
+        # m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+        # p = vector2Function(x[ADJOINT], self.Vh[ADJOINT])
+
+        updateFromVector(self.xfun[STATE],x[STATE])
+        u = self.xfun[STATE]
+
+        updateFromVector(self.xfun[PARAMETER],x[PARAMETER])
+        m = self.xfun[PARAMETER]
+
+        updateFromVector(self.xfun[ADJOINT],x[ADJOINT])
+        p = self.xfun[ADJOINT]
+        
         dm = ufl.TestFunction(self.Vh[PARAMETER])
         res_form = self.varf_handler(u, m, p)
 
@@ -134,11 +157,17 @@ class PDEVariationalProblem:
         """ Set the values of the state and parameter
             for the incremental forward and adjoint solvers. """
             
-        x_fun = [vector2Function(x[i], self.Vh[i]) for i in range(3)]
-        
+        # x_fun = [vector2Function(x[i], self.Vh[i]) for i in range(3)]
+
+        for i in range(3):
+            updateFromVector(self.xfun[i],x[i])
+
+        x_fun = self.xfun
+
         f_form = self.varf_handler(*x_fun)
         
         g_form = [None,None,None]
+        
         for i in range(3):
             g_form[i] = ufl.derivative(f_form, x_fun[i])
             
@@ -215,9 +244,7 @@ class PDEVariationalProblem:
                 dlx.la.create_petsc_vector_wrap(out).scale(0.)
             else:
                 KKT[j,i].multTranspose(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
-                
-    
-
+                    
     def solveIncremental(self, out : dlx.la.Vector, rhs : dlx.la.Vector, is_adj : bool) -> None:        
         """ If :code:`is_adj == False`:
 
