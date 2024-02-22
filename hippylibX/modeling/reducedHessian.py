@@ -102,30 +102,53 @@ class ReducedHessian:
         
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)
-            dlx.la.create_petsc_vector_wrap(y).axpy(1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+            # dlx.la.create_petsc_vector_wrap(y).axpy(1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+            temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
+            temp_petsc_vec_self_yhelp = dlx.la.create_petsc_vector_wrap(self.yhelp)
+            temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+            temp_petsc_vec_y.destroy()
+            temp_petsc_vec_self_yhelp.destroy()
 
+            
         
     def TrueHessian(self, x : dlx.la.Vector , y : dlx.la.Vector) -> None:
         """
         Apply the the reduced Hessian to the vector :code:`x`.
         Return the result in :code:`y`.        
         """
+        temp_petsc_vec_rhs_adj = dlx.la.create_petsc_vector_wrap(self.rhs_adj)
+        temp_petsc_vec_rhs_adj2 = dlx.la.create_petsc_vector_wrap(self.rhs_adj2)
+        temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
+        temp_petsc_vec_self_yhelp = dlx.la.create_petsc_vector_wrap(self.yhelp)
+        
+
         self.model.applyC(x, self.rhs_fwd)
         self.model.solveFwdIncremental(self.uhat, self.rhs_fwd)
         self.model.applyWuu(self.uhat, self.rhs_adj)
         self.model.applyWum(x, self.rhs_adj2)
-        dlx.la.create_petsc_vector_wrap(self.rhs_adj).axpy(-1., dlx.la.create_petsc_vector_wrap(self.rhs_adj2))
+        # dlx.la.create_petsc_vector_wrap(self.rhs_adj).axpy(-1., dlx.la.create_petsc_vector_wrap(self.rhs_adj2))
+        temp_petsc_vec_rhs_adj.axpy(-1., temp_petsc_vec_rhs_adj2)
         self.model.solveAdjIncremental(self.phat, self.rhs_adj)
         self.model.applyWmm(x, y)
         self.model.applyCt(self.phat, self.yhelp)
-        dlx.la.create_petsc_vector_wrap(y).axpy(1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+
+        # dlx.la.create_petsc_vector_wrap(y).axpy(1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+        temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
         self.model.applyWmu(self.uhat, self.yhelp)
-        dlx.la.create_petsc_vector_wrap(y).axpy(-1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+        # dlx.la.create_petsc_vector_wrap(y).axpy(-1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+        temp_petsc_vec_y.axpy(-1., temp_petsc_vec_self_yhelp)
         
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)
-            dlx.la.create_petsc_vector_wrap(y).axpy(1., dlx.la.create_petsc_vector_wrap(self.yhelp))
-            
+            # dlx.la.create_petsc_vector_wrap(y).axpy(1., dlx.la.create_petsc_vector_wrap(self.yhelp))
+            temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+        
+        temp_petsc_vec_rhs_adj.destroy()
+        temp_petsc_vec_rhs_adj2.destroy()
+        temp_petsc_vec_y.destroy()
+        temp_petsc_vec_self_yhelp.destroy()
+        
+        
 #class not used yet.
 # class FDHessian:
 #     """

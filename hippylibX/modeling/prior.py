@@ -78,11 +78,23 @@ class _BilaplacianRsolver():
         return x
     
     def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
-        self.Asolver.solve(dlx.la.create_petsc_vector_wrap(b), self.help1)
+        
+        # self.Asolver.solve(dlx.la.create_petsc_vector_wrap(b), self.help1)
+        # nit = self.Asolver.its
+        # self.M.mult(self.help1, self.help2)
+        # self.Asolver.solve(self.help2,dlx.la.create_petsc_vector_wrap(x))
+        # nit += self.Asolver.its
+        # return nit
+
+        temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
+        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+        self.Asolver.solve(temp_petsc_vec_b, self.help1)
         nit = self.Asolver.its
         self.M.mult(self.help1, self.help2)
-        self.Asolver.solve(self.help2,dlx.la.create_petsc_vector_wrap(x))
+        self.Asolver.solve(self.help2,temp_petsc_vec_x)
         nit += self.Asolver.its
+        temp_petsc_vec_b.destroy()
+        temp_petsc_vec_x.destroy()
         return nit
 
 
@@ -218,32 +230,72 @@ class test_prior:
 
         If :code:`add_mean == True` add the prior mean value to :code:`s`.
         """
+        temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
 
-        rhs = self.sqrtM*dlx.la.create_petsc_vector_wrap(noise)
+        # rhs = self.sqrtM*dlx.la.create_petsc_vector_wrap(noise)
+        rhs = self.sqrtM*temp_petsc_vec_noise
+        temp_petsc_vec_noise.destroy()
 
-        s_petsc = dlx.la.create_petsc_vector_wrap(s)
-        self.Asolver.solve(rhs,s_petsc)
-
-        s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+        # s_petsc = dlx.la.create_petsc_vector_wrap(s)
+        # self.Asolver.solve(rhs,s_petsc)
         
-        if add_mean:
-            s_petsc.axpy(1., dlx.la.create_petsc_vector_wrap(self.mean))
+        temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
+        self.Asolver.solve(rhs,temp_petsc_vec_s)
 
+        # s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        # s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+        
+        temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+
+        if add_mean:
+            # s_petsc.axpy(1., dlx.la.create_petsc_vector_wrap(self.mean))
+            temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
+            temp_petsc_vec_s.axpy(1., temp_petsc_vec_mean)
+            temp_petsc_vec_mean.destroy()
+        
+        rhs.destroy()
+        temp_petsc_vec_s.destroy()
 
     def cost(self,m : dlx.la.Vector) -> float:  
-        d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
-        d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))
-        # Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
-        Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
+        # d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
+        # d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))
+        # # Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
+        # Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
         
-        self.R.mult(d,Rd)
-        return .5*Rd.dot(d)
+        # self.R.mult(d,Rd)
+        # return .5*Rd.dot(d)
     
+        temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
+        temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
+        temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
+        temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
+        
+        self.R.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
+        return_value = .5*temp_petsc_vec_Rd.dot(temp_petsc_vec_d)
+        temp_petsc_vec_d.destroy()
+        temp_petsc_vec_m.destroy()
+        temp_petsc_vec_Rd.destroy()
+        return return_value
+
     def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
-        d = dlx.la.create_petsc_vector_wrap(m).copy()
-        d.axpy(-1., dlx.la.create_petsc_vector_wrap(self.mean))
-        self.R.mult(d,dlx.la.create_petsc_vector_wrap(out))
+        # d = dlx.la.create_petsc_vector_wrap(m).copy()
+        # d.axpy(-1., dlx.la.create_petsc_vector_wrap(self.mean))
+        # self.R.mult(d,dlx.la.create_petsc_vector_wrap(out))
+
+        temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()
+        temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+
+
+        temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
+
+
+        self.R.mult(temp_petsc_vec_d,temp_petsc_vec_out)
+
+        temp_petsc_vec_d.destroy()
+        temp_petsc_vec_self_mean.destroy()
+        temp_petsc_vec_out.destroy()
 
 
 def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False) -> test_prior:

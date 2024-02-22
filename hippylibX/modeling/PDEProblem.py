@@ -87,7 +87,9 @@ class PDEVariationalProblem:
 
             state_vec = dlx.la.create_petsc_vector_wrap(state)
             self.solver.solve(b,state_vec)  
-        
+            state_vec.destroy()
+            A.destroy()
+            b.destroy()
 
     def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : petsc4py.PETSc.Vec ) -> None: 
 
@@ -121,8 +123,12 @@ class PDEVariationalProblem:
 
         self.solver.setOperators(Aadj)
 
-        self.solver.solve(adj_rhs,dlx.la.create_petsc_vector_wrap(adj) )
-        
+        temp_petsc_vec_adj = dlx.la.create_petsc_vector_wrap(adj)
+        # self.solver.solve(adj_rhs,dlx.la.create_petsc_vector_wrap(adj) )
+        self.solver.solve(adj_rhs, temp_petsc_vec_adj )
+        temp_petsc_vec_adj.destroy()
+        Aadj.destroy()
+
     def evalGradientParameter(self, x : list, out : dlx.la.Vector) -> None:
         """Given :math:`u, m, p`; evaluate :math:`\\delta_m F(u, m, p; \\hat{m}),\\, \\forall \\hat{m}.` """
         
@@ -144,9 +150,18 @@ class PDEVariationalProblem:
 
         tmp = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm))) 
         tmp.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        dlx.la.create_petsc_vector_wrap(out).scale(0.)
-        dlx.la.create_petsc_vector_wrap(out).axpy(1.,tmp)
-
+        
+        # dlx.la.create_petsc_vector_wrap(out).scale(0.)
+        # dlx.la.create_petsc_vector_wrap(out).axpy(1.,tmp)
+        
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+        
+        temp_petsc_vec_out.scale(0.)
+        temp_petsc_vec_out.axpy(1., tmp)
+        
+        temp_petsc_vec_out.destroy()
+        tmp.destroy()
+        
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create()
@@ -233,17 +248,28 @@ class PDEVariationalProblem:
         KKT[ADJOINT, STATE] = self.A
         KKT[ADJOINT, PARAMETER] = self.C
         
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+        temp_petsc_vec_dir = dlx.la.create_petsc_vector_wrap(dir)
+        
+
         if i >= j:
             if KKT[i,j] is None:
-                dlx.la.create_petsc_vector_wrap(out).scale(0.)
+                # dlx.la.create_petsc_vector_wrap(out).scale(0.)
+                temp_petsc_vec_out.scale(0.)
             else:
-                KKT[i,j].mult(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
+                # KKT[i,j].mult(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
+                KKT[i,j].mult(temp_petsc_vec_dir, temp_petsc_vec_out)
                 
         else:
             if KKT[j,i] is None:
-                dlx.la.create_petsc_vector_wrap(out).scale(0.)
+                # dlx.la.create_petsc_vector_wrap(out).scale(0.)
+                temp_petsc_vec_out.scale(0.)
             else:
-                KKT[j,i].multTranspose(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
+                # KKT[j,i].multTranspose(dlx.la.create_petsc_vector_wrap(dir), dlx.la.create_petsc_vector_wrap(out))
+                KKT[j,i].multTranspose(temp_petsc_vec_dir, temp_petsc_vec_out)
+        
+        temp_petsc_vec_out.destroy()
+        temp_petsc_vec_dir.destroy()
                     
     def solveIncremental(self, out : dlx.la.Vector, rhs : dlx.la.Vector, is_adj : bool) -> None:        
         """ If :code:`is_adj == False`:
@@ -260,13 +286,20 @@ class PDEVariationalProblem:
             
                 .. math:: \\delta_{up} F(u, m, p; \\hat{u}, \\tilde{p}) = \\mbox{rhs},\\quad \\forall \\hat{u}.
         """
-
+        temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+        
         if is_adj:
             self.n_calls["incremental_adjoint"] += 1
-            self.solver_adj_inc.solve(dlx.la.create_petsc_vector_wrap(rhs), dlx.la.create_petsc_vector_wrap(out))
+            # self.solver_adj_inc.solve(dlx.la.create_petsc_vector_wrap(rhs), dlx.la.create_petsc_vector_wrap(out))
+            self.solver_adj_inc.solve(temp_petsc_vec_rhs, temp_petsc_vec_out)
         
         else:
             self.n_calls["incremental_forward"] += 1
-            self.solver_fwd_inc.solve(dlx.la.create_petsc_vector_wrap(rhs), dlx.la.create_petsc_vector_wrap(out))
+            # self.solver_fwd_inc.solve(dlx.la.create_petsc_vector_wrap(rhs), dlx.la.create_petsc_vector_wrap(out))
+            self.solver_fwd_inc.solve(temp_petsc_vec_rhs, temp_petsc_vec_out)
     
+        temp_petsc_vec_out.destroy()
+        temp_petsc_vec_rhs.destroy()
+        
 

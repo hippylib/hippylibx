@@ -136,15 +136,18 @@ class Model:
                 2) the state variable :code:`u` for assembling the adjoint right hand side
                 .. note:: :code:`p` is not accessed
         """
-        
-
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
         self.misfit.grad(STATE, x, rhs)
-        
-        dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
+        temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
+        # dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
+        temp_petsc_vec_rhs.scale(-1.)
 
-        self.problem.solveAdj(out, x, dlx.la.create_petsc_vector_wrap(rhs))
+        # self.problem.solveAdj(out, x, dlx.la.create_petsc_vector_wrap(rhs))
+        self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
+        temp_petsc_vec_rhs.destroy()
+
+
 
     def evalGradientParameter(self,x : list, mg: dlx.la.Vector, misfit_only=False) -> tuple[float, dlx.la.Vector]:
         """
@@ -174,7 +177,11 @@ class Model:
                 
         self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         
-        return math.sqrt(mg_petsc.dot(tmp_petsc))
+        return_value = math.sqrt(mg_petsc.dot(tmp_petsc))
+        mg_petsc.destroy()
+        tmp_petsc.destroy()
+
+        return return_value
     
 
     def setPointForHessianEvaluations(self, x : list, gauss_newton_approx=False):
@@ -266,8 +273,14 @@ class Model:
         if not self.gauss_newton_approx:
             tmp = self.generate_vector(STATE)
             self.problem.apply_ij(STATE,STATE, du, tmp)
-            dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
-    
+            temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+            temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
+            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+
+            # dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+            temp_petsc_vec_out.destroy()
+            temp_petsc_vec_tmp.destroy()
+
 
     def applyWum(self, dm, out):
         """
@@ -281,15 +294,23 @@ class Model:
             
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
-        if self.gauss_newton_approx:
-            dlx.la.create_petsc_vector_wrap(out).scale(0.)
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
 
+        if self.gauss_newton_approx:
+            # dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            temp_petsc_vec_out.scale(0.)
         else:
             self.problem.apply_ij(STATE,PARAMETER, dm, out)
             tmp = self.generate_vector(STATE)
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
-            dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+            # dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+            temp_petsc_vec_tmp  = dlx.la.create_petsc_vector_wrap(tmp)
             
+            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+        
+        temp_petsc_vec_out.destroy()
+        temp_petsc_vec_tmp.destroy()
+        
 
 
     def applyWmu(self, du, out):
@@ -304,14 +325,22 @@ class Model:
         
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+        
         if self.gauss_newton_approx:
-            dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            # dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            temp_petsc_vec_out.scale(0.)
         else:
             self.problem.apply_ij(PARAMETER, STATE, du, out)
             tmp = self.generate_vector(PARAMETER)
-            self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
-            dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+            temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
 
+            self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
+            # dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
+            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+        
+        temp_petsc_vec_out.destroy()
+        temp_petsc_vec_tmp.destroy()
     
     def applyR(self, dm, out):
         """
@@ -325,8 +354,14 @@ class Model:
         
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
-        self.prior.R.mult(dlx.la.create_petsc_vector_wrap(dm), dlx.la.create_petsc_vector_wrap(out))
-    
+        temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
+        # self.prior.R.mult(dlx.la.create_petsc_vector_wrap(dm), dlx.la.create_petsc_vector_wrap(out))
+        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
+        temp_petsc_vec_dm.destroy()
+        temp_petsc_vec_out.destroy()
+        
+
 
     def Rsolver(self):
         """
@@ -351,14 +386,21 @@ class Model:
             
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
+        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         if self.gauss_newton_approx:
-            dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            # dlx.la.create_petsc_vector_wrap(out).scale(0.)
+            temp_petsc_vec_out.scale(0.)
         else:
             self.problem.apply_ij(PARAMETER,PARAMETER, dm, out)
             tmp = self.generate_vector(PARAMETER)
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
-            dlx.la.create_petsc_vector_wrap(out).axpy(1.,dlx.la.create_petsc_vector_wrap(tmp))
-    
+            temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
+        
+            # dlx.la.create_petsc_vector_wrap(out).axpy(1.,dlx.la.create_petsc_vector_wrap(tmp))
+            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+        temp_petsc_vec_out.destroy()
+        temp_petsc_vec_tmp.destroy()
+
     @unused_function
     def apply_ij(self, i, j, d, out):
         if i == STATE and j == STATE:

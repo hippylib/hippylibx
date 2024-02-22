@@ -32,14 +32,20 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
     model.solveAdj(x[ADJOINT], x)
 
+    # print(x[STATE].array.min(),":",x[STATE].array.max())
     # print(x[ADJOINT].array.min(),":",x[ADJOINT].array.max())
 
     cx = model.cost(x)
     
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
-    grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot( dlx.la.create_petsc_vector_wrap(h) )
     
+
+    # grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot( dlx.la.create_petsc_vector_wrap(h) )
+    temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
+    temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
+    grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
+     
     model.setPointForHessianEvaluations(x)
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
@@ -55,19 +61,30 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     err_grad = np.zeros(n_eps)
     err_H = np.zeros(n_eps)
         
+    temp_vec_petsc_m0 = dlx.la.create_petsc_vector_wrap(m0)
+    
+
+
+    
     for i in range(n_eps):
         my_eps = eps[i]
         
         x_plus = model.generate_vector()
+        temp_vec_petsc_x_plus_paramater = dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER])
         
-        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
+        # dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
     
-        dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(my_eps,dlx.la.create_petsc_vector_wrap(h))
-    
+        # dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(my_eps,dlx.la.create_petsc_vector_wrap(h))
+
+        temp_vec_petsc_x_plus_paramater.axpy(1., temp_vec_petsc_m0)
+
+        temp_vec_petsc_x_plus_paramater.axpy(my_eps, temp_petsc_vec_h)
+        
+
         model.solveFwd(x_plus[STATE], x_plus)
 
         model.solveAdj(x_plus[ADJOINT], x_plus)
-        
+
         dc = model.cost(x_plus)[index] - cx[index]
         
         err_grad[i] = abs(dc/my_eps - grad_xh)
@@ -76,15 +93,30 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         grad_xplus = model.generate_vector(PARAMETER)
         model.evalGradientParameter(x_plus, grad_xplus,misfit_only=misfit_only)
         
-        err = dlx.la.create_petsc_vector_wrap(grad_xplus) - dlx.la.create_petsc_vector_wrap(grad_x)
+        # err = dlx.la.create_petsc_vector_wrap(grad_xplus) - dlx.la.create_petsc_vector_wrap(grad_x)
+        temp_petsc_vec_grad_xplus = dlx.la.create_petsc_vector_wrap(grad_xplus)
+        
+        err = temp_petsc_vec_grad_xplus - temp_petsc_vec_grad_x
+        temp_petsc_vec_grad_xplus.destroy()
+
+
         err.scale(1./my_eps)
-        err.axpy(-1., dlx.la.create_petsc_vector_wrap(Hh))
+        # err.axpy(-1., dlx.la.create_petsc_vector_wrap(Hh))
+        temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
+        err.axpy(-1., temp_petsc_vec_Hh)
+        temp_petsc_vec_Hh.destroy()
 
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
 
     if verbose:
         modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
+
+    temp_petsc_vec_grad_x.destroy()
+    temp_petsc_vec_h.destroy()
+    temp_vec_petsc_m0.destroy()
+    temp_vec_petsc_x_plus_paramater.destroy()
     
+
     return eps, err_grad, err_H
 
 

@@ -175,7 +175,6 @@ class ReducedSpaceNewtonCG:
         max_backtracking_iter = self.parameters["LS"]["max_backtracking_iter"]
         
         self.model.solveFwd(x[STATE], x)
-        
         self.it = 0
         self.converged = False
         self.ncalls += 1
@@ -225,7 +224,8 @@ class ReducedSpaceNewtonCG:
             solver.parameters["zero_initial_guess"] = True
             solver.parameters["print_level"] = print_level-1
 
-        ####################################################
+            
+            ####################################################
             # solver.solve(mhat, -mg)
             # test_obj = dlx.la.create_petsc_vector_wrap(mg).scale(-1.)
             # print(type(test_obj))
@@ -234,49 +234,69 @@ class ReducedSpaceNewtonCG:
             # tmp = dlx.la.create_petsc_vector_wrap(mg)
             # tmp.scale(-1.)
             # print(type(tmp))
-        ####################################################
+            ####################################################
 
 
             mg_neg = self.model.generate_vector(PARAMETER)
 
             mg_neg.array[:] = -1*mg.array[:]
 
-        ####################################################
+            ####################################################
             # test_obj = -mg
             # print(type(test_obj))
 
             # mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
             # mg_petsc.scale(-1.)
-        ####################################################
+            ####################################################
 
 
             solver.solve(mhat,mg_neg,self.it,self.model)         
+
             self.total_cg_iter += HessApply.ncalls
 
             alpha = 1.0
             descent = 0
             n_backtrack = 0
-            
-            # mg_mhat = mg.inner(mhat)
-            mg_mhat = dlx.la.create_petsc_vector_wrap(mg).dot(dlx.la.create_petsc_vector_wrap(mhat))
 
+
+            # mg_mhat = mg.inner(mhat)
+            # mg_mhat = dlx.la.create_petsc_vector_wrap(mg).dot(dlx.la.create_petsc_vector_wrap(mhat))
+            temp_petsc_vec_mg = dlx.la.create_petsc_vector_wrap(mg)
+
+            temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
+            mg_mhat = temp_petsc_vec_mg.dot(temp_petsc_vec_mhat)
+
+            temp_petsc_vec_mg.destroy()
+
+            temp_petsc_vec_x_state = dlx.la.create_petsc_vector_wrap(x[STATE])
+            temp_petsc_vec_x_parameter = dlx.la.create_petsc_vector_wrap(x[PARAMETER])
+            temp_petsc_vec_xstar_state = dlx.la.create_petsc_vector_wrap(x_star[STATE])
+            temp_petsc_vec_xstar_parameter = dlx.la.create_petsc_vector_wrap(x_star[PARAMETER])
+            
             while descent == 0 and n_backtrack < max_backtracking_iter:
+                
                 # update m and u
                 # x_star[PARAMETER].zero()
-                dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).scale(0.)
-        
+                # dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).scale(0.)
+
+                temp_petsc_vec_xstar_parameter.scale(0.)
+
                 # x_star[PARAMETER].axpy(1., x[PARAMETER])
-                dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x[PARAMETER]))
+                # dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x[PARAMETER]))
+                temp_petsc_vec_xstar_parameter.axpy(1., temp_petsc_vec_x_parameter)
 
                 # x_star[PARAMETER].axpy(alpha, mhat)
-                dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(alpha, dlx.la.create_petsc_vector_wrap(mhat))
-                
+                # dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(alpha, dlx.la.create_petsc_vector_wrap(mhat))
+                temp_petsc_vec_xstar_parameter.axpy(alpha, temp_petsc_vec_mhat)
+
                 # x_star[STATE].zero()
-                dlx.la.create_petsc_vector_wrap(x_star[STATE]).scale(0.)
+                # dlx.la.create_petsc_vector_wrap(x_star[STATE]).scale(0.)
+                temp_petsc_vec_xstar_state.scale(0.)
 
                 # x_star[STATE].axpy(1., x[STATE])
-                dlx.la.create_petsc_vector_wrap(x_star[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x[STATE]))
-                
+                # dlx.la.create_petsc_vector_wrap(x_star[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x[STATE]))
+                temp_petsc_vec_xstar_state.axpy(1., temp_petsc_vec_x_state)
+
                 self.model.solveFwd(x_star[STATE], x_star)
                             
                 cost_new, reg_new, misfit_new = self.model.cost(x_star)
@@ -286,21 +306,26 @@ class ReducedSpaceNewtonCG:
                     cost_old = cost_new
                     descent = 1
                     # x[PARAMETER].zero()
-                    dlx.la.create_petsc_vector_wrap(x[PARAMETER]).scale(0.)
+                    # dlx.la.create_petsc_vector_wrap(x[PARAMETER]).scale(0.)
+                    temp_petsc_vec_x_parameter.scale(0.)
 
                     # x[PARAMETER].axpy(1., x_star[PARAMETER])
-                    dlx.la.create_petsc_vector_wrap(x[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]))
-                    
+                    # dlx.la.create_petsc_vector_wrap(x[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]))
+                    temp_petsc_vec_x_parameter.axpy(1., temp_petsc_vec_xstar_parameter)
+
                     # x[STATE].zero()
-                    dlx.la.create_petsc_vector_wrap(x[STATE]).scale(0.)
-                    
+                    # dlx.la.create_petsc_vector_wrap(x[STATE]).scale(0.)
+                    temp_petsc_vec_x_state.scale(0.)
+
                     # x[STATE].axpy(1., x_star[STATE])
-                    dlx.la.create_petsc_vector_wrap(x[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[STATE]))
-                    
+                    # dlx.la.create_petsc_vector_wrap(x[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[STATE]))
+                    temp_petsc_vec_x_state.axpy(1., temp_petsc_vec_xstar_state)
+
                 else:
                     n_backtrack += 1
                     alpha *= 0.5
-            
+
+
             if(print_level >= 0) and (self.it == 1):
                 print( "\n{0:3} {1:3} {2:15} {3:15} {4:15} {5:15} {6:14} {7:14} {8:14}".format(
                       "It", "cg_it", "cost", "misfit", "reg", "(g,dm)", "||g||L2", "alpha", "tolcg") )
@@ -323,9 +348,15 @@ class ReducedSpaceNewtonCG:
                 self.reason = 3
                 break
       
+
         self.final_grad_norm = gradnorm
         self.final_cost   = cost_new
-        
+        temp_petsc_vec_mhat.destroy()
+        temp_petsc_vec_x_state.destroy()
+        temp_petsc_vec_x_parameter.destroy()
+        temp_petsc_vec_xstar_state.destroy()
+        temp_petsc_vec_xstar_parameter.destroy()
+
         return x
     
     def _solve_tr(self,x):
