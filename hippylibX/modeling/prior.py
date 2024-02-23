@@ -122,6 +122,7 @@ class test_prior:
         test  = ufl.TestFunction(Vh)
         
         varfM = ufl.inner(trial,test)*ufl.dx       
+        
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         self.M.assemble()
 

@@ -183,18 +183,18 @@ class CGSolverSteihaug:
         betanom = 0.0
         alpha = 0.0 
         beta = 0.0
-                
-        if self.parameters["zero_initial_guess"]:
-            temp_petsc_vec_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-            temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
 
+        temp_petsc_vec_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+        temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
+
+        if self.parameters["zero_initial_guess"]:
+
+            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
             temp_petsc_vec_self_r.scale(0.)
             temp_petsc_vec_self_r.axpy(1.,temp_petsc_vec_b)
             temp_petsc_vec_x.scale(0.)
-
-            temp_petsc_vec_b.destroy()
             temp_petsc_vec_x.destroy()
+            
             
             # dlx.la.create_petsc_vector_wrap(self.r).scale(0.)
             # dlx.la.create_petsc_vector_wrap(self.r).axpy(1.0, dlx.la.create_petsc_vector_wrap(b))
@@ -204,15 +204,18 @@ class CGSolverSteihaug:
         else:
             assert self.TR_radius_2==None
             self.A.mult(x,self.r)
-            self.r *= -1.0
-            self.r.axpy(1.0, b)
-        
+            # self.r *= -1.0
+            # self.r.axpy(1.0, b)
+            temp_petsc_vec_self_r.scale(-1.0)
+            temp_petsc_vec_self_r.axpy(1.0, temp_petsc_vec_b)
+
+        temp_petsc_vec_b.destroy()
+
         # self.z.zero()
         # dlx.la.create_petsc_vector_wrap(self.z).scale(0.)
             
         temp_petsc_vec_self_z = dlx.la.create_petsc_vector_wrap(self.z)
         temp_petsc_vec_self_z.scale(0.)
-
 
         self.B_solver.solve(self.z,self.r) #z = B^-1 r  
               
@@ -244,8 +247,16 @@ class CGSolverSteihaug:
             if(self.parameters["print_level"] >= 0):
                 print( self.reason[self.reasonid])
                 print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
+            
+            #have to delete prev. created vectors before return:
+            temp_petsc_vec_self_d.destroy()
+            temp_petsc_vec_self_z.destroy()
+            temp_petsc_vec_self_r.destroy()
+
             return
         
+        #if nom > 0, still have the above 3 vec objects:
+
         self.A.mult(self.d, self.Ad)
         # den = self.Ad.inner(self.d)
         temp_petsc_vec_Ad = dlx.la.create_petsc_vector_wrap(self.Ad)
@@ -255,14 +266,26 @@ class CGSolverSteihaug:
         if den <= 0.0:
             self.converged = True
             self.reasonid = 2
-            x.axpy(1., self.d)
-            self.r.axpy(-1., self.Ad)
+            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+            # x.axpy(1., self.d)
+            temp_petsc_vec_x.axpy(1., temp_petsc_vec_self_d)
+            # self.r.axpy(-1., self.Ad)
+            temp_petsc_vec_self_r.axpy(-1., temp_petsc_vec_Ad)
             self.B_solver.solve(self.z, self.r)
-            nom = self.r.inner(self.z)
+
+            # nom = self.r.inner(self.z)
+            nom = temp_petsc_vec_self_r.dot(temp_petsc_vec_self_z)
             self.final_norm = math.sqrt(nom)
             if(self.parameters["print_level"] >= 0):
                 print( self.reason[self.reasonid])
                 print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
+            
+            temp_petsc_vec_self_d.destroy()
+            temp_petsc_vec_self_z.destroy()
+            temp_petsc_vec_self_r.destroy()
+            temp_petsc_vec_x.destroy()
+            
+            temp_petsc_vec_Ad.destroy()
             return
         
         # start iteration
@@ -359,13 +382,10 @@ class CGSolverSteihaug:
             nom = betanom
 
         temp_petsc_vec_Ad.destroy()
-
-        temp_petsc_vec_self_d.destroy()    
-        temp_petsc_vec_self_z.destroy()
         temp_petsc_vec_self_r.destroy()
-
-        # print("hello",it_count)
-
+        temp_petsc_vec_self_z.destroy()
+        temp_petsc_vec_self_d.destroy()    
+        temp_petsc_vec_x.destroy()
 
 
                 

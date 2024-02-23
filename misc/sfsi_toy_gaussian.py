@@ -173,14 +173,14 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     #failing with multiple procs: fix this
     x = solver.solve(x)
     
-    # if solver.converged:
-    #     master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    # else:
-    #     master_print(comm, "\nNot Converged")
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
 
-    # master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
-    # master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
-    # master_print (comm, "Final cost: ", solver.final_cost)
+    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print (comm, "Final cost: ", solver.final_cost)
     # #######################################
 
     # # x = [u_true,m0,None]
@@ -190,48 +190,48 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     # # m_true_fun   = hpx.vector2Function(m_true, Vh_m, name = "m_true")
     # # u_true_fun   = hpx.vector2Function(u_true, Vh_phi, name = "u_true")
 
-    # hpx.updateFromVector(xfun[hpx.PARAMETER],x[hpx.PARAMETER])    
-    # m_fun = xfun[hpx.PARAMETER].copy()
-    # m_fun.name = 'm_map'
+    hpx.updateFromVector(xfun[hpx.PARAMETER],x[hpx.PARAMETER])    
+    m_fun = xfun[hpx.PARAMETER].copy()
+    m_fun.name = 'm_map'
 
-    # hpx.updateFromVector(xfun[hpx.STATE],x[hpx.STATE])    
-    # u_fun = xfun[hpx.STATE].copy()
-    # u_fun.name = 'u_map'
+    hpx.updateFromVector(xfun[hpx.STATE],x[hpx.STATE])    
+    u_fun = xfun[hpx.STATE].copy()
+    u_fun.name = 'u_map'
 
-    # hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)    
-    # m_true_fun = xfun[hpx.PARAMETER].copy()
-    # m_true_fun.name = 'm_true'
+    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)    
+    m_true_fun = xfun[hpx.PARAMETER].copy()
+    m_true_fun.name = 'm_true'
 
-    # hpx.updateFromVector(xfun[hpx.STATE],u_true)    
-    # u_true_fun = xfun[hpx.STATE].copy()
-    # u_true_fun.name = 'u_true'
+    hpx.updateFromVector(xfun[hpx.STATE],u_true)    
+    u_true_fun = xfun[hpx.STATE].copy()
+    u_true_fun.name = 'u_true'
 
-    # d.name = 'data'
+    d.name = 'data'
 
-    # # obs_fun = dl.project(u_fun*m_fun, Vh[hp.STATE])
+    # obs_fun = dl.project(u_fun*m_fun, Vh[hp.STATE])
 
-    # obs_fun = dlx.fem.Function(Vh[hpx.STATE],name='obs')
-    # expr = u_fun * m_fun
-    # hpx.projection(expr,obs_fun)
-    # obs_fun.x.scatter_forward()
+    obs_fun = dlx.fem.Function(Vh[hpx.STATE],name='obs')
+    expr = u_fun * m_fun
+    hpx.projection(expr,obs_fun)
+    obs_fun.x.scatter_forward()
 
 
-    # fid = dlx.io.XDMFFile(msh.comm,"m_map_6.xdmf","w")
-    # fid.write_mesh(msh)
-    # fid.write_function(m_fun,0)
-    # fid.write_function(m_true_fun,0)
-    # fid.write_function(u_fun,0)
-    # fid.write_function(u_true_fun,0)
-    # fid.write_function(d,0)
-    # fid.write_function(obs_fun,0)
+    fid = dlx.io.XDMFFile(msh.comm,"m_map_6.xdmf","w")
+    fid.write_mesh(msh)
+    fid.write_function(m_fun,0)
+    fid.write_function(m_true_fun,0)
+    fid.write_function(u_fun,0)
+    fid.write_function(u_true_fun,0)
+    fid.write_function(d,0)
+    fid.write_function(obs_fun,0)
 
-    # model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
-    # Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
-    # k = 80
-    # p = 20
+    model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
+    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
+    k = 80
+    p = 20
 
-    # if rank == 0:
-    #     print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
+    if rank == 0:
+        print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
     
     # Omega = hpx.MultiVector(x[hp.PARAMETER], k+p)
     # hp.parRandom.normal(1., Omega)

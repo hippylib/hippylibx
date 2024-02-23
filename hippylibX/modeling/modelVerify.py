@@ -22,7 +22,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-
     parRandom(comm).normal(1., h)
 
     x = model.generate_vector()
@@ -61,10 +60,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     err_grad = np.zeros(n_eps)
     err_H = np.zeros(n_eps)
         
-    temp_vec_petsc_m0 = dlx.la.create_petsc_vector_wrap(m0)
-    
-
-
+    temp_vec_petsc_m0 = dlx.la.create_petsc_vector_wrap(m0)    
     
     for i in range(n_eps):
         my_eps = eps[i]
@@ -80,7 +76,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
         temp_vec_petsc_x_plus_paramater.axpy(my_eps, temp_petsc_vec_h)
         
-
         model.solveFwd(x_plus[STATE], x_plus)
 
         model.solveAdj(x_plus[ADJOINT], x_plus)
