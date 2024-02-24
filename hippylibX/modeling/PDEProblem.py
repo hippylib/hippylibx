@@ -187,6 +187,7 @@ class PDEVariationalProblem:
         for i in range(3):
             g_form[i] = ufl.derivative(f_form, x_fun[i])
             
+        
         # if self.A is None:
         #     self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE] )  ), self.bc0 )
         # else:
@@ -228,6 +229,9 @@ class PDEVariationalProblem:
         dlx.fem.petsc.assemble_matrix(self.A, dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE] )  ), self.bc0 )
         self.A.assemble()
 
+        # print(self.A.getDiagonal().array[:].min(),":",self.A.getDiagonal().array[:].max())
+
+
         # self.At, dummy = dl.assemble_system(dl.derivative(g_form[STATE],x_fun[ADJOINT]),  g_form[STATE], self.bc0)
 
         if self.At is None:
@@ -240,13 +244,19 @@ class PDEVariationalProblem:
         # self.C = dl.assemble(dl.derivative(g_form[ADJOINT],x_fun[PARAMETER]))
         # [bc.zero(self.C) for bc in self.bc0]    
 
-        if self.C is None:
-            self.C = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])))
+        # if self.C is None:
+        #     self.C = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])))
 
-        
-        self.C.zeroEntries() #gives error, if before self.C.assemble() - [0] Not for matrices where you have set values but not yet assembled
-        dlx.fem.petsc.assemble_matrix(self.C, dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])), self.bc0, diagonal = 0.)        
+        # self.C.zeroEntries() #gives error, if before self.C.assemble() - [0] Not for matrices where you have set values but not yet assembled
+
+        # dlx.fem.petsc.assemble_matrix(self.C, dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])), bcs = self.bc0, diagonal = 0.)        
+        # dlx.fem.petsc.assemble_matrix(self.C, dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])), bcs = self.bc0)        
+        # dlx.fem.petsc.assemble_matrix(self.C, dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])), diagonal = 0.)        
+        # dlx.fem.petsc.assemble_matrix(self.C, dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])))        
+
+        self.C = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER])),bcs = self.bc0, diagonal = 0.)
         self.C.assemble()
+
 
         if self.solver_fwd_inc is None:
             self.solver_fwd_inc = self._createLUSolver()
@@ -284,13 +294,19 @@ class PDEVariationalProblem:
             self.Wuu.zeroEntries()
             dlx.fem.petsc.assemble_matrix(self.Wuu, dlx.fem.form(ufl.derivative(g_form[STATE],x_fun[STATE])), self.bc0, diagonal = 0.)
             self.Wuu.assemble()
+            
+            # print(self.Wuu.getDiagonal().array[:].min(),":",self.Wuu.getDiagonal().array[:].max())
 
             Wuu_t = self.Wuu.copy()
             Wuu_t.transpose()   
-            temp_diag_vec = Wuu_t.getDiagonal()
-            temp_diag_vec.scale(0.)         
-            Wuu_t.setDiagonal(temp_diag_vec)
-            temp_diag_vec.destroy()         
+
+            # print(Wuu_t.getDiagonal().array[:])
+            # print(Wuu_t.getDiagonal().array[:].min(),":",Wuu_t.getDiagonal().array[:].max())
+
+            # temp_diag_vec = Wuu_t.getDiagonal()
+            # temp_diag_vec.scale(0.)         
+            # Wuu_t.setDiagonal(temp_diag_vec)
+            # temp_diag_vec.destroy()         
 
 
             #don't know how to do this: [bc.zero(Wuu_t) for bc in self.bc0]
@@ -311,12 +327,24 @@ class PDEVariationalProblem:
             # self.Wmu.zeroEntries() #[0] Not for matrices where you have set values but not yet assembled
             # dlx.fem.petsc.assemble_matrix(self.Wmu, dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
             
-            if self.Wmu is None:
-                self.Wmu = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
+            # if self.Wmu is None:
+            #     self.Wmu = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
             
-            self.Wmu.zeroEntries()
-            dlx.fem.petsc.assemble_matrix(self.Wmu, dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
+            # self.Wmu.zeroEntries()
+            # dlx.fem.petsc.assemble_matrix(self.Wmu, dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
+            # self.Wmu.assemble()
+
+            # test_val = dlx.fem.petsc.assemble_vector(dlx.fem.form(g_form[PARAMETER]))
+            # print(test_val.array[:].min(),":",test_val.array[:].max())
+
+            # print(x_fun[STATE].x.array[:].min(),":",x_fun[STATE].x.array[:].max())
+
+            self.Wmu = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
             self.Wmu.assemble()
+ 
+            # print(self.Wmu.getDiagonal().array[:])
+            # print(self.Wmu.getDiagonal().array[:].min(),":",self.Wmu.getDiagonal().array[:].max())
+
 
             # if self.Wmu is None:
             #     self.Wmu = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
@@ -327,11 +355,15 @@ class PDEVariationalProblem:
 
             Wmu_t = self.Wmu.copy()
             Wmu_t.transpose()
-            temp_diag_vec = Wmu_t.getDiagonal()
-            temp_diag_vec.scale(0.)         
-            Wmu_t.setDiagonal(temp_diag_vec)
-            temp_diag_vec.destroy()         
-            
+
+
+            # temp_diag_vec = Wmu_t.getDiagonal()
+            # temp_diag_vec.scale(0.)         
+            # Wmu_t.setDiagonal(temp_diag_vec)
+            # temp_diag_vec.destroy()         
+
+            # print(Wmu_t.getDiagonal().array[:].min(),":",Wmu_t.getDiagonal().array[:].max())
+
             #Don't know how to do this: [bc.zero(Wmu_t) for bc in self.bc0]
 
             self.Wmu = Wmu_t.copy()
@@ -343,6 +375,10 @@ class PDEVariationalProblem:
             self.Wmm.zeroEntries()
             dlx.fem.petsc.assemble_matrix(self.Wmm, dlx.fem.form(ufl.derivative(g_form[PARAMETER],x_fun[PARAMETER])))
             self.Wmm.assemble()
+
+            # print(self.Wmm.getDiagonal().array[:].min(),":",self.Wmm.getDiagonal().array[:].max())
+
+
 
     def apply_ij(self,i : int, j : int, dir : dlx.la.Vector, out : dlx.la.Vector) ->  None:   
         """

@@ -215,7 +215,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.projection(expr,obs_fun)
     obs_fun.x.scatter_forward()
 
-
     fid = dlx.io.XDMFFile(msh.comm,"m_map_6.xdmf","w")
     fid.write_mesh(msh)
     fid.write_function(m_fun,0)
@@ -250,8 +249,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     # if rank == 0: 
     #     plt.show()
-
-
 
     # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
     #     file.write_mesh(msh)
