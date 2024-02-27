@@ -1,7 +1,7 @@
 import dolfinx as dlx
 import math
 from .variables import STATE, PARAMETER, ADJOINT
-
+from ..utils import vector2Function
 
 # Copyright (c) 2016-2018, The University of Texas at Austin 
 # & University of California--Merced.
@@ -136,9 +136,24 @@ class Model:
                 2) the state variable :code:`u` for assembling the adjoint right hand side
                 .. note:: :code:`p` is not accessed
         """
+
+        # self.n_adj_solve = self.n_adj_solve + 1
+        # rhs = self.problem.generate_state()
+        # self.misfit.grad(STATE, x, rhs)
+        # rhs *= -1.
+        # self.problem.solveAdj(out, x, rhs)
+
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
         self.misfit.grad(STATE, x, rhs)
+
+        # print(rhs.array.min(),":",rhs.array.max())
+        #plot of rhs: - same for : Fenics, X - 1 proc, X - 4 proc
+        # test_func = vector2Function(rhs,self.misfit.Vh[PARAMETER])
+        # fid = dlx.io.XDMFFile(self.misfit.mesh.comm,"grad_misfit_X_4proc.xdmf","w")
+        # fid.write_mesh(self.misfit.mesh)
+        # fid.write_function(test_func,0)
+
         temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
         # dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
         temp_petsc_vec_rhs.scale(-1.)

@@ -9,11 +9,15 @@ import os
 import dolfinx.fem.petsc
 
 
+
 from matplotlib import pyplot as plt
 
 sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
+
+from memory_profiler import memory_usage
+from memory_profiler import profile
 
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:
@@ -57,8 +61,8 @@ class H1TikhonvFunctional:
     def __call__(self, m : dlx.fem.Function) -> ufl.form.Form: #Here m is a dlx Function
         return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *ufl.dx + \
         ufl.inner(self.delta * m, m)*ufl.dx
-        
 
+@profile
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
@@ -99,6 +103,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
     # LIKELIHOOD
+    # u_fun_true = hp.vector2Function(u_true, Vh[hp.STATE])
+    # m_fun_true = hp.vector2Function(m_true, Vh[hp.PARAMETER])
+
     hpx.updateFromVector(xfun[hpx.STATE],u_true)
     u_fun_true = xfun[hpx.STATE]
 
@@ -113,8 +120,10 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun_true * ufl.exp(m_fun_true)
     hpx.projection(expr,d)
-    hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
+    # hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
+    
+    # print(d.vector.min(),":",d.vector.max())
 
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
@@ -138,12 +147,13 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     # m0.x.scatter_forward() 
     # m0 = m0.x
 
-
-    #######################################
-    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0),eps=None)
+    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    
     if(rank == 0):
         plt.show()    
 
+    #######################################
+    
     prior_mean_copy = prior.generate_parameter(0)
     prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
 
@@ -151,8 +161,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     temp_petsc_object.scale(0.)  
     temp_petsc_object.axpy(1.,prior_mean_petsc_vec)
 
-    temp_petsc_object.destroy()
-    prior_mean_petsc_vec.destroy()
+    temp_petsc_object.destroy() #petsc vec of prior_mean_copy
+    prior_mean_petsc_vec.destroy() #petsc vec of prior_mean
+
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
@@ -170,8 +181,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
         parameters["print_level"] = -1
     
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
-    #failing with multiple procs: fix this
-    x = solver.solve(x)
+    
+    x = solver.solve(x) 
     
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
@@ -181,93 +192,16 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
     master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
     master_print (comm, "Final cost: ", solver.final_cost)
-    # #######################################
-
-    # # x = [u_true,m0,None]
-
-    # # m_fun        = hpx.vector2Function(x[hpx.PARAMETER], Vh_m, name = "m_map")
-    # # u_fun        = hpx.vector2Function(x[hpx.STATE], Vh_phi, name = "u_map")
-    # # m_true_fun   = hpx.vector2Function(m_true, Vh_m, name = "m_true")
-    # # u_true_fun   = hpx.vector2Function(u_true, Vh_phi, name = "u_true")
-
-    hpx.updateFromVector(xfun[hpx.PARAMETER],x[hpx.PARAMETER])    
-    m_fun = xfun[hpx.PARAMETER].copy()
-    m_fun.name = 'm_map'
-
-    hpx.updateFromVector(xfun[hpx.STATE],x[hpx.STATE])    
-    u_fun = xfun[hpx.STATE].copy()
-    u_fun.name = 'u_map'
-
-    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)    
-    m_true_fun = xfun[hpx.PARAMETER].copy()
-    m_true_fun.name = 'm_true'
-
-    hpx.updateFromVector(xfun[hpx.STATE],u_true)    
-    u_true_fun = xfun[hpx.STATE].copy()
-    u_true_fun.name = 'u_true'
-
-    d.name = 'data'
-
-    # obs_fun = dl.project(u_fun*m_fun, Vh[hp.STATE])
-
-    obs_fun = dlx.fem.Function(Vh[hpx.STATE],name='obs')
-    expr = u_fun * m_fun
-    hpx.projection(expr,obs_fun)
-    obs_fun.x.scatter_forward()
-
-    fid = dlx.io.XDMFFile(msh.comm,"m_map_6.xdmf","w")
-    fid.write_mesh(msh)
-    fid.write_function(m_fun,0)
-    fid.write_function(m_true_fun,0)
-    fid.write_function(u_fun,0)
-    fid.write_function(u_true_fun,0)
-    fid.write_function(d,0)
-    fid.write_function(obs_fun,0)
-
-    model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
-    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
-    k = 80
-    p = 20
-
-    if rank == 0:
-        print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
-    
-    # Omega = hpx.MultiVector(x[hp.PARAMETER], k+p)
-    # hp.parRandom.normal(1., Omega)
-
-    # d, U = hp.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
-    
-    # U.export(Vh[hp.PARAMETER], "results/evect.xdmf", varname = "gen_evects", normalize = True)
-    # if rank == 0:
-    #     np.savetxt("results/eigevalues.dat", d)
-
-    # if rank == 0:
-    #     plt.figure()
-    #     plt.plot(range(0,k), d, 'b*', range(0,k), np.ones(k), '-r')
-    #     plt.yscale('log')
-    
-    
-    # if rank == 0: 
-    #     plt.show()
-
-    # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(m_fun) 
 
 
-    # test_func = dlx.fem.Function(Vh[hpx.STATE],name='dog')
-
-    # test_func = dlx.fem.Function(Vh[hpx.STATE])
-    # hpx.updateFromVector_2(test_func, u_true)
-    
-    # updateFromVector(self.xfun[PARAMETER], x[PARAMETER])
-    # mfun = self.xfun[PARAMETER]
 
 if __name__ == "__main__":    
-  nx = 64
-  ny = 64
-  noise_variance = 1e-6
-  prior_param = {"gamma": 0.05, "delta": 1.}
+    nx = 64
+    ny = 64
+    noise_variance = 1e-6
+    prior_param = {"gamma": 0.05, "delta": 1.}
 
-  run_inversion(nx, ny, noise_variance, prior_param)
+    run_inversion(nx, ny, noise_variance, prior_param)
+
+
 

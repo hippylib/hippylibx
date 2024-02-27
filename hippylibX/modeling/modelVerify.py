@@ -8,6 +8,8 @@ import dolfinx as dlx
 import petsc4py
 import mpi4py
 
+from ..utils import vector2Function
+
 def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=False, verbose = True, eps = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
     """
@@ -23,12 +25,12 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     
     h = model.generate_vector(PARAMETER)
     parRandom(comm).normal(1., h)
+    h.array[:] = 5.
 
     x = model.generate_vector()
     
     x[PARAMETER] = m0
     model.solveFwd(x[STATE], x)
-
     model.solveAdj(x[ADJOINT], x)
 
     # print(x[STATE].array.min(),":",x[STATE].array.max())
@@ -39,7 +41,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
     
-
     # grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot( dlx.la.create_petsc_vector_wrap(h) )
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
     temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
@@ -49,6 +50,14 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
+
+    # print(Hh.array.min(),":",Hh.array.max())
+
+    test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
+    fid = dlx.io.XDMFFile(model.misfit.mesh.comm,"Hh_X_4proc.xdmf","w")
+    fid.write_mesh(model.misfit.mesh)
+    fid.write_function(test_func,0)
+
 
     if eps is None:
         n_eps = 32
@@ -103,14 +112,30 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
 
-    if verbose:
-        modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
+    # if verbose:
+    #     modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
 
     temp_petsc_vec_grad_x.destroy()
     temp_petsc_vec_h.destroy()
     temp_vec_petsc_m0.destroy()
     temp_vec_petsc_x_plus_paramater.destroy()
     
+    xx = model.generate_vector(PARAMETER)
+    parRandom(comm).normal(1., xx)
+    yy = model.generate_vector(PARAMETER)
+    parRandom(comm).normal(1., yy)
+    
+    ytHx = H.inner(yy,xx)
+    xtHy = H.inner(xx,yy)
+
+    if np.abs(ytHx + xtHy) > 0.: 
+        rel_symm_error = 2*abs(ytHx - xtHy)/(ytHx + xtHy)
+    else:
+        rel_symm_error = abs(ytHx - xtHy)
+    if verbose:
+        print( "(yy, H xx) - (xx, H yy) = ", rel_symm_error)
+        if rel_symm_error > 1e-10:
+            print( "HESSIAN IS NOT SYMMETRIC!!")
 
     return eps, err_grad, err_H
 
@@ -129,6 +154,7 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
+        plt.savefig("result_using_4_proc.png")
     else:  
         plt.figure()
         plt.subplot(121)
@@ -136,5 +162,5 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.title("FD Gradient Check")
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
-        plt.title("FD Hessian Check")
-    
+        plt.title("FD Hes0sian Check")
+        plt.savefig("result_using_4_proc.png")

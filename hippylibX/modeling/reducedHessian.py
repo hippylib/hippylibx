@@ -77,17 +77,28 @@ class ReducedHessian:
         
         self.ncalls += 1
     
-    @unused_function
-    def inner(self,x,y):
+    def inner(self, x : dlx.la.Vector, y : dlx.la.Vector):
         """
         Perform the inner product between :code:`x` and :code:`y` in the norm induced by the reduced
         Hessian :math:`H,\\,(x, y)_H = x' H y`.
         """
         Ay = self.model.generate_vector(PARAMETER)
-        Ay.zero()
+        temp_petsc_vec_Ay = dlx.la.create_petsc_vector_wrap(Ay)
+        temp_petsc_vec_Ay.scale(0.)
+        temp_petsc_vec_Ay.destroy()
+
+        # Ay.zero()
+        
         self.mult(y,Ay)
-        return x.inner(Ay)
-    
+        
+        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+        temp_petsc_vec_Ay = dlx.la.create_petsc_vector_wrap(Ay)
+        return_value = temp_petsc_vec_x.dot(temp_petsc_vec_Ay)
+        temp_petsc_vec_x.destroy()
+        temp_petsc_vec_Ay.destroy()
+
+        # return x.inner(Ay)
+        return return_value
 
     def GNHessian(self,x,y):
         """

@@ -35,7 +35,7 @@ class NonGaussianContinuousMisfit(object):
 
         # u_fun = hpx.vector2Function(x[hpx.STATE], self.Vh[hpx.STATE])
         # m_fun = hpx.vector2Function(x[hpx.PARAMETER], self.Vh[hpx.PARAMETER])
-
+    
         hpx.updateFromVector(self.xfun[hpx.STATE],x[hpx.STATE])
         u_fun = self.xfun[hpx.STATE]
 
