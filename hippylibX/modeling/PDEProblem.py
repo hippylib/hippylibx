@@ -84,9 +84,11 @@ class PDEVariationalProblem:
 
             state_vec = dlx.la.create_petsc_vector_wrap(state)
             self.solver.solve(b,state_vec)  
+
             state_vec.destroy()
             A.destroy()
             b.destroy()
+            # self.solver.destroy()
 
     def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : petsc4py.PETSc.Vec ) -> None: 
 

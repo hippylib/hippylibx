@@ -9,14 +9,13 @@ import os
 import dolfinx.fem.petsc
 
 
-
 from matplotlib import pyplot as plt
 
 sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
-from memory_profiler import memory_usage
+# from memory_profiler import memory_usage
 from memory_profiler import profile
 
 def master_print(comm, *args, **kwargs):
@@ -62,7 +61,7 @@ class H1TikhonvFunctional:
         return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *ufl.dx + \
         ufl.inner(self.delta * m, m)*ufl.dx
 
-@profile
+# @profile
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
@@ -164,7 +163,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     temp_petsc_object.destroy() #petsc vec of prior_mean_copy
     prior_mean_petsc_vec.destroy() #petsc vec of prior_mean
 
-
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
     if rank == 0:
@@ -200,7 +198,6 @@ if __name__ == "__main__":
     ny = 64
     noise_variance = 1e-6
     prior_param = {"gamma": 0.05, "delta": 1.}
-
     run_inversion(nx, ny, noise_variance, prior_param)
 
 
