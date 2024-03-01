@@ -10,7 +10,7 @@ import mpi4py
 
 from ..utils import vector2Function
 
-def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=False, verbose = True, eps = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def modelVerify_2(code: int, comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=False, verbose = True, eps = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
     """
     Verify the reduced Gradient and the Hessian of a model.
@@ -24,8 +24,10 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    # parRandom(comm).normal(1., h)
-    h.array[:] = 5.
+    parRandom(comm).normal(1., h)
+
+    if(code == 3):
+        h.array[:] = 5.
 
     x = model.generate_vector()
     
@@ -113,7 +115,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
 
     if verbose:
-        modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
+        modelVerifyPlotErrors(comm, code, is_quadratic, eps, err_grad, err_H)
 
     temp_petsc_vec_grad_x.destroy()
     temp_petsc_vec_h.destroy()
@@ -140,7 +142,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     return eps, err_grad, err_H
 
 
-def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.ndarray, err_H : np.ndarray) -> None:
+def modelVerifyPlotErrors(comm, code : int, is_quadratic : bool, eps : np.ndarray, err_grad : np.ndarray, err_H : np.ndarray) -> None:
     try:
         import matplotlib.pyplot as plt
     except:
@@ -154,7 +156,15 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_4_proc.png")
+        
+        if(code == 1):
+            plt.savefig(f"d_m0_h_random_result_using_{comm.size}_proc.png")
+        elif(code == 2):
+            plt.savefig(f"d_m0_fixed_h_random_result_using_{comm.size}_proc.png")
+        else:
+            plt.savefig(f"d_m0_h_fixed_result_using_{comm.size}_proc.png")
+            
+
     else:  
         plt.figure()
         plt.subplot(121)
@@ -162,5 +172,11 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.title("FD Gradient Check")
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
-        plt.title("FD Hes0sian Check")
-        plt.savefig("result_using_4_proc.png")
+        plt.title("FD Hessian Check")
+        
+        if(code == 1):
+            plt.savefig(f"d_m0_h_random_result_using_{comm.size}_proc.png")
+        elif(code == 2):
+            plt.savefig(f"d_m0_fixed_h_random_result_using_{comm.size}_proc.png")
+        else:
+            plt.savefig(f"d_m0_h_fixed_result_using_{comm.size}_proc.png")
