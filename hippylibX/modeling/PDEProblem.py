@@ -65,14 +65,17 @@ class PDEVariationalProblem:
 
         if self.is_fwd_linear:    
             u = ufl.TrialFunction(self.Vh[STATE])   
-            p = ufl.TestFunction(self.Vh[ADJOINT])
+            v = ufl.TestFunction(self.Vh[STATE])
 
-            res_form = self.varf_handler(u, mfun, p)
+            res_form = self.varf_handler(u, mfun, v)
 
             A_form = ufl.lhs(res_form)
             
             b_form = ufl.rhs(res_form)
-        
+
+            # print(A_form,'\n')
+            # print(b_form)
+
             A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
         
             A.assemble()
@@ -153,6 +156,8 @@ class PDEVariationalProblem:
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create()
+        ksp.setTolerances(rtol=1e-9)
+        ksp.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
         return ksp
     
 

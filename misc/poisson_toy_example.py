@@ -43,6 +43,28 @@ class DiffusionApproximation:
             ufl.exp(m)*ufl.inner(u,p)*ufl.dx + \
             .5*ufl.inner(u-self.u0,p)*self.ds
 
+
+class Poisson_Approximation:
+    def __init__(self, alpha : float, f : float, ds : ufl.measure.Measure):
+        """
+        Define the forward model for the diffusion approximation to radiative transfer equations
+        
+        D: diffusion coefficient 1/mu_eff with mu_eff = sqrt(3 mu_a (mu_a + mu_ps) ), where mu_a
+           is the unknown absorption coefficient, and mu_ps is the reduced scattering coefficient
+           
+        u0: Incident fluence (Robin condition)
+        
+        ds: boundary integrator for Robin condition
+        """
+        self.alpha = alpha
+        self.f = f
+        self.ds = ds
+        
+    def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, v : dlx.fem.Function) -> ufl.form.Form:
+        return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(v))*ufl.dx + \
+        self.alpha * ufl.inner(u,v)*ufl.ds  - self.f*v*ufl.dx 
+
+
 class PACTMisfitForm:
     def __init__(self, d : float, sigma2 : float):
         self.sigma2 = sigma2
@@ -50,6 +72,14 @@ class PACTMisfitForm:
         
     def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*ufl.dx
+
+
+class PoissonMisfitForm:
+    def __init__(self, d : float):
+        self.d = d
+        
+    def __call__(self, u : dlx.fem.Function) -> ufl.form.Form:   
+        return ufl.inner(u - self.d, u - self.d)*ufl.dx
 
 
 class H1TikhonvFunctional:
@@ -82,12 +112,17 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
     # FORWARD MODEL
-    u0 = 1.
-    D = 1./24.
-    pde_handler = DiffusionApproximation(D, u0, ufl.ds)     #returns a ufl form
+    # u0 = 1.
+    # D = 1./24.
+    # pde_handler = DiffusionApproximation(D, u0, ufl.ds)     #returns a ufl form
+
+    alpha = 100.
+    f = 1.
+    pde_handler = Poisson_Approximation(alpha, f, ufl.ds)     #returns a ufl form
+
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
 
-    # GROUND TRUTH
+    # # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
     m_true.x.scatter_forward() 
@@ -99,62 +134,71 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     pde.solveFwd(u_true,x_true)
 
-    xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
+    ufun =  hpx.vector2Function(u_true,Vh_phi)
 
-    # LIKELIHOOD
-    # u_fun_true = hp.vector2Function(u_true, Vh[hp.STATE])
-    # m_fun_true = hp.vector2Function(m_true, Vh[hp.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "poisson_u_solution_{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(ufun) 
 
-    hpx.updateFromVector(xfun[hpx.STATE],u_true)
-    u_fun_true = xfun[hpx.STATE]
 
-    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
-    m_fun_true = xfun[hpx.PARAMETER]
+
+    # xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
+
+    # # LIKELIHOOD
+    # # u_fun_true = hp.vector2Function(u_true, Vh[hp.STATE])
+    # # m_fun_true = hp.vector2Function(m_true, Vh[hp.PARAMETER])
+
+    # hpx.updateFromVector(xfun[hpx.STATE],u_true)
+    # u_fun_true = xfun[hpx.STATE]
+
+    # hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
+    # m_fun_true = xfun[hpx.PARAMETER]
     
-    #does it look correct??
-    # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(m_fun) 
+    # #does it look correct??
+    # # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    # #     file.write_mesh(msh)
+    # #     file.write_function(m_fun) 
 
-    d = dlx.fem.Function(Vh[hpx.STATE])
-    expr = u_fun_true * ufl.exp(m_fun_true)
-    hpx.projection(expr,d)
-    hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
-    d.x.scatter_forward()
+    # d = dlx.fem.Function(Vh[hpx.STATE])
+    # expr = u_fun_true * ufl.exp(m_fun_true)
+    # hpx.projection(expr,d)
+    # hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
+    # d.x.scatter_forward()
     
-    # print(d.vector.min(),":",d.vector.max())
+    # # print(d.vector.min(),":",d.vector.max())
 
-    misfit_form = PACTMisfitForm(d, noise_variance)
-    misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
+    # misfit_form = PoissonMisfitForm(d)
+    # # misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
+    # misfit = hpx.PoissonMisfit(msh, Vh, misfit_form)
 
-    prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
-    prior_mean = prior_mean.x
+    # prior_mean = dlx.fem.Function(Vh_m)
+    # prior_mean.x.array[:] = 0.01
+    # prior_mean = prior_mean.x
 
-    prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
-    model = hpx.Model(pde, prior, misfit)
+    # prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
+    # model = hpx.Model(pde, prior, misfit)
 
-    noise = prior.generate_parameter("noise")
-    m0 = prior.generate_parameter(0)    
-    # noise.array[:] = 0.2
-    hpx.parRandom(comm).normal(1.,noise)
-    prior.sample(noise,m0)
+    # noise = prior.generate_parameter("noise")
+    # m0 = prior.generate_parameter(0)    
+    # # noise.array[:] = 0.2
+    # hpx.parRandom(comm).normal(1.,noise)
+    # prior.sample(noise,m0)
 
-    # print(m0.array.min(),":",m0.array.max())
+    # # print(m0.array.min(),":",m0.array.max())
 
-    m0 = dlx.fem.Function(Vh_m) 
-    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    m0.x.scatter_forward() 
-    m0 = m0.x
+    # m0 = dlx.fem.Function(Vh_m) 
+    # m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # m0.x.scatter_forward() 
+    # m0 = m0.x
 
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    # # eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     
-    if(rank == 0):
-        print(err_grad,'\n')
-        print(err_H)
-        plt.show()  
+    # # if(rank == 0):
+    # #     print(err_grad,'\n')
+    # #     print(err_H)
+    # #     plt.show()  
 
-    #######################################
+    # #######################################
     
     # prior_mean_copy = prior.generate_parameter(0)
     # prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
