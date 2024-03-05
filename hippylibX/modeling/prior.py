@@ -16,7 +16,6 @@
 import dolfinx as dlx
 import ufl
 import numpy as np
-# import scipy.linalg as scila
 import math
 from .variables import STATE, PARAMETER, ADJOINT
 import numbers
@@ -30,7 +29,6 @@ def unused_function(func):
     return None
 
 
-# self.R = _BilaplacianR(self.A, self.Msolver)      
 class _BilaplacianR:
     """
     Operator that represent the action of the regularization/precision matrix
@@ -78,14 +76,6 @@ class _BilaplacianRsolver():
         return x
     
     def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
-        
-        # self.Asolver.solve(dlx.la.create_petsc_vector_wrap(b), self.help1)
-        # nit = self.Asolver.its
-        # self.M.mult(self.help1, self.help2)
-        # self.Asolver.solve(self.help2,dlx.la.create_petsc_vector_wrap(x))
-        # nit += self.Asolver.its
-        # return nit
-
         temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
         temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
         self.Asolver.solve(temp_petsc_vec_b, self.help1)
@@ -177,18 +167,13 @@ class test_prior:
         MixedM.assemble()
 
         self.sqrtM = MixedM.matMult(Mqh)
-
-        # self.sqrtM_function_space = Qh
-                         
+                   
         self.R = _BilaplacianR(self.A, self.Msolver)      
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         
         self.mean = mean
         
-        if self.mean is None:
-            # self.mean = dl.Vector(self.R.mpi_comm())
-            # self.init_vector(self.mean, 0)
-            
+        if self.mean is None:            
             self.mean = self.init_vector(0)
 
     #replaced function init_vector with generate_parameter
@@ -233,24 +218,16 @@ class test_prior:
         """
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
 
-        # rhs = self.sqrtM*dlx.la.create_petsc_vector_wrap(noise)
         rhs = self.sqrtM*temp_petsc_vec_noise
         temp_petsc_vec_noise.destroy()
-
-        # s_petsc = dlx.la.create_petsc_vector_wrap(s)
-        # self.Asolver.solve(rhs,s_petsc)
         
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
         self.Asolver.solve(rhs,temp_petsc_vec_s)
-
-        # s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        # s_petsc.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
         
         temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
         if add_mean:
-            # s_petsc.axpy(1., dlx.la.create_petsc_vector_wrap(self.mean))
             temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
             temp_petsc_vec_s.axpy(1., temp_petsc_vec_mean)
             temp_petsc_vec_mean.destroy()
@@ -259,14 +236,7 @@ class test_prior:
         temp_petsc_vec_s.destroy()
 
     def cost(self,m : dlx.la.Vector) -> float:  
-        # d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
-        # d.axpy(-1., dlx.la.create_petsc_vector_wrap(m))
-        # # Rd = dlx.la.create_petsc_vector_wrap(self.init_vector(0))
-        # Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
-        
-        # self.R.mult(d,Rd)
-        # return .5*Rd.dot(d)
-    
+
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
@@ -280,17 +250,11 @@ class test_prior:
         return return_value
 
     def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
-        # d = dlx.la.create_petsc_vector_wrap(m).copy()
-        # d.axpy(-1., dlx.la.create_petsc_vector_wrap(self.mean))
-        # self.R.mult(d,dlx.la.create_petsc_vector_wrap(out))
-
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()
         temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
 
-
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
-
 
         self.R.mult(temp_petsc_vec_d,temp_petsc_vec_out)
 

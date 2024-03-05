@@ -76,7 +76,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
-    # ndofs = [Vh_phi.dim(), Vh_m.dim()]
     ndofs = [Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs, Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs ]
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
@@ -102,27 +101,17 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
     # LIKELIHOOD
-    # u_fun_true = hp.vector2Function(u_true, Vh[hp.STATE])
-    # m_fun_true = hp.vector2Function(m_true, Vh[hp.PARAMETER])
-
     hpx.updateFromVector(xfun[hpx.STATE],u_true)
     u_fun_true = xfun[hpx.STATE]
 
     hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
     m_fun_true = xfun[hpx.PARAMETER]
     
-    #does it look correct??
-    # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-    #     file.write_mesh(msh)
-    #     file.write_function(m_fun) 
-
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun_true * ufl.exp(m_fun_true)
     hpx.projection(expr,d)
-    # hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
+    hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
-    
-    # print(d.vector.min(),":",d.vector.max())
 
     misfit_form = PACTMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
@@ -136,11 +125,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)    
-    noise.array[:] = 0.2
-    # hpx.parRandom(comm).normal(1.,noise)
+    # noise.array[:] = 0.2
+    hpx.parRandom(comm).normal(1.,noise)
     prior.sample(noise,m0)
-
-    # print(m0.array.min(),":",m0.array.max())
 
     m0 = dlx.fem.Function(Vh_m) 
     m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
@@ -150,8 +137,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     
     if(rank == 0):
-        print(err_grad,'\n')
-        print(err_H)
+        # print(err_grad,'\n')
+        # print(err_H)
         plt.show()  
 
     #######################################

@@ -88,7 +88,6 @@ class PDEVariationalProblem:
             state_vec.destroy()
             A.destroy()
             b.destroy()
-            # self.solver.destroy()
 
     def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : petsc4py.PETSc.Vec ) -> None: 
 
@@ -153,6 +152,8 @@ class PDEVariationalProblem:
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create()
+        ksp.setTolerances(rtol=1e-12)
+        ksp.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
         return ksp
     
 
@@ -210,20 +211,9 @@ class PDEVariationalProblem:
             dlx.fem.petsc.assemble_matrix(self.Wuu, dlx.fem.form(ufl.derivative(g_form[STATE],x_fun[STATE])), self.bc0, diagonal = 0.)
             self.Wuu.assemble()
             
-            Wuu_t = self.Wuu.copy()
-            Wuu_t.transpose()   
-    
-            self.Wuu = Wuu_t.copy()
-            self.Wuu.transpose()
 
             self.Wmu = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
             self.Wmu.assemble()
-
-            Wmu_t = self.Wmu.copy()
-            Wmu_t.transpose()
-
-            self.Wmu = Wmu_t.copy()
-            self.Wmu.transpose()
 
             if self.Wmm is None:
                 self.Wmm = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[PARAMETER],x_fun[PARAMETER])))

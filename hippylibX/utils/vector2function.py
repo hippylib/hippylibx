@@ -10,7 +10,6 @@ def vector2Function(vec,Vh, **kwargs):
 
     #x is dlx.la.Vector object
     fun = dlx.fem.Function(Vh,**kwargs)
-    # print(len(fun.x.array),":",len(vec.array))
     fun.x.array[:] = vec.array[:]
     fun.x.scatter_forward()
     return fun
@@ -19,7 +18,3 @@ def updateFromVector(fun: dlx.fem.Function, vec : dlx.la.Vector):
     fun.x.array[:] = vec.array[:]
     fun.x.scatter_forward()
 
-
-# def updateFromVector_2(fun: dlx.fem.Function, vec : dlx.la.Vector, **kwargs):
-#     fun.x.array[:] = vec.array[:]
-#     fun.x.scatter_forward()

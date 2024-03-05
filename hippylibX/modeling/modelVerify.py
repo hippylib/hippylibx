@@ -24,8 +24,8 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    # parRandom(comm).normal(1., h)
-    h.array[:] = 5.
+    parRandom(comm).normal(1., h)
+    # h.array[:] = 5.
 
     x = model.generate_vector()
     
@@ -33,15 +33,11 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     model.solveFwd(x[STATE], x)
     model.solveAdj(x[ADJOINT], x)
 
-    # print(x[STATE].array.min(),":",x[STATE].array.max())
-    # print(x[ADJOINT].array.min(),":",x[ADJOINT].array.max())
-
     cx = model.cost(x)
     
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
     
-    # grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot( dlx.la.create_petsc_vector_wrap(h) )
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
     temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
     grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
@@ -50,14 +46,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
-
-    # print(Hh.array.min(),":",Hh.array.max())
-
-    # test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
-    # fid = dlx.io.XDMFFile(model.misfit.mesh.comm,"Hh_X_4proc.xdmf","w")
-    # fid.write_mesh(model.misfit.mesh)
-    # fid.write_function(test_func,0)
-
 
     if eps is None:
         n_eps = 32
@@ -76,10 +64,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         
         x_plus = model.generate_vector()
         temp_vec_petsc_x_plus_paramater = dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER])
-        
-        # dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(1.,dlx.la.create_petsc_vector_wrap(m0))
-    
-        # dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER]).axpy(my_eps,dlx.la.create_petsc_vector_wrap(h))
 
         temp_vec_petsc_x_plus_paramater.axpy(1., temp_vec_petsc_m0)
 
@@ -97,20 +81,18 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         grad_xplus = model.generate_vector(PARAMETER)
         model.evalGradientParameter(x_plus, grad_xplus,misfit_only=misfit_only)
         
-        # err = dlx.la.create_petsc_vector_wrap(grad_xplus) - dlx.la.create_petsc_vector_wrap(grad_x)
         temp_petsc_vec_grad_xplus = dlx.la.create_petsc_vector_wrap(grad_xplus)
         
         err = temp_petsc_vec_grad_xplus - temp_petsc_vec_grad_x
         temp_petsc_vec_grad_xplus.destroy()
 
-
         err.scale(1./my_eps)
-        # err.axpy(-1., dlx.la.create_petsc_vector_wrap(Hh))
         temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
         err.axpy(-1., temp_petsc_vec_Hh)
         temp_petsc_vec_Hh.destroy()
 
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
+        err.destroy()
 
     if verbose:
         modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
@@ -154,7 +136,7 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_4_proc.png")
+        plt.savefig("result_using_1_proc.png")
     else:  
         plt.figure()
         plt.subplot(121)
@@ -163,4 +145,4 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
         plt.title("FD Hes0sian Check")
-        plt.savefig("result_using_4_proc.png")
+        plt.savefig("result_using_1_proc.png")

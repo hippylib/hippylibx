@@ -88,22 +88,11 @@ class CGSolverSteihaug:
         self.update_x = self.update_x_without_TR
         
         self.comm = comm
-
-        # self.r = dl.Vector(comm)
-        # self.z = dl.Vector(comm)
-        # self.Ad = dl.Vector(comm)
-        # self.d = dl.Vector(comm)
-        # self.Bx = dl.Vector(comm)
-                
+        
     def set_operator(self, A):
         """
         Set the operator :math:`A`.
         """
-        # self.A = A
-        # self.A.init_vector(self.r,0)
-        # self.A.init_vector(self.z,0)
-        # self.A.init_vector(self.d,0)
-        # self.A.init_vector(self.Ad,0)
         
         self.A = A
         self.r = self.A.init_vector(0)
@@ -126,15 +115,12 @@ class CGSolverSteihaug:
         self.B_op.init_vector(self.Bx,0)
 
     def update_x_without_TR(self,x : dlx.la.Vector, alpha : float, d : dlx.la.Vector):
-        # x.axpy(alpha,d)
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(d)
         temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
         temp_petsc_vec_x.axpy(alpha, temp_petsc_vec_d)
         
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_x.destroy()
-
-        # dlx.la.create_petsc_vector_wrap(x).axpy(alpha,dlx.la.create_petsc_vector_wrap(d))
         
         return False
 
@@ -168,10 +154,7 @@ class CGSolverSteihaug:
 
             return  True
         
-    def solve(self,x,b, it_count, model):
-        # x -> dlx.Vector
-        # b -> dlx.Vector
-        #it_count -> int
+    def solve(self,x,b):
         """
         Solve the linear system :math:`Ax = b`
         """
@@ -194,40 +177,25 @@ class CGSolverSteihaug:
             temp_petsc_vec_self_r.axpy(1.,temp_petsc_vec_b)
             temp_petsc_vec_x.scale(0.)
             temp_petsc_vec_x.destroy()
-            
-            
-            # dlx.la.create_petsc_vector_wrap(self.r).scale(0.)
-            # dlx.la.create_petsc_vector_wrap(self.r).axpy(1.0, dlx.la.create_petsc_vector_wrap(b))
-            
-            # dlx.la.create_petsc_vector_wrap(x).scale(0.)
-            
+                        
         else:
             assert self.TR_radius_2==None
             self.A.mult(x,self.r)
-            # self.r *= -1.0
-            # self.r.axpy(1.0, b)
             temp_petsc_vec_self_r.scale(-1.0)
             temp_petsc_vec_self_r.axpy(1.0, temp_petsc_vec_b)
 
         temp_petsc_vec_b.destroy()
 
-        # self.z.zero()
-        # dlx.la.create_petsc_vector_wrap(self.z).scale(0.)
-            
+          
         temp_petsc_vec_self_z = dlx.la.create_petsc_vector_wrap(self.z)
         temp_petsc_vec_self_z.scale(0.)
 
         self.B_solver.solve(self.z,self.r) #z = B^-1 r  
               
-        # self.d.zero()
-        # self.d.axpy(1.,self.z); #d = z
-
         temp_petsc_vec_self_d = dlx.la.create_petsc_vector_wrap(self.d)
         temp_petsc_vec_self_d.scale(0.)
                 
         temp_petsc_vec_self_d.axpy(1.,temp_petsc_vec_self_z) #d = z
-
-        # nom0 = self.d.inner(self.r)
 
         nom0 = temp_petsc_vec_self_d.dot(temp_petsc_vec_self_r)
 
@@ -248,32 +216,25 @@ class CGSolverSteihaug:
                 print( self.reason[self.reasonid])
                 print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
             
-            #have to delete prev. created vectors before return:
             temp_petsc_vec_self_d.destroy()
             temp_petsc_vec_self_z.destroy()
             temp_petsc_vec_self_r.destroy()
 
             return
         
-        #if nom > 0, still have the above 3 vec objects:
 
         self.A.mult(self.d, self.Ad)
-        # den = self.Ad.inner(self.d)
         temp_petsc_vec_Ad = dlx.la.create_petsc_vector_wrap(self.Ad)
-        # den = dlx.la.create_petsc_vector_wrap(self.Ad).dot(dlx.la.create_petsc_vector_wrap(self.d))
         den = temp_petsc_vec_Ad.dot(temp_petsc_vec_self_d)
 
         if den <= 0.0:
             self.converged = True
             self.reasonid = 2
             temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-            # x.axpy(1., self.d)
             temp_petsc_vec_x.axpy(1., temp_petsc_vec_self_d)
-            # self.r.axpy(-1., self.Ad)
             temp_petsc_vec_self_r.axpy(-1., temp_petsc_vec_Ad)
             self.B_solver.solve(self.z, self.r)
 
-            # nom = self.r.inner(self.z)
             nom = temp_petsc_vec_self_r.dot(temp_petsc_vec_self_z)
             self.final_norm = math.sqrt(nom)
             if(self.parameters["print_level"] >= 0):
@@ -301,32 +262,10 @@ class CGSolverSteihaug:
                     print( self.reason[self.reasonid] )
                     print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
                 break
-
-            # self.r.axpy(-alpha, self.Ad) # r = r - alpha A d
-            # dlx.la.create_petsc_vector_wrap(self.r).axpy(-alpha, dlx.la.create_petsc_vector_wrap(self.Ad)) # r = r - alpha A d
             
             temp_petsc_vec_self_r.axpy(-alpha, temp_petsc_vec_Ad)
 
-
-            # if(it_count == 21):
-            #     print(self.r.array.min(),":",self.r.array.max())
-                # test_func = vector2Function(self.r,model.problem.Vh[0])         
-                # with dlx.io.XDMFFile(model.problem.Vh[0].mesh.comm, "TEST_ORG_SELFR_true_func_np{0:d}_X.xdmf".format(self.comm.size),"w") as file: #works!!
-                #     file.write_mesh(model.problem.Vh[0].mesh)
-                #     file.write_function(test_func) 
-
-                # with dlx.io.XDMFFile(msh.comm, "TEST_m0_true_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-                #     file.write_mesh(msh)
-                #     file.write_function(m_fun) 
-                # print(model.problem.Vh[0].mesh.comm)
-
-
             self.B_solver.solve(self.z, self.r)     # z = B^-1 r
-
-
-            # betanom = self.r.inner(self.z)
-
-            # betanom = dlx.la.create_petsc_vector_wrap(self.r).dot(dlx.la.create_petsc_vector_wrap(self.z))
             betanom = temp_petsc_vec_self_r.dot(temp_petsc_vec_self_z)
             
             if self.parameters["print_level"] == 1:
@@ -354,21 +293,13 @@ class CGSolverSteihaug:
                 break
         
             beta = betanom/nom
-            # self.d *= beta
-            # dlx.la.create_petsc_vector_wrap(self.d).scale(beta)
             temp_petsc_vec_self_d.scale(beta)
             
-            # self.d.axpy(1., self.z)  #d = z + beta d
-            # dlx.la.create_petsc_vector_wrap(self.d).axpy(1., dlx.la.create_petsc_vector_wrap(self.z))  #d = z + beta d
             temp_petsc_vec_self_d.axpy(1.,temp_petsc_vec_self_z )
             
             self.A.mult(self.d,self.Ad)
-    
-            
-            # den = self.d.inner(self.Ad)
-            # den = dlx.la.create_petsc_vector_wrap(self.d).dot(dlx.la.create_petsc_vector_wrap(self.Ad))
-            den =temp_petsc_vec_self_d.dot(temp_petsc_vec_Ad)
-            
+                
+            den = temp_petsc_vec_self_d.dot(temp_petsc_vec_Ad)            
     
             if den <= 0.0:
                 self.converged = True

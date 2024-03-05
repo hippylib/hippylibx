@@ -190,9 +190,6 @@ class ReducedSpaceNewtonCG:
         
         while (self.it < max_iter) and (self.converged == False):
             
-            # if(self.it == 45):
-            #     break
-
             self.model.solveAdj(x[ADJOINT], x)
             
             self.model.setPointForHessianEvaluations(x, gauss_newton_approx=(self.it < GN_iter) )
@@ -224,33 +221,11 @@ class ReducedSpaceNewtonCG:
             solver.parameters["zero_initial_guess"] = True
             solver.parameters["print_level"] = print_level-1
 
-            
-            ####################################################
-            # solver.solve(mhat, -mg)
-            # test_obj = dlx.la.create_petsc_vector_wrap(mg).scale(-1.)
-            # print(type(test_obj))
-            # print(mg.array.min(),":",mg.array.max())
-            # print(type(dlx.la.create_petsc_vector_wrap(mg).scale(-1.)))
-            # tmp = dlx.la.create_petsc_vector_wrap(mg)
-            # tmp.scale(-1.)
-            # print(type(tmp))
-            ####################################################
-
-
             mg_neg = self.model.generate_vector(PARAMETER)
 
             mg_neg.array[:] = -1*mg.array[:]
 
-            ####################################################
-            # test_obj = -mg
-            # print(type(test_obj))
-
-            # mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
-            # mg_petsc.scale(-1.)
-            ####################################################
-
-
-            solver.solve(mhat,mg_neg,self.it,self.model)         
+            solver.solve(mhat,mg_neg)         
 
             self.total_cg_iter += HessApply.ncalls
 
@@ -258,9 +233,6 @@ class ReducedSpaceNewtonCG:
             descent = 0
             n_backtrack = 0
 
-
-            # mg_mhat = mg.inner(mhat)
-            # mg_mhat = dlx.la.create_petsc_vector_wrap(mg).dot(dlx.la.create_petsc_vector_wrap(mhat))
             temp_petsc_vec_mg = dlx.la.create_petsc_vector_wrap(mg)
 
             temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
@@ -274,27 +246,13 @@ class ReducedSpaceNewtonCG:
             temp_petsc_vec_xstar_parameter = dlx.la.create_petsc_vector_wrap(x_star[PARAMETER])
             
             while descent == 0 and n_backtrack < max_backtracking_iter:
-                
-                # update m and u
-                # x_star[PARAMETER].zero()
-                # dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).scale(0.)
 
                 temp_petsc_vec_xstar_parameter.scale(0.)
-
-                # x_star[PARAMETER].axpy(1., x[PARAMETER])
-                # dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x[PARAMETER]))
                 temp_petsc_vec_xstar_parameter.axpy(1., temp_petsc_vec_x_parameter)
-
-                # x_star[PARAMETER].axpy(alpha, mhat)
-                # dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]).axpy(alpha, dlx.la.create_petsc_vector_wrap(mhat))
                 temp_petsc_vec_xstar_parameter.axpy(alpha, temp_petsc_vec_mhat)
 
-                # x_star[STATE].zero()
-                # dlx.la.create_petsc_vector_wrap(x_star[STATE]).scale(0.)
                 temp_petsc_vec_xstar_state.scale(0.)
 
-                # x_star[STATE].axpy(1., x[STATE])
-                # dlx.la.create_petsc_vector_wrap(x_star[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x[STATE]))
                 temp_petsc_vec_xstar_state.axpy(1., temp_petsc_vec_x_state)
 
                 self.model.solveFwd(x_star[STATE], x_star)
@@ -305,20 +263,12 @@ class ReducedSpaceNewtonCG:
                 if (cost_new < cost_old + alpha * c_armijo * mg_mhat) or (-mg_mhat <= self.parameters["gdm_tolerance"]):
                     cost_old = cost_new
                     descent = 1
-                    # x[PARAMETER].zero()
-                    # dlx.la.create_petsc_vector_wrap(x[PARAMETER]).scale(0.)
                     temp_petsc_vec_x_parameter.scale(0.)
 
-                    # x[PARAMETER].axpy(1., x_star[PARAMETER])
-                    # dlx.la.create_petsc_vector_wrap(x[PARAMETER]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[PARAMETER]))
                     temp_petsc_vec_x_parameter.axpy(1., temp_petsc_vec_xstar_parameter)
 
-                    # x[STATE].zero()
-                    # dlx.la.create_petsc_vector_wrap(x[STATE]).scale(0.)
                     temp_petsc_vec_x_state.scale(0.)
 
-                    # x[STATE].axpy(1., x_star[STATE])
-                    # dlx.la.create_petsc_vector_wrap(x[STATE]).axpy(1., dlx.la.create_petsc_vector_wrap(x_star[STATE]))
                     temp_petsc_vec_x_state.axpy(1., temp_petsc_vec_xstar_state)
 
                 else:
@@ -370,8 +320,7 @@ class ReducedSpaceNewtonCG:
         
         eta_TR = self.parameters["TR"]["eta"]
         delta_TR = None
-        
-        
+                
         self.model.solveFwd(x[STATE], x)
         
         self.it = 0

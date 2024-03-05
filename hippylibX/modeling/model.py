@@ -137,28 +137,12 @@ class Model:
                 .. note:: :code:`p` is not accessed
         """
 
-        # self.n_adj_solve = self.n_adj_solve + 1
-        # rhs = self.problem.generate_state()
-        # self.misfit.grad(STATE, x, rhs)
-        # rhs *= -1.
-        # self.problem.solveAdj(out, x, rhs)
-
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
         self.misfit.grad(STATE, x, rhs)
-
-        # print(rhs.array.min(),":",rhs.array.max())
-        #plot of rhs: - same for : Fenics, X - 1 proc, X - 4 proc
-        # test_func = vector2Function(rhs,self.misfit.Vh[PARAMETER])
-        # fid = dlx.io.XDMFFile(self.misfit.mesh.comm,"grad_misfit_X_4proc.xdmf","w")
-        # fid.write_mesh(self.misfit.mesh)
-        # fid.write_function(test_func,0)
-
         temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
-        # dlx.la.create_petsc_vector_wrap(rhs).scale(-1.)
         temp_petsc_vec_rhs.scale(-1.)
 
-        # self.problem.solveAdj(out, x, dlx.la.create_petsc_vector_wrap(rhs))
         self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
         temp_petsc_vec_rhs.destroy()
 
@@ -292,7 +276,6 @@ class Model:
             temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
             temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
 
-            # dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
             temp_petsc_vec_out.destroy()
             temp_petsc_vec_tmp.destroy()
 
@@ -312,13 +295,11 @@ class Model:
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
 
         if self.gauss_newton_approx:
-            # dlx.la.create_petsc_vector_wrap(out).scale(0.)
             temp_petsc_vec_out.scale(0.)
         else:
             self.problem.apply_ij(STATE,PARAMETER, dm, out)
             tmp = self.generate_vector(STATE)
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
-            # dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
             temp_petsc_vec_tmp  = dlx.la.create_petsc_vector_wrap(tmp)
             
             temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
@@ -343,7 +324,6 @@ class Model:
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         
         if self.gauss_newton_approx:
-            # dlx.la.create_petsc_vector_wrap(out).scale(0.)
             temp_petsc_vec_out.scale(0.)
         else:
             self.problem.apply_ij(PARAMETER, STATE, du, out)
@@ -351,7 +331,6 @@ class Model:
             temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
 
             self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
-            # dlx.la.create_petsc_vector_wrap(out).axpy(1., dlx.la.create_petsc_vector_wrap(tmp))
             temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
         
         temp_petsc_vec_out.destroy()
@@ -371,7 +350,6 @@ class Model:
         """
         temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        # self.prior.R.mult(dlx.la.create_petsc_vector_wrap(dm), dlx.la.create_petsc_vector_wrap(out))
         self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
@@ -403,7 +381,6 @@ class Model:
         """
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         if self.gauss_newton_approx:
-            # dlx.la.create_petsc_vector_wrap(out).scale(0.)
             temp_petsc_vec_out.scale(0.)
         else:
             self.problem.apply_ij(PARAMETER,PARAMETER, dm, out)
@@ -411,7 +388,6 @@ class Model:
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
             temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
         
-            # dlx.la.create_petsc_vector_wrap(out).axpy(1.,dlx.la.create_petsc_vector_wrap(tmp))
             temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_tmp.destroy()
