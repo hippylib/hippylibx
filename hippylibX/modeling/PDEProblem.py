@@ -152,7 +152,7 @@ class PDEVariationalProblem:
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create()
-        ksp.setTolerances(rtol=1e-12)
+        ksp.setTolerances(rtol=1e-9)
         ksp.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
         return ksp
     
