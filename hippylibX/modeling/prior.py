@@ -218,14 +218,16 @@ class test_prior:
         """
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
 
-        rhs = self.sqrtM*temp_petsc_vec_noise
+        # rhs = self.sqrtM*temp_petsc_vec_noise
+        rhs = self.sqrtM.createVecLeft()
+        self.sqrtM.mult(temp_petsc_vec_noise,rhs)
         temp_petsc_vec_noise.destroy()
-        
+    
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
         self.Asolver.solve(rhs,temp_petsc_vec_s)
         
-        temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
+        # temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        # temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
         if add_mean:
             temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
