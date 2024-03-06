@@ -120,6 +120,10 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
 
+    # print(type(prior_mean), type(prior_mean.x),type(prior_mean.x.array[:]))
+
+    #<class 'dolfinx.fem.function.Function'> <class 'dolfinx.la.Vector'> <class 'numpy.ndarray'>
+
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 

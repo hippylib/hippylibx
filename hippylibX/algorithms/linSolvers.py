@@ -16,9 +16,6 @@ def _PETScLUSolver_set_operator(self, A):
     else:
         self.ksp().setOperators(A.instance()) 
     
-    self.ksp.setTolerances(rtol=1e-9)
-    self.ksp.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-
 
 def PETScLUSolver(comm, method='default'):
     if not hasattr(petsc4py.PETSc.PETScLUSolver, 'set_operator'):

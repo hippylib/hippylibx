@@ -248,12 +248,16 @@ class ReducedSpaceNewtonCG:
             while descent == 0 and n_backtrack < max_backtracking_iter:
 
                 temp_petsc_vec_xstar_parameter.scale(0.)
-                temp_petsc_vec_xstar_parameter.axpy(1., temp_petsc_vec_x_parameter)
-                temp_petsc_vec_xstar_parameter.axpy(alpha, temp_petsc_vec_mhat)
+                # temp_petsc_vec_xstar_parameter.axpy(1., temp_petsc_vec_x_parameter)
+                # temp_petsc_vec_xstar_parameter.axpy(alpha, temp_petsc_vec_mhat)
+
+                temp_petsc_vec_xstar_parameter.array[:] = temp_petsc_vec_xstar_parameter.array + 1. * temp_petsc_vec_xstar_parameter.array
+                temp_petsc_vec_xstar_parameter.array[:] = temp_petsc_vec_xstar_parameter.array + alpha * temp_petsc_vec_mhat.array
 
                 temp_petsc_vec_xstar_state.scale(0.)
 
-                temp_petsc_vec_xstar_state.axpy(1., temp_petsc_vec_x_state)
+                # temp_petsc_vec_xstar_state.axpy(1., temp_petsc_vec_x_state)
+                temp_petsc_vec_x_state.array[:] = temp_petsc_vec_xstar_state.array + 1. * temp_petsc_vec_xstar_state.array
 
                 self.model.solveFwd(x_star[STATE], x_star)
                             
@@ -265,12 +269,12 @@ class ReducedSpaceNewtonCG:
                     descent = 1
                     temp_petsc_vec_x_parameter.scale(0.)
 
-                    temp_petsc_vec_x_parameter.axpy(1., temp_petsc_vec_xstar_parameter)
-
+                    # temp_petsc_vec_x_parameter.axpy(1., temp_petsc_vec_xstar_parameter)
+                    temp_petsc_vec_xstar_parameter.array[:] = temp_petsc_vec_xstar_parameter.array + 1. * temp_petsc_vec_xstar_parameter.array
                     temp_petsc_vec_x_state.scale(0.)
 
-                    temp_petsc_vec_x_state.axpy(1., temp_petsc_vec_xstar_state)
-
+                    # temp_petsc_vec_x_state.axpy(1., temp_petsc_vec_xstar_state)
+                    temp_petsc_vec_xstar_state.array[:] = temp_petsc_vec_xstar_state.array + 1. * temp_petsc_vec_xstar_state.array
                 else:
                     n_backtrack += 1
                     alpha *= 0.5
@@ -378,10 +382,15 @@ class ReducedSpaceNewtonCG:
                 delta_TR = max(math.sqrt(mhat_Rnorm),1)
 
             x_star[PARAMETER].zero()
-            x_star[PARAMETER].axpy(1., x[PARAMETER])
-            x_star[PARAMETER].axpy(1., mhat)   #m_star = m +mhat
+            # x_star[PARAMETER].axpy(1., x[PARAMETER])
+            # x_star[PARAMETER].axpy(1., mhat)   #m_star = m +mhat
+            x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * x[PARAMETER].array
+            x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * mhat.array
+
             x_star[STATE].zero()
-            x_star[STATE].axpy(1., x[STATE])      #u_star = u
+            # x_star[STATE].axpy(1., x[STATE])      #u_star = u
+            x_star[STATE].array[:] = x_star[STATE].array + 1. * x[STATE].array 
+            
             self.model.solveFwd(x_star[STATE], x_star)
             cost_star, reg_star, misfit_star = self.model.cost(x_star)
             ACTUAL_RED = cost_old - cost_star
@@ -405,9 +414,11 @@ class ReducedSpaceNewtonCG:
             # print( "rho_TR", rho_TR, "eta_TR", eta_TR, "rho_TR > eta_TR?", rho_TR > eta_TR , "\n")
             if rho_TR > eta_TR:
                 x[PARAMETER].zero()
-                x[PARAMETER].axpy(1.0,x_star[PARAMETER])
+                # x[PARAMETER].axpy(1.0,x_star[PARAMETER])
+                x[PARAMETER].array[:] = x[PARAMETER].array + 1. * x_star[PARAMETER].array   
                 x[STATE].zero()
-                x[STATE].axpy(1.0,x_star[STATE])
+                # x[STATE].axpy(1.0,x_star[STATE])
+                x[STATE].array[:] = x[STATE].array + 1. * x_star[STATE].array
                 cost_old = cost_star
                 reg_old = reg_star
                 misfit_old = misfit_star

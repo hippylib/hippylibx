@@ -117,8 +117,7 @@ class CGSolverSteihaug:
     def update_x_without_TR(self,x : dlx.la.Vector, alpha : float, d : dlx.la.Vector):
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(d)
         temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-        temp_petsc_vec_x.axpy(alpha, temp_petsc_vec_d)
-        
+        temp_petsc_vec_x.array[:] = x.array + 1. * d.array
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_x.destroy()
         
@@ -126,7 +125,8 @@ class CGSolverSteihaug:
 
     def update_x_with_TR(self,x,alpha,d):
         x_bk = x.copy()
-        x.axpy(alpha,d)
+        # x.axpy(alpha,d)
+        x.array[:] = x.array + alpha * d.array 
         self.Bx.zero()
         self.B_op.mult(x, self.Bx)
         x_Bnorm2 = self.Bx.inner(x)
@@ -149,8 +149,10 @@ class CGSolverSteihaug:
             # Solve quadratic for :code:`tau`
             tau = (-b_tau_half + math.sqrt(b_tau_half*b_tau_half - a_tau*c_tau))/a_tau
             x.zero()
-            x.axpy(1,x_bk)
-            x.axpy(tau*alpha, d)
+            # x.axpy(1,x_bk)
+            # x.axpy(tau*alpha, d)
+            x.array[:] =  x.array + 1 * x_bk.array
+            x.array[:] = x.array + (tau*alpha) * d.array
 
             return  True
         
@@ -174,7 +176,8 @@ class CGSolverSteihaug:
 
             temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
             temp_petsc_vec_self_r.scale(0.)
-            temp_petsc_vec_self_r.axpy(1.,temp_petsc_vec_b)
+            # temp_petsc_vec_self_r.axpy(1.,temp_petsc_vec_b)
+            temp_petsc_vec_self_r.array[:] = temp_petsc_vec_self_r.array + 1. * temp_petsc_vec_b.array
             temp_petsc_vec_x.scale(0.)
             temp_petsc_vec_x.destroy()
                         
@@ -182,7 +185,8 @@ class CGSolverSteihaug:
             assert self.TR_radius_2==None
             self.A.mult(x,self.r)
             temp_petsc_vec_self_r.scale(-1.0)
-            temp_petsc_vec_self_r.axpy(1.0, temp_petsc_vec_b)
+            # temp_petsc_vec_self_r.axpy(1.0, temp_petsc_vec_b)
+            temp_petsc_vec_self_r.array[:] = temp_petsc_vec_self_r.array + 1. * temp_petsc_vec_b.array
 
         temp_petsc_vec_b.destroy()
 
@@ -195,7 +199,8 @@ class CGSolverSteihaug:
         temp_petsc_vec_self_d = dlx.la.create_petsc_vector_wrap(self.d)
         temp_petsc_vec_self_d.scale(0.)
                 
-        temp_petsc_vec_self_d.axpy(1.,temp_petsc_vec_self_z) #d = z
+        # temp_petsc_vec_self_d.axpy(1.,temp_petsc_vec_self_z) #d = z
+        temp_petsc_vec_self_d.array[:] = temp_petsc_vec_self_d.array + 1. * temp_petsc_vec_self_z.array
 
         nom0 = temp_petsc_vec_self_d.dot(temp_petsc_vec_self_r)
 
@@ -231,8 +236,12 @@ class CGSolverSteihaug:
             self.converged = True
             self.reasonid = 2
             temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-            temp_petsc_vec_x.axpy(1., temp_petsc_vec_self_d)
-            temp_petsc_vec_self_r.axpy(-1., temp_petsc_vec_Ad)
+            # temp_petsc_vec_x.axpy(1., temp_petsc_vec_self_d)
+            # temp_petsc_vec_self_r.axpy(-1., temp_petsc_vec_Ad)
+
+            temp_petsc_vec_x.array[:] = temp_petsc_vec_x.array + 1. * temp_petsc_vec_self_d.array
+            temp_petsc_vec_self_r.array[:] = temp_petsc_vec_self_r.array + (-1) * temp_petsc_vec_Ad.array
+
             self.B_solver.solve(self.z, self.r)
 
             nom = temp_petsc_vec_self_r.dot(temp_petsc_vec_self_z)
@@ -263,7 +272,8 @@ class CGSolverSteihaug:
                     print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
                 break
             
-            temp_petsc_vec_self_r.axpy(-alpha, temp_petsc_vec_Ad)
+            # temp_petsc_vec_self_r.axpy(-alpha, temp_petsc_vec_Ad)
+            temp_petsc_vec_self_r.array[:] = temp_petsc_vec_self_r.array + (-alpha) * temp_petsc_vec_Ad.array
 
             self.B_solver.solve(self.z, self.r)     # z = B^-1 r
             betanom = temp_petsc_vec_self_r.dot(temp_petsc_vec_self_z)
@@ -295,8 +305,9 @@ class CGSolverSteihaug:
             beta = betanom/nom
             temp_petsc_vec_self_d.scale(beta)
             
-            temp_petsc_vec_self_d.axpy(1.,temp_petsc_vec_self_z )
-            
+            # temp_petsc_vec_self_d.axpy(1.,temp_petsc_vec_self_z )
+            temp_petsc_vec_self_d.array[:] = temp_petsc_vec_self_d.array + 1. * temp_petsc_vec_self_z.array
+
             self.A.mult(self.d,self.Ad)
                 
             den = temp_petsc_vec_self_d.dot(temp_petsc_vec_Ad)            

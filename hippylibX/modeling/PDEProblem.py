@@ -181,7 +181,8 @@ class PDEVariationalProblem:
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         
         temp_petsc_vec_out.scale(0.)
-        temp_petsc_vec_out.axpy(1., tmp)
+        # temp_petsc_vec_out.axpy(1., tmp)
+        temp_petsc_vec_out.array[:] = temp_petsc_vec_out.array + 1. * tmp.array
         
         temp_petsc_vec_out.destroy()
         tmp.destroy()

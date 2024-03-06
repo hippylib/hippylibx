@@ -115,7 +115,8 @@ class ReducedHessian:
             self.model.applyR(x,self.yhelp)
             temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
             temp_petsc_vec_self_yhelp = dlx.la.create_petsc_vector_wrap(self.yhelp)
-            temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+            # temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+            temp_petsc_vec_y.array[:] = temp_petsc_vec_y.array + 1. * temp_petsc_vec_self_yhelp.array
             temp_petsc_vec_y.destroy()
             temp_petsc_vec_self_yhelp.destroy()
 
@@ -136,18 +137,22 @@ class ReducedHessian:
         self.model.solveFwdIncremental(self.uhat, self.rhs_fwd)
         self.model.applyWuu(self.uhat, self.rhs_adj)
         self.model.applyWum(x, self.rhs_adj2)
-        temp_petsc_vec_rhs_adj.axpy(-1., temp_petsc_vec_rhs_adj2)
+        # temp_petsc_vec_rhs_adj.axpy(-1., temp_petsc_vec_rhs_adj2)
+        temp_petsc_vec_rhs_adj.array[:] = temp_petsc_vec_rhs_adj.array + (-1.) * temp_petsc_vec_rhs_adj2.array
         self.model.solveAdjIncremental(self.phat, self.rhs_adj)
         self.model.applyWmm(x, y)
         self.model.applyCt(self.phat, self.yhelp)
 
-        temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+        # temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+        temp_petsc_vec_y.array[:] = temp_petsc_vec_y.array + (1.) * temp_petsc_vec_self_yhelp.array
         self.model.applyWmu(self.uhat, self.yhelp)
-        temp_petsc_vec_y.axpy(-1., temp_petsc_vec_self_yhelp)
-        
+        # temp_petsc_vec_y.axpy(-1., temp_petsc_vec_self_yhelp)
+        temp_petsc_vec_y.array[:] = temp_petsc_vec_y.array + (-1.) * temp_petsc_vec_self_yhelp.array
+
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)
-            temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+            # temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+            temp_petsc_vec_y.array[:] = temp_petsc_vec_y.array + 1. * temp_petsc_vec_self_yhelp.array 
         
         temp_petsc_vec_rhs_adj.destroy()
         temp_petsc_vec_rhs_adj2.destroy()

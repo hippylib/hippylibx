@@ -50,6 +50,7 @@ class VariationalRegularization:
         dlx.la.create_petsc_vector_wrap(out).scale(0.)
         dlx.la.create_petsc_vector_wrap(out).axpy(1., tmp)
 
+
     # def setLinearizationPoint(self, m):
     #   1. Cast the petsc4py vector m to a dlx.Function mfun
     #   2. call symbolic differentiation (twice) to get the second variation of self.functional_handler(mfun) wrt mfun

@@ -231,7 +231,8 @@ class test_prior:
 
         if add_mean:
             temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
-            temp_petsc_vec_s.axpy(1., temp_petsc_vec_mean)
+            # temp_petsc_vec_s.axpy(1., temp_petsc_vec_mean)
+            temp_petsc_vec_s.array[:] = temp_petsc_vec_s.array + 1. * temp_petsc_vec_mean.array
             temp_petsc_vec_mean.destroy()
         
         rhs.destroy()
@@ -241,7 +242,8 @@ class test_prior:
 
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
-        temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
+        # temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
+        temp_petsc_vec_d.array[:] = temp_petsc_vec_d.array + (-1.) * temp_petsc_vec_m.array
         temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
         
         self.R.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
@@ -256,7 +258,8 @@ class test_prior:
         temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
 
-        temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
+        # temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
+        temp_petsc_vec_d.array[:] = temp_petsc_vec_d.array + (-1.) * temp_petsc_vec_self_mean.array
 
         self.R.mult(temp_petsc_vec_d,temp_petsc_vec_out)
 

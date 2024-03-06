@@ -168,12 +168,14 @@ class Model:
         mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
         tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
         
-        mg_petsc.axpy(1., tmp_petsc)
+        # mg_petsc.axpy(1., tmp_petsc)
+        mg_petsc.array[:] = mg_petsc.array + 1. * tmp_petsc.array
         
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
-            mg_petsc.axpy(1., tmp_petsc)
-                
+            # mg_petsc.axpy(1., tmp_petsc)
+            mg_petsc.array[:] = mg_petsc.array + 1. * tmp_petsc.array
+
         self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         
         return_value = math.sqrt(mg_petsc.dot(tmp_petsc))
@@ -274,8 +276,8 @@ class Model:
             self.problem.apply_ij(STATE,STATE, du, tmp)
             temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
             temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
-            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
-
+            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            temp_petsc_vec_out.array[:] = temp_petsc_vec_out.array + 1. * temp_petsc_vec_tmp.array
             temp_petsc_vec_out.destroy()
             temp_petsc_vec_tmp.destroy()
 
@@ -302,7 +304,8 @@ class Model:
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
             temp_petsc_vec_tmp  = dlx.la.create_petsc_vector_wrap(tmp)
             
-            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            temp_petsc_vec_out.array[:] = temp_petsc_vec_out.array + 1. * temp_petsc_vec_tmp.array
         
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_tmp.destroy()
@@ -331,7 +334,8 @@ class Model:
             temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
 
             self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
-            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            temp_petsc_vec_out.array[:] = temp_petsc_vec_out.array + 1. * temp_petsc_vec_tmp.array
         
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_tmp.destroy()
@@ -388,7 +392,8 @@ class Model:
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
             temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
         
-            temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
+            temp_petsc_vec_out.array[:] = temp_petsc_vec_out.array + 1. * temp_petsc_vec_tmp.array
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_tmp.destroy()
 
