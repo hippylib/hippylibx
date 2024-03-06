@@ -16,7 +16,7 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 import hippylibX as hpx
 
 # from memory_profiler import memory_usage
-from memory_profiler import profile
+# from memory_profiler import profile
 
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:

@@ -3,7 +3,7 @@ import dolfinx as dlx
 import ufl
 import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
-from ..algorithms.linSolvers import PETScLUSolver
+# from ..algorithms.linSolvers import PETScLUSolver
 from ..utils.vector2function import vector2Function, updateFromVector
 
 
@@ -36,6 +36,8 @@ class PDEVariationalProblem:
         self.is_fwd_linear = is_fwd_linear
         self.n_calls = {"forward": 0, "adjoint": 0, "incremental_forward": 0, "incremental_adjoint": 0}
 
+
+
     def generate_state(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the state. """
         return dlx.la.vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs) 
@@ -60,8 +62,26 @@ class PDEVariationalProblem:
 
 
         self.n_calls["forward"] += 1
+        
         if self.solver is None:
             self.solver = self._createLUSolver()
+            problem_prefix = f"dolfinx_solve_{id(self)}"
+            self.solver.setOptionsPrefix(problem_prefix)
+
+             # Set PETSc options
+            opts = petsc4py.PETSc.Options()
+            opts.prefixPush(problem_prefix)
+            #petsc options for solver
+            
+            #Example:
+            petsc_options = {"ksp_rtol":1e-9,"pc_type":"gamg"}
+
+            if petsc_options is not None:
+                for k, v in petsc_options.items():
+                    opts[k] = v
+            opts.prefixPop()
+            self.solver.setFromOptions()
+
 
         if self.is_fwd_linear:    
             u = ufl.TrialFunction(self.Vh[STATE])   
@@ -99,7 +119,24 @@ class PDEVariationalProblem:
         self.n_calls["adjoint"] += 1
         if self.solver is None:
             self.solver = self._createLUSolver()
-       
+            problem_prefix = f"dolfinx_solve_{id(self)}"
+            self.solver.setOptionsPrefix(problem_prefix)
+
+             # Set PETSc options
+            opts = petsc4py.PETSc.Options()
+            opts.prefixPush(problem_prefix)
+            #petsc options for solver
+            
+            #Example:
+            petsc_options = {"ksp_rtol":1e-9,"pc_type":"gamg"}
+
+            if petsc_options is not None:
+                for k, v in petsc_options.items():
+                    opts[k] = v
+            opts.prefixPop()
+            self.solver.setFromOptions()
+
+
         updateFromVector(self.xfun[STATE],x[STATE])
         u = self.xfun[STATE]
 
@@ -151,9 +188,7 @@ class PDEVariationalProblem:
         
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
-        ksp = petsc4py.PETSc.KSP().create()
-        ksp.setTolerances(rtol=1e-9)
-        ksp.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+        ksp = petsc4py.PETSc.KSP().create(self.Vh[0].mesh.comm)
         return ksp
     
 
