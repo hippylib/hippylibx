@@ -15,38 +15,32 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
+# from memory_profiler import memory_usage
+# from memory_profiler import profile
+
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:
         print(*args, **kwargs)
 
-class DiffusionApproximation:
-    def __init__(self, D : float, u0 : float, ds : ufl.measure.Measure):
-        """
-        Define the forward model for the diffusion approximation to radiative transfer equations
+class Poisson_Approximation:
+    def __init__(self, alpha : float, f : float, ds : ufl.measure.Measure):
         
-        D: diffusion coefficient 1/mu_eff with mu_eff = sqrt(3 mu_a (mu_a + mu_ps) ), where mu_a
-           is the unknown absorption coefficient, and mu_ps is the reduced scattering coefficient
-           
-        u0: Incident fluence (Robin condition)
-        
-        ds: boundary integrator for Robin condition
-        """
-        self.D = D
-        self.u0 = u0
+        self.alpha = alpha
+        self.f = f
         self.ds = ds
         
     def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, p : dlx.fem.Function) -> ufl.form.Form:
-        return ufl.inner(self.D*ufl.grad(u), ufl.grad(p))*ufl.dx + \
-            ufl.exp(m)*ufl.inner(u,p)*ufl.dx + \
-            .5*ufl.inner(u-self.u0,p)*self.ds
+        return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p))*ufl.dx + \
+        self.alpha * ufl.inner(u,p)*ufl.ds  - self.f*p*ufl.dx 
+    
 
-class PACTMisfitForm:
+class PoissonMisfitForm:
     def __init__(self, d : float, sigma2 : float):
-        self.sigma2 = sigma2
         self.d = d
+        self.sigma2 = sigma2
         
-    def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
-        return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*ufl.dx
+    def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
+        return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*ufl.dx
 
 
 class H1TikhonvFunctional:
@@ -78,9 +72,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
     # FORWARD MODEL
-    u0 = 1.
-    D = 1./24.
-    pde_handler = DiffusionApproximation(D, u0, ufl.ds)     #returns a ufl form
+    alpha = 100.
+    f = 1.
+    pde_handler = Poisson_Approximation(alpha, f, ufl.ds)     #returns a ufl form
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
 
     # GROUND TRUTH
@@ -105,12 +99,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_fun_true = xfun[hpx.PARAMETER]
     
     d = dlx.fem.Function(Vh[hpx.STATE])
-    expr = u_fun_true * ufl.exp(m_fun_true)
+    expr = u_fun_true
     hpx.projection(expr,d)
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
 
-    misfit_form = PACTMisfitForm(d, noise_variance)
+    misfit_form = PoissonMisfitForm(d)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
     prior_mean = dlx.fem.Function(Vh_m)
@@ -123,17 +117,16 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)    
     hpx.parRandom(comm).normal(1.,noise)
-    # noise.array[:] = 0.2
     prior.sample(noise,m0)
 
     eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     
-    # if(rank == 0):
-    #     print(err_grad,'\n')
-    #     print(err_H)
-    #     plt.show()  
+    if(rank == 0):
+        print(err_grad,'\n')    
+        print(err_H)
+        plt.show()  
 
-    # #######################################
+    #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
     prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
@@ -182,5 +175,6 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.05, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
+
 
 
