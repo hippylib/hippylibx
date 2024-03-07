@@ -33,15 +33,18 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     model.solveFwd(x[STATE], x)
     model.solveAdj(x[ADJOINT], x)
 
+
     cx = model.cost(x)
-    
+    # print(comm.rank,":",cx)
+
+
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
     
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
     temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
     grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
-     
+
     model.setPointForHessianEvaluations(x)
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
@@ -65,12 +68,10 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         x_plus = model.generate_vector()
         temp_vec_petsc_x_plus_paramater = dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER])
 
-        # temp_vec_petsc_x_plus_paramater.axpy(1., temp_vec_petsc_m0)
+        temp_vec_petsc_x_plus_paramater.axpy(1., temp_vec_petsc_m0)
 
-        # temp_vec_petsc_x_plus_paramater.axpy(my_eps, temp_petsc_vec_h)
+        temp_vec_petsc_x_plus_paramater.axpy(my_eps, temp_petsc_vec_h)
         
-        temp_vec_petsc_x_plus_paramater.array[:] = temp_vec_petsc_x_plus_paramater.array + 1. * temp_vec_petsc_m0.array
-        temp_vec_petsc_x_plus_paramater.array[:] = temp_vec_petsc_x_plus_paramater.array + my_eps * temp_petsc_vec_h.array
         model.solveFwd(x_plus[STATE], x_plus)
 
         model.solveAdj(x_plus[ADJOINT], x_plus)
@@ -90,8 +91,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
         err.scale(1./my_eps)
         temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
-        # err.axpy(-1., temp_petsc_vec_Hh)
-        err.array[:] = err.array + (-1) * temp_petsc_vec_Hh.array
+        err.axpy(-1., temp_petsc_vec_Hh)
         temp_petsc_vec_Hh.destroy()
 
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
@@ -147,5 +147,5 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.title("FD Gradient Check")
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
-        plt.title("FD Hes0sian Check")
+        plt.title("FD Hessian Check")
         plt.savefig("result_using_1_proc.png")

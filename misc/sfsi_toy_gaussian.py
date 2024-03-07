@@ -15,9 +15,6 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
-# from memory_profiler import memory_usage
-# from memory_profiler import profile
-
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:
         print(*args, **kwargs)
@@ -120,32 +117,28 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
 
-    # print(type(prior_mean), type(prior_mean.x),type(prior_mean.x.array[:]))
-
-    #<class 'dolfinx.fem.function.Function'> <class 'dolfinx.la.Vector'> <class 'numpy.ndarray'>
-
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)    
-    # noise.array[:] = 0.2
     hpx.parRandom(comm).normal(1.,noise)
+    # noise.array[:] = 0.2
     prior.sample(noise,m0)
 
-    m0 = dlx.fem.Function(Vh_m) 
-    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    m0.x.scatter_forward() 
-    m0 = m0.x
+    # m0 = dlx.fem.Function(Vh_m) 
+    # m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # m0.x.scatter_forward() 
+    # m0 = m0.x
 
     eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     
-    if(rank == 0):
-        print(err_grad,'\n')
-        print(err_H)
-        plt.show()  
+    # if(rank == 0):
+    #     print(err_grad,'\n')
+    #     print(err_H)
+    #     plt.show()  
 
-    #######################################
+    # #######################################
     
     # prior_mean_copy = prior.generate_parameter(0)
     # prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
@@ -194,6 +187,5 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.05, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
-
 
 
