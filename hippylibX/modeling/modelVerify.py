@@ -144,5 +144,5 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.title("FD Gradient Check")
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
-        plt.title("FD Hes0sian Check")
+        plt.title("FD Hessian Check")
         plt.savefig("result_using_1_proc.png")

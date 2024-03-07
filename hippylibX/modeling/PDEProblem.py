@@ -36,7 +36,7 @@ class PDEVariationalProblem:
         self.is_fwd_linear = is_fwd_linear
         self.n_calls = {"forward": 0, "adjoint": 0, "incremental_forward": 0, "incremental_adjoint": 0}
 
-        self.petsc_options = {"ksp_rtol":1e-9,"pc_type":"gamg"}
+        self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
         # self.petsc_options = None
 
 
