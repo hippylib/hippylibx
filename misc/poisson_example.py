@@ -35,11 +35,12 @@ class Poisson_Approximation:
     
 
 class PoissonMisfitForm:
-    def __init__(self, d : float):
+    def __init__(self, d : float, sigma2 : float):
         self.d = d
+        self.sigma2 = sigma2
         
     def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
-        return ufl.inner(u - self.d, u - self.d)*ufl.dx
+        return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*ufl.dx
 
 
 class H1TikhonvFunctional:
@@ -98,7 +99,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_fun_true = xfun[hpx.PARAMETER]
     
     d = dlx.fem.Function(Vh[hpx.STATE])
-    expr = u_fun_true * ufl.exp(m_fun_true)
+    expr = u_fun_true
     hpx.projection(expr,d)
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
@@ -115,14 +116,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)    
-    # noise.array[:] = 0.2
     hpx.parRandom(comm).normal(1.,noise)
     prior.sample(noise,m0)
-
-    m0 = dlx.fem.Function(Vh_m) 
-    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    m0.x.scatter_forward() 
-    m0 = m0.x
 
     eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     

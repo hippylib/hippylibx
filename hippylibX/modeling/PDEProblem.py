@@ -19,12 +19,16 @@ class PDEVariationalProblem:
 
         self.xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
+        self.xfun_test = [ufl.TestFunction(Vhi) for Vhi in Vh]
+
         self.bc = bc        
         self.bc0 = bc0
 
         self.Wuu = None
         self.Wmu = None
         self.Wmm = None
+        self.Wum = None
+
         self.A = None
         self.At = None
         self.C = None
@@ -190,19 +194,20 @@ class PDEVariationalProblem:
             updateFromVector(self.xfun[i],x[i])
 
         x_fun = self.xfun
+        x_fun_test = self.xfun_test
 
         f_form = self.varf_handler(*x_fun)
         
         g_form = [None,None,None]
         
         for i in range(3):
-            g_form[i] = ufl.derivative(f_form, x_fun[i])
-                
+            g_form[i] = ufl.derivative(f_form, x_fun[i], x_fun_test[i])
+
         if self.A is None:
-            self.A = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE] )  ) )
+            self.A = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[ADJOINT],x_fun[STATE],x_fun_test[ADJOINT] )  ) )
 
         self.A.zeroEntries()
-        dlx.fem.petsc.assemble_matrix(self.A, dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE] )  ), self.bc0 )
+        dlx.fem.petsc.assemble_matrix(self.A, dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE])  ), self.bc0 )
         self.A.assemble()
 
         if self.At is None:
@@ -235,10 +240,20 @@ class PDEVariationalProblem:
             self.Wuu.zeroEntries()
             dlx.fem.petsc.assemble_matrix(self.Wuu, dlx.fem.form(ufl.derivative(g_form[STATE],x_fun[STATE])), self.bc0, diagonal = 0.)
             self.Wuu.assemble()
-            
 
-            self.Wmu = dlx.fem.petsc.assemble_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
-            self.Wmu.assemble()
+
+            #assemble Wum instead, set bc, transpose and delete the original matrix.            
+            if self.Wum is None:
+                self.Wum = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])))
+            
+            self.Wum.zeroEntries()
+            dlx.fem.petsc.assemble_matrix(self.Wum, dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE])), self.bc0)
+            self.Wum.assemble()
+
+            self.Wmu = self.Wum.copy()
+            self.Wmu.transpose()
+            # self.Wum.destroy() #gives error.
+            
 
             if self.Wmm is None:
                 self.Wmm = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[PARAMETER],x_fun[PARAMETER])))
