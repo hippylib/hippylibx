@@ -194,6 +194,9 @@ class PDEVariationalProblem:
             updateFromVector(self.xfun[i],x[i])
 
         x_fun = self.xfun
+
+        #has to be used as third argument in ufl.derivative, currently giving errors.
+
         x_fun_test = self.xfun_test
 
         f_form = self.varf_handler(*x_fun)
@@ -201,10 +204,10 @@ class PDEVariationalProblem:
         g_form = [None,None,None]
         
         for i in range(3):
-            g_form[i] = ufl.derivative(f_form, x_fun[i], x_fun_test[i])
+            g_form[i] = ufl.derivative(f_form, x_fun[i])
 
         if self.A is None:
-            self.A = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[ADJOINT],x_fun[STATE],x_fun_test[ADJOINT] )  ) )
+            self.A = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[ADJOINT],x_fun[STATE], )  ) )
 
         self.A.zeroEntries()
         dlx.fem.petsc.assemble_matrix(self.A, dlx.fem.form( ufl.derivative( g_form[ADJOINT],x_fun[STATE])  ), self.bc0 )
@@ -252,8 +255,9 @@ class PDEVariationalProblem:
 
             self.Wmu = self.Wum.copy()
             self.Wmu.transpose()
+
             # self.Wum.destroy() #gives error.
-            
+            # print(self.Wum.isTranspose(self.Wmu)) #True
 
             if self.Wmm is None:
                 self.Wmm = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[PARAMETER],x_fun[PARAMETER])))
