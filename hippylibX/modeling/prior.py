@@ -107,6 +107,9 @@ class test_prior:
 
         self.Vh = Vh
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
+        # self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
+        self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
+
 
         trial = ufl.TrialFunction(Vh)
         test  = ufl.TestFunction(Vh)
@@ -116,9 +119,11 @@ class test_prior:
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         self.M.assemble()
 
-        self.Msolver = petsc4py.PETSc.KSP().create()
-        self.Msolver.getPC().setType(petsc4py.PETSc.PC.Type.JACOBI)
-        self.Msolver.setType(petsc4py.PETSc.KSP.Type.CG)
+        # self.Msolver = petsc4py.PETSc.KSP().create()
+        # self.Msolver.getPC().setType(petsc4py.PETSc.PC.Type.JACOBI)
+        # self.Msolver.setType(petsc4py.PETSc.KSP.Type.CG)
+        
+        self.Msolver = self._createsolver()
         self.Msolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Msolver.setTolerances(rtol=rel_tol)
         self.Msolver.setErrorIfNotConverged(True)
@@ -127,9 +132,10 @@ class test_prior:
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
         self.A.assemble()
-        self.Asolver = petsc4py.PETSc.KSP().create()
-        self.Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-        self.Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
+        # self.Asolver = petsc4py.PETSc.KSP().create()
+        # self.Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
+        # self.Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
+        self.Asolver = self._createsolver()
         self.Asolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Asolver.setTolerances(rtol=rel_tol)
         self.Asolver.setErrorIfNotConverged(True)
@@ -226,9 +232,6 @@ class test_prior:
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
         self.Asolver.solve(rhs,temp_petsc_vec_s)
         
-        # temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        # temp_petsc_vec_s.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
-
         if add_mean:
             temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
             temp_petsc_vec_s.axpy(1., temp_petsc_vec_mean)
@@ -236,6 +239,29 @@ class test_prior:
         
         rhs.destroy()
         temp_petsc_vec_s.destroy()
+
+    def _createsolver(self) -> petsc4py.PETSc.KSP:
+        ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
+        problem_prefix = f"dolfinx_solve_{id(self)}"
+        ksp.setOptionsPrefix(problem_prefix)
+
+        # Set PETSc options
+        opts = petsc4py.PETSc.Options()
+        opts.prefixPush(problem_prefix)
+        #petsc options for solver
+        
+        #Example:
+        if self.petsc_options is not None:
+            for k, v in self.petsc_options.items():
+                opts[k] = v
+        opts.prefixPop()
+        ksp.setFromOptions()
+
+        return ksp
+
+
+
+
 
     def cost(self,m : dlx.la.Vector) -> float:  
 

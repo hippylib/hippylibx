@@ -34,17 +34,21 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
 
     cx = model.cost(x)
-    # print(comm.rank,":",cx)
-
 
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
-    
+
+
+
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
     temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
     grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
+    
+    # print(comm.rank,":",grad_xh)
 
     model.setPointForHessianEvaluations(x)
+ 
+ 
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
@@ -55,7 +59,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         eps = eps[::-1]
     else:
         n_eps = eps.shape[0]
-    
+
     err_grad = np.zeros(n_eps)
     err_H = np.zeros(n_eps)
         
