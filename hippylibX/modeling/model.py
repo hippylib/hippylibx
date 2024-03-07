@@ -140,10 +140,12 @@ class Model:
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
         self.misfit.grad(STATE, x, rhs)
+
         temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
         temp_petsc_vec_rhs.scale(-1.)
 
         self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
+
         temp_petsc_vec_rhs.destroy()
 
 
@@ -172,14 +174,16 @@ class Model:
         
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
+        
             mg_petsc.axpy(1., tmp_petsc)
                 
         self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         
         return_value = math.sqrt(mg_petsc.dot(tmp_petsc))
+
         mg_petsc.destroy()
         tmp_petsc.destroy()
-
+        
         return return_value
     
 
@@ -392,7 +396,7 @@ class Model:
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_tmp.destroy()
 
-    @unused_function
+    @unused_function    
     def apply_ij(self, i, j, d, out):
         if i == STATE and j == STATE:
             self.applyWuu(d,out)
