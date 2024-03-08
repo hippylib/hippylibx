@@ -25,7 +25,8 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    parRandom(comm).normal(1., h)
+    h.array[:] = 5.
+    # parRandom(comm).normal(1., h)
 
     x = model.generate_vector()
     

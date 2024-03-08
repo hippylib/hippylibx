@@ -109,10 +109,11 @@ class test_prior:
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
 
 
-        self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
+        # self.petsc_options = {"ksp_type": "cg","pc_type": "hypre"}
         
         # self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
-        # self.petsc_options = {"ksp_type": "cg","pc_type": "gamg"}
+        
+        self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
 
 
         trial = ufl.TrialFunction(Vh)
@@ -128,6 +129,10 @@ class test_prior:
         # self.Msolver.setType(petsc4py.PETSc.KSP.Type.CG)
         
         self.Msolver = self._createsolver()
+        if(self.petsc_options['pc_type'] == 'hypre'):
+            pc = self.Msolver.getPC()
+            pc.setHYPREType('boomeramg')
+
         self.Msolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Msolver.setTolerances(rtol=rel_tol)
         self.Msolver.setErrorIfNotConverged(True)
@@ -140,6 +145,10 @@ class test_prior:
         # self.Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
         # self.Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
         self.Asolver = self._createsolver()
+        if(self.petsc_options['pc_type'] == 'hypre'):
+            pc = self.Asolver.getPC()
+            pc.setHYPREType('boomeramg')
+
         self.Asolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Asolver.setTolerances(rtol=rel_tol)
         self.Asolver.setErrorIfNotConverged(True)

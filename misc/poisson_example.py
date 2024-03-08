@@ -103,11 +103,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_fun_true = xfun[hpx.PARAMETER]
     
     d = dlx.fem.Function(Vh[hpx.STATE])
-    expr = u_fun_true
-    hpx.projection(expr,d)
+    d.x.array[:] = u_true.array[:]
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
-
 
     misfit_form = PoissonMisfitForm(d,noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
