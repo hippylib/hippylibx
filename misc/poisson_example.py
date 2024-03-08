@@ -79,7 +79,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    # mtrue.interpolate('std::log(2 + 7*(std::pow(std::pow(x[0] - 0.5,2) + std::pow(x[1] - 0.5,2),0.5) > 0.2))',degree=5)
+    m_true.interpolate(lambda x: np.log(2 + 7*( ( (x[0] - 0.5)**2 + (x[1] - 0.5)**2  )**0.5) > 0.2 ))
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
@@ -104,7 +106,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
 
-    misfit_form = PoissonMisfitForm(d)
+    misfit_form = PoissonMisfitForm(d,noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
     prior_mean = dlx.fem.Function(Vh_m)
@@ -120,7 +122,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior.sample(noise,m0)
 
 
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
 
     if(rank == 0):
@@ -174,8 +176,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 if __name__ == "__main__":    
     nx = 64
     ny = 64
-    noise_variance = 1e-6
-    prior_param = {"gamma": 0.05, "delta": 1.}
+    noise_variance = 0.05
+    prior_param = {"gamma": 1e-8, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
 
 

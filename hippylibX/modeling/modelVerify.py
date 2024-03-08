@@ -37,25 +37,16 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
 
-
-
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
     temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
     grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
     
-    # print(comm.rank,":",grad_xh)
-
     model.setPointForHessianEvaluations(x)
  
  
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
-
-    test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
-    with dlx.io.XDMFFile(model.misfit.mesh.comm, "Hh_X_np{0:d}_X.xdmf".format(model.misfit.mesh.comm.size),"w") as file: #works!!
-        file.write_mesh(model.misfit.mesh)
-        file.write_function(test_func) 
 
     if eps is None:
         n_eps = 32
