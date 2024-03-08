@@ -63,6 +63,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     fname = '../example/meshes/circle.xdmf'
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
+
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
@@ -71,7 +72,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
-    # FORWARD MODEL
+    # FORWARD MODEL 
     alpha = 100.
     f = 1.
     pde_handler = Poisson_Approximation(alpha, f, ufl.ds)     #returns a ufl form
@@ -79,8 +80,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    m_true.interpolate(lambda x: np.log(2 + 7*( ( (x[0] - 0.5)**2 + (x[1] - 0.5)**2  )**0.5) > 0.2 ))
+
+    m_true.interpolate(lambda x: np.log(2 + 7*( (  (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 1. )  ) )
+
     m_true.x.scatter_forward() 
+    
     m_true = m_true.x
 
     u_true = pde.generate_state()   #a vector, not a function, <class 'dolfinx.la.Vector'>
@@ -104,6 +108,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
 
+
     misfit_form = PoissonMisfitForm(d,noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(msh, Vh, misfit_form)
 
@@ -119,16 +124,14 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom(comm).normal(1.,noise)
     prior.sample(noise,m0)
 
-
     eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-
 
     if(rank == 0):
         print(err_grad,'\n')    
         print(err_H)
         plt.show()  
 
-    #######################################
+    # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
     prior_mean_copy.array[:] = prior_mean.array[:]

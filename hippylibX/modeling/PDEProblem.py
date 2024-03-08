@@ -43,8 +43,8 @@ class PDEVariationalProblem:
         self.n_calls = {"forward": 0, "adjoint": 0, "incremental_forward": 0, "incremental_adjoint": 0}
 
         self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
-        # self.petsc_options = None
-        
+        # self.petsc_options = {"ksp_type": "cg","pc_type": "gamg"}
+
 
     def generate_state(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the state. """

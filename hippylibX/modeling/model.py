@@ -87,7 +87,6 @@ class Model:
         """
         Reshape :code:`m` so that it is compatible with the parameter variable
         """
-        # self.prior.init_vector(m,0)
         return self.prior.generate_parameter(0)
             
     def cost(self, x : list) -> list:
@@ -143,7 +142,7 @@ class Model:
 
         temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
         temp_petsc_vec_rhs.scale(-1.)
-
+        #solve Adj expects the rhs to be a petsc4pyVec, so rhs is kept as a petscVec
         self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
 
         temp_petsc_vec_rhs.destroy()
@@ -166,12 +165,15 @@ class Model:
         self.problem.evalGradientParameter(x, mg)
 
         self.misfit.grad(PARAMETER,x,tmp)        
-                
+        
+        #see below - prior.Msolve expects petsc Vecs, hence vector operations are not
+        #modified to be numpy array operations
+
         mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
         tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
         
         mg_petsc.axpy(1., tmp_petsc)
-        
+
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
         
@@ -276,13 +278,7 @@ class Model:
         if not self.gauss_newton_approx:
             tmp = self.generate_vector(STATE)
             self.problem.apply_ij(STATE,STATE, du, tmp)
-            # temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-            # temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
-            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
-
-            # temp_petsc_vec_out.destroy()
-            # temp_petsc_vec_tmp.destroy()
-            
+      
             out.array[:] = out.array + 1. * tmp.array
 
 
@@ -298,20 +294,14 @@ class Model:
             
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
-        # temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
 
         if self.gauss_newton_approx:
-            # temp_petsc_vec_out.scale(0.)
             out.array[:] = 0.
         else:
             self.problem.apply_ij(STATE,PARAMETER, dm, out)
             tmp = self.generate_vector(STATE)
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
-            # temp_petsc_vec_tmp  = dlx.la.create_petsc_vector_wrap(tmp)
-            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
             out.array[:] = out.array + 1. * tmp.array
-        # temp_petsc_vec_out.destroy()
-        # temp_petsc_vec_tmp.destroy()
         
 
 
@@ -330,19 +320,13 @@ class Model:
         # temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         
         if self.gauss_newton_approx:
-            # temp_petsc_vec_out.scale(0.)
             out.array[:] = 0.
         else:
             self.problem.apply_ij(PARAMETER, STATE, du, out)
             tmp = self.generate_vector(PARAMETER)
-            # temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
-
+  
             self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
-            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
             out.array[:] = out.array + 1. * tmp.array
-        
-        # temp_petsc_vec_out.destroy()
-        # temp_petsc_vec_tmp.destroy()
     
     def applyR(self, dm, out):
         """
@@ -387,20 +371,14 @@ class Model:
             
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
-        # temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         if self.gauss_newton_approx:
-            # temp_petsc_vec_out.scale(0.)
             out.array[:] = 0.
         else:
             self.problem.apply_ij(PARAMETER,PARAMETER, dm, out)
             tmp = self.generate_vector(PARAMETER)
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
-            # temp_petsc_vec_tmp = dlx.la.create_petsc_vector_wrap(tmp)
         
-            # temp_petsc_vec_out.axpy(1., temp_petsc_vec_tmp)
             out.array[:] = out.array + 1. * tmp.array
-        # temp_petsc_vec_out.destroy()
-        # temp_petsc_vec_tmp.destroy()
 
     @unused_function    
     def apply_ij(self, i, j, d, out):
