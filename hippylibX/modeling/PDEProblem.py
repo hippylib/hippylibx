@@ -43,8 +43,8 @@ class PDEVariationalProblem:
         self.n_calls = {"forward": 0, "adjoint": 0, "incremental_forward": 0, "incremental_adjoint": 0}
 
         self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
-        # self.petsc_options = None
-        
+        # self.petsc_options = {"ksp_type": "cg","pc_type": "gamg"}
+
 
     def generate_state(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the state. """
@@ -166,6 +166,13 @@ class PDEVariationalProblem:
         
         temp_petsc_vec_out.destroy()
         tmp.destroy()
+
+        #substituting above with code below gives incorrect results for FD Gradient Check - need to investigate
+        # tmp = dlx.fem.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm))) 
+        # tmp.scatter_reverse(dlx.la.InsertMode.add)
+        # out.array[:] = 0.
+        # out.array[:] = out.array + 1. * tmp.array
+
         
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
@@ -331,4 +338,3 @@ class PDEVariationalProblem:
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_rhs.destroy()
         
-

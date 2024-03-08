@@ -15,9 +15,6 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
-# from memory_profiler import memory_usage
-# from memory_profiler import profile
-
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:
         print(*args, **kwargs)
@@ -110,7 +107,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun_true * ufl.exp(m_fun_true)
     hpx.projection(expr,d)
-    hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
+    # hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
     
 
@@ -120,16 +117,24 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
-
+   
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
     noise = prior.generate_parameter("noise")
+    noise.array[:] = 0.2
     m0 = prior.generate_parameter(0)    
-    hpx.parRandom(comm).normal(1.,noise)
+    # hpx.parRandom(comm).normal(1.,noise)
     prior.sample(noise,m0)
-    
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+
+    m0 = dlx.fem.Function(Vh_m)     
+    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m0.x.scatter_forward() 
+    m0 = m0.x
+
+
+
+    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     
 
     if(rank == 0):
@@ -137,17 +142,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
         print(err_H)
         plt.show()  
 
-    #######################################
+    # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
-    temp_petsc_object = dlx.la.create_petsc_vector_wrap(prior_mean_copy)
-    temp_petsc_object.scale(0.)  
-    temp_petsc_object.axpy(1.,prior_mean_petsc_vec)
-
-    temp_petsc_object.destroy() #petsc vec of prior_mean_copy
-    prior_mean_petsc_vec.destroy() #petsc vec of prior_mean
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
@@ -186,6 +185,5 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.05, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
-
 
 

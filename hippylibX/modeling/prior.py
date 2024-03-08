@@ -108,8 +108,10 @@ class test_prior:
         self.Vh = Vh
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
 
-        # self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
 
+        # self.petsc_options = {"ksp_type": "cg","pc_type": "hypre"}
+        
+        # self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
         
         self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
 
@@ -127,6 +129,10 @@ class test_prior:
         # self.Msolver.setType(petsc4py.PETSc.KSP.Type.CG)
         
         self.Msolver = self._createsolver()
+        if(self.petsc_options['pc_type'] == 'hypre'):
+            pc = self.Msolver.getPC()
+            pc.setHYPREType('boomeramg')
+
         self.Msolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Msolver.setTolerances(rtol=rel_tol)
         self.Msolver.setErrorIfNotConverged(True)
@@ -139,6 +145,10 @@ class test_prior:
         # self.Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
         # self.Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
         self.Asolver = self._createsolver()
+        if(self.petsc_options['pc_type'] == 'hypre'):
+            pc = self.Asolver.getPC()
+            pc.setHYPREType('boomeramg')
+
         self.Asolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
         self.Asolver.setTolerances(rtol=rel_tol)
         self.Asolver.setErrorIfNotConverged(True)
@@ -267,18 +277,23 @@ class test_prior:
 
 
     def cost(self,m : dlx.la.Vector) -> float:  
-
+    
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
         temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
         
+        #mult used, so need to have petsc4py Vec objects
         self.R.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
+        
         return_value = .5*temp_petsc_vec_Rd.dot(temp_petsc_vec_d)
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_m.destroy()
         temp_petsc_vec_Rd.destroy()
+
         return return_value
+
+        
 
     def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()
