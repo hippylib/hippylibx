@@ -107,7 +107,10 @@ class test_prior:
 
         self.Vh = Vh
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
+
         # self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
+
+        
         self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
 
 
