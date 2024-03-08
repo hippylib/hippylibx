@@ -79,8 +79,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    # m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    # mtrue.interpolate('std::log(2 + 7*(std::pow(std::pow(x[0] - 0.5,2) + std::pow(x[1] - 0.5,2),0.5) > 0.2))',degree=5)
     m_true.interpolate(lambda x: np.log(2 + 7*( ( (x[0] - 0.5)**2 + (x[1] - 0.5)**2  )**0.5) > 0.2 ))
     m_true.x.scatter_forward() 
     m_true = m_true.x
@@ -133,14 +131,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
-
-    temp_petsc_object = dlx.la.create_petsc_vector_wrap(prior_mean_copy)
-    temp_petsc_object.scale(0.)  
-    temp_petsc_object.axpy(1.,prior_mean_petsc_vec)
-
-    temp_petsc_object.destroy() #petsc vec of prior_mean_copy
-    prior_mean_petsc_vec.destroy() #petsc vec of prior_mean
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 

@@ -267,18 +267,23 @@ class test_prior:
 
 
     def cost(self,m : dlx.la.Vector) -> float:  
-
+    
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
         temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
         
+        #mult used, so need to have petsc4py Vec objects
         self.R.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
+        
         return_value = .5*temp_petsc_vec_Rd.dot(temp_petsc_vec_d)
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_m.destroy()
         temp_petsc_vec_Rd.destroy()
+
         return return_value
+
+        
 
     def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()

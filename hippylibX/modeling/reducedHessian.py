@@ -16,6 +16,7 @@
 
 from .variables import STATE, PARAMETER, ADJOINT
 import dolfinx as dlx
+from ..algorithms import linalg
 
 #decorator for functions in classes that are not used -> may not be needed in the final
 #version of X
@@ -83,22 +84,11 @@ class ReducedHessian:
         Hessian :math:`H,\\,(x, y)_H = x' H y`.
         """
         Ay = self.model.generate_vector(PARAMETER)
-        temp_petsc_vec_Ay = dlx.la.create_petsc_vector_wrap(Ay)
-        temp_petsc_vec_Ay.scale(0.)
-        temp_petsc_vec_Ay.destroy()
+        Ay.array[:] = 0.
 
-        # Ay.zero()
-        
         self.mult(y,Ay)
         
-        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-        temp_petsc_vec_Ay = dlx.la.create_petsc_vector_wrap(Ay)
-        return_value = temp_petsc_vec_x.dot(temp_petsc_vec_Ay)
-        temp_petsc_vec_x.destroy()
-        temp_petsc_vec_Ay.destroy()
-
-        # return x.inner(Ay)
-        return return_value
+        return linalg.inner(x,Ay)
 
     def GNHessian(self,x,y):
         """
@@ -112,12 +102,8 @@ class ReducedHessian:
         self.model.applyCt(self.phat, y)
         
         if not self.misfit_only:
-            self.model.applyR(x,self.yhelp)
-            temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
-            temp_petsc_vec_self_yhelp = dlx.la.create_petsc_vector_wrap(self.yhelp)
-            temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
-            temp_petsc_vec_y.destroy()
-            temp_petsc_vec_self_yhelp.destroy()
+            self.model.applyR(x,self.yhelp)            
+            y.array[:] = y.array + 1. * self.yhelp.array
 
             
         
@@ -126,32 +112,24 @@ class ReducedHessian:
         Apply the the reduced Hessian to the vector :code:`x`.
         Return the result in :code:`y`.        
         """
-        temp_petsc_vec_rhs_adj = dlx.la.create_petsc_vector_wrap(self.rhs_adj)
-        temp_petsc_vec_rhs_adj2 = dlx.la.create_petsc_vector_wrap(self.rhs_adj2)
-        temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
-        temp_petsc_vec_self_yhelp = dlx.la.create_petsc_vector_wrap(self.yhelp)
-        
 
         self.model.applyC(x, self.rhs_fwd)
         self.model.solveFwdIncremental(self.uhat, self.rhs_fwd)
         self.model.applyWuu(self.uhat, self.rhs_adj)
         self.model.applyWum(x, self.rhs_adj2)
-        temp_petsc_vec_rhs_adj.axpy(-1., temp_petsc_vec_rhs_adj2)
+
+        self.rhs_adj.array[:] = self.rhs_adj.array + (-1.) * self.rhs_adj2.array
         self.model.solveAdjIncremental(self.phat, self.rhs_adj)
         self.model.applyWmm(x, y)
         self.model.applyCt(self.phat, self.yhelp)
 
-        temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
+        y.array[:] = y.array + 1. * self.yhelp.array
+
         self.model.applyWmu(self.uhat, self.yhelp)
-        temp_petsc_vec_y.axpy(-1., temp_petsc_vec_self_yhelp)
+        y.array[:] = y.array + (-1.) * self.yhelp.array
         
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)
-            temp_petsc_vec_y.axpy(1., temp_petsc_vec_self_yhelp)
-        
-        temp_petsc_vec_rhs_adj.destroy()
-        temp_petsc_vec_rhs_adj2.destroy()
-        temp_petsc_vec_y.destroy()
-        temp_petsc_vec_self_yhelp.destroy()
+            y.array[:] = y.array + 1. * self.yhelp.array
         
  

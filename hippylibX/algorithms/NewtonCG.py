@@ -359,17 +359,19 @@ class ReducedSpaceNewtonCG:
                 mhat_Rnorm = R_mhat.inner(mhat)
                 delta_TR = max(math.sqrt(mhat_Rnorm),1)
 
-            x_star[PARAMETER].zero()
-            x_star[PARAMETER].axpy(1., x[PARAMETER])
-            x_star[PARAMETER].axpy(1., mhat)   #m_star = m +mhat
-            x_star[STATE].zero()
-            x_star[STATE].axpy(1., x[STATE])      #u_star = u
+
+            x_star[PARAMETER].array[:] = 0.
+            x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * x[PARAMETER].array    
+            x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * mhat.array    
+            x_star[STATE].array[:] = 0.
+            x_star[STATE].array[:] = x_star[STATE].array + 1. * x[STATE].array
+
             self.model.solveFwd(x_star[STATE], x_star)
             cost_star, reg_star, misfit_star = self.model.cost(x_star)
             ACTUAL_RED = cost_old - cost_star
             #Calculate Predicted Reduction
             H_mhat = self.model.generate_vector(PARAMETER)
-            H_mhat.zero()
+            H_mhat.array[:] = 0.
             HessApply.mult(mhat,H_mhat)
             mg_mhat = mg.inner(mhat)
             PRED_RED = -0.5*mhat.inner(H_mhat) - mg_mhat
@@ -386,10 +388,11 @@ class ReducedSpaceNewtonCG:
 
             # print( "rho_TR", rho_TR, "eta_TR", eta_TR, "rho_TR > eta_TR?", rho_TR > eta_TR , "\n")
             if rho_TR > eta_TR:
-                x[PARAMETER].zero()
-                x[PARAMETER].axpy(1.0,x_star[PARAMETER])
-                x[STATE].zero()
-                x[STATE].axpy(1.0,x_star[STATE])
+                x[PARAMETER].array[:] = 0.
+                x[PARAMETER].array[:] = x[PARAMETER].array + 1. * x_star[PARAMETER].array
+                x[STATE].array[:] = 0.
+                x[STATE].array[:] = x[STATE].array + 1. * x_star[STATE].array
+                
                 cost_old = cost_star
                 reg_old = reg_star
                 misfit_old = misfit_star

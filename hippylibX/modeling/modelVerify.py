@@ -9,6 +9,7 @@ import petsc4py
 import mpi4py
 
 from ..utils import vector2Function
+from ..algorithms import linalg
 
 def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=False, verbose = True, eps = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
@@ -38,9 +39,9 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
 
+    grad_xh = linalg.inner(grad_x, h)
+
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
-    temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
-    grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
     
     model.setPointForHessianEvaluations(x)
  
@@ -58,19 +59,16 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
     err_grad = np.zeros(n_eps)
     err_H = np.zeros(n_eps)
-        
-    temp_vec_petsc_m0 = dlx.la.create_petsc_vector_wrap(m0)    
-    
+            
     for i in range(n_eps):
         my_eps = eps[i]
         
         x_plus = model.generate_vector()
-        temp_vec_petsc_x_plus_paramater = dlx.la.create_petsc_vector_wrap(x_plus[PARAMETER])
-
-        temp_vec_petsc_x_plus_paramater.axpy(1., temp_vec_petsc_m0)
-
-        temp_vec_petsc_x_plus_paramater.axpy(my_eps, temp_petsc_vec_h)
         
+        x_plus[PARAMETER].array[:] = x_plus[PARAMETER].array + 1. * m0.array
+        x_plus[PARAMETER].array[:] = x_plus[PARAMETER].array + my_eps * h.array
+
+
         model.solveFwd(x_plus[STATE], x_plus)
 
         model.solveAdj(x_plus[ADJOINT], x_plus)
@@ -100,9 +98,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
 
     temp_petsc_vec_grad_x.destroy()
-    temp_petsc_vec_h.destroy()
-    temp_vec_petsc_m0.destroy()
-    temp_vec_petsc_x_plus_paramater.destroy()
     
     xx = model.generate_vector(PARAMETER)
     parRandom(comm).normal(1., xx)

@@ -166,6 +166,13 @@ class PDEVariationalProblem:
         
         temp_petsc_vec_out.destroy()
         tmp.destroy()
+
+        #substituting above with code below gives incorrect results for FD Gradient Check - need to investigate
+        # tmp = dlx.fem.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm))) 
+        # tmp.scatter_reverse(dlx.la.InsertMode.add)
+        # out.array[:] = 0.
+        # out.array[:] = out.array + 1. * tmp.array
+
         
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:

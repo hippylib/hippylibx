@@ -117,7 +117,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
-
+   
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
@@ -125,8 +125,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m0 = prior.generate_parameter(0)    
     hpx.parRandom(comm).normal(1.,noise)
     prior.sample(noise,m0)
-    
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+
+    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     
 
     if(rank == 0):
@@ -137,14 +137,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_petsc_vec = dlx.la.create_petsc_vector_wrap(prior_mean)
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
-    temp_petsc_object = dlx.la.create_petsc_vector_wrap(prior_mean_copy)
-    temp_petsc_object.scale(0.)  
-    temp_petsc_object.axpy(1.,prior_mean_petsc_vec)
-
-    temp_petsc_object.destroy() #petsc vec of prior_mean_copy
-    prior_mean_petsc_vec.destroy() #petsc vec of prior_mean
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
