@@ -120,6 +120,12 @@ class Model:
         self.n_fwd_solve = self.n_fwd_solve + 1
         self.problem.solveFwd(out, x)
 
+        test_func = vector2Function(out,self.misfit.Vh[STATE])
+        with dlx.io.XDMFFile(self.misfit.mesh.comm, "pde_solvefwd_X_np{0:d}_X.xdmf".format(self.misfit.mesh.comm.size),"w") as file: #works!!
+            file.write_mesh(self.misfit.mesh)
+            file.write_function(test_func) 
+
+
     
     def solveAdj(self, out : dlx.la.Vector, x : list) -> None:
         
