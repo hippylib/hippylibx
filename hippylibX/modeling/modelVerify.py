@@ -52,6 +52,11 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
 
+    test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
+    with dlx.io.XDMFFile(model.misfit.mesh.comm, "Hh_X_np{0:d}_X.xdmf".format(model.misfit.mesh.comm.size),"w") as file: #works!!
+        file.write_mesh(model.misfit.mesh)
+        file.write_function(test_func) 
+
     if eps is None:
         n_eps = 32
         eps = np.power(.5, np.arange(n_eps))
