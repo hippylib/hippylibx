@@ -2,6 +2,7 @@ import dolfinx as dlx
 import math
 from .variables import STATE, PARAMETER, ADJOINT
 from ..utils import vector2Function
+import numpy as np
 
 # Copyright (c) 2016-2018, The University of Texas at Austin 
 # & University of California--Merced.
@@ -120,11 +121,7 @@ class Model:
         self.n_fwd_solve = self.n_fwd_solve + 1
         self.problem.solveFwd(out, x)
 
-        test_func = vector2Function(out,self.misfit.Vh[STATE])
-        with dlx.io.XDMFFile(self.misfit.mesh.comm, "pde_solvefwd_X_np{0:d}_X.xdmf".format(self.misfit.mesh.comm.size),"w") as file: #works!!
-            file.write_mesh(self.misfit.mesh)
-            file.write_function(test_func) 
-
+       
 
     
     def solveAdj(self, out : dlx.la.Vector, x : list) -> None:
@@ -150,9 +147,6 @@ class Model:
         temp_petsc_vec_rhs.scale(-1.)
         #solve Adj expects the rhs to be a petsc4pyVec, so rhs is kept as a petscVec
         self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
-
-        temp_petsc_vec_rhs.destroy()
-
 
 
     def evalGradientParameter(self,x : list, mg: dlx.la.Vector, misfit_only=False) -> tuple[float, dlx.la.Vector]:
@@ -188,7 +182,7 @@ class Model:
         self.prior.Msolver.solve(mg_petsc, tmp_petsc)
         
         return_value = math.sqrt(mg_petsc.dot(tmp_petsc))
-
+        
         mg_petsc.destroy()
         tmp_petsc.destroy()
         

@@ -25,20 +25,22 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    parRandom(comm).normal(1., h)
+    # parRandom(comm).normal(1., h)
+    h.array[:] = 5.
 
     x = model.generate_vector()
     
     x[PARAMETER] = m0
     model.solveFwd(x[STATE], x)
-
+    
     model.solveAdj(x[ADJOINT], x)
 
-
     cx = model.cost(x)
+    
 
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
+
 
     grad_xh = linalg.inner(grad_x, h)
 
@@ -50,6 +52,36 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
+
+
+    test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
+
+    comm = model.misfit.mesh.comm
+
+    V = test_func.function_space
+    x_coords,y_coords = dlx.fem.Function(V), dlx.fem.Function(V)
+    x_coords.interpolate(lambda x: x[0])
+    y_coords.interpolate(lambda x: x[1] )
+    
+    x_coords_loc = x_coords.vector.array
+    y_coords_loc = y_coords.vector.array
+
+    u_at_vertices = dlx.fem.Function(V)
+    u_at_vertices.interpolate(test_func)
+    values_local = u_at_vertices.vector.array
+
+    values_all = comm.gather([x_coords_loc, y_coords_loc, values_local],root=  0)
+
+    if(comm.rank == 0):
+        concat_data = np.concatenate(values_all, axis = 1)
+        sorted_indices = np.lexsort((concat_data[1], concat_data[0]))
+        sorted_data = [concat_data[:,i] for i in sorted_indices]
+        sorted_func_vals = np.array(sorted_data)[:,-1]
+        # print(type(sorted_func_vals))
+        np.save(f'Hh_{comm.size}_procs.npy',sorted_func_vals)
+
+
+    return
 
     if eps is None:
         n_eps = 32
