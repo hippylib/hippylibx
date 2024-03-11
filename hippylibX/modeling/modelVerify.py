@@ -54,35 +54,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     H.mult(h, Hh)
 
 
-    test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
-
-    comm = model.misfit.mesh.comm
-
-    V = test_func.function_space
-    x_coords,y_coords = dlx.fem.Function(V), dlx.fem.Function(V)
-    x_coords.interpolate(lambda x: x[0])
-    y_coords.interpolate(lambda x: x[1] )
-    
-    x_coords_loc = x_coords.vector.array
-    y_coords_loc = y_coords.vector.array
-
-    u_at_vertices = dlx.fem.Function(V)
-    u_at_vertices.interpolate(test_func)
-    values_local = u_at_vertices.vector.array
-
-    values_all = comm.gather([x_coords_loc, y_coords_loc, values_local],root=  0)
-
-    if(comm.rank == 0):
-        concat_data = np.concatenate(values_all, axis = 1)
-        sorted_indices = np.lexsort((concat_data[1], concat_data[0]))
-        sorted_data = [concat_data[:,i] for i in sorted_indices]
-        sorted_func_vals = np.array(sorted_data)[:,-1]
-        # print(type(sorted_func_vals))
-        np.save(f'Hh_{comm.size}_procs.npy',sorted_func_vals)
-
-
-    return
-
     if eps is None:
         n_eps = 32
         eps = np.power(.5, np.arange(n_eps))
@@ -95,16 +66,18 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
             
     for i in range(n_eps):
         my_eps = eps[i]
-        
         x_plus = model.generate_vector()
         
         x_plus[PARAMETER].array[:] = x_plus[PARAMETER].array + 1. * m0.array
         x_plus[PARAMETER].array[:] = x_plus[PARAMETER].array + my_eps * h.array
 
-
         model.solveFwd(x_plus[STATE], x_plus)
 
+
         model.solveAdj(x_plus[ADJOINT], x_plus)
+
+        return 
+
 
         dc = model.cost(x_plus)[index] - cx[index]
         

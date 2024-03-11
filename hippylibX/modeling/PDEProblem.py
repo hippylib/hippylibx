@@ -73,7 +73,8 @@ class PDEVariationalProblem:
         
         if self.solver is None:
             self.solver = self._createLUSolver()
-        
+            self.solver.setTolerances(rtol=1e-9)            
+            
         # def monitor(ksp,its,rnorm):
         #     print(ksp.view())
 
@@ -99,10 +100,11 @@ class PDEVariationalProblem:
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
 
             state_vec = dlx.la.create_petsc_vector_wrap(state)
+
             self.solver.solve(b,state_vec)  
 
-
             state_vec.destroy()
+            
             A.destroy()
             b.destroy()
 

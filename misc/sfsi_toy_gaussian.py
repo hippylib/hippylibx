@@ -69,6 +69,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     fname = '../example/meshes/circle.xdmf'
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
+
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
@@ -94,6 +95,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x_true = [u_true, m_true, None]  #list of dlx.la.vectors    
 
     pde.solveFwd(u_true,x_true)
+
+
+
 
     xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
@@ -134,7 +138,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m0 = m0.x
 
     # eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
-    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
 
     # if(rank == 0):
