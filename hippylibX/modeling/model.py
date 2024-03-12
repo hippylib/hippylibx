@@ -141,9 +141,8 @@ class Model:
         rhs = self.problem.generate_state()
         self.misfit.grad(STATE, x, rhs)
    
-        temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
-        temp_petsc_vec_rhs.scale(-1.)
-        self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
+        rhs.array[:] *= -1.
+        self.problem.solveAdj(out, x, rhs)
 
 
     def evalGradientParameter(self,x : list, mg: dlx.la.Vector, misfit_only=False) -> tuple[float, dlx.la.Vector]:
@@ -276,8 +275,7 @@ class Model:
             tmp = self.generate_vector(STATE)
             self.problem.apply_ij(STATE,STATE, du, tmp)
       
-            out.array[:] = out.array + 1. * tmp.array
-
+            out.array[:] += tmp.array
 
     def applyWum(self, dm, out):
         """
@@ -298,8 +296,7 @@ class Model:
             self.problem.apply_ij(STATE,PARAMETER, dm, out)
             tmp = self.generate_vector(STATE)
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
-            out.array[:] = out.array + 1. * tmp.array
-        
+            out.array[:] += tmp.array
 
 
     def applyWmu(self, du, out):
@@ -321,8 +318,10 @@ class Model:
             tmp = self.generate_vector(PARAMETER)
   
             self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
-            out.array[:] = out.array + 1. * tmp.array
+            out.array[:] += tmp.array
+
     
+
     def applyR(self, dm, out):
         """
         Apply the regularization :math:`R` to a (incremental) parameter variable.
@@ -373,7 +372,8 @@ class Model:
             tmp = self.generate_vector(PARAMETER)
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
         
-            out.array[:] = out.array + 1. * tmp.array
+            out.array[:] += tmp.array
+
 
     @unused_function    
     def apply_ij(self, i, j, d, out):

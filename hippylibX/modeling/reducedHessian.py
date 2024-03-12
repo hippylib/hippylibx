@@ -103,7 +103,7 @@ class ReducedHessian:
         
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)            
-            y.array[:] = y.array + 1. * self.yhelp.array
+            y.array[:] += self.yhelp.array
 
             
         
@@ -114,6 +114,7 @@ class ReducedHessian:
         """
 
         self.model.applyC(x, self.rhs_fwd)
+
         self.model.solveFwdIncremental(self.uhat, self.rhs_fwd)
         self.model.applyWuu(self.uhat, self.rhs_adj)
         self.model.applyWum(x, self.rhs_adj2)
@@ -123,13 +124,13 @@ class ReducedHessian:
         self.model.applyWmm(x, y)
         self.model.applyCt(self.phat, self.yhelp)
 
-        y.array[:] = y.array + 1. * self.yhelp.array
+        y.array[:] += self.yhelp.array
 
         self.model.applyWmu(self.uhat, self.yhelp)
-        y.array[:] = y.array + (-1.) * self.yhelp.array
-        
+        y.array[:] -= self.yhelp.array
+
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)
-            y.array[:] = y.array + 1. * self.yhelp.array
+            y.array[:] += self.yhelp.array
         
  

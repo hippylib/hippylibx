@@ -42,16 +42,11 @@ class NonGaussianContinuousMisfit(object):
         
         L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))
 
-        tmp =  dlx.fem.petsc.assemble_vector( dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))  )
-        tmp.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        tmp.ghostUpdate(petsc4py.PETSc.InsertMode.INSERT, petsc4py.PETSc.ScatterMode.FORWARD)
-
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        temp_petsc_vec_out.scale(0.)
-        temp_petsc_vec_out.axpy(1., tmp)
-        tmp.destroy()
-        temp_petsc_vec_out.destroy()
-
+        out.array[:] = 0.
+        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+        dlx.fem.petsc.assemble_vector( tmp_out, dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))  )
+        tmp_out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        tmp_out.destroy()
 
 
     def setLinearizationPoint(self,x : list, gauss_newton_approx=False):
@@ -74,9 +69,8 @@ class NonGaussianContinuousMisfit(object):
 
         action = dlx.fem.form(ufl.derivative( ufl.derivative(form, self.x_lin_fun[i], self.x_test[i]), self.x_lin_fun[j], dir_fun ))
         
-        tmp = dlx.fem.assemble_vector(action)
-        tmp.scatter_reverse(dlx.la.InsertMode.add)
         out.array[:] = 0.
-        out.array[:] = out.array + 1. * tmp.array
-        
-
+        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+        dlx.fem.petsc.assemble_vector(tmp_out, action)
+        tmp_out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        tmp_out.destroy()

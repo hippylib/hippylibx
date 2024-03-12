@@ -45,14 +45,11 @@ class VariationalRegularization:
 
 
         L = dlx.fem.form(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh)))
-        tmp = dlx.fem.petsc.assemble_vector(L)
-        tmp.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
-
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        temp_petsc_vec_out.scale(0.)
-        temp_petsc_vec_out.axpy(1., tmp)
-        tmp.destroy()
-        temp_petsc_vec_out.destroy()
+        
+        out.array[:] = 0.
+        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+        tmp_out.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD_VALUES, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+        tmp_out.destroy()
 
     # def setLinearizationPoint(self, m):
     #   1. Cast the petsc4py vector m to a dlx.Function mfun

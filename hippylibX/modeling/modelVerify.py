@@ -25,9 +25,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    h.array[:] = 0.2
-    # parRandom.normal(1., h)
-    # parRandom(comm).normal(1., h)
+    parRandom.normal(1., h)
 
     x = model.generate_vector()
     
@@ -42,7 +40,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
 
-
     grad_xh = linalg.inner(grad_x, h)
 
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
@@ -54,57 +51,8 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
 
-    #need to check mult operation for why "Hessian not symm" for
-    # multiprocessor runs
-
-    test_func = vector2Function(Hh,model.misfit.Vh[PARAMETER])
-
-    V = test_func.function_space
-
-    x_coords,y_coords = dlx.fem.Function(V), dlx.fem.Function(V)
-    x_coords.interpolate(lambda x: x[0])
-    y_coords.interpolate(lambda x: x[1] )
     
-    x_coords_loc = x_coords.vector.array
-    y_coords_loc = y_coords.vector.array
 
-    u_at_vertices = dlx.fem.Function(V)
-    u_at_vertices.interpolate(test_func)
-    values_loc = u_at_vertices.vector.array
-
-    loc_vals_comb = [x_coords_loc, y_coords_loc, values_loc]
-
-    all_vals_comb = comm.gather(loc_vals_comb, root = 0)
-
-
-    if(comm.rank == 0):
-        all_x, all_y, all_vals =  [],[],[]
-
-        for sublist in all_vals_comb:
-            all_x.append(sublist[0])
-            all_y.append(sublist[1])
-            all_vals.append(sublist[2])
-            
-        all_x_flat = np.concatenate([arr.flatten() for arr in all_x])
-        all_y_flat = np.concatenate([arr.flatten() for arr in all_y])
-        all_vals_flat = np.concatenate([arr.flatten() for arr in all_vals])
-    
-        combined_tuple_version = [(all_x_flat[i], all_y_flat[i], all_vals_flat[i]) for i in range(len(all_x_flat))]
-
-        sorted_combined_tuple_version = sorted(combined_tuple_version, key = lambda x: (x[0], x[1]) )
-
-        x_coords_final, y_coords_final, values_final = [], [], []
-
-        for j in range(len(sorted_combined_tuple_version)):
-            x_coords_final.append(sorted_combined_tuple_version[j][0])
-            y_coords_final.append(sorted_combined_tuple_version[j][1])
-            values_final.append(sorted_combined_tuple_version[j][2])
-        
-        np.savetxt(f'x_coords_X_{comm.size}_procs_v3',x_coords_final)
-        np.savetxt(f'y_coords_X_{comm.size}_procs_v3',y_coords_final) 
-        np.savetxt(f'Hh_{comm.size}_procs_v3',values_final)
-
-    return
 
     if eps is None:
         n_eps = 32
@@ -119,15 +67,12 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     for i in range(n_eps):
         my_eps = eps[i]
         x_plus = model.generate_vector()
-        
-        x_plus[PARAMETER].array[:] = x_plus[PARAMETER].array + 1. * m0.array
-        x_plus[PARAMETER].array[:] = x_plus[PARAMETER].array + my_eps * h.array
+                
+        x_plus[PARAMETER].array[:]  = m0.array + my_eps * h.array
 
         model.solveFwd(x_plus[STATE], x_plus)
 
-
         model.solveAdj(x_plus[ADJOINT], x_plus)
-
 
         dc = model.cost(x_plus)[index] - cx[index]
         
@@ -157,11 +102,9 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     
     xx = model.generate_vector(PARAMETER)
     parRandom.normal(1., xx)
-    # parRandom(comm).normal(1., xx)
     
     yy = model.generate_vector(PARAMETER)
     parRandom.normal(1., yy)
-    # parRandom(comm).normal(1., yy)
     
     ytHx = H.inner(yy,xx)
     xtHy = H.inner(xx,yy)

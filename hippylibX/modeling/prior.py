@@ -256,6 +256,7 @@ class test_prior:
         rhs.destroy()
         temp_petsc_vec_s.destroy()
 
+
     def _createsolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
         problem_prefix = f"dolfinx_solve_{id(self)}"

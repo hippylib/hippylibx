@@ -116,8 +116,7 @@ class CGSolverSteihaug:
         self.B_op.init_vector(self.Bx,0)
 
     def update_x_without_TR(self,x : dlx.la.Vector, alpha : float, d : dlx.la.Vector):
-        x.array[:] = x.array + alpha * d.array
-
+        x.array[:] += alpha*d.array
         return False
 
     def update_x_with_TR(self,x,alpha,d):
@@ -165,23 +164,21 @@ class CGSolverSteihaug:
 
 
         if self.parameters["zero_initial_guess"]:
-            self.r.array[:] = 0.
-            self.r.array[:] = self.r.array + 1. * b.array
+            self.r.array[:] = b.array
+            
             x.array[:] = 0.
                         
         else:
             assert self.TR_radius_2==None
             self.A.mult(x,self.r)
-            self.r.array[:] = -1. * self.r.array
-            self.r.array[:] = self.r.array + 1. * b.array
+            self.r.array[:] *= -1.
+            self.r.array[:] += b.array
 
         self.z.array[:] = 0.
 
         self.B_solver.solve(self.z,self.r) #z = B^-1 r  
-              
-        self.d.array[:] = 0.
-
-        self.d.array[:] = self.d.array + 1. * self.z.array
+        
+        self.d.array[:] = self.z.array
 
         nom0 = inner(self.d,self.r)
 
@@ -210,8 +207,9 @@ class CGSolverSteihaug:
         if den <= 0.0:
             self.converged = True
             self.reasonid = 2
-            x.array[:] = x.array + 1. * self.d.array
-            self.r.array[:] = self.r.array + (-1.) * self.Ad.array
+            x.array[:] += self.d.array
+            self.r.array[:] -= self.Ad.array
+
             self.B_solver.solve(self.z, self.r)
 
             nom = inner(self.r, self.z)
@@ -236,8 +234,7 @@ class CGSolverSteihaug:
                     print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
                 break
 
-            self.r.array[:]  = self.r.array + (-alpha) * self.Ad.array\
-            
+            self.r.array[:] -= alpha*self.Ad.array
             self.B_solver.solve(self.z, self.r)     # z = B^-1 r
             betanom = inner(self.r, self.z)
             if self.parameters["print_level"] == 1:
@@ -265,8 +262,8 @@ class CGSolverSteihaug:
                 break
         
             beta = betanom/nom
-            self.d.array[:] = beta * self.d.array
-            self.d.array[:] = self.d.array + 1. * self.z.array
+            self.d.array[:] = beta*self.d.array
+            self.d.array[:] += self.z.array
             self.A.mult(self.d,self.Ad)
                 
             den = inner(self.d, self.Ad)

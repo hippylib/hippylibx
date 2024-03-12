@@ -107,7 +107,7 @@ class PDEVariationalProblem:
             A.destroy()
             b.destroy()
 
-    def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : petsc4py.PETSc.Vec ) -> None: 
+    def solveAdj(self, adj : dlx.la.Vector, x : dlx.la.Vector, adj_rhs : dlx.la.Vector ) -> None: 
 
         """ Solve the linear adjoint problem:
         Given :math:`m, u`; find :math:`p` such that
@@ -138,8 +138,11 @@ class PDEVariationalProblem:
         self.solver.setOperators(Aadj)
 
         temp_petsc_vec_adj = dlx.la.create_petsc_vector_wrap(adj)
-        self.solver.solve(adj_rhs, temp_petsc_vec_adj )
+        temp_petsc_vec_adj_rhs = dlx.la.create_petsc_vector_wrap(adj_rhs)
+
+        self.solver.solve(temp_petsc_vec_adj_rhs, temp_petsc_vec_adj )
         temp_petsc_vec_adj.destroy()
+        temp_petsc_vec_adj_rhs.destroy()
         Aadj.destroy()
 
     def evalGradientParameter(self, x : list, out : dlx.la.Vector) -> None:
@@ -157,16 +160,11 @@ class PDEVariationalProblem:
         dm = ufl.TestFunction(self.Vh[PARAMETER])
         res_form = self.varf_handler(u, m, p)
 
-        tmp = dlx.fem.petsc.assemble_vector(dlx.fem.form(ufl.derivative(res_form, m, dm))) 
-        tmp.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        
-        temp_petsc_vec_out.scale(0.)
-        temp_petsc_vec_out.axpy(1., tmp)
-        
-        temp_petsc_vec_out.destroy()
-        tmp.destroy()
+        out.array[:] = 0.
+        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+        dlx.fem.petsc.assemble_vector(tmp_out, dlx.fem.form(ufl.derivative(res_form, m, dm))) 
+        tmp_out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
+        tmp_out.destroy()        
         
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
@@ -223,7 +221,12 @@ class PDEVariationalProblem:
         dlx.fem.petsc.assemble_matrix(self.At, dlx.fem.form( ufl.derivative( g_form[STATE],x_fun[ADJOINT],x_fun_trial[ADJOINT] )  ), self.bc0 )
         self.At.assemble()
 
-        self.C = dlx.fem.petsc.assemble_matrix(dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER],x_fun_trial[PARAMETER])),bcs = self.bc0, diagonal = 0.)
+
+        if self.C is None:
+            self.C = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER],x_fun_trial[PARAMETER])))
+
+        self.C.zeroEntries()
+        dlx.fem.petsc.assemble_matrix(self.C, dlx.fem.form(ufl.derivative(g_form[ADJOINT],x_fun[PARAMETER],x_fun_trial[PARAMETER])),bcs = self.bc0, diagonal = 0.)
         self.C.assemble()
 
 
@@ -256,10 +259,12 @@ class PDEVariationalProblem:
             dlx.fem.petsc.assemble_matrix(self.Wum, dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE],x_fun_trial[STATE])), self.bc0)
             self.Wum.assemble()
 
+            if self.Wmu is not None:
+                    self.Wmu.destroy()
+                                
             self.Wmu = self.Wum.copy()
             self.Wmu.transpose()
 
-            # self.Wum.destroy() #gives error.
             # print(self.Wum.isTranspose(self.Wmu)) #True
 
             if self.Wmm is None:
@@ -298,7 +303,7 @@ class PDEVariationalProblem:
                 temp_petsc_vec_out.scale(0.)
             else:
                 KKT[j,i].multTranspose(temp_petsc_vec_dir, temp_petsc_vec_out)
-        
+
         temp_petsc_vec_out.destroy()
         temp_petsc_vec_dir.destroy()
                     

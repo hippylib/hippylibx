@@ -232,18 +232,16 @@ class ReducedSpaceNewtonCG:
             alpha = 1.0
             descent = 0
             n_backtrack = 0
-
             
             mg_mhat = inner(mg,mhat)
 
             
             while descent == 0 and n_backtrack < max_backtracking_iter:
-
-                x_star[PARAMETER].array[:] = 0.
-                x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * x[PARAMETER].array
-                x_star[PARAMETER].array[:] = x_star[PARAMETER].array + alpha * mhat.array
-                x_star[STATE].array[:] = 0.
-                x_star[STATE].array[:] = x_star[STATE].array + 1. * x[STATE].array
+                
+                x_star[PARAMETER].array[:] = x[PARAMETER].array + alpha*mhat.array
+                
+                x_star[STATE].array[:] = x[STATE].array
+        
 
                 self.model.solveFwd(x_star[STATE], x_star)
                             
@@ -254,10 +252,10 @@ class ReducedSpaceNewtonCG:
                     cost_old = cost_new
                     descent = 1
 
-                    x[PARAMETER].array[:] = 0.
-                    x[PARAMETER].array[:] = x[PARAMETER].array + 1. * x_star[PARAMETER].array
-                    x[STATE].array[:] = 0.
-                    x[STATE].array[:] = x[STATE].array + 1. * x_star[STATE].array
+                    x[PARAMETER].array[:] = x_star[PARAMETER].array
+
+                    x[STATE].array[:] = x_star[STATE].array
+
                 else:
                     n_backtrack += 1
                     alpha *= 0.5
@@ -360,11 +358,9 @@ class ReducedSpaceNewtonCG:
                 delta_TR = max(math.sqrt(mhat_Rnorm),1)
 
 
-            x_star[PARAMETER].array[:] = 0.
-            x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * x[PARAMETER].array    
-            x_star[PARAMETER].array[:] = x_star[PARAMETER].array + 1. * mhat.array    
-            x_star[STATE].array[:] = 0.
-            x_star[STATE].array[:] = x_star[STATE].array + 1. * x[STATE].array
+            x_star[PARAMETER].array[:] = x[PARAMETER].array + mhat.array
+
+            x_star[STATE].array[:] = x[STATE].array
 
             self.model.solveFwd(x_star[STATE], x_star)
             cost_star, reg_star, misfit_star = self.model.cost(x_star)
@@ -388,11 +384,10 @@ class ReducedSpaceNewtonCG:
 
             # print( "rho_TR", rho_TR, "eta_TR", eta_TR, "rho_TR > eta_TR?", rho_TR > eta_TR , "\n")
             if rho_TR > eta_TR:
-                x[PARAMETER].array[:] = 0.
-                x[PARAMETER].array[:] = x[PARAMETER].array + 1. * x_star[PARAMETER].array
-                x[STATE].array[:] = 0.
-                x[STATE].array[:] = x[STATE].array + 1. * x_star[STATE].array
                 
+                x[PARAMETER].array[:] = x_star[PARAMETER].array                
+                x[STATE].array[:] = x_star[STATE].array
+
                 cost_old = cost_star
                 reg_old = reg_star
                 misfit_old = misfit_star
