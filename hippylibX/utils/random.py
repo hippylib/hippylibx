@@ -1,16 +1,12 @@
 import numpy as np
 import dolfinx as dlx
 import petsc4py
+from mpi4py import MPI
 
-class parRandom():
-    def __init__(self, comm):
-        #All the seeding of the random number generator should 
-        #happen once for all in the init method.
-        rank = comm.rank
-        nproc = comm.size
-
-        master_seed = 123
-        seed_sequence = np.random.SeedSequence(master_seed)
+class Random():
+    def __init__(self, rank, nproc,seed = 1):
+       
+        seed_sequence = np.random.SeedSequence(seed)
 
         child_seeds = seed_sequence.spawn(nproc)
         self.rng = np.random.MT19937(child_seeds[rank])
@@ -29,3 +25,7 @@ class parRandom():
         dlx.la.create_petsc_vector_wrap(out).ghostUpdate(petsc4py.PETSc.InsertMode.INSERT,petsc4py.PETSc.ScatterMode.FORWARD)
 
 
+_world_rank = MPI.COMM_WORLD.rank
+_world_size = MPI.COMM_WORLD.size
+
+parRandom = Random(_world_rank,_world_size)

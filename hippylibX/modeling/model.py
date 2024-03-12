@@ -29,7 +29,7 @@ class Model:
     
     """
     This class contains the full description of the inverse problem.
-    As inputs it takes a :code:`PDEProblem object`, a :code:`Prior` object, and a :code:`Misfit` object.
+    As inputs it takes a :code:``PDEProblem object`, a :code:`Prior` object, and a :code:`Misfit` object.
     
     In the following we will denote with
 
@@ -122,8 +122,6 @@ class Model:
         self.problem.solveFwd(out, x)
 
 
-    
-    
     def solveAdj(self, out : dlx.la.Vector, x : list) -> None:
         
         """
@@ -142,67 +140,9 @@ class Model:
         self.n_adj_solve = self.n_adj_solve + 1 
         rhs = self.problem.generate_state()
         self.misfit.grad(STATE, x, rhs)
-
-        comm = self.misfit.mesh.comm
-
-        test_func = vector2Function(rhs,self.misfit.Vh[STATE])
-
-        # comm = self.misfit.mesh.comm
-        V = test_func.function_space
-
-        x_coords,y_coords = dlx.fem.Function(V), dlx.fem.Function(V)
-        x_coords.interpolate(lambda x: x[0])
-        y_coords.interpolate(lambda x: x[1] )
-        
-        x_coords_loc = x_coords.vector.array
-        y_coords_loc = y_coords.vector.array
-
-        u_at_vertices = dlx.fem.Function(V)
-        u_at_vertices.interpolate(test_func)
-        values_loc = u_at_vertices.vector.array
-
-
-        loc_vals_comb = [x_coords_loc, y_coords_loc, values_loc]
-
-        all_vals_comb = comm.gather(loc_vals_comb, root = 0)
-
-
-        if(comm.rank == 0):
-
-            # print(len(all_vals_comb))
-            all_x, all_y, all_vals =  [],[],[]
-
-            for sublist in all_vals_comb:
-                all_x.append(sublist[0])
-                all_y.append(sublist[1])
-                all_vals.append(sublist[2])
-                
-            all_x_flat = np.concatenate([arr.flatten() for arr in all_x])
-            all_y_flat = np.concatenate([arr.flatten() for arr in all_y])
-            all_vals_flat = np.concatenate([arr.flatten() for arr in all_vals])
-
-        
-            combined_tuple_version = [(all_x_flat[i], all_y_flat[i], all_vals_flat[i]) for i in range(len(all_x_flat))]
-
-            sorted_combined_tuple_version = sorted(combined_tuple_version, key = lambda x: (x[0], x[1]) )
-
-
-            x_coords_final, y_coords_final, values_final = [], [], []
-
-            for i in range(len(sorted_combined_tuple_version)):
-                x_coords_final.append(sorted_combined_tuple_version[i][0])
-                y_coords_final.append(sorted_combined_tuple_version[i][1])
-                values_final.append(sorted_combined_tuple_version[i][2])
-            
-            np.savetxt(f'x_coords_X_{comm.size}_procs_v3',x_coords_final)
-            np.savetxt(f'y_coords_X_{comm.size}_procs_v3',y_coords_final) 
-            np.savetxt(f'misfit_grad_{comm.size}_procs_v3',values_final)
-
-
-
+   
         temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
         temp_petsc_vec_rhs.scale(-1.)
-        #solve Adj expects the rhs to be a petsc4pyVec, so rhs is kept as a petscVec
         self.problem.solveAdj(out, x, temp_petsc_vec_rhs)
 
 
@@ -373,9 +313,7 @@ class Model:
             - :code:`out` the action of the :math:`W_{mu}` block on :code:`du`
         
         .. note:: This routine assumes that :code:`out` has the correct shape.
-        """
-        # temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        
+        """        
         if self.gauss_newton_approx:
             out.array[:] = 0.
         else:

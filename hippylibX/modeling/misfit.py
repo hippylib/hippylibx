@@ -3,6 +3,7 @@ import dolfinx as dlx
 import ufl
 from mpi4py import MPI
 import petsc4py
+import numpy as np
 
 class NonGaussianContinuousMisfit(object):
     def __init__(self, mesh : dlx.mesh.Mesh, Vh : list, form):
@@ -39,7 +40,7 @@ class NonGaussianContinuousMisfit(object):
 
         x_fun = [u_fun, m_fun]
         
-        # L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))
+        L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))
 
         tmp =  dlx.fem.petsc.assemble_vector( dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))  )
         tmp.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
@@ -50,12 +51,6 @@ class NonGaussianContinuousMisfit(object):
         temp_petsc_vec_out.axpy(1., tmp)
         tmp.destroy()
         temp_petsc_vec_out.destroy()
-
-        # tmp =  dlx.fem.assemble_vector(L)
-        # tmp.scatter_reverse(dlx.la.InsertMode.add)
-        # tmp.scatter_forward()
-        # out.array[:] = 0.
-        # out.array[:] = out.array + 1. * tmp.array[:]
 
 
 

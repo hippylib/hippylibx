@@ -104,6 +104,9 @@ class test_prior:
         :math:`C = A^{-1} M A^-1`,
         where A is the finite element matrix arising from discretization of sqrt_precision_varf_handler
         """
+        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
+        self.ds = ufl.Measure("ds",metadata={"quadrature_degree":4})
+
 
         self.Vh = Vh
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
@@ -119,7 +122,7 @@ class test_prior:
         trial = ufl.TrialFunction(Vh)
         test  = ufl.TestFunction(Vh)
         
-        varfM = ufl.inner(trial,test)*ufl.dx       
+        varfM = ufl.inner(trial,test)*self.dx   
         
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         self.M.assemble()
@@ -273,9 +276,6 @@ class test_prior:
         return ksp
 
 
-
-
-
     def cost(self,m : dlx.la.Vector) -> float:  
     
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
@@ -332,9 +332,9 @@ def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, T
     
     def sqrt_precision_varf_handler(trial : ufl.TrialFunction, test : ufl.TestFunction) -> ufl.form.Form: 
         if Theta == None:
-            varfL = ufl.inner(ufl.grad(trial), ufl.grad(test))*ufl.dx
+            varfL = ufl.inner(ufl.grad(trial), ufl.grad(test))*ufl.dx(metadata = {"quadrature_degree":4})
         else:
-            varfL = ufl.inner( Theta*ufl.grad(trial), ufl.grad(test))*ufl.dx
+            varfL = ufl.inner( Theta*ufl.grad(trial), ufl.grad(test))*ufl.dx(metadata = {"quadrature_degree":4})
         
         varfM = ufl.inner(trial,test)*ufl.dx
         
