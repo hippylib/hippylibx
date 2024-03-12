@@ -17,6 +17,8 @@
 from .variables import STATE, PARAMETER, ADJOINT
 import dolfinx as dlx
 from ..algorithms import linalg
+import numpy as np
+from ..utils import vector2Function
 
 #decorator for functions in classes that are not used -> may not be needed in the final
 #version of X

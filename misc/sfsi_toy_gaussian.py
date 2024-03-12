@@ -122,7 +122,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun_true * ufl.exp(m_fun_true)
     hpx.projection(expr,d)
-    hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
+    # hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
 
     d.x.scatter_forward()
 
@@ -138,16 +138,24 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)
-    hpx.parRandom.normal(1.,noise)
-    
+    noise.array[:] = 0.2
+    # hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    m0 = dlx.fem.Function(Vh_m)     
+    m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m0.x.scatter_forward() 
+    m0 = m0.x
 
-    if(rank == 0):
-        print(err_grad,'\n')
-        print(err_H)
-        plt.show()  
+
+    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+
+    # _, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+
+    # if(rank == 0):
+    #     print(err_grad,'\n')
+    #     print(err_H)
+    #     plt.show()  
 
     # #######################################
     

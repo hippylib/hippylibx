@@ -181,6 +181,8 @@ class Model:
         
         mg_petsc.destroy()
         tmp_petsc.destroy()
+
+        
         
         return return_value
     
