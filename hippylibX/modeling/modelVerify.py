@@ -25,9 +25,9 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    h.array[:] = 5.
+    # h.array[:] = 5.
 
-    # parRandom.normal(1., h)
+    parRandom.normal(1., h)
 
 
     x = model.generate_vector()
@@ -38,33 +38,23 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     model.solveAdj(x[ADJOINT], x)
 
     cx = model.cost(x)
-
+    
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
 
-    grad_xh = linalg.inner(grad_x, h)
-
-    # grad_xh = dlx.la.create_petsc_vector_wrap(grad_x).dot(dlx.la.create_petsc_vector_wrap(h))
-
-    print(comm.rank,":",grad_xh)
-
-
-
-
-
-
-    # print(comm.rank,":",grad_xh)
-
-    return 
 
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
-    
+    temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
+
+    grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
+
+    temp_petsc_vec_h.destroy()
+
     model.setPointForHessianEvaluations(x)
  
     H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
     H.mult(h, Hh)
-
 
     if eps is None:
         n_eps = 32
@@ -115,6 +105,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     xx = model.generate_vector(PARAMETER)
     parRandom.normal(1., xx)
 
+
     yy = model.generate_vector(PARAMETER)
     parRandom.normal(1., yy)
 
@@ -122,16 +113,12 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
     xtHy = H.inner(xx,yy)
 
-
     if np.abs(ytHx + xtHy) > 0.: 
         rel_symm_error = 2*abs(ytHx - xtHy)/(ytHx + xtHy)
     else:
         rel_symm_error = abs(ytHx - xtHy)
 
-    # print(comm.rank,":",ytHx,":",xtHy,":",rel_symm_error)
-
-
-
+    print(comm.rank,":",ytHx,":",xtHy,":",rel_symm_error)
 
     if verbose:
         print( "(yy, H xx) - (xx, H yy) = ", rel_symm_error)
@@ -155,7 +142,7 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_1_proc_v3.png")
+        plt.savefig("result_using_4_proc_v3.png")
     else:  
         plt.figure()
         plt.subplot(121)
@@ -164,4 +151,4 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_1_proc_v3.png")
+        plt.savefig("result_using_4_proc_v3.png")
