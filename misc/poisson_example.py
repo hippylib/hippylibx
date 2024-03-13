@@ -124,7 +124,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
     if(rank == 0):
         print(err_grad,'\n')    

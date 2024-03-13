@@ -141,54 +141,58 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    # m0 = dlx.fem.Function(Vh_m)     
-    # m0.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
-    # m0.x.scatter_forward() 
-    # m0 = m0.x
-
-
-    # hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
-
     _, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
-    if(rank == 0):
-        print(err_grad,'\n')
-        print(err_H)
-        plt.show()  
+    # if(rank == 0):
+    #     print(err_grad,'\n')
+    #     print(err_H)
+    #     plt.show()  
 
     # #######################################
     
-    # prior_mean_copy = prior.generate_parameter(0)
-    # prior_mean_copy.array[:] = prior_mean.array[:]
+    prior_mean_copy = prior.generate_parameter(0)
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
 
-    # x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
-    # if rank == 0:
-    #     print( sep, "Find the MAP point", sep)    
+    if rank == 0:
+        print( sep, "Find the MAP point", sep)    
            
-    # parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    # parameters["rel_tolerance"] = 1e-6
-    # parameters["abs_tolerance"] = 1e-9
-    # parameters["max_iter"]      = 500
-    # parameters["cg_coarse_tolerance"] = 5e-1
-    # parameters["globalization"] = "LS"
-    # parameters["GN_iter"] = 20
-    # if rank != 0:
-    #     parameters["print_level"] = -1
+    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    parameters["rel_tolerance"] = 1e-6
+    parameters["abs_tolerance"] = 1e-9
+    parameters["max_iter"]      = 500
+    parameters["cg_coarse_tolerance"] = 5e-1
+    parameters["globalization"] = "LS"
+    parameters["GN_iter"] = 20
+    if rank != 0:
+        parameters["print_level"] = -1
     
-    # solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
-    # x = solver.solve(x) 
-    
-    # if solver.converged:
-    #     master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    # else:
-    #     master_print(comm, "\nNot Converged")
+    x = solver.solve(x) 
 
-    # master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
-    # master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
-    # master_print (comm, "Final cost: ", solver.final_cost)
+
+    test_func = hpx.vector2Function(m_true,Vh[hpx.ADJOINT])
+    with dlx.io.XDMFFile(comm, "true_m_pact_np{0:d}_X.xdmf".format(comm.size),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(test_func) 
+
+
+    test_func = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.ADJOINT])
+    with dlx.io.XDMFFile(comm, "reconstr_m_pact_np{0:d}_X.xdmf".format(comm.size),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(test_func) 
+
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
+
+    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print (comm, "Final cost: ", solver.final_cost)
 
     #######################################
 
