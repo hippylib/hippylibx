@@ -170,8 +170,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 if __name__ == "__main__":    
     nx = 64
     ny = 64
-    noise_variance = 0.05
-    prior_param = {"gamma": 1e-8, "delta": 1.}
+    noise_variance = 1e-4
+    prior_param = {"gamma": 0.1, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
 
 
