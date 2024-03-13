@@ -138,7 +138,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)
-    # noise.array[:] = 0.2
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 

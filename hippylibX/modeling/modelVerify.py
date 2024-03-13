@@ -25,7 +25,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         index = 0
     
     h = model.generate_vector(PARAMETER)
-    # h.array[:] = 5.
 
     parRandom.normal(1., h)
 
@@ -42,13 +41,16 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
 
+    grad_xh = linalg.inner(grad_x, h)
+
 
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
-    temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
+    # temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
 
-    grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
+    # grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
 
-    temp_petsc_vec_h.destroy()
+
+    # temp_petsc_vec_h.destroy()
 
     model.setPointForHessianEvaluations(x)
  
@@ -141,7 +143,7 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_4_proc_v3.png")
+        plt.savefig("result_using_4_proc_poisson_v3.png")
     else:  
         plt.figure()
         plt.subplot(121)
@@ -150,4 +152,4 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_4_proc_v3.png")
+        plt.savefig("result_using_4_proc_poisson_v3.png")
