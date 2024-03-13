@@ -15,9 +15,6 @@ sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
 
 import hippylibX as hpx
 
-# from memory_profiler import memory_usage
-# from memory_profiler import profile
-
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:
         print(*args, **kwargs)
@@ -64,9 +61,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     rank  = comm.rank
     nproc = comm.size
 
-    fname = '../example/meshes/circle.xdmf'
-    fid = dlx.io.XDMFFile(comm,fname,"r")
-    msh = fid.read_mesh(name='mesh')
+    msh = dlx.mesh.create_unit_square(comm, nx, ny)    
 
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
@@ -108,7 +103,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     d = dlx.fem.Function(Vh[hpx.STATE])
     d.x.array[:] = u_true.array[:]
-    hpx.parRandom(comm).normal_perturb(np.sqrt(noise_variance),d.x)
+    hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
 
     misfit_form = PoissonMisfitForm(d,noise_variance)
@@ -123,7 +118,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)    
-    hpx.parRandom(comm).normal(1.,noise)
+    hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
     eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))

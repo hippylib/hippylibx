@@ -34,7 +34,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     
     x[PARAMETER] = m0
     model.solveFwd(x[STATE], x)
-    
+
     model.solveAdj(x[ADJOINT], x)
 
     cx = model.cost(x)
@@ -118,7 +118,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     else:
         rel_symm_error = abs(ytHx - xtHy)
 
-    print(comm.rank,":",ytHx,":",xtHy,":",rel_symm_error)
 
     if verbose:
         print( "(yy, H xx) - (xx, H yy) = ", rel_symm_error)
