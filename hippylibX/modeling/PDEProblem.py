@@ -256,7 +256,7 @@ class PDEVariationalProblem:
                 self.Wum = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE],x_fun_trial[STATE])))
             
             self.Wum.zeroEntries()
-            dlx.fem.petsc.assemble_matrix(self.Wum, dlx.fem.form( ufl.derivative(g_form[PARAMETER],x_fun[STATE],x_fun_trial[STATE])), self.bc0)
+            dlx.fem.petsc.assemble_matrix(self.Wum, dlx.fem.form( ufl.derivative(g_form[STATE],x_fun[PARAMETER],x_fun_trial[PARAMETER])), self.bc0)
             self.Wum.assemble()
 
             if self.Wmu is not None:
