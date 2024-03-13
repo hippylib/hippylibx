@@ -46,7 +46,6 @@ class DiffusionApproximation:
             .5*ufl.inner(u-self.u0,p)*self.ds
 
 
-
 class PACTMisfitForm:
     def __init__(self, d : float, sigma2 : float):
         self.sigma2 = sigma2
@@ -56,20 +55,6 @@ class PACTMisfitForm:
     def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*self.dx
 
-
-class H1TikhonvFunctional:
-    def __init__(self, gamma, delta):
-        self.gamma = gamma #These are dlx Constant, Expression, or Function
-        self.delta = delta
-        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-       
-
-    def __call__(self, m : dlx.fem.Function) -> ufl.form.Form: #Here m is a dlx Function
-
-        return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *self.dx + \
-        ufl.inner(self.delta * m, m)*self.dx
-
-# @profile
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
@@ -77,11 +62,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     rank  = comm.rank
     nproc = comm.size
 
-    fname = '../example/meshes/circle.xdmf'
+    fname = 'meshes/circle.xdmf'
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
@@ -89,12 +74,10 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
-    # print(dir(dlx.compile_cpp_code))
-
     # FORWARD MODEL    
     u0 = 1.
     D = 1./24.
-    pde_handler = DiffusionApproximation(D, u0)     #returns a ufl form
+    pde_handler = DiffusionApproximation(D, u0)   
     
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
 
@@ -104,9 +87,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
-    u_true = pde.generate_state()   #a vector, not a function, <class 'dolfinx.la.Vector'>
+    u_true = pde.generate_state() 
     
-    x_true = [u_true, m_true, None]  #list of dlx.la.vectors    
+    x_true = [u_true, m_true, None] 
 
     pde.solveFwd(u_true,x_true)
 
@@ -141,7 +124,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    _, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    _, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
     # if(rank == 0):
     #     print(err_grad,'\n')
@@ -173,18 +156,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     x = solver.solve(x) 
 
-
-    test_func = hpx.vector2Function(m_true,Vh[hpx.ADJOINT])
-    with dlx.io.XDMFFile(comm, "true_m_pact_np{0:d}_X.xdmf".format(comm.size),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(test_func) 
-
-
-    test_func = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.ADJOINT])
-    with dlx.io.XDMFFile(comm, "reconstr_m_pact_np{0:d}_X.xdmf".format(comm.size),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(test_func) 
-
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -195,7 +166,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, "Final cost: ", solver.final_cost)
 
     #######################################
-
 
 if __name__ == "__main__":    
     nx = 64

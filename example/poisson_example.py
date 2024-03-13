@@ -42,18 +42,6 @@ class PoissonMisfitForm:
         return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*self.dx
 
 
-class H1TikhonvFunctional:
-    def __init__(self, gamma, delta):
-        self.gamma = gamma #These are dlx Constant, Expression, or Function
-        self.delta = delta
-        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-
-
-    def __call__(self, m : dlx.fem.Function) -> ufl.form.Form: #Here m is a dlx Function
-        return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *self.dx + \
-        ufl.inner(self.delta * m, m)*self.dx
-
-# @profile
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
@@ -63,7 +51,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny)    
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
@@ -74,7 +62,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     # FORWARD MODEL 
     alpha = 100.
     f = 1.
-    pde_handler = Poisson_Approximation(alpha, f)     #returns a ufl form
+    pde_handler = Poisson_Approximation(alpha, f)  
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
 
     # GROUND TRUTH
@@ -85,16 +73,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     m_true = m_true.x
 
-    u_true = pde.generate_state()   #a vector, not a function, <class 'dolfinx.la.Vector'>
+    u_true = pde.generate_state()  
     
-    x_true = [u_true, m_true, None]  #list of dlx.la.vectors    
+    x_true = [u_true, m_true, None] 
 
     pde.solveFwd(u_true,x_true)
     
-    # print(u_true.array.min(),':',u_true.array.max())
-
-
-
     xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
     # LIKELIHOOD
@@ -124,7 +108,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+    eps, err_grad, err_H = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     if(rank == 0):
         print(err_grad,'\n')    
@@ -133,38 +117,40 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     # # #######################################
     
-    # prior_mean_copy = prior.generate_parameter(0)
-    # prior_mean_copy.array[:] = prior_mean.array[:]
+    prior_mean_copy = prior.generate_parameter(0)
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
-    # x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
-    # if rank == 0:
-    #     print( sep, "Find the MAP point", sep)    
+    if rank == 0:
+        print( sep, "Find the MAP point", sep)    
            
-    # parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    # parameters["rel_tolerance"] = 1e-6
-    # parameters["abs_tolerance"] = 1e-9
-    # parameters["max_iter"]      = 500
-    # parameters["cg_coarse_tolerance"] = 5e-1
-    # parameters["globalization"] = "LS"
-    # parameters["GN_iter"] = 20
-    # if rank != 0:
-    #     parameters["print_level"] = -1
+    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    parameters["rel_tolerance"] = 1e-6
+    parameters["abs_tolerance"] = 1e-9
+    parameters["max_iter"]      = 500
+    parameters["cg_coarse_tolerance"] = 5e-1
+    parameters["globalization"] = "LS"
+    parameters["GN_iter"] = 20
+    if rank != 0:
+        parameters["print_level"] = -1
     
-    # solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
-    # x = solver.solve(x) 
+    x = solver.solve(x) 
     
-    # if solver.converged:
-    #     master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    # else:
-    #     master_print(comm, "\nNot Converged")
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
 
-    # master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
-    # master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
-    # master_print (comm, "Final cost: ", solver.final_cost)
+    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print (comm, "Final cost: ", solver.final_cost)
 
     #######################################
+
+
 
 
 if __name__ == "__main__":    

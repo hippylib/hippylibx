@@ -143,7 +143,7 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_4_proc_pact_v3.png")
+        plt.savefig("result_.png")
     else:  
         plt.figure()
         plt.subplot(121)
@@ -152,4 +152,4 @@ def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.n
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
         plt.title("FD Hessian Check")
-        plt.savefig("result_using_4_proc_pact_v3.png")
+        plt.savefig("result_.png")
