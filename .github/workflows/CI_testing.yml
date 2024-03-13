@@ -18,5 +18,4 @@ jobs:
       - name: run code
         uses: actions/checkout@v2
       - name: run the file
-        run: cd example
-        run: mpirun -n 1 python3 -u test_file.py
+        run: cd example && mpirun -n 1 python3 -u test_file.py
