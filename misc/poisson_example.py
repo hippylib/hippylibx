@@ -80,8 +80,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
 
-    m_true.interpolate(lambda x: np.log(2 + 7*( (  (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 1. )  ) )
-
+    m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     
     m_true = m_true.x
@@ -91,6 +90,10 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x_true = [u_true, m_true, None]  #list of dlx.la.vectors    
 
     pde.solveFwd(u_true,x_true)
+    
+    # print(u_true.array.min(),':',u_true.array.max())
+
+
 
     xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
