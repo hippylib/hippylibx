@@ -45,12 +45,6 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
 
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
-    # temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
-
-    # grad_xh = temp_petsc_vec_grad_x.dot(temp_petsc_vec_h)
-
-
-    # temp_petsc_vec_h.destroy()
 
     model.setPointForHessianEvaluations(x)
  
