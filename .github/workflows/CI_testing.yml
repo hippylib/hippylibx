@@ -23,6 +23,6 @@ jobs:
         run: |
           cd ./example/testing_folder && 
           output=$(python3 test_script.py) && 
-          if [[ "$output" == "0" ]]; then
+          if [[ "$output" == "1" ]]; then
             exit 1
           fi
