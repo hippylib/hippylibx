@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-      - numpy_debug_v2
+      - main
 
 defaults:
   run:
@@ -18,4 +18,11 @@ jobs:
       - name: run code
         uses: actions/checkout@v2
       - name: run the file
-        run: cd example && mpirun -n 1 python3 -u poisson_example.py
+        run: cd ./example && mpirun -n 1 python3 -u sfsi_toy_gaussian.py
+      - name: change directory and validate
+        run: |
+          cd ./example/testing_folder && 
+          output=$(python3 ./test_script.py) && 
+          if [[ "$output" == "0" ]]; then
+            exit 1
+          fi

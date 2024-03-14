@@ -129,7 +129,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         if rel_symm_error > 1e-10:
             print( "HESSIAN IS NOT SYMMETRIC!!")
     
-    return eps, err_grad, err_H
+    return eps, err_grad, err_H, rel_symm_error
 
 
 def modelVerifyPlotErrors(comm, misfit_only, is_quadratic : bool, eps : np.ndarray, err_grad : np.ndarray, err_H : np.ndarray) -> None:
