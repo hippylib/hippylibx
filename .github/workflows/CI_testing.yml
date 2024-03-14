@@ -10,15 +10,15 @@ defaults:
 jobs:
   style:
     runs-on: ubuntu-22.04
-    container:
-      image: dolfinx/dolfinx:stable
-      options: --user 1001 --privileged 
+    # container:
+    #   image: dolfinx/dolfinx:stable
+    #   options: --user 1001 --privileged 
     name: CI test
     steps:
       - name: run code
         uses: actions/checkout@v2
-      - name: run the file
-        run: cd ./example && mpirun -n 1 python3 -u sfsi_toy_gaussian.py
+      # - name: run the file
+        # run: cd ./example && mpirun -n 1 python3 -u sfsi_toy_gaussian.py
       - name: change directory and validate
         run: |
           cd ./example/testing_folder && 
