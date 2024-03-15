@@ -238,8 +238,15 @@ class PDEVariationalProblem:
         self.solver_adj_inc.setOperators(self.At)
 
         if gauss_newton_approx:
+            if(self.Wuu is not None):
+                self.Wuu.destroy()
             self.Wuu = None
+            if(self.Wmu is not None):
+                self.Wmu.destroy()
             self.Wmu = None
+
+            if(self.Wmm is not None):
+                self.Wmm.destroy()
             self.Wmm = None
         else:
 

@@ -93,8 +93,8 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
         err.destroy()
 
-    if verbose:
-        modelVerifyPlotErrors(comm, misfit_only,is_quadratic, eps, err_grad, err_H)
+    # if verbose:
+        # modelVerifyPlotErrors(comm, misfit_only,is_quadratic, eps, err_grad, err_H)
         #comm and misfit_only are being passed for plotting purposes only-
         #the title of the plot for saved figures.
         #has to be removed for the final version.
@@ -125,38 +125,38 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
 
 
     #clean-up ops
-    if(model.problem.A is not None):
-        model.problem.A.destroy()
-        model.problem.A = None
+    # if(model.problem.A is not None):
+    #     model.problem.A.destroy()
+    #     model.problem.A = None
         
     
-    if(model.problem.At is not None):
-        model.problem.At.destroy()
-        model.problem.At = None
+    # if(model.problem.At is not None):
+    #     model.problem.At.destroy()
+    #     model.problem.At = None
     
-    if(model.problem.C is not None):
-        model.problem.C.destroy()
-        model.problem.C = None
-    
-
-    if(model.problem.Wuu is not None):
-        model.problem.Wuu.destroy()
-        model.problem.Wuu = None
+    # if(model.problem.C is not None):
+    #     model.problem.C.destroy()
+    #     model.problem.C = None
     
 
-    if(model.problem.Wmu is not None):
-        model.problem.Wmu.destroy()
-        model.problem.Wmu = None
+    # if(model.problem.Wuu is not None):
+    #     model.problem.Wuu.destroy()
+    #     model.problem.Wuu = None
+    
+
+    # if(model.problem.Wmu is not None):
+    #     model.problem.Wmu.destroy()
+    #     model.problem.Wmu = None
 
 
-    if(model.problem.Wum is not None):
-        model.problem.Wum.destroy()
-        model.problem.Wum = None
+    # if(model.problem.Wum is not None):
+    #     model.problem.Wum.destroy()
+    #     model.problem.Wum = None
 
 
-    if(model.problem.Wmm is not None):
-        model.problem.Wmm.destroy()
-        model.problem.Wmm = None
+    # if(model.problem.Wmm is not None):
+    #     model.problem.Wmm.destroy()
+    #     model.problem.Wmm = None
 
 
 
