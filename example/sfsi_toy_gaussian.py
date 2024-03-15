@@ -127,54 +127,78 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-    eps, err_grad, err_H, rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
+    eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    
     if(rank == 0):
-        data = {"xvals":eps,"arr_1":err_grad, "arr_2": err_H, "sym_Hessian_value":rel_symm_error}
-        os.makedirs('testing_folder',exist_ok=True)
-        with open('testing_folder/outputs.pickle','wb') as f:
-            pickle.dump(data,f)
+        data = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
+        if(comm.size == 1):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_qpact_1_proc_misfit_True.pickle','wb') as f:
+                pickle.dump(data,f)
 
+        if(comm.size == 4):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_qpact_4_proc_misfit_True.pickle','wb') as f:
+                pickle.dump(data,f)
 
+    
+    eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+    
     if(rank == 0):
-        print(err_grad,'\n')
-        print(err_H)
-        plt.show()  
+        data = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
+      
+        if(comm.size == 1):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_qpact_1_proc_misfit_False.pickle','wb') as f:
+                pickle.dump(data,f)
+
+        if(comm.size == 4):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_qpact_4_proc_misfit_False.pickle','wb') as f:
+                pickle.dump(data,f)
+
+
+
+
+    # if(rank == 0):
+    #     print(err_grad,'\n')
+    #     print(err_H)
+        # plt.show()  
 
     # #######################################
     
-    prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_copy.array[:] = prior_mean.array[:]
+    # prior_mean_copy = prior.generate_parameter(0)
+    # prior_mean_copy.array[:] = prior_mean.array[:]
 
 
-    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    # x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
-    if rank == 0:
-        print( sep, "Find the MAP point", sep)    
+    # if rank == 0:
+    #     print( sep, "Find the MAP point", sep)    
            
-    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    parameters["rel_tolerance"] = 1e-6
-    parameters["abs_tolerance"] = 1e-9
-    parameters["max_iter"]      = 500
-    parameters["cg_coarse_tolerance"] = 5e-1
-    parameters["globalization"] = "LS"
-    parameters["GN_iter"] = 20
-    if rank != 0:
-        parameters["print_level"] = -1
+    # parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    # parameters["rel_tolerance"] = 1e-6
+    # parameters["abs_tolerance"] = 1e-9
+    # parameters["max_iter"]      = 500
+    # parameters["cg_coarse_tolerance"] = 5e-1
+    # parameters["globalization"] = "LS"
+    # parameters["GN_iter"] = 20
+    # if rank != 0:
+    #     parameters["print_level"] = -1
     
-    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    # solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
-    x = solver.solve(x) 
+    # x = solver.solve(x) 
 
-    if solver.converged:
-        master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    else:
-        master_print(comm, "\nNot Converged")
+    # if solver.converged:
+    #     master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    # else:
+    #     master_print(comm, "\nNot Converged")
 
-    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
-    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
-    master_print (comm, "Final cost: ", solver.final_cost)
+    # master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    # master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    # master_print (comm, "Final cost: ", solver.final_cost)
 
     #######################################
 

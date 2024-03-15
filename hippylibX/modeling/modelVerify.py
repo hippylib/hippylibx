@@ -122,7 +122,44 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         print( "(yy, H xx) - (xx, H yy) = ", rel_symm_error)
         if rel_symm_error > 1e-10:
             print( "HESSIAN IS NOT SYMMETRIC!!")
+
+
+    #clean-up ops
+    if(model.problem.A is not None):
+        model.problem.A.destroy()
+        model.problem.A = None
+        
     
+    if(model.problem.At is not None):
+        model.problem.At.destroy()
+        model.problem.At = None
+    
+    if(model.problem.C is not None):
+        model.problem.C.destroy()
+        model.problem.C = None
+    
+
+    if(model.problem.Wuu is not None):
+        model.problem.Wuu.destroy()
+        model.problem.Wuu = None
+    
+
+    if(model.problem.Wmu is not None):
+        model.problem.Wmu.destroy()
+        model.problem.Wmu = None
+
+
+    if(model.problem.Wum is not None):
+        model.problem.Wum.destroy()
+        model.problem.Wum = None
+
+
+    if(model.problem.Wmm is not None):
+        model.problem.Wmm.destroy()
+        model.problem.Wmm = None
+
+
+
     return eps, err_grad, err_H, rel_symm_error
 
 
