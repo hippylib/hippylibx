@@ -40,7 +40,7 @@ class Testing_Execution(unittest.TestCase):
     def test_poisson_execution_parallel(self):
         pwd = os.getcwd()
         os.chdir("../../example/")
-        command = "mpirun -n 1 python3 -u poisson_example.py"
+        command = "mpirun -n 4 python3 -u poisson_example.py"
         return_val = os.system(command)
         os.chdir(pwd)
         self.assertEqual(return_val, 0, "4 proc poisson: Error running")
@@ -56,7 +56,7 @@ class Testing_Execution(unittest.TestCase):
     def test_qpact_execution_parallel(self):
         pwd = os.getcwd()
         os.chdir("../../example/")
-        command = "mpirun -n 1 python3 -u sfsi_toy_gaussian.py"
+        command = "mpirun -n 4 python3 -u sfsi_toy_gaussian.py"
         return_val = os.system(command)
         os.chdir(pwd)
         self.assertEqual(return_val, 0, "4 proc qpact: Error running")
