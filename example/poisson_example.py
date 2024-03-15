@@ -43,7 +43,7 @@ class PoissonMisfitForm:
     def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*self.dx
 
-@profile
+
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
@@ -110,42 +110,39 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-
     # hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
     # hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
+
     eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
-    
 
-    
-    # if(rank == 0):
-    #     data = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
-    #     if(comm.size == 1):        
-    #         os.makedirs('../hippylibX/test',exist_ok=True)
-    #         with open('../hippylibX/test/outputs_poisson_1_proc_misfit_True.pickle','wb') as f:
-    #             pickle.dump(data,f)
+    if(rank == 0):
+        data = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
+        if(comm.size == 1):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_poisson_1_proc_misfit_True.pickle','wb') as f:
+                pickle.dump(data,f)
 
-    #     if(comm.size == 4):        
-    #         os.makedirs('../hippylibX/test',exist_ok=True)
-    #         with open('../hippylibX/test/outputs_poisson_4_proc_misfit_True.pickle','wb') as f:
-    #             pickle.dump(data,f)
+        if(comm.size == 4):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_poisson_4_proc_misfit_True.pickle','wb') as f:
+                pickle.dump(data,f)
 
+
+    eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
     
-    # eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-    
-    # if(rank == 0):
-    #     data = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
+    if(rank == 0):
+        data = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
       
-    #     if(comm.size == 1):        
-    #         os.makedirs('../hippylibX/test',exist_ok=True)
-    #         with open('../hippylibX/test/outputs_poisson_1_proc_misfit_False.pickle','wb') as f:
-    #             pickle.dump(data,f)
+        if(comm.size == 1):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_poisson_1_proc_misfit_False.pickle','wb') as f:
+                pickle.dump(data,f)
 
-    #     if(comm.size == 4):        
-    #         os.makedirs('../hippylibX/test',exist_ok=True)
-    #         with open('../hippylibX/test/outputs_poisson_4_proc_misfit_False.pickle','wb') as f:
-    #             pickle.dump(data,f)
-
+        if(comm.size == 4):        
+            os.makedirs('../hippylibX/test',exist_ok=True)
+            with open('../hippylibX/test/outputs_poisson_4_proc_misfit_False.pickle','wb') as f:
+                pickle.dump(data,f)
 
 
     # if(rank == 0):

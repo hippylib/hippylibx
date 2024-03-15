@@ -240,7 +240,9 @@ class PDEVariationalProblem:
         if gauss_newton_approx:
             if(self.Wuu is not None):
                 self.Wuu.destroy()
+            
             self.Wuu = None
+
             if(self.Wmu is not None):
                 self.Wmu.destroy()
             self.Wmu = None
@@ -248,6 +250,7 @@ class PDEVariationalProblem:
             if(self.Wmm is not None):
                 self.Wmm.destroy()
             self.Wmm = None
+        
         else:
 
             if self.Wuu is None:
