@@ -1,16 +1,16 @@
-
 import unittest
 import sys
 import os
 import numpy as np
-import pickle
+from mpi4py import MPI
 
 
 sys.path.append(os.path.abspath('../..'))
-
 import hippylibX as hpx
-sys.path.append(os.path.abspath('../../example'))
 
+
+sys.path.append(os.path.abspath('../../example'))
+from example import poisson_example, sfsi_toy_gaussian
 
 def data_parser(data):
         eps = data["eps"]
@@ -26,125 +26,68 @@ def data_parser(data):
 
         return sym_Hessian_value, slope_grad, slope_H
 
-
 class Testing_Execution(unittest.TestCase):
 
-    def test_poisson_execution_serial(self):
+    def test_qpact_execution(self):
         pwd = os.getcwd()
-        os.chdir("../../example/")
-        command = "mpirun -n 1 python3 -u poisson_example.py"
-        return_val = os.system(command)
+        nx = 64 
+        ny = 64
+        noise_variance = 1e-6
+        prior_param = {"gamma": 0.05, "delta": 1.}
+        os.chdir("../../example")
+        out = sfsi_toy_gaussian.run_inversion(nx, ny, noise_variance, prior_param)
         os.chdir(pwd)
-        self.assertEqual(return_val, 0, "1 proc poisson: Error running")
+        
+        #convergence of optimizer
+        self.assertEqual(out['optimizer_results']['optimizer'],True,"Did not converge")
+        
+        # misfit = True, slope and symmmetric nature of Hessian
+        sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
+        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
+        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
-    def test_poisson_execution_parallel(self):
-        pwd = os.getcwd()
-        os.chdir("../../example/")
-        command = "mpirun -n 4 python3 -u poisson_example.py"
-        return_val = os.system(command)
-        os.chdir(pwd)
-        self.assertEqual(return_val, 0, "4 proc poisson: Error running")
+        # misfit = False, slope and symmmetric nature of Hessian
+        sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
+        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
+        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
-    def test_qpact_execution_serial(self):
-        pwd = os.getcwd()
-        os.chdir("../../example/")
-        command = "mpirun -n 1 python3 -u sfsi_toy_gaussian.py"
-        return_val = os.system(command)
-        os.chdir(pwd)
-        self.assertEqual(return_val, 0, "1 proc qpact: Error running")
+    def test_poisson_execution(self):
+        nx = 64 
+        ny = 64
+        noise_variance = 1e-4
+        prior_param = {"gamma": 0.1, "delta": 1.}
+        out = poisson_example.run_inversion(nx, ny, noise_variance, prior_param)
+        
+        #convergence of optimizer
+        self.assertEqual(out['optimizer_results']['optimizer'],True,"Did not converge")
+        
+        # misfit = True, slope and symmmetric nature of Hessian
+        sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
+        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
+        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
-    def test_qpact_execution_parallel(self):
-        pwd = os.getcwd()
-        os.chdir("../../example/")
-        command = "mpirun -n 4 python3 -u sfsi_toy_gaussian.py"
-        return_val = os.system(command)
-        os.chdir(pwd)
-        self.assertEqual(return_val, 0, "4 proc qpact: Error running")
-
-    def test_qpact_results_serial_misfit_True(self):
-
-        with open('outputs_qpact_1_proc_misfit_True.pickle', 'rb') as f:
-            data = pickle.load(f)
-
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "1 proc qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="1 proc qpact misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="1 proc qpact misfit True: FD Hessian check slope is not close to 1")
-
-    def test_qpact_results_serial_misfit_False(self):
-        #misfit=False
-        with open('outputs_qpact_1_proc_misfit_False.pickle', 'rb') as f:
-            data = pickle.load(f)
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "1 proc qpact misfit False: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="1 proc qpact misfit False: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="1 proc qpact misfit False: FD Hessian check slope is not close to 1")
-
-    def test_qpact_results_parallel_misfit_True(self):
-
-        with open('outputs_qpact_4_proc_misfit_True.pickle', 'rb') as f:
-            data = pickle.load(f)
-
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "4 proc qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="4 proc qpact misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="4 proc qpact misfit True: FD Hessian check slope is not close to 1")
-
-    def test_qpact_results_parallel_misfit_False(self):
-        #misfit=False
-        with open('outputs_qpact_4_proc_misfit_False.pickle', 'rb') as f:
-            data = pickle.load(f)
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "4 proc qpact misfit False: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="4 proc qpact misfit False: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="4 proc qpact misfit False: FD Hessian check slope is not close to 1")
-
-
-    def test_poisson_results_serial_misfit_True(self):
-
-        with open('outputs_poisson_1_proc_misfit_True.pickle', 'rb') as f:
-            data = pickle.load(f)
-
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "1 proc poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="1 proc poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="1 proc poisson misfit True: FD Hessian check slope is not close to 1")
-
-    def test_poisson_results_serial_misfit_False(self):
-        #misfit=False
-        with open('outputs_poisson_1_proc_misfit_False.pickle', 'rb') as f:
-            data = pickle.load(f)
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "1 proc poisson misfit False: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="1 proc poisson misfit False: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="1 proc poisson misfit False: FD Hessian check slope is not close to 1")
-
-    def test_poisson_results_parallel_misfit_True(self):
-        with open('outputs_poisson_4_proc_misfit_True.pickle', 'rb') as f:
-            data = pickle.load(f)
-
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "4 proc poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="4 proc poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="4 proc poisson misfit True: FD Hessian check slope is not close to 1")
-
-    def test_qpact_results_parallel_misfit_False(self):
-        #misfit=False
-        with open('outputs_poisson_4_proc_misfit_False.pickle', 'rb') as f:
-            data = pickle.load(f)
-        sym_Hessian_value, slope_grad, slope_H = data_parser(data)
-        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "4 proc poisson misfit False: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="4 proc poisson misfit False: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="4 proc poisson misfit False: FD Hessian check slope is not close to 1")
+        # misfit = False, slope and symmmetric nature of Hessian
+        sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
+        self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
+        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
 
         
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+
+
+
+
 
 
 
