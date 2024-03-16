@@ -17,12 +17,20 @@ jobs:
     steps:
       - name: run code
         uses: actions/checkout@v2
-      - name: run the file
-        run: cd ./example && mpirun -n 1 python3 -u sfsi_toy_gaussian.py
-      - name: change directory and validate
+      - name: run serial check
         run: |
-          cd ./example/testing_folder && 
-          output=$(python3 test_script.py) && 
-          if [[ "$output" == "1" ]]; then
+          cd ./hippylibX/test && 
+          output=$(mpirun -n 1 python3 -u testing_suite_file.py) &&
+          if [[ "$output" == "1"  ]]; then
             exit 1
           fi
+
+      - name: run parallel check
+        run: |
+          cd ./hippylibX/test && 
+          output=$(mpirun -n 4 python3 -u testing_suite_file.py) &&
+          if [[ "$output" == "1"  ]]; then
+            exit 1
+          fi
+
+

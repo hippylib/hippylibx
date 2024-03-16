@@ -6,10 +6,11 @@ from mpi4py import MPI
 
 
 sys.path.append(os.path.abspath('../..'))
+
 import hippylibX as hpx
-
-
 sys.path.append(os.path.abspath('../../example'))
+
+
 from example import poisson_example, sfsi_toy_gaussian
 
 def data_parser(data):
@@ -25,6 +26,18 @@ def data_parser(data):
         slope_H = slope_H_coeffs[0]
 
         return sym_Hessian_value, slope_grad, slope_H
+
+
+class Test_runner:
+    def __init__(self):
+        self.result = unittest.TestResult()
+
+    def run_tests(self):
+        test_suite = unittest.TestLoader().loadTestsFromTestCase(Testing_Execution)
+        test_suite.run(self.result)
+
+        return 1 if self.result.wasSuccessful() else 0  
+    
 
 class Testing_Execution(unittest.TestCase):
 
@@ -71,14 +84,19 @@ class Testing_Execution(unittest.TestCase):
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
+        print(slope_grad,slope_H)
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
         self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
+        pass
 
         
 if __name__ == "__main__":
-    unittest.main()
+    test_suite = unittest.defaultTestLoader.discover('.','testing_suite_file.py')
+    test_runner = unittest.TextTestRunner(resultclass=unittest.TextTestResult)
+    result = test_runner.run(test_suite)
+    sys.exit(not result.wasSuccessful())
 
 
 
