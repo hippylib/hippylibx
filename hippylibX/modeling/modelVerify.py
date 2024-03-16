@@ -11,7 +11,7 @@ import mpi4py
 from ..utils import vector2Function
 from ..algorithms import linalg
 
-def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=False, verbose = True, eps = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=False, verbose = True, eps = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
     """
     Verify the reduced Gradient and the Hessian of a model.

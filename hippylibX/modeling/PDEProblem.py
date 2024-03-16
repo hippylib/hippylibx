@@ -275,8 +275,6 @@ class PDEVariationalProblem:
             self.Wmu = self.Wum.copy()
             self.Wmu.transpose()
 
-            # print(self.Wum.isTranspose(self.Wmu)) #True
-
             if self.Wmm is None:
                 self.Wmm = dlx.fem.petsc.create_matrix(dlx.fem.form(ufl.derivative(g_form[PARAMETER],x_fun[PARAMETER],x_fun_trial[PARAMETER])))
 

@@ -200,7 +200,6 @@ class ReducedSpaceNewtonCG:
                 gradnorm_ini = gradnorm
                 tol = max(abs_tol, gradnorm_ini*rel_tol)
             
-            # print(tol)
             
             # check if solution is reached
             if (gradnorm < tol) and (self.it > 0):

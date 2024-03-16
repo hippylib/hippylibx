@@ -6,9 +6,7 @@ import petsc4py
 import numpy as np
 
 class NonGaussianContinuousMisfit(object):
-    def __init__(self, mesh : dlx.mesh.Mesh, Vh : list, form):
-        #mesh needed for comm.allreduce in cost function
-        self.mesh = mesh
+    def __init__(self,Vh : list, form):
         self.Vh = Vh
         self.form = form
 
@@ -28,7 +26,7 @@ class NonGaussianContinuousMisfit(object):
 
         loc_cost = self.form(u_fun,m_fun)
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
-        return self.mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
+        return self.Vh[hpx.STATE].mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM )
 
     def grad(self, i : int, x : list, out: dlx.la.Vector) -> dlx.la.Vector:
     

@@ -126,17 +126,13 @@ class test_prior:
         
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         self.M.assemble()
-
-        # self.Msolver = petsc4py.PETSc.KSP().create()
-        # self.Msolver.getPC().setType(petsc4py.PETSc.PC.Type.JACOBI)
-        # self.Msolver.setType(petsc4py.PETSc.KSP.Type.CG)
-        
+    
         self.Msolver = self._createsolver()
         if(self.petsc_options['pc_type'] == 'hypre'):
             pc = self.Msolver.getPC()
             pc.setHYPREType('boomeramg')
 
-        self.Msolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
+        self.Msolver.setIterationNumber(max_iter) 
         self.Msolver.setTolerances(rtol=rel_tol)
         self.Msolver.setErrorIfNotConverged(True)
         self.Msolver.setInitialGuessNonzero(False)        
@@ -144,15 +140,12 @@ class test_prior:
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
         self.A.assemble()
-        # self.Asolver = petsc4py.PETSc.KSP().create()
-        # self.Asolver.getPC().setType(petsc4py.PETSc.PC.Type.GAMG)
-        # self.Asolver.setType(petsc4py.PETSc.KSP.Type.CG)
         self.Asolver = self._createsolver()
         if(self.petsc_options['pc_type'] == 'hypre'):
             pc = self.Asolver.getPC()
             pc.setHYPREType('boomeramg')
 
-        self.Asolver.setIterationNumber(max_iter) #these values should be supplied as arguments.
+        self.Asolver.setIterationNumber(max_iter) 
         self.Asolver.setTolerances(rtol=rel_tol)
         self.Asolver.setErrorIfNotConverged(True)
         self.Asolver.setInitialGuessNonzero(False)        
@@ -198,27 +191,6 @@ class test_prior:
         if self.mean is None:            
             self.mean = self.init_vector(0)
 
-    #replaced function init_vector with generate_parameter
-    @unused_function
-    def init_vector(self, dim : int) -> dlx.la.Vector:            
-        
-        """
-        Inizialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
-        If :code:`dim == "noise"` inizialize :code:`x` to be compatible with the size of
-        white noise used for sampling.
-        """
-
-        if dim == "noise":
-            return dlx.la.vector( self.sqrtM_function_space.dofmap.index_map    )
-
-        else:
-            if(dim == 0):
-                return dlx.la.vector( self.Vh.dofmap.index_map)
-                
-            else:
-                return dlx.la.vector( self.Vh.dofmap.index_map )
-
-    #Modified version of above init_vector
     def generate_parameter(self, dim : int) -> dlx.la.Vector:      
         """
         Inizialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
@@ -230,7 +202,6 @@ class test_prior:
         else:
             return dlx.la.vector( self.Vh.dofmap.index_map )
 
-    #need to construct sqrtM and Asolver from the prior in hippylib
     def sample(self, noise : dlx.la.Vector, s : dlx.la.Vector, add_mean=True) -> None:
 
         """
@@ -240,7 +211,6 @@ class test_prior:
         """
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
 
-        # rhs = self.sqrtM*temp_petsc_vec_noise
         rhs = self.sqrtM.createVecLeft()
         self.sqrtM.mult(temp_petsc_vec_noise,rhs)
         temp_petsc_vec_noise.destroy()

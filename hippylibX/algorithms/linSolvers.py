@@ -2,7 +2,7 @@ import petsc4py
 
 
 #I don't use either of the following 2 functions for now,
-# currently just using this in the _createLUSolver method in
+# currently just using the following: in the _createLUSolver method in
 # the PDEVariationalProblem class in modeling/PDEProblem.py file
 
 # def _createLUSolver(self):
