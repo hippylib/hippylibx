@@ -23,7 +23,7 @@ jobs:
 
       - name: run serial check
         run: |
-          cd ./hippylibx/test &&  
+          cd ./hippylibX/test && 
           mpirun -n 1 python3 testing_suite_file.py 
 
       # - name: run serial check
