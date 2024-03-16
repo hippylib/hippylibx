@@ -8,7 +8,6 @@ import sys
 import os
 import dolfinx.fem.petsc
 import pickle
-from memory_profiler import profile
 import time
 
 from matplotlib import pyplot as plt
@@ -166,7 +165,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
-    
+
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
