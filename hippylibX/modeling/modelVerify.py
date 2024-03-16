@@ -94,12 +94,9 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
         err.destroy()
 
     if verbose:
-        modelVerifyPlotErrors(comm, misfit_only,is_quadratic, eps, err_grad, err_H)
+        modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
        
-        #comm and misfit_only are being passed for plotting purposes only-
-        #the title of the plot for saved figures.
-        #has to be removed for the final version.
-
+     
     temp_petsc_vec_grad_x.destroy()
     
     xx = model.generate_vector(PARAMETER)
@@ -128,7 +125,7 @@ def modelVerify(comm : mpi4py.MPI.Intracomm, model, m0 : dlx.la.Vector, is_quadr
     return eps, err_grad, err_H, rel_symm_error
 
 
-def modelVerifyPlotErrors(comm, misfit_only, is_quadratic : bool, eps : np.ndarray, err_grad : np.ndarray, err_H : np.ndarray) -> None:
+def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.ndarray, err_H : np.ndarray) -> None:
     try:
         import matplotlib.pyplot as plt
     except:
@@ -142,7 +139,6 @@ def modelVerifyPlotErrors(comm, misfit_only, is_quadratic : bool, eps : np.ndarr
         plt.subplot(122)
         plt.loglog(eps[0], err_H[0], "-ob", [10*eps[0], eps[0], 0.1*eps[0]], [err_H[0],err_H[0],err_H[0]], "-.k")
         plt.title("FD Hessian Check")
-        # plt.savefig(f"result_with_misfit_{misfit_only}_using_{comm.size}_procs.png")
     else:  
         plt.figure()
         plt.subplot(121)
@@ -151,4 +147,3 @@ def modelVerifyPlotErrors(comm, misfit_only, is_quadratic : bool, eps : np.ndarr
         plt.subplot(122)
         plt.loglog(eps, err_H, "-ob", eps, eps*(err_H[0]/eps[0]), "-.k")
         plt.title("FD Hessian Check")
-        # plt.savefig(f"result_with_misfit_{misfit_only}_using_{comm.size}_procs.png")

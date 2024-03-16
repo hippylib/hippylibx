@@ -7,8 +7,6 @@ import petsc4py
 import sys
 import os
 import dolfinx.fem.petsc
-import pickle
-import time
 
 from matplotlib import pyplot as plt
 
@@ -108,9 +106,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    # hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
-    # hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-
 
     eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
@@ -120,12 +115,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
     
     data_misfit_False = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
-      
-    # if(rank == 0):
-    #     print(err_grad,'\n')    
-    #     print(err_H)
-        # plt.show()  
-
+   
     # # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)

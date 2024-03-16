@@ -8,10 +8,6 @@ import sys
 import os
 import dolfinx.fem.petsc
 
-# for validation purposes only - to write out modelVerify results
-import pickle
-
-
 from matplotlib import pyplot as plt
 
 sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
@@ -129,41 +125,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
-    # if(rank == 0):
     data_misfit_True = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
-    
-        # if(comm.size == 1):        
-        #     os.makedirs('../hippylibX/test',exist_ok=True)
-        #     with open('../hippylibX/test/outputs_qpact_1_proc_misfit_True.pickle','wb') as f:
-                # pickle.dump(data,f)
-
-        # if(comm.size == 4):        
-        #     os.makedirs('../hippylibX/test',exist_ok=True)
-        #     with open('../hippylibX/test/outputs_qpact_4_proc_misfit_True.pickle','wb') as f:
-        #         pickle.dump(data,f)
-
     
     eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(comm,model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
     
-    # if(rank == 0):
     data_misfit_False = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
-      
-        # if(comm.size == 1):        
-        #     os.makedirs('../hippylibX/test',exist_ok=True)
-        #     with open('../hippylibX/test/outputs_qpact_1_proc_misfit_False.pickle','wb') as f:
-        #         pickle.dump(data,f)
-
-        # if(comm.size == 4):        
-        #     os.makedirs('../hippylibX/test',exist_ok=True)
-        #     with open('../hippylibX/test/outputs_qpact_4_proc_misfit_False.pickle','wb') as f:
-        #         pickle.dump(data,f)
-
-
-    # if(rank == 0):
-    #     print(err_grad,'\n')
-    #     print(err_H)
-        # plt.show()  
-
+ 
     # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
