@@ -13,16 +13,31 @@ sys.path.append(os.path.abspath('../../example'))
 
 from example import poisson_example, sfsi_toy_gaussian
 
+# def data_parser(data):
+#         eps = data["eps"]
+#         err_grad = data['err_grad']
+#         err_H = data['err_H']
+#         sym_Hessian_value = data['sym_Hessian_value']
+
+#         slope_grad_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_grad[20:30]), 1)
+#         slope_grad = slope_grad_coeffs[0]
+
+#         slope_H_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_H[20:30]), 1)
+#         slope_H = slope_H_coeffs[0]
+
+#         return sym_Hessian_value, slope_grad, slope_H
+
+
 def data_parser(data):
         eps = data["eps"]
         err_grad = data['err_grad']
         err_H = data['err_H']
         sym_Hessian_value = data['sym_Hessian_value']
 
-        slope_grad_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_grad[20:30]), 1)
+        slope_grad_coeffs = np.polyfit(np.log(eps[10:]), np.log(err_grad[10:]), 1)
         slope_grad = slope_grad_coeffs[0]
 
-        slope_H_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_H[20:30]), 1)
+        slope_H_coeffs = np.polyfit(np.log(eps[10:]), np.log(err_H[10:]), 1)
         slope_H = slope_H_coeffs[0]
 
         return sym_Hessian_value, slope_grad, slope_H
@@ -87,8 +102,6 @@ class Testing_Execution(unittest.TestCase):
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
         self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
-
-        pass
 
         
 if __name__ == "__main__":
