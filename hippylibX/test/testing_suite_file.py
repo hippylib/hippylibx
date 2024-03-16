@@ -84,7 +84,6 @@ class Testing_Execution(unittest.TestCase):
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
-        print(slope_grad,slope_H)
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
         self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
