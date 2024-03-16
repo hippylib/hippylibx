@@ -22,7 +22,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: run serial check
-        run: mpirun -n 1 python3 testing_suite_file.py 
+        run: |
+          cd ./hippylibx/test &&  
+          mpirun -n 1 python3 testing_suite_file.py 
 
       # - name: run serial check
       #   run: |
