@@ -54,13 +54,14 @@ class PACTMisfitForm:
     def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*self.dx
 
-def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
+def run_inversion(mesh_path: str, nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
     comm = MPI.COMM_WORLD
     rank  = comm.rank
     nproc = comm.size
-    fname = 'meshes/circle.xdmf'
+    # fname = 'meshes/circle.xdmf'
+    fname = f'{mesh_path}/circle.xdmf'
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
 
@@ -183,7 +184,8 @@ if __name__ == "__main__":
     ny = 64
     noise_variance = 1e-6
     prior_param = {"gamma": 0.05, "delta": 1.}
-    run_inversion(nx, ny, noise_variance, prior_param)
+    mesh_path = 'meshes'
+    run_inversion(mesh_path, nx, ny, noise_variance, prior_param)
 
     comm = MPI.COMM_WORLD
     if(comm.rank == 0):
