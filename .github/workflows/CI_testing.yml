@@ -2,8 +2,7 @@ name: CI
 on:
   push:
     branches:
-      - numpy_debug_v2 
-      #make it main once it is working as expected on numpy_debug_v2 branch.
+      - main
   pull_request:
 
 defaults:
