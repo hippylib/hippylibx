@@ -28,7 +28,7 @@ jobs:
       - name: run parallel check
         run: |
           cd ./hippylibX/test && 
-          output=$(mpirun -n 4 python3 testing_suite_file.py) &&
+          output=$(mpirun -n 2 python3 testing_suite_file.py) &&
           if [[ "$output" == "1"  ]]; then
             exit 1
           fi
