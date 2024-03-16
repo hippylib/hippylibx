@@ -2,7 +2,8 @@ name: CI
 on:
   push:
     branches:
-      - numpy_debug_v2
+      - numpy_debug_v2 
+      #make it main once it is working as expected on numpy_debug_v2 branch.
   pull_request:
 
 defaults:
@@ -26,20 +27,9 @@ jobs:
           cd ./hippylibX/test && 
           mpirun -n 1 python3 testing_suite_file.py 
 
-      # - name: run serial check
-      #   run: |
-      #     cd ./hippylibX/test && 
-      #     output=$(mpirun -n 1 python3 testing_suite_file.py) &&
-      #     if [[ "$output" == "1"  ]]; then
-      #       exit 1
-      #     fi
-
-      # - name: run parallel check
-      #   run: |
-      #     cd ./hippylibX/test && 
-      #     output=$(mpirun -n 2 python3 testing_suite_file.py) &&
-      #     if [[ "$output" == "1"  ]]; then
-      #       exit 1
-      #     fi
+      - name: run parallel check
+        run: |
+          cd ./hippylibX/test && 
+          mpirun -n 2 python3 testing_suite_file.py 
 
 

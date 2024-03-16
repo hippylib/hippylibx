@@ -122,15 +122,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
+    data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
-    eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
-    data_misfit_True = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
-    
-    eps, err_grad, err_H,rel_symm_error = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-    
-    data_misfit_False = {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
- 
+
     # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
@@ -188,7 +184,10 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.05, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
-    plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
-    plt.show()
+
+    comm = MPI.COMM_WORLD
+    if(comm.rank == 0):
+        plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
+        plt.show()
 
 

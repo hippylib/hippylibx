@@ -122,7 +122,7 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
             print( "HESSIAN IS NOT SYMMETRIC!!")
 
 
-    return eps, err_grad, err_H, rel_symm_error
+    return {"eps":eps,"err_grad":err_grad, "err_H": err_H, "sym_Hessian_value":rel_symm_error}
 
 
 def modelVerifyPlotErrors(is_quadratic : bool, eps : np.ndarray, err_grad : np.ndarray, err_H : np.ndarray) -> None:
