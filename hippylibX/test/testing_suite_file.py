@@ -13,34 +13,20 @@ sys.path.append(os.path.abspath('../../example'))
 
 from example import poisson_example, sfsi_toy_gaussian
 
-# def data_parser(data):
-#         eps = data["eps"]
-#         err_grad = data['err_grad']
-#         err_H = data['err_H']
-#         sym_Hessian_value = data['sym_Hessian_value']
-
-#         slope_grad_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_grad[20:30]), 1)
-#         slope_grad = slope_grad_coeffs[0]
-
-#         slope_H_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_H[20:30]), 1)
-#         slope_H = slope_H_coeffs[0]
-
-#         return sym_Hessian_value, slope_grad, slope_H
-
-
 def data_parser(data):
         eps = data["eps"]
         err_grad = data['err_grad']
         err_H = data['err_H']
         sym_Hessian_value = data['sym_Hessian_value']
 
-        slope_grad_coeffs = np.polyfit(np.log(eps[10:]), np.log(err_grad[10:]), 1)
+        slope_grad_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_grad[20:30]), 1)
         slope_grad = slope_grad_coeffs[0]
 
-        slope_H_coeffs = np.polyfit(np.log(eps[10:]), np.log(err_H[10:]), 1)
+        slope_H_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_H[20:30]), 1)
         slope_H = slope_H_coeffs[0]
 
         return sym_Hessian_value, slope_grad, slope_H
+
 
 class Test_runner:
     def __init__(self):
