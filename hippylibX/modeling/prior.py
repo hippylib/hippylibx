@@ -128,10 +128,6 @@ class test_prior:
         self.M.assemble()
     
         self.Msolver = self._createsolver()
-        if(self.petsc_options['pc_type'] == 'hypre'):
-            pc = self.Msolver.getPC()
-            pc.setHYPREType('boomeramg')
-
         self.Msolver.setIterationNumber(max_iter) 
         self.Msolver.setTolerances(rtol=rel_tol)
         self.Msolver.setErrorIfNotConverged(True)

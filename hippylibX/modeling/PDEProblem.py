@@ -28,9 +28,9 @@ class PDEVariationalProblem:
 
         self.Wuu = None
         self.Wmu = None
-        self.Wmm = None
         self.Wum = None
-
+        self.Wmm = None
+        
         self.A = None
         self.At = None
         self.C = None
@@ -44,6 +44,32 @@ class PDEVariationalProblem:
 
         self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
       
+    # def __del__(self):
+    #     self.solver.destroy()
+    #     self.solver_fwd_inc.destroy()
+    #     self.solver_adj_inc.destroy()
+        
+    #     if(self.Wuu is not None):
+    #         self.Wuu.destroy()
+        
+    #     if(self.Wmu is not None):
+    #         self.Wmu.destroy()
+        
+    #     if(self.Wum is not None):
+    #         self.Wum.destroy()
+
+    #     if(self.Wmm is not None):
+    #         self.Wmm.destroy()
+
+    #     if(self.A is not None):
+    #         self.A.destroy()
+
+    #     if(self.At is not None):
+    #         self.At.destroy()
+
+    #     if(self.C is not None):
+    #         self.C.destroy()
+
 
     def generate_state(self) -> dlx.la.Vector:
         """ Return a vector in the shape of the state. """
@@ -240,13 +266,16 @@ class PDEVariationalProblem:
         if gauss_newton_approx:
             if(self.Wuu is not None):
                 self.Wuu.destroy()
-            
             self.Wuu = None
 
             if(self.Wmu is not None):
                 self.Wmu.destroy()
             self.Wmu = None
 
+            if(self.Wum is not None):
+                self.Wum.destroy()
+            self.Wum = None
+            
             if(self.Wmm is not None):
                 self.Wmm.destroy()
             self.Wmm = None

@@ -2,7 +2,6 @@ import dolfinx as dlx
 import ufl
 import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
-from ..algorithms.linSolvers import PETScLUSolver
 from ..utils.vector2function import vector2Function, updateFromVector
 from mpi4py import MPI
 import numpy as np
@@ -12,7 +11,6 @@ class VariationalRegularization:
         self.Vh = Vh #Function space of the parameter.
         self.functional_handler = functional_handler #a function or a functor that takes as input m (as dl.Function) and evaluate the regularization functional
         self.isQuadratic = isQuadratic #Whether the functional is a quadratic form (i.e. the Hessian is constant) or not (the Hessian dependes on m
-
         self.xfun = dlx.fem.Function(self.Vh)
     
     def cost(self,m):    
@@ -24,7 +22,6 @@ class VariationalRegularization:
     
          
     def grad(self, x : dlx.la.Vector, out: dlx.la.Vector) -> None:
-
         updateFromVector(self.xfun, x)
         mfun = self.xfun
         L = dlx.fem.form(ufl.derivative(self.functional_handler(mfun),mfun,ufl.TestFunction(self.Vh)))
@@ -34,7 +31,6 @@ class VariationalRegularization:
         tmp_out.destroy()
 
     def setLinearizationPoint(self, m, rel_tol=1e-12, max_iter=1000):
-
         updateFromVector(self.xfun, m)
         mfun = self.xfun
         L = ufl.derivative(ufl.derivative(self.functional_handler(mfun),mfun), mfun)

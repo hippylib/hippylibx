@@ -54,14 +54,13 @@ class PACTMisfitForm:
     def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*self.dx
 
-def run_inversion(mesh_path: str, nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
+def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
     comm = MPI.COMM_WORLD
     rank  = comm.rank
-    nproc = comm.size
-    # fname = 'meshes/circle.xdmf'
-    fname = f'{mesh_path}/circle.xdmf'
+    fname = mesh_filename
+
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
 
@@ -127,12 +126,10 @@ def run_inversion(mesh_path: str, nx : int, ny : int, noise_variance : float, pr
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
-
     # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
     prior_mean_copy.array[:] = prior_mean.array[:]
-
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
@@ -169,7 +166,6 @@ def run_inversion(mesh_path: str, nx : int, ny : int, noise_variance : float, pr
     else:
         optimizer_results['optimizer'] = False
 
-
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
@@ -183,10 +179,10 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-6
-    prior_param = {"gamma": 0.05, "delta": 1.}
-    mesh_path = 'meshes'
-    run_inversion(mesh_path, nx, ny, noise_variance, prior_param)
-
+    prior_param = {"gamma": 0.1, "delta": 2.}    
+    mesh_filename = './meshes/circle.xdmf'
+    run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    
     comm = MPI.COMM_WORLD
     if(comm.rank == 0):
         plt.savefig("qpact_result_FD_Gradient_Hessian_Check")

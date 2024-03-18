@@ -167,8 +167,8 @@ if __name__ == "__main__":
     noise_variance = 1e-4
     prior_param = {"gamma": 0.1, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
-    comm = MPI.COMM_WORLD
     
+    comm = MPI.COMM_WORLD
     if(comm.rank == 0):
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
         plt.show()
