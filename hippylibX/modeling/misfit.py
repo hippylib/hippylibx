@@ -38,8 +38,6 @@ class NonGaussianContinuousMisfit(object):
 
         x_fun = [u_fun, m_fun]
         
-        L = dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))
-
         out.array[:] = 0.
         tmp_out = dlx.la.create_petsc_vector_wrap(out)
         dlx.fem.petsc.assemble_vector( tmp_out, dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))  )
@@ -72,3 +70,4 @@ class NonGaussianContinuousMisfit(object):
         dlx.fem.petsc.assemble_vector(tmp_out, action)
         tmp_out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         tmp_out.destroy()
+        

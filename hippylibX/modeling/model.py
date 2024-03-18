@@ -300,7 +300,6 @@ class Model:
             self.misfit.apply_ij(STATE,PARAMETER, dm, tmp)
             out.array[:] += tmp.array
 
-
     def applyWmu(self, du, out):
         """
         Apply the :math:`W_{mu}` block of the Hessian to a (incremental) state variable.
