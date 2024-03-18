@@ -133,6 +133,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
+
     if rank == 0:
         print( sep, "Find the MAP point", sep)    
            
