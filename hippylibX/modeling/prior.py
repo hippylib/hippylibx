@@ -210,7 +210,7 @@ class SqrtPrecisionPDE_Prior:
         temp_petsc_vec_s.destroy()
 
 
-    def _createsolver(self,petsc_options) -> petsc4py.PETSc.KSP:
+    def _createsolver(self, petsc_options) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
         problem_prefix = f"dolfinx_solve_{id(self)}"
         ksp.setOptionsPrefix(problem_prefix)

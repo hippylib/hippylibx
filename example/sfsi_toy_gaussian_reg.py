@@ -44,7 +44,6 @@ class DiffusionApproximation:
             ufl.exp(m)*ufl.inner(u,p)*self.dx + \
             .5*ufl.inner(u-self.u0,p)*self.ds
 
-
 class PACTMisfitForm:
     def __init__(self, d : float, sigma2 : float):
         self.sigma2 = sigma2

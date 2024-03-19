@@ -59,7 +59,6 @@ class VariationalRegularization:
 
         return ksp
 
-
     def cost(self,m : dlx.la.Vector):
         hpx.updateFromVector(self.mfun,m)
         cost_functional = self.functional_handler(self.mfun)

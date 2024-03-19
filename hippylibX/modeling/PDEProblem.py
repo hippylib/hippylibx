@@ -3,7 +3,6 @@ import dolfinx as dlx
 import ufl
 import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
-# from ..algorithms.linSolvers import PETScLUSolver
 from ..utils.vector2function import vector2Function, updateFromVector
 import numpy as np
 
