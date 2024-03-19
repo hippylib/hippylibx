@@ -88,8 +88,8 @@ class _BilaplacianRsolver():
         return nit
 
 
-class test_prior:
-    def __init__(self, Vh : dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None, rel_tol=1e-12, max_iter=1000):
+class SqrtPrecisionPDE_Prior:
+    def __init__(self, Vh : dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None):
         
         """
         Construct the prior model.
@@ -110,7 +110,8 @@ class test_prior:
         self.Vh = Vh
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
         
-        self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
+        self.petsc_options_M = {"ksp_type": "cg", "pc_type": "jacobi", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true","ksp_initial_guess_nonzero":"false"} 
+        self.petsc_options_A = {"ksp_type": "cg", "pc_type": "hypre", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true", "ksp_initial_guess_nonzero":"false"}
 
         trial = ufl.TrialFunction(Vh)
         test  = ufl.TestFunction(Vh)
@@ -120,28 +121,17 @@ class test_prior:
         self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         self.M.assemble()
     
-        self.Msolver = self._createsolver()
-        self.Msolver.setIterationNumber(max_iter) 
-        self.Msolver.setTolerances(rtol=rel_tol)
-        self.Msolver.setErrorIfNotConverged(True)
-        self.Msolver.setInitialGuessNonzero(False)        
+        self.Msolver = self._createsolver(self.petsc_options_M)
         self.Msolver.setOperators(self.M)
-
-        # print(self.Msolver.view())
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
         self.A.assemble()
-        self.Asolver = self._createsolver()
-        # print(self.Asolver.view())
+        self.Asolver = self._createsolver(self.petsc_options_A)
 
-        if(self.petsc_options['pc_type'] == 'hypre'):
+        if(self.petsc_options_A['pc_type'] == 'hypre'):
             pc = self.Asolver.getPC()
             pc.setHYPREType('boomeramg')
 
-        self.Asolver.setIterationNumber(max_iter) 
-        self.Asolver.setTolerances(rtol=rel_tol)
-        self.Asolver.setErrorIfNotConverged(True)
-        self.Asolver.setInitialGuessNonzero(False)        
         self.Asolver.setOperators(self.A)
 
         qdegree = 2*Vh._ufl_element.degree()
@@ -220,7 +210,7 @@ class test_prior:
         temp_petsc_vec_s.destroy()
 
 
-    def _createsolver(self) -> petsc4py.PETSc.KSP:
+    def _createsolver(self,petsc_options) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
         problem_prefix = f"dolfinx_solve_{id(self)}"
         ksp.setOptionsPrefix(problem_prefix)
@@ -231,17 +221,15 @@ class test_prior:
         #petsc options for solver
         
         #Example:
-        if self.petsc_options is not None:
-            for k, v in self.petsc_options.items():
+        if petsc_options is not None:
+            for k, v in petsc_options.items():
                 opts[k] = v
         opts.prefixPop()
         ksp.setFromOptions()
 
         return ksp
 
-
     def cost(self,m : dlx.la.Vector) -> float:  
-    
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
         temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_m)
@@ -256,24 +244,19 @@ class test_prior:
         temp_petsc_vec_Rd.destroy()
 
         return return_value
-
         
     def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()
         temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
-
         self.R.mult(temp_petsc_vec_d,temp_petsc_vec_out)
-
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_self_mean.destroy()
         temp_petsc_vec_out.destroy()
 
     def setLinearizationPoint(self, m : dlx.la.Vector, gauss_newton_approx = False) -> None:
         return
-
 
     def __del__(self):
         self.Msolver.destroy()
@@ -283,7 +266,7 @@ class test_prior:
         self.sqrtM.destroy()
 
 
-def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False) -> test_prior:
+def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, robin_bc=False) -> SqrtPrecisionPDE_Prior:
     """
     This function construct an instance of :code"`SqrtPrecisionPDE_Prior`  with covariance matrix
     :math:`C = (\\delta I + \\gamma \\mbox{div } \\Theta \\nabla) ^ {-2}`.
@@ -322,4 +305,4 @@ def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, T
         
         return gamma*varfL + delta*varfM + robin_coeff*varf_robin
 
-    return test_prior(Vh, sqrt_precision_varf_handler, mean, rel_tol, max_iter)
+    return SqrtPrecisionPDE_Prior(Vh, sqrt_precision_varf_handler, mean)

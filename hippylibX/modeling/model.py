@@ -88,7 +88,9 @@ class Model:
         """
         Reshape :code:`m` so that it is compatible with the parameter variable
         """
-        return self.prior.generate_parameter(0)
+        # return self.prior.generate_parameter(0)
+        return self.problem.generate_parameter()
+
             
     def cost(self, x : list) -> list:
         """

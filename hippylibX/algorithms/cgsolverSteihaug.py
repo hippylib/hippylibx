@@ -19,6 +19,7 @@ import math
 import mpi4py
 from ..utils import vector2Function
 from .linalg import inner
+import petsc4py
 
 def CGSolverSteihaug_ParameterList():
     """
@@ -176,7 +177,14 @@ class CGSolverSteihaug:
 
         self.z.array[:] = 0.
 
-        self.B_solver.solve(self.z,self.r) #z = B^-1 r  
+        if(isinstance(self.B_solver,petsc4py.PETSc.KSP)):
+            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+            self.B_solver(temp_self_r, temp_self_z) #expects (b,x)
+            temp_self_z.destroy()
+            temp_self_r.destroy()
+        else:
+            self.B_solver.solve(self.z,self.r) #z = B^-1 r  #giving (x,b)
         
         self.d.array[:] = self.z.array
 
@@ -235,7 +243,16 @@ class CGSolverSteihaug:
                 break
 
             self.r.array[:] -= alpha*self.Ad.array
-            self.B_solver.solve(self.z, self.r)     # z = B^-1 r
+
+            if(isinstance(self.B_solver,petsc4py.PETSc.KSP)):
+                temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+                temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+                self.B_solver(temp_self_r, temp_self_z) #expects (b,x)
+                temp_self_z.destroy()
+                temp_self_r.destroy()
+            else:
+                self.B_solver.solve(self.z,self.r) #z = B^-1 r  #giving (x,b)
+
             betanom = inner(self.r, self.z)
             if self.parameters["print_level"] == 1:
                 print( " Iteration : ", self.iter, " (B r, r) = ", betanom)
