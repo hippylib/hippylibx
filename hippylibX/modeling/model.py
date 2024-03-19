@@ -202,8 +202,7 @@ class Model:
         self.gauss_newton_approx = gauss_newton_approx
         self.problem.setLinearizationPoint(x, self.gauss_newton_approx)
         self.misfit.setLinearizationPoint(x, self.gauss_newton_approx)
-        if hasattr(self.prior, "setLinearizationPoint"):
-            self.prior.setLinearizationPoint(x[PARAMETER], self.gauss_newton_approx)
+        self.prior.setLinearizationPoint(x[PARAMETER], self.gauss_newton_approx)
 
 
     def solveFwdIncremental(self, sol : dlx.la.Vector, rhs : dlx.la.Vector):
