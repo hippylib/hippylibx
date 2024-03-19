@@ -271,7 +271,7 @@ class test_prior:
         temp_petsc_vec_self_mean.destroy()
         temp_petsc_vec_out.destroy()
 
-    def setLinearizationPoint(self, m : dlx.la.Vector) -> None:
+    def setLinearizationPoint(self, m : dlx.la.Vector, gauss_newton_approx = False) -> None:
         return
 
 
