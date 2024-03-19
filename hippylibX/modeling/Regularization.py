@@ -80,7 +80,7 @@ class VariationalRegularization:
         tmp_out.destroy()
 
 
-    def setLinearizationPoint(self, m: dlx.la.Vector, rel_tol=1e-12, max_iter=1000): #remove rel_tol, max_iter from this signature
+    def setLinearizationPoint(self, m: dlx.la.Vector, gauss_newton_approx = False,  rel_tol=1e-12, max_iter=1000): #remove rel_tol, max_iter from this signature
 
         # 1. Cast the petsc4py vector m to a dlx.Function mfun
         # 2. call symbolic differentiation (twice) to get the second variation of self.functional_handler(mfun) wrt mfun
