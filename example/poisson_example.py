@@ -77,7 +77,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     pde.solveFwd(u_true,x_true)
     
-
     # LIKELIHOOD
     d = dlx.fem.Function(Vh[hpx.STATE])
     d.x.array[:] = u_true.array[:]

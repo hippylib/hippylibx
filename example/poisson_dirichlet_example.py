@@ -67,13 +67,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     boundary_dofs = dlx.fem.locate_dofs_topological(Vh[hpx.STATE], fdim, boundary_facets)
     bc = dlx.fem.dirichletbc(uD, boundary_dofs)
 
-
     uD_0 = dlx.fem.Function(Vh[hpx.STATE])
     uD_0.interpolate(lambda x: 0. * x[0])
     uD_0.x.scatter_forward()
     bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
 
-    # FORWARD MODEL 
+    # # FORWARD MODEL 
     alpha = 0.
     f = -6.
     pde_handler = Poisson_Approximation(alpha, f)  
@@ -90,35 +89,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x_true = [u_true, m_true, None] 
 
     pde.solveFwd(u_true,x_true)
-    
-    uex = dlx.fem.Function(Vh[hpx.STATE])
-    uex.interpolate(lambda x: 1 + x[0]**2 + 2 * x[1]**2)
-    uex.x.scatter_forward()
-    # uex = uex.x
-
-    xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
-
-    hpx.updateFromVector(xfun[hpx.STATE],u_true)
-    u_fun_true = xfun[hpx.STATE]
-
-
-    L2_error = dlx.fem.form(ufl.inner(u_fun_true - uex, u_fun_true - uex) * ufl.dx)
-    error_local = dlx.fem.assemble_scalar(L2_error)
-    error_L2 = np.sqrt(msh.comm.allreduce(error_local, op=MPI.SUM))
-
-    error_max = np.max(np.abs(uD.x.array-u_fun_true.x.array))
-    # Only print the error on one process
-    if comm.rank == 0:
-        print(f"Error_L2 : {error_L2:.2e}") #Error_L2: 8.21e-16
-        print(f"Error_max : {error_max:.2e}") #Error_max : 1.78e-15
-
-    # # LIKELIHOOD``
-    hpx.updateFromVector(xfun[hpx.STATE],u_true)
-    u_fun_true = xfun[hpx.STATE]
-
-    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
-    m_fun_true = xfun[hpx.PARAMETER]
-    
+ 
+    # # LIKELIHOOD
     d = dlx.fem.Function(Vh[hpx.STATE])
     d.x.array[:] = u_true.array[:]
     hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
@@ -166,7 +138,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
     x = solver.solve(x) 
-    
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -182,7 +154,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
-
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
@@ -190,12 +161,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     return final_results
 
-
     #######################################
 
 if __name__ == "__main__":    
-    nx = 8
-    ny = 8
+    nx = 64
+    ny = 64
     noise_variance = 1e-4
     prior_param = {"gamma": 0.1, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)

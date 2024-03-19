@@ -71,7 +71,7 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
         model.solveFwd(x_plus[STATE], x_plus)
 
         model.solveAdj(x_plus[ADJOINT], x_plus)
-
+        
         dc = model.cost(x_plus)[index] - cx[index]
         
         err_grad[i] = abs(dc/my_eps - grad_xh)

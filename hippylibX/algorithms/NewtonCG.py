@@ -212,7 +212,7 @@ class ReducedSpaceNewtonCG:
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
         
             HessApply = ReducedHessian(self.model)
-            solver = CGSolverSteihaug(comm = self.model.prior.R.mpi_comm())
+            solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
             solver.set_operator(HessApply)
             solver.set_preconditioner(self.model.Rsolver())
             solver.parameters["rel_tolerance"] = tolcg
@@ -338,7 +338,7 @@ class ReducedSpaceNewtonCG:
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
             
             HessApply = ReducedHessian(self.model)
-            solver = CGSolverSteihaug(comm = self.model.prior.R.mpi_comm())
+            solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
             solver.set_operator(HessApply)
             solver.set_preconditioner(self.model.Rsolver())
             if self.it > 1:
