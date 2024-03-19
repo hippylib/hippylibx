@@ -77,15 +77,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     pde.solveFwd(u_true,x_true)
     
-    xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
     # LIKELIHOOD
-    hpx.updateFromVector(xfun[hpx.STATE],u_true)
-    u_fun_true = xfun[hpx.STATE]
-
-    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
-    m_fun_true = xfun[hpx.PARAMETER]
-    
     d = dlx.fem.Function(Vh[hpx.STATE])
     d.x.array[:] = u_true.array[:]
     hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
@@ -105,7 +98,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m0 = prior.generate_parameter(0)    
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
-
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 

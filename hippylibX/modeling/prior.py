@@ -107,17 +107,10 @@ class test_prior:
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
         self.ds = ufl.Measure("ds",metadata={"quadrature_degree":4})
 
-
         self.Vh = Vh
         self.sqrt_precision_varf_handler = sqrt_precision_varf_handler
-
-
-        # self.petsc_options = {"ksp_type": "cg","pc_type": "hypre"}
-        
-        # self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
         
         self.petsc_options = {"ksp_type": "cg","pc_type": "jacobi"}
-
 
         trial = ufl.TrialFunction(Vh)
         test  = ufl.TestFunction(Vh)
@@ -133,10 +126,14 @@ class test_prior:
         self.Msolver.setErrorIfNotConverged(True)
         self.Msolver.setInitialGuessNonzero(False)        
         self.Msolver.setOperators(self.M)
+
+        # print(self.Msolver.view())
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
         self.A.assemble()
         self.Asolver = self._createsolver()
+        # print(self.Asolver.view())
+
         if(self.petsc_options['pc_type'] == 'hypre'):
             pc = self.Asolver.getPC()
             pc.setHYPREType('boomeramg')
@@ -261,7 +258,6 @@ class test_prior:
         return return_value
 
         
-
     def grad(self,m : dlx.la.Vector, out : dlx.la.Vector) -> None:
         temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()
         temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
@@ -274,6 +270,14 @@ class test_prior:
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_self_mean.destroy()
         temp_petsc_vec_out.destroy()
+
+
+    def __del__(self):
+        self.Msolver.destroy()
+        self.Asolver.destroy()
+        self.M.destroy()
+        self.A.destroy()
+        self.sqrtM.destroy()
 
 
 def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, rel_tol=1e-12, max_iter=1000, robin_bc=False) -> test_prior:

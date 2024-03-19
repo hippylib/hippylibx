@@ -6,10 +6,10 @@ import petsc4py
 import numpy as np
 
 class NonGaussianContinuousMisfit(object):
-    def __init__(self,Vh : list, form, bc=[]):
+    def __init__(self,Vh : list, form, bc0=[]):
         self.Vh = Vh
         self.form = form
-        self.bc = bc
+        self.bc0 = bc0
 
         self.x_lin_fun = None
         self.x_test = [ufl.TestFunction(Vh[hpx.STATE]), ufl.TestFunction(Vh[hpx.PARAMETER])]
@@ -43,7 +43,7 @@ class NonGaussianContinuousMisfit(object):
         tmp_out = dlx.la.create_petsc_vector_wrap(out)
         dlx.fem.petsc.assemble_vector( tmp_out, dlx.fem.form(ufl.derivative( self.form(*x_fun), x_fun[i], self.x_test[i]))  )
         tmp_out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-        dlx.fem.petsc.set_bc(tmp_out,self.bc)
+        dlx.fem.petsc.set_bc(tmp_out,self.bc0)
         tmp_out.destroy()
 
 
@@ -61,7 +61,7 @@ class NonGaussianContinuousMisfit(object):
         form = self.form(*self.x_lin_fun)
         tmp_dir = dlx.la.create_petsc_vector_wrap(dir)
         if(j == hpx.STATE):
-            dlx.fem.petsc.set_bc(tmp_dir,self.bc)
+            dlx.fem.petsc.set_bc(tmp_dir,self.bc0)
         tmp_dir.destroy()
 
         dir_fun = hpx.vector2Function(dir, self.Vh[j])
@@ -71,5 +71,5 @@ class NonGaussianContinuousMisfit(object):
         dlx.fem.petsc.assemble_vector(tmp_out, action)
         tmp_out.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
         if(i == hpx.STATE):
-            dlx.fem.petsc.set_bc(tmp_out,self.bc)
+            dlx.fem.petsc.set_bc(tmp_out,self.bc0)
         tmp_out.destroy()
