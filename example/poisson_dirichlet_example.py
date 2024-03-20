@@ -73,14 +73,14 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
 
     # # FORWARD MODEL 
-    alpha = 0.
-    f = -6.
+    alpha = 100.
+    f = 1.
     pde_handler = Poisson_Approximation(alpha, f)  
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0],  is_fwd_linear=True)
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    m_true.interpolate(lambda x: 0. * x[0] )
+    m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
