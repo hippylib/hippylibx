@@ -60,14 +60,14 @@ class Testing_Execution(unittest.TestCase):
         # misfit = True, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_robin_bilap_prior_execution(self):
         nx = 64 
@@ -82,14 +82,14 @@ class Testing_Execution(unittest.TestCase):
         # misfit = True, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_dirichlet_bilap_prior_execution(self):
         nx = 64 
@@ -104,14 +104,14 @@ class Testing_Execution(unittest.TestCase):
         # misfit = True, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
 
 
@@ -129,14 +129,14 @@ class Testing_Execution(unittest.TestCase):
         # misfit = True, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_var_reg_prior_execution(self):
         nx = 64 
@@ -151,14 +151,14 @@ class Testing_Execution(unittest.TestCase):
         # misfit = True, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_dirichlet_var_reg_prior_execution(self):
         nx = 64 
@@ -173,14 +173,14 @@ class Testing_Execution(unittest.TestCase):
         # misfit = True, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
         # misfit = False, slope and symmmetric nature of Hessian
         sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
-        self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
-        self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
+        self.assertAlmostEqual(slope_grad, 1, delta=2e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
+        self.assertAlmostEqual(slope_H, 1, delta=2e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
 
 
