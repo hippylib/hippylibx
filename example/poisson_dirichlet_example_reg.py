@@ -1,6 +1,3 @@
-# poisson example using VariationalRegularization prior instead
-# of BiLaplacian Prior
-
 import ufl
 import dolfinx as dlx
 from mpi4py import MPI
@@ -26,11 +23,9 @@ class Poisson_Approximation:
         self.alpha = alpha
         self.f = f
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-        self.ds = ufl.Measure("ds",metadata={"quadrature_degree":4})
         
     def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, p : dlx.fem.Function) -> ufl.form.Form:
-        return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p))*self.dx + \
-        self.alpha * ufl.inner(u,p)*self.ds  - self.f*p*self.dx 
+        return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p))*self.dx - self.f*p*self.dx 
     
 
 class PoissonMisfitForm:
@@ -56,6 +51,7 @@ class H1TikhonvFunctional:
         return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *self.dx + \
                ufl.inner(self.delta * m, m)*self.dx
 
+
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
@@ -63,7 +59,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     rank  = comm.rank
     nproc = comm.size
 
-    msh = dlx.mesh.create_unit_square(comm, nx, ny)    
+    msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
@@ -73,11 +69,28 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
-    # FORWARD MODEL 
+
+    #dirichlet B.C.
+    uD = dlx.fem.Function(Vh[hpx.STATE])
+    uD.interpolate(lambda x: 1 + x[0]**2 + 2*x[1]**2)
+    uD.x.scatter_forward()
+    tdim = msh.topology.dim
+    fdim = tdim - 1
+    msh.topology.create_connectivity(fdim, tdim)
+    boundary_facets = dlx.mesh.exterior_facet_indices(msh.topology)
+    boundary_dofs = dlx.fem.locate_dofs_topological(Vh[hpx.STATE], fdim, boundary_facets)
+    bc = dlx.fem.dirichletbc(uD, boundary_dofs)
+
+    uD_0 = dlx.fem.Function(Vh[hpx.STATE])
+    uD_0.interpolate(lambda x: 0. * x[0])
+    uD_0.x.scatter_forward()
+    bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
+
+    # # FORWARD MODEL 
     alpha = 100.
     f = 1.
     pde_handler = Poisson_Approximation(alpha, f)  
-    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
+    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0],  is_fwd_linear=True)
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
@@ -90,21 +103,20 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x_true = [u_true, m_true, None] 
 
     pde.solveFwd(u_true,x_true)
-    
-
-    # LIKELIHOOD
+ 
+    # # LIKELIHOOD
     d = dlx.fem.Function(Vh[hpx.STATE])
     d.x.array[:] = u_true.array[:]
     hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
     d.x.scatter_forward()
 
     misfit_form = PoissonMisfitForm(d,noise_variance)
-    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
+    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form,[bc0])
 
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
-
+   
     prior_gamma = prior_param['gamma']
     prior_delta = prior_param['delta']
     
@@ -114,12 +126,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     m0 = pde.generate_parameter()
     hpx.parRandom.normal(1.,m0)
-    
+
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
    
-    # # # #######################################
+    # # #######################################
     
     prior_mean_copy = pde.generate_parameter()
     prior_mean_copy.array[:] = prior_mean.array[:]
@@ -142,7 +154,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
     x = solver.solve(x) 
-    
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -158,14 +170,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
-
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
 
 
     return final_results
-
 
     #######################################
 
