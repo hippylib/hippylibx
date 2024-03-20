@@ -47,7 +47,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
