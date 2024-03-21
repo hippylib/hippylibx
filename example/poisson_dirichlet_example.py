@@ -117,7 +117,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
-    # data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+    data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
    
     # # #######################################
     
@@ -163,12 +163,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
-    # final_results = {"data_misfit_True":data_misfit_True,
-    #                  "data_misfit_False":data_misfit_False,
-    #                  "optimizer_results":optimizer_results}
+    final_results = {"data_misfit_True":data_misfit_True,
+                     "data_misfit_False":data_misfit_False,
+                     "optimizer_results":optimizer_results}
 
 
-    # return final_results
+    return final_results
 
     #######################################
 
