@@ -47,6 +47,7 @@ class Test_runner:
 class Testing_Execution(unittest.TestCase):
 
     def test_qpact_bilap_prior_execution(self):
+        hpx.parRandom.replay()
         nx = 64 
         ny = 64
         noise_variance = 1e-6
@@ -70,6 +71,7 @@ class Testing_Execution(unittest.TestCase):
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_robin_bilap_prior_execution(self):
+        hpx.parRandom.replay()
         nx = 64 
         ny = 64
         noise_variance = 1e-4
@@ -92,6 +94,7 @@ class Testing_Execution(unittest.TestCase):
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_dirichlet_bilap_prior_execution(self):
+        hpx.parRandom.replay()
         nx = 64 
         ny = 64
         noise_variance = 1e-4
@@ -116,6 +119,7 @@ class Testing_Execution(unittest.TestCase):
 
 
     def test_qpact_var_reg_prior_execution(self):
+        hpx.parRandom.replay()
         nx = 64 
         ny = 64
         noise_variance = 1e-6
@@ -141,6 +145,7 @@ class Testing_Execution(unittest.TestCase):
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_var_reg_prior_execution(self):
+        hpx.parRandom.replay()
         nx = 64 
         ny = 64
         noise_variance = 1e-4
@@ -163,6 +168,7 @@ class Testing_Execution(unittest.TestCase):
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
 
     def test_poisson_dirichlet_var_reg_prior_execution(self):
+        hpx.parRandom.replay()
         nx = 64 
         ny = 64
         noise_variance = 1e-4
@@ -183,9 +189,6 @@ class Testing_Execution(unittest.TestCase):
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
         self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
-
-
-
         
 if __name__ == "__main__":
     test_suite = unittest.defaultTestLoader.discover('.','testing_suite_file.py')

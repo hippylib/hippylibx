@@ -105,6 +105,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     d = dlx.fem.Function(Vh[hpx.STATE])
     expr = u_fun_true * ufl.exp(m_fun_true)
     hpx.projection(expr,d)
+    hpx.parRandom.replay()
     hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
 
     d.x.scatter_forward()
