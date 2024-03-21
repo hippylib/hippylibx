@@ -171,18 +171,6 @@ class SqrtPrecisionPDE_Prior:
         self.R = _BilaplacianR(self.A, self.Msolver)      
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         
-
-        # def __Rmult(x : ):
-        #     self.help1 = self.A.createVecLeft()
-        #     self.help2 = self.A.createVecRight()
-        #     self.A.mult(x,self.help1)
-        #     self.Msolver.solve(self.help1, self.help2)
-        #     self.A.mult(self.help2, y)
-
-        # def __Rsolve():
-
-        # self.Rinv = 
-
         self.mean = mean
         
         if self.mean is None:            

@@ -58,11 +58,6 @@ class NonGaussianContinuousMisfit(object):
     def apply_ij(self,i : int,j : int, dir : dlx.la.Vector, out : dlx.la.Vector):
 
         form = self.form(*self.x_lin_fun)
-        # tmp_dir = dlx.la.create_petsc_vector_wrap(dir)
-        # if(j == hpx.STATE):
-        #     dlx.fem.petsc.set_bc(tmp_dir,self.bc0)
-        # tmp_dir.destroy()
-
         if(j == hpx.STATE):
             dlx.fem.set_bc(dir.array, self.bc0)
         

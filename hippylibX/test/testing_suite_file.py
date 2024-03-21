@@ -14,8 +14,6 @@ sys.path.append(os.path.abspath('../../example'))
 from example import poisson_example, sfsi_toy_gaussian, poisson_dirichlet_example
 from example import poisson_example_reg, sfsi_toy_gaussian_reg, poisson_dirichlet_example_reg
 
-
-
 def data_parser(data):
         eps = data["eps"]
         err_grad = data['err_grad']
@@ -29,8 +27,6 @@ def data_parser(data):
         slope_H = slope_H_coeffs[0]
 
         return sym_Hessian_value, slope_grad, slope_H
-
-
 
 
 class Test_runner:
@@ -115,8 +111,6 @@ class Testing_Execution(unittest.TestCase):
         self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "poisson misfit True: Symmetric Hessian check value is greater than 1e-10")
         self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="poisson misfit True: FD Gradient check slope is not close to 1")
         self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="poisson misfit True: FD Hessian check slope is not close to 1")
-
-
 
     def test_qpact_var_reg_prior_execution(self):
         hpx.parRandom.replay()
