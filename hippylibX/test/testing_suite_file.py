@@ -121,6 +121,7 @@ class Testing_Execution(unittest.TestCase):
         noise_variance = 1e-6
         prior_param = {"gamma": 0.2, "delta": 4.}
         mesh_filename = '../../example/meshes/circle.xdmf'
+
         out = sfsi_toy_gaussian_reg.run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
 
         #convergence of optimizer

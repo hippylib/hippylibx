@@ -198,7 +198,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-6
-    prior_param = {"gamma": 0.1, "delta": 2.}    
+    prior_param = {"gamma": 0.2, "delta": 4.}    
     mesh_filename = './meshes/circle.xdmf'
     run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
     
