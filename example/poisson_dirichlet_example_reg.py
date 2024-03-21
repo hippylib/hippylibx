@@ -1,5 +1,5 @@
 #Poisson example with DirichletBC on the 2d square mesh with 
-# u_d = 1 + x^2 + 2*(y**2) using Variational Regularization prior. 
+# u_d = 1 on top, 0 on bottom using Variational Regularization Prior. 
 
 import ufl
 import dolfinx as dlx
@@ -21,16 +21,14 @@ def master_print(comm, *args, **kwargs):
         print(*args, **kwargs)
 
 class Poisson_Approximation:
-    def __init__(self, alpha : float, f : float):
+    def __init__(self, f : float):
         
-        self.alpha = alpha
         self.f = f
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
         
     def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, p : dlx.fem.Function) -> ufl.form.Form:
         return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p))*self.dx - self.f*p*self.dx 
     
-
 class PoissonMisfitForm:
     def __init__(self, d : float, sigma2 : float):
         self.d = d
@@ -39,7 +37,6 @@ class PoissonMisfitForm:
 
     def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*self.dx
-
 
 # functional handler for prior:
 class H1TikhonvFunctional:
@@ -72,27 +69,26 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
-
     #dirichlet B.C.
     uD = dlx.fem.Function(Vh[hpx.STATE])
-    uD.interpolate(lambda x: 1 + x[0]**2 + 2*x[1]**2)
+    uD.interpolate(lambda x: x[1])
     uD.x.scatter_forward()
-    tdim = msh.topology.dim
-    fdim = tdim - 1
-    msh.topology.create_connectivity(fdim, tdim)
-    boundary_facets = dlx.mesh.exterior_facet_indices(msh.topology)
-    boundary_dofs = dlx.fem.locate_dofs_topological(Vh[hpx.STATE], fdim, boundary_facets)
+
+    def top_bottom_boundary(x):
+        return np.logical_or(np.isclose(x[1],1), np.isclose(x[1],0))
+
+    boundary_dofs = dlx.fem.locate_dofs_geometrical(Vh[hpx.STATE],top_bottom_boundary)
     bc = dlx.fem.dirichletbc(uD, boundary_dofs)
 
+    #bc0
     uD_0 = dlx.fem.Function(Vh[hpx.STATE])
     uD_0.interpolate(lambda x: 0. * x[0])
     uD_0.x.scatter_forward()
     bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
 
     # # FORWARD MODEL 
-    alpha = 100.
-    f = 1.
-    pde_handler = Poisson_Approximation(alpha, f)  
+    f = dlx.fem.Constant(msh,dlx.default_scalar_type(0.0))
+    pde_handler = Poisson_Approximation(f)  
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0],  is_fwd_linear=True)
 
     # GROUND TRUTH
@@ -102,9 +98,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true = m_true.x
 
     u_true = pde.generate_state()  
-    
     x_true = [u_true, m_true, None] 
-
     pde.solveFwd(u_true,x_true)
  
     # # LIKELIHOOD
@@ -119,17 +113,18 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
-   
+
     prior_gamma = prior_param['gamma']
     prior_delta = prior_param['delta']
     
     prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta)
     prior = hpx.VariationalRegularization(Vh_m, prior_handler)
-    model = hpx.Model(pde, prior, misfit)
 
+    model = hpx.Model(pde, prior, misfit)
+    
     m0 = pde.generate_parameter()
     hpx.parRandom.normal(1.,m0)
-
+    
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))

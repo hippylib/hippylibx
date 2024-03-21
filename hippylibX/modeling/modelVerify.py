@@ -28,7 +28,6 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
 
     parRandom.normal(1., h)
 
-
     x = model.generate_vector()
     
     x[PARAMETER] = m0
@@ -42,7 +41,6 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
     model.evalGradientParameter(x,grad_x, misfit_only=misfit_only)   
 
     grad_xh = linalg.inner(grad_x, h)
-
 
     temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
 
