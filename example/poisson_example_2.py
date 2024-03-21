@@ -33,22 +33,27 @@ class Poisson_Approximation:
         
         self.alpha = alpha
         self.f = f
-        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-        self.ds = ufl.Measure("ds",metadata={"quadrature_degree":4})   
+        # self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
+        # self.ds = ufl.Measure("ds",metadata={"quadrature_degree":4})
+        self.dx = ufl.Measure("dx")
+        self.ds = ufl.Measure("ds")
+           
         self.ds_boundaries = ds_boundaries     
         self.robin_r = robin_r
         self.robin_s = robin_s
         
     def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, p : dlx.fem.Function) -> ufl.form.Form:
         return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p))*self.dx - ufl.inner(self.f,p)*self.dx \
-            - ufl.inner(self.alpha,p)*self.ds_boundaries(4) \
-                - self.robin_r* ufl.inner(u - self.robin_s, p)*self.ds_boundaries(3)
+            + ufl.inner(self.alpha,p)*self.ds_boundaries(4) \
+                + self.robin_r* ufl.inner(u - self.robin_s, p)*self.ds_boundaries(3) 
+
 
 class PoissonMisfitForm:
     def __init__(self, d : float, sigma2 : float):
         self.d = d
         self.sigma2 = sigma2
-        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
+        # self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
+        self.dx = ufl.Measure("dx")
 
     def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*self.dx
@@ -60,8 +65,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     rank  = comm.rank
     nproc = comm.size
 
-    msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
-
+    # msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
+    msh = dlx.mesh.create_unit_square(comm, nx, ny)
+        
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
@@ -100,7 +106,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     #     xdmf.write_mesh(msh)
     #     xdmf.write_meshtags(facet_tag, msh.geometry)
 
-    ds_boundaries = ufl.Measure("ds", domain=msh, subdomain_data=facet_tag, metadata={"quadrature_degree":4})
+    # ds_boundaries = ufl.Measure("ds", domain=msh, subdomain_data=facet_tag, metadata={"quadrature_degree":4})
+    ds_boundaries = ufl.Measure("ds", domain=msh, subdomain_data=facet_tag)
 
     class BoundaryCondition():
         def __init__(self, type, marker, values):
@@ -167,6 +174,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x_true = [u_true, m_true, None] 
 
     pde.solveFwd(u_true,x_true)
+ 
     u_fun_true = hpx.vector2Function(u_true,Vh[hpx.STATE])
 
     V_ex = dlx.fem.FunctionSpace(msh, ("Lagrange", 2))
@@ -184,28 +192,28 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     print(f"Error_L2 : {error_L2:.2e}")
     print(f"Error_max : {error_max:.2e}")
  
-    # # # LIKELIHOOD
-    # d = dlx.fem.Function(Vh[hpx.STATE])
-    # d.x.array[:] = u_true.array[:]
-    # hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
-    # d.x.scatter_forward()
+    # # LIKELIHOOD
+    d = dlx.fem.Function(Vh[hpx.STATE])
+    d.x.array[:] = u_true.array[:]
+    hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
+    d.x.scatter_forward()
 
-    # misfit_form = PoissonMisfitForm(d,noise_variance)
-    # misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form,[bc0])
+    misfit_form = PoissonMisfitForm(d,noise_variance)
+    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form,[bc0])
 
-    # prior_mean = dlx.fem.Function(Vh_m)
-    # prior_mean.x.array[:] = 0.01
-    # prior_mean = prior_mean.x
+    prior_mean = dlx.fem.Function(Vh_m)
+    prior_mean.x.array[:] = 0.01
+    prior_mean = prior_mean.x
 
-    # prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
-    # model = hpx.Model(pde, prior, misfit)
+    prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
+    model = hpx.Model(pde, prior, misfit)
 
-    # noise = prior.generate_parameter("noise")
-    # m0 = prior.generate_parameter(0)    
-    # hpx.parRandom.normal(1.,noise)
-    # prior.sample(noise,m0)
+    noise = prior.generate_parameter("noise")
+    m0 = prior.generate_parameter(0)    
+    hpx.parRandom.normal(1.,noise)
+    prior.sample(noise,m0)
 
-    # data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+    data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     # data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
    
