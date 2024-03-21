@@ -1,5 +1,4 @@
-# poisson example using VariationalRegularization prior instead
-# of BiLaplacian Prior
+# poisson example with Robin BC using VariationalRegularization prior
 
 import ufl
 import dolfinx as dlx

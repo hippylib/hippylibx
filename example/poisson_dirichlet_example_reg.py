@@ -1,3 +1,6 @@
+#Poisson example with DirichletBC on the 2d square mesh with 
+# u_d = 1 + x^2 + 2*(y**2) using Variational Regularization prior. 
+
 import ufl
 import dolfinx as dlx
 from mpi4py import MPI

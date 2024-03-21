@@ -1,4 +1,9 @@
-#qpact problem with BiLaplacian Prior.
+#Poisson example with DirichletBC on top and bottom, 
+# Neumann BC on left and right on the 2d square mesh with 
+# Top -> u = 1
+# Bottom -> u = 0
+# Left, Right -> Neumann
+# using Variational Regularization Prior. 
 
 import ufl
 import dolfinx as dlx
@@ -13,58 +18,55 @@ import dolfinx.fem.petsc
 from matplotlib import pyplot as plt
 
 sys.path.append( os.environ.get('HIPPYLIBX_BASE_DIR', "../") )
-
 import hippylibX as hpx
 
 def master_print(comm, *args, **kwargs):
     if comm.rank == 0:
         print(*args, **kwargs)
 
-class DiffusionApproximation:
-    def __init__(self, D : float, u0 : float):
-        """
-        Define the forward model for the diffusion approximation to radiative transfer equations
+class Poisson_Approximation:
+    def __init__(self, alpha : float, f : float):
         
-        D: diffusion coefficient 1/mu_eff with mu_eff = sqrt(3 mu_a (mu_a + mu_ps) ), where mu_a
-           is the unknown absorption coefficient, and mu_ps is the reduced scattering coefficient
-           
-        u0: Incident fluence (Robin condition)
-        
-        ds: boundary integrator for Robin condition
-        """
-        self.D = D
-        self.u0 = u0
+        self.alpha = alpha
+        self.f = f
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-        self.ds = ufl.Measure("ds",metadata={"quadrature_degree":4})
         
-
-
     def __call__(self, u: dlx.fem.Function, m : dlx.fem.Function, p : dlx.fem.Function) -> ufl.form.Form:
+        return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p))*self.dx - self.f*p*self.dx 
+    
 
-
-        return ufl.inner(self.D*ufl.grad(u), ufl.grad(p))*ufl.dx(metadata={"quadrature_degree":4}) + \
-            ufl.exp(m)*ufl.inner(u,p)*self.dx + \
-            .5*ufl.inner(u-self.u0,p)*self.ds
-
-
-class PACTMisfitForm:
+class PoissonMisfitForm:
     def __init__(self, d : float, sigma2 : float):
-        self.sigma2 = sigma2
         self.d = d
+        self.sigma2 = sigma2
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-        
-    def __call__(self,u : dlx.fem.Function, m : dlx.fem.Function) -> ufl.form.Form:   
-        return .5/self.sigma2*ufl.inner(u*ufl.exp(m) -self.d, u*ufl.exp(m) -self.d)*self.dx
 
-def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
+    def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
+        return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*self.dx
+
+
+# functional handler for prior:
+class H1TikhonvFunctional:
+    def __init__(self, gamma, delta):	
+        self.gamma = gamma #These are dlx Constant, Expression, or Function
+        self.delta = delta
+        # self.m0 = m0
+        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
+
+
+    def __call__(self, m): #Here m is a dlx Function
+        return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *self.dx + \
+               ufl.inner(self.delta * m, m)*self.dx
+
+
+def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
 
     comm = MPI.COMM_WORLD
     rank  = comm.rank
-    fname = mesh_filename
+    nproc = comm.size
 
-    fid = dlx.io.XDMFFile(comm,fname,"r")
-    msh = fid.read_mesh(name='mesh')
+    msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
@@ -74,67 +76,74 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
 
-    # FORWARD MODEL    
-    u0 = 1.
-    D = 1./24.
-    pde_handler = DiffusionApproximation(D, u0)   
-    
-    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
+
+    #dirichlet B.C.
+    uD = dlx.fem.Function(Vh[hpx.STATE])
+    uD.interpolate(lambda x: 1 + x[0]**2 + 2*x[1]**2)
+    uD.x.scatter_forward()
+    tdim = msh.topology.dim
+    fdim = tdim - 1
+    msh.topology.create_connectivity(fdim, tdim)
+    boundary_facets = dlx.mesh.exterior_facet_indices(msh.topology)
+    boundary_dofs = dlx.fem.locate_dofs_topological(Vh[hpx.STATE], fdim, boundary_facets)
+    bc = dlx.fem.dirichletbc(uD, boundary_dofs)
+
+    uD_0 = dlx.fem.Function(Vh[hpx.STATE])
+    uD_0.interpolate(lambda x: 0. * x[0])
+    uD_0.x.scatter_forward()
+    bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
+
+    # # FORWARD MODEL 
+    alpha = 100.
+    f = 0. #set to 0 for this example.
+    pde_handler = Poisson_Approximation(alpha, f)  
+    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0],  is_fwd_linear=True)
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
-    u_true = pde.generate_state() 
+    u_true = pde.generate_state()  
     
     x_true = [u_true, m_true, None] 
 
     pde.solveFwd(u_true,x_true)
-
-    xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
-
-    # LIKELIHOOD
-    hpx.updateFromVector(xfun[hpx.STATE],u_true)
-    u_fun_true = xfun[hpx.STATE]
-
-    hpx.updateFromVector(xfun[hpx.PARAMETER],m_true)
-    m_fun_true = xfun[hpx.PARAMETER]
-        
+ 
+    # # LIKELIHOOD
     d = dlx.fem.Function(Vh[hpx.STATE])
-    expr = u_fun_true * ufl.exp(m_fun_true)
-    hpx.projection(expr,d)
+    d.x.array[:] = u_true.array[:]
     hpx.parRandom.normal_perturb(np.sqrt(noise_variance),d.x)
-
     d.x.scatter_forward()
 
-    misfit_form = PACTMisfitForm(d, noise_variance)
-    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
+    misfit_form = PoissonMisfitForm(d,noise_variance)
+    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form,[bc0])
 
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
     prior_mean = prior_mean.x
    
-    prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
+    prior_gamma = prior_param['gamma']
+    prior_delta = prior_param['delta']
+    
+    prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta)
+    prior = hpx.VariationalRegularization(Vh_m, prior_handler)
     model = hpx.Model(pde, prior, misfit)
 
-    noise = prior.generate_parameter("noise")
-    m0 = prior.generate_parameter(0)
-    hpx.parRandom.normal(1.,noise)
-    prior.sample(noise,m0)
+    m0 = pde.generate_parameter()
+    hpx.parRandom.normal(1.,m0)
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-
-    # #######################################
+   
+    # # #######################################
     
-    prior_mean_copy = prior.generate_parameter(0)
+    prior_mean_copy = pde.generate_parameter()
     prior_mean_copy.array[:] = prior_mean.array[:]
 
     x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
-
 
     if rank == 0:
         print( sep, "Find the MAP point", sep)    
@@ -161,8 +170,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
     master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
     master_print (comm, "Final cost: ", solver.final_cost)
-
-
+    
     optimizer_results = {}
     if(solver.termination_reasons[solver.reason] == 'Norm of the gradient less than tolerance'):
         optimizer_results['optimizer']  = True
@@ -173,22 +181,20 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
 
-    return final_results
 
+    return final_results
 
     #######################################
 
 if __name__ == "__main__":    
     nx = 64
     ny = 64
-    noise_variance = 1e-6
-    prior_param = {"gamma": 0.2, "delta": 4.}    
-    mesh_filename = './meshes/circle.xdmf'
-    run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    noise_variance = 1e-4
+    prior_param = {"gamma": 0.1, "delta": 1.}
+    run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD
     if(comm.rank == 0):
-        plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
+        plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
         plt.show()
-
 
