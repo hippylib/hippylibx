@@ -1,8 +1,8 @@
 #Trying to replicate example here: https://jsdokken.com/dolfinx-tutorial/chapter3/robin_neumann_dirichlet.html
 #Poisson example with DirichletBC on left and right, 
 # Neumann BC on top and Robin BC on bottom on the 2d square mesh with 
-# Right -> u = 1
-# Left -> u = 0
+# Right -> u = ud 
+# Left -> u = ud
 # Top -> Neumann
 # Bottom -> Robin
 # using BiLaplacian Prior. 
