@@ -77,14 +77,16 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     def top_bottom_boundary(x):
         return np.logical_or(np.isclose(x[1],1), np.isclose(x[1],0))
 
-    boundary_dofs = dlx.fem.locate_dofs_geometrical(Vh[hpx.STATE],top_bottom_boundary)
-    bc = dlx.fem.dirichletbc(uD, boundary_dofs)
+    fdim = msh.topology.dim - 1
+    top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(msh, fdim, top_bottom_boundary)
+    dirichlet_dofs = dlx.fem.locate_dofs_topological(Vh[hpx.STATE], fdim, top_bottom_boundary_facets)
+    bc = dlx.fem.dirichletbc(uD, dirichlet_dofs)
 
     #bc0
     uD_0 = dlx.fem.Function(Vh[hpx.STATE])
     uD_0.interpolate(lambda x: 0. * x[0])
     uD_0.x.scatter_forward()
-    bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
+    bc0 = dlx.fem.dirichletbc(uD_0,dirichlet_dofs)
 
     # # FORWARD MODEL 
     f = dlx.fem.Constant(msh,dlx.default_scalar_type(0.0))

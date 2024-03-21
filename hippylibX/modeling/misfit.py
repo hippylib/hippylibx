@@ -46,7 +46,6 @@ class NonGaussianContinuousMisfit(object):
         dlx.fem.petsc.set_bc(tmp_out,self.bc0)
         tmp_out.destroy()
 
-
     def setLinearizationPoint(self,x : list, gauss_newton_approx=False):
         hpx.updateFromVector(self.xfun[hpx.STATE],x[hpx.STATE])
         u_fun = self.xfun[hpx.STATE]
@@ -59,11 +58,14 @@ class NonGaussianContinuousMisfit(object):
     def apply_ij(self,i : int,j : int, dir : dlx.la.Vector, out : dlx.la.Vector):
 
         form = self.form(*self.x_lin_fun)
-        tmp_dir = dlx.la.create_petsc_vector_wrap(dir)
-        if(j == hpx.STATE):
-            dlx.fem.petsc.set_bc(tmp_dir,self.bc0)
-        tmp_dir.destroy()
+        # tmp_dir = dlx.la.create_petsc_vector_wrap(dir)
+        # if(j == hpx.STATE):
+        #     dlx.fem.petsc.set_bc(tmp_dir,self.bc0)
+        # tmp_dir.destroy()
 
+        if(j == hpx.STATE):
+            dlx.fem.set_bc(dir.array, self.bc0)
+        
         dir_fun = hpx.vector2Function(dir, self.Vh[j])
         action = dlx.fem.form(ufl.derivative( ufl.derivative(form, self.x_lin_fun[i], self.x_test[i]), self.x_lin_fun[j], dir_fun ))        
         out.array[:] = 0.

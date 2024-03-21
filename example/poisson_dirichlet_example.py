@@ -47,7 +47,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
@@ -63,14 +63,16 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     def top_bottom_boundary(x):
         return np.logical_or(np.isclose(x[1],1), np.isclose(x[1],0))
 
-    boundary_dofs = dlx.fem.locate_dofs_geometrical(Vh[hpx.STATE],top_bottom_boundary)
-    bc = dlx.fem.dirichletbc(uD, boundary_dofs)
+    fdim = msh.topology.dim - 1
+    top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(msh, fdim, top_bottom_boundary)
+    dirichlet_dofs = dlx.fem.locate_dofs_topological(Vh[hpx.STATE], fdim, top_bottom_boundary_facets)
+    bc = dlx.fem.dirichletbc(uD, dirichlet_dofs)
 
     #bc0
     uD_0 = dlx.fem.Function(Vh[hpx.STATE])
     uD_0.interpolate(lambda x: 0. * x[0])
     uD_0.x.scatter_forward()
-    bc0 = dlx.fem.dirichletbc(uD_0,boundary_dofs)
+    bc0 = dlx.fem.dirichletbc(uD_0,dirichlet_dofs)
 
     # # FORWARD MODEL 
     f = dlx.fem.Constant(msh,dlx.default_scalar_type(0.0))
@@ -82,6 +84,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     m_true = m_true.x
+
+    test_func = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_true_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(test_func) 
 
     u_true = pde.generate_state()  
     x_true = [u_true, m_true, None] 
@@ -110,7 +117,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
-    data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+    # data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
    
     # # #######################################
     
@@ -136,6 +143,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     x = solver.solve(x) 
 
+    test_func = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_estimated_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(test_func) 
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -151,12 +163,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
-    final_results = {"data_misfit_True":data_misfit_True,
-                     "data_misfit_False":data_misfit_False,
-                     "optimizer_results":optimizer_results}
+    # final_results = {"data_misfit_True":data_misfit_True,
+    #                  "data_misfit_False":data_misfit_False,
+    #                  "optimizer_results":optimizer_results}
 
 
-    return final_results
+    # return final_results
 
     #######################################
 
