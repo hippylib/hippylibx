@@ -211,12 +211,10 @@ class SqrtPrecisionPDE_Prior:
         self.help1 = self.A.createVecLeft()
         self.help2 = self.A.createVecRight()
         # self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),context = self.R, param1=self.help1, param2= self.help2, comm=self.Vh.mesh.comm)
-        self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),context = self.R, comm=self.Vh.mesh.comm)
-        
-        # self.R_petsc.setPythonContext(self.R)
+        self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(), comm=self.Vh.mesh.comm)
+        self.R_petsc.setPythonContext(self.R)
         self.R_petsc.setUp()
         self.R_petsc.assemble()
-
 
         test_vec1 = self.generate_parameter(0)
         parRandom.normal(1.,test_vec1)
@@ -224,7 +222,7 @@ class SqrtPrecisionPDE_Prior:
         
         test_lhs_vec = dlx.la.create_petsc_vector_wrap(test_vec1)
         test_rhs_vec = dlx.la.create_petsc_vector_wrap(test_vec1)
-        self.R_petsc.mult(test_lhs_vec,test_rhs_vec)
+        self.R_petsc.getPythonContext().mult(test_lhs_vec,test_rhs_vec)
 
         #############################################################
         
