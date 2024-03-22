@@ -1,5 +1,4 @@
-# poisson example using VariationalRegularization prior instead
-# of BiLaplacian Prior
+# poisson example with Robin BC using VariationalRegularization prior
 
 import ufl
 import dolfinx as dlx
@@ -81,10 +80,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
-    
     m_true = m_true.x
 
     u_true = pde.generate_state()  

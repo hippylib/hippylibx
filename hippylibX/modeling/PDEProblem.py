@@ -41,7 +41,7 @@ class PDEVariationalProblem:
         self.is_fwd_linear = is_fwd_linear
         self.n_calls = {"forward": 0, "adjoint": 0, "incremental_forward": 0, "incremental_adjoint": 0}
 
-        self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type":"mumps"}
+        self.petsc_options = {"ksp_type": "preonly","pc_type": "lu","pc_factor_mat_solver_type": "mumps"}
       
     def __del__(self):
         # self.solver.destroy()
@@ -119,10 +119,9 @@ class PDEVariationalProblem:
             A.assemble()
             self.solver.setOperators(A)
             b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form))
-        
             dlx.fem.petsc.apply_lifting(b,[dlx.fem.form(A_form)],[self.bc])            
             b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES,petsc4py.PETSc.ScatterMode.REVERSE)
-
+            dlx.fem.petsc.set_bc(b,self.bc)
             state_vec = dlx.la.create_petsc_vector_wrap(state)
 
             self.solver.solve(b,state_vec)  

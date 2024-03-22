@@ -123,6 +123,8 @@ class SqrtPrecisionPDE_Prior:
     
         self.Msolver = self._createsolver(self.petsc_options_M)
         self.Msolver.setOperators(self.M)
+
+        # print(self.Msolver.view())
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
         self.A.assemble()
