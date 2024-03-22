@@ -22,6 +22,9 @@ import numbers
 import petsc4py
 from mpi4py import MPI
 
+#for testing purpose, can remove it:
+from ..utils import parRandom
+
 #decorator for functions in classes that are not used -> may not be needed in the final
 #version of X
 
@@ -50,9 +53,22 @@ class _BilaplacianR:
         return self.A.comm
         
     def mult(self,x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
+        print("hello")
         self.A.mult(x,self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
+
+
+    def helper(self):
+        return self.help1, self.help2
+
+    def A_M(self):
+        return self.A, self.Msolver
+
+    # def mult(self, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
+        # self.A.mult(x,y)
+        # self.Msolver.solve(help1, help2)
+        # self.A.mult(help2, y)
 
 
 class _BilaplacianRsolver():
@@ -176,20 +192,42 @@ class SqrtPrecisionPDE_Prior:
                    
         self.R = _BilaplacianR(self.A, self.Msolver)      
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
+        
+        
         #############################################################
-
+        # Following code is being added to create petscMat wrapper around prior.R
+        # and prior.Rsolver.
         self.R_instance = petsc_wrapper(self.R) #if used, this works
 
 
 
         #following throws - SystemError: <method 'mult' of 'petsc4py.PETSc.Mat' objects> 
         # returned a result with an exception set
-        self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),comm=self.Vh.mesh.comm)
-        self.R_petsc.setPythonContext(self.R)
+        # self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),comm=self.Vh.mesh.comm)
+        # self.R_petsc.setPythonContext(self.R)
+        # self.R_petsc.setUp()
+
+
+        self.help1 = self.A.createVecLeft()
+        self.help2 = self.A.createVecRight()
+        # self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),context = self.R, param1=self.help1, param2= self.help2, comm=self.Vh.mesh.comm)
+        self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),context = self.R, comm=self.Vh.mesh.comm)
+        
+        # self.R_petsc.setPythonContext(self.R)
         self.R_petsc.setUp()
-        # def __Rsolve(Rsolve)
+        self.R_petsc.assemble()
+
+
+        test_vec1 = self.generate_parameter(0)
+        parRandom.normal(1.,test_vec1)
+        # print(test_vec1.array.min(),":",test_vec1.array.max())
+        
+        test_lhs_vec = dlx.la.create_petsc_vector_wrap(test_vec1)
+        test_rhs_vec = dlx.la.create_petsc_vector_wrap(test_vec1)
+        self.R_petsc.mult(test_lhs_vec,test_rhs_vec)
 
         #############################################################
+        
         self.mean = mean
         
         if self.mean is None:            
@@ -197,7 +235,7 @@ class SqrtPrecisionPDE_Prior:
 
     #private function
     def __Rmult(self, x: dlx.la.Vector, y: dlx.la.Vector) -> None:
-        self.R_petsc.mult(x,y)
+        self.R_petsc.mult(x, y)
 
     #public function
     def Rmult(self,x,y):

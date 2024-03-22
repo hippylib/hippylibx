@@ -111,12 +111,19 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior.sample(noise,m0)
 
     #gives error
-    prior.R_petsc.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
+    # prior.R_petsc.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
     
     #works
     # prior.R_instance.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true)) - works
 
+    #third attempt
+    # prior.Rmult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
+
+    # prior.R_petsc.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
+    # help1 = prior.A.createVecLeft()
+    # help2 = prior.A.createVecRight()
     
+    # prior.Rmult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
 
     #######################################
 
