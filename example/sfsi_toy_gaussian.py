@@ -83,7 +83,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) 
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
@@ -113,7 +113,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
 
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
+    prior_mean.x.array[:] = np.log(0.01)
     prior_mean = prior_mean.x
    
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
