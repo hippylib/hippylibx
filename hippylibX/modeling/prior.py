@@ -64,7 +64,6 @@ class _BilaplacianRsolver():
     def __init__(self, Asolver : petsc4py.PETSc.KSP, M : petsc4py.PETSc.Mat):
         self.Asolver = Asolver
         self.M = M
-        
         self.help1, self.help2 = self.M.createVecLeft(), self.M.createVecLeft()
 
     @unused_function
@@ -86,6 +85,13 @@ class _BilaplacianRsolver():
         temp_petsc_vec_b.destroy()
         temp_petsc_vec_x.destroy()
         return nit
+
+
+class petsc_wrapper:
+    def __init__(self,instance_source):
+        self.instance_source = instance_source
+    def mult(self, x, y):
+        return self.instance_source.mult(x,y)
 
 
 class SqrtPrecisionPDE_Prior:
@@ -170,11 +176,32 @@ class SqrtPrecisionPDE_Prior:
                    
         self.R = _BilaplacianR(self.A, self.Msolver)      
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
-        
+        #############################################################
+
+        self.R_instance = petsc_wrapper(self.R) #if used, this works
+
+
+
+        #following throws - SystemError: <method 'mult' of 'petsc4py.PETSc.Mat' objects> 
+        # returned a result with an exception set
+        self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),comm=self.Vh.mesh.comm)
+        self.R_petsc.setPythonContext(self.R)
+        self.R_petsc.setUp()
+        # def __Rsolve(Rsolve)
+
+        #############################################################
         self.mean = mean
         
         if self.mean is None:            
             self.mean = self.init_vector(0)
+
+    #private function
+    def __Rmult(self, x: dlx.la.Vector, y: dlx.la.Vector) -> None:
+        self.R_petsc.mult(x,y)
+
+    #public function
+    def Rmult(self,x,y):
+        self.__Rmult(x,y)
 
     def generate_parameter(self, dim : int) -> dlx.la.Vector:      
         """

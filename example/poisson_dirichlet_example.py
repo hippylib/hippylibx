@@ -47,7 +47,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
@@ -85,11 +85,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
-    test_func = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_true_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(test_func) 
-
     u_true = pde.generate_state()  
     x_true = [u_true, m_true, None] 
     pde.solveFwd(u_true,x_true)
@@ -115,60 +110,13 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     hpx.parRandom.normal(1.,noise)
     prior.sample(noise,m0)
 
-    data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
-
-    data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
-   
-    # # #######################################
+    #gives error
+    prior.R_petsc.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
     
-    prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_copy.array[:] = prior_mean.array[:]
+    #works
+    # prior.R_instance.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true)) - works
 
-    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
-
-    if rank == 0:
-        print( sep, "Find the MAP point", sep)    
-           
-    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    parameters["rel_tolerance"] = 1e-6
-    parameters["abs_tolerance"] = 1e-9
-    parameters["max_iter"]      = 500
-    parameters["cg_coarse_tolerance"] = 5e-1
-    parameters["globalization"] = "LS"
-    parameters["GN_iter"] = 20
-    if rank != 0:
-        parameters["print_level"] = -1
     
-    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
-    
-    x = solver.solve(x) 
-
-    test_func = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_estimated_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(test_func) 
-
-    if solver.converged:
-        master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    else:
-        master_print(comm, "\nNot Converged")
-
-    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
-    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
-    master_print (comm, "Final cost: ", solver.final_cost)
-    
-    optimizer_results = {}
-    if(solver.termination_reasons[solver.reason] == 'Norm of the gradient less than tolerance'):
-        optimizer_results['optimizer']  = True
-    else:
-        optimizer_results['optimizer'] = False
-
-    final_results = {"data_misfit_True":data_misfit_True,
-                     "data_misfit_False":data_misfit_False,
-                     "optimizer_results":optimizer_results}
-
-
-    return final_results
 
     #######################################
 
