@@ -80,16 +80,12 @@ class _BilaplacianRsolver():
         return x
 
     #when using wrapper
-    def solve(self, ksp, x : dlx.la.Vector, b : dlx.la.Vector):
-        temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-        self.Asolver.solve(temp_petsc_vec_b, self.help1)
+    def solve(self, ksp, x : petsc4py.PETSc.Vec, b : petsc4py.PETSc.Vec):
+        self.Asolver.solve(b, self.help1)
         nit = self.Asolver.its
         self.M.mult(self.help1, self.help2)
-        self.Asolver.solve(self.help2,temp_petsc_vec_x)
+        self.Asolver.solve(self.help2,x)
         nit += self.Asolver.its
-        temp_petsc_vec_b.destroy()
-        temp_petsc_vec_x.destroy()
         return nit
 
     #when not using wrapper (done to compare results for
@@ -194,7 +190,20 @@ R.mult(petsc_vec1,petsc_vec2)
 
 Rsolver = petsc4py.PETSc.KSP().createPython(comm = Vh_m.mesh.comm)
 Rsolver.setPythonContext(Rsolver_org)
-Rsolver.setUp() #error here
+#ksp object so needs options and things:
+print(type(Rsolver))
+
+
+# Rsolver.setUp() #error here
+
+#check if solving correctly for more than 1 proc since it doesn't
+# give error.
+# Rsolver.solve(vec2 ,vec1)
+#ksp object => has to take in petsc4py Vecs.
+
+# Rsolver.solve(petsc_vec2 ,petsc_vec1)
+
+
 
 #this gives error
 #testing Rsolver:
