@@ -51,24 +51,12 @@ class _BilaplacianR:
 
     def mpi_comm(self):
         return self.A.comm
-        
-    def mult(self,x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
-        print("hello")
+
+    #mat needed for petsc-wrapper call.        
+    def mult(self, mat, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
         self.A.mult(x,self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
-
-
-    def helper(self):
-        return self.help1, self.help2
-
-    def A_M(self):
-        return self.A, self.Msolver
-
-    # def mult(self, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
-        # self.A.mult(x,y)
-        # self.Msolver.solve(help1, help2)
-        # self.A.mult(help2, y)
 
 
 class _BilaplacianRsolver():
@@ -102,12 +90,17 @@ class _BilaplacianRsolver():
         temp_petsc_vec_x.destroy()
         return nit
 
-
-class petsc_wrapper:
-    def __init__(self,instance_source):
-        self.instance_source = instance_source
-    def mult(self, x, y):
-        return self.instance_source.mult(x,y)
+    # def mult(self,x : dlx.la.Vector, b : dlx.la.Vector):
+    #     temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
+    #     temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+    #     self.Asolver.solve(temp_petsc_vec_b, self.help1)
+    #     nit = self.Asolver.its
+    #     self.M.mult(self.help1, self.help2)
+    #     self.Asolver.solve(self.help2,temp_petsc_vec_x)
+    #     nit += self.Asolver.its
+    #     temp_petsc_vec_b.destroy()
+    #     temp_petsc_vec_x.destroy()
+    #     return nit
 
 
 class SqrtPrecisionPDE_Prior:
@@ -190,39 +183,23 @@ class SqrtPrecisionPDE_Prior:
 
         self.sqrtM = MixedM.matMult(Mqh)
                    
-        self.R = _BilaplacianR(self.A, self.Msolver)      
-        self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
+        self.R_org = _BilaplacianR(self.A, self.Msolver)      
+        self.Rsolver_org = _BilaplacianRsolver(self.Asolver, self.M)
         
         
         #############################################################
         # Following code is being added to create petscMat wrapper around prior.R
         # and prior.Rsolver.
-        self.R_instance = petsc_wrapper(self.R) #if used, this works
 
+        self.R = petsc4py.PETSc.Mat().createPython(self.A.getSizes(),comm = self.Vh.mesh.comm)
+        self.R.setPythonContext(self.R_org)
+        self.R.setUp()
 
+        self.Rsolver = petsc4py.PETSc.KSP().createPython(comm = self.Vh.mesh.comm)
+        self.Rsolver.setPythonContext(self.Rsolver_org)
 
-        #following throws - SystemError: <method 'mult' of 'petsc4py.PETSc.Mat' objects> 
-        # returned a result with an exception set
-        # self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),comm=self.Vh.mesh.comm)
-        # self.R_petsc.setPythonContext(self.R)
-        # self.R_petsc.setUp()
-
-
-        self.help1 = self.A.createVecLeft()
-        self.help2 = self.A.createVecRight()
-        # self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(),context = self.R, param1=self.help1, param2= self.help2, comm=self.Vh.mesh.comm)
-        self.R_petsc = petsc4py.PETSc.Mat().createPython(self.A.getSize(), comm=self.Vh.mesh.comm)
-        self.R_petsc.setPythonContext(self.R)
-        self.R_petsc.setUp()
-        self.R_petsc.assemble()
-
-        test_vec1 = self.generate_parameter(0)
-        parRandom.normal(1.,test_vec1)
-        # print(test_vec1.array.min(),":",test_vec1.array.max())
         
-        test_lhs_vec = dlx.la.create_petsc_vector_wrap(test_vec1)
-        test_rhs_vec = dlx.la.create_petsc_vector_wrap(test_vec1)
-        self.R_petsc.getPythonContext().mult(test_lhs_vec,test_rhs_vec)
+
 
         #############################################################
         
