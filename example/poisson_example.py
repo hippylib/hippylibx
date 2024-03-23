@@ -158,7 +158,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.1, "delta": 1.}
+    prior_param = {"gamma": 0.07, "delta": 0.7}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD

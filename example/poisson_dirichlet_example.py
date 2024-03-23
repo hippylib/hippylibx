@@ -47,7 +47,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
@@ -84,11 +84,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     m_true = m_true.x
-
-    test_func = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_true_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(test_func) 
 
     u_true = pde.generate_state()  
     x_true = [u_true, m_true, None] 
@@ -143,11 +138,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     x = solver.solve(x) 
 
-    test_func = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_estimated_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
-        file.write_mesh(msh)
-        file.write_function(test_func) 
-
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -176,7 +166,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.1, "delta": 1.}
+    prior_param = {"gamma": 0.03, "delta": 0.3}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD

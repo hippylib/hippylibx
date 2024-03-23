@@ -154,7 +154,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
     x = solver.solve(x) 
-
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -170,6 +169,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
+
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.1, "delta": 1.}
+    prior_param = {"gamma": 0.08, "delta": 0.8}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD
