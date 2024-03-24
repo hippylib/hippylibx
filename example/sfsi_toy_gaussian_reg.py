@@ -58,16 +58,20 @@ class PACTMisfitForm:
 
 # functional handler for prior:
 class H1TikhonvFunctional:
-    def __init__(self, gamma, delta):	
+    def __init__(self, gamma, delta, m0 = None):	
         self.gamma = gamma #These are dlx Constant, Expression, or Function
         self.delta = delta
-        # self.m0 = m0
+        self.m0 = m0
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
 
-
     def __call__(self, m): #Here m is a dlx Function
-        return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *self.dx + \
-               ufl.inner(self.delta * m, m)*self.dx
+        if(self.m0 is None):
+            dm = m
+        else:
+            dm = m - self.m0
+
+        return ufl.inner(self.gamma * ufl.grad(dm), ufl.grad(dm) ) *self.dx + \
+               ufl.inner(self.delta*dm, dm )*self.dx
 
 
 def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
@@ -128,25 +132,27 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = np.log(0.01)
-    prior_mean = prior_mean.x
    
     prior_gamma = prior_param['gamma']
     prior_delta = prior_param['delta']
     
-    prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta)
+
+    prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta,prior_mean)
     prior = hpx.VariationalRegularization(Vh_m, prior_handler)
 
     model = hpx.Model(pde, prior, misfit)
 
-    m0 = pde.generate_parameter()
-    hpx.parRandom.normal(1.,m0)
+    m0 = dlx.fem.Function(Vh_m)     
+    m0.interpolate(lambda x: np.sin(x[0])) 
+    m0.x.scatter_forward() 
+    m0 = m0.x
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
-    # #######################################
-    
+    # # #######################################
+    prior_mean = prior_mean.x
     prior_mean_copy = pde.generate_parameter()
     prior_mean_copy.array[:] = prior_mean.array[:]
 
@@ -198,7 +204,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-6
-    prior_param = {"gamma": 0.01, "delta": 0.2}    
+    prior_param = {"gamma": 0.15, "delta": 3.}    
     mesh_filename = './meshes/circle.xdmf'
     run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
     
