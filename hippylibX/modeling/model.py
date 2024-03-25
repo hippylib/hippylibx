@@ -182,8 +182,6 @@ class Model:
         
         mg_petsc.destroy()
         tmp_petsc.destroy()
-
-        
         
         return return_value
     
@@ -337,11 +335,7 @@ class Model:
         """
         temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        # self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
-        # self.prior._hippylibX.modeling.prior.SqrtPrecisionPDE_Prior__Rmult(temp_petsc_vec_dm, temp_petsc_vec_out)
-        # self.prior.Rmult(temp_petsc_vec_dm, temp_petsc_vec_out)
-        self.prior.R_petsc.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
-        
+        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
         
@@ -353,7 +347,7 @@ class Model:
         operator :math:`R`.
         
         The solver object should implement the method :code:`Rsolver.solve(z,r)` such that
-        :math:`Rz \approx r`.
+        :math:`Rr \approx z`.
         """
         return self.prior.Rsolver
 

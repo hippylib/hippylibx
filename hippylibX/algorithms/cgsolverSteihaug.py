@@ -177,15 +177,14 @@ class CGSolverSteihaug:
 
         self.z.array[:] = 0.
 
-        if(isinstance(self.B_solver,petsc4py.PETSc.KSP)):
-            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
-            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-            self.B_solver(temp_self_r, temp_self_z) #expects (b,x)
-            temp_self_z.destroy()
-            temp_self_r.destroy()
-        else:
-            self.B_solver.solve(self.z,self.r) #z = B^-1 r  #giving (x,b)
+        temp_vec_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+        temp_vec_self_z = dlx.la.create_petsc_vector_wrap(self.z)
         
+        self.B_solver.solve(temp_vec_self_r,temp_vec_self_z) #z = B^-1 r
+
+        temp_vec_self_r.destroy()
+        temp_vec_self_z.destroy()
+
         self.d.array[:] = self.z.array
 
         nom0 = inner(self.d,self.r)
@@ -244,19 +243,17 @@ class CGSolverSteihaug:
 
             self.r.array[:] -= alpha*self.Ad.array
 
-            if(isinstance(self.B_solver,petsc4py.PETSc.KSP)):
-                temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
-                temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-                self.B_solver(temp_self_r, temp_self_z) #expects (b,x)
-                temp_self_z.destroy()
-                temp_self_r.destroy()
-            else:
-                self.B_solver.solve(self.z,self.r) #z = B^-1 r  #giving (x,b)
+            temp_vec_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+            temp_vec_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+            
+            self.B_solver.solve(temp_vec_self_r,temp_vec_self_z) #z = B^-1 r
+
+            temp_vec_self_r.destroy()
+            temp_vec_self_z.destroy()
 
             betanom = inner(self.r, self.z)
             if self.parameters["print_level"] == 1:
                 print( " Iteration : ", self.iter, " (B r, r) = ", betanom)
-
             
             if betanom < r0:
                 self.converged = True
@@ -266,7 +263,6 @@ class CGSolverSteihaug:
                     print( self.reason[self.reasonid])
                     print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
                 break
-
     
             self.iter += 1
             if self.iter > self.parameters["max_iter"]:

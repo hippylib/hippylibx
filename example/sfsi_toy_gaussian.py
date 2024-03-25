@@ -83,7 +83,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
-    m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) # <class 'dolfinx.fem.function.Function'>
+    m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) 
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
@@ -113,22 +113,22 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
 
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
+    prior_mean.x.array[:] = np.log(0.01)
     prior_mean = prior_mean.x
    
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
-    noise = prior.generate_parameter("noise")
-    m0 = prior.generate_parameter(0)
-    hpx.parRandom.normal(1.,noise)
-    prior.sample(noise,m0)
-
+    m0 = dlx.fem.Function(Vh_m)     
+    m0.interpolate(lambda x: np.sin(x[0])) 
+    m0.x.scatter_forward() 
+    m0 = m0.x
+       
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
-    # #######################################
+    # # #######################################
     
     prior_mean_copy = prior.generate_parameter(0)
     prior_mean_copy.array[:] = prior_mean.array[:]
@@ -169,6 +169,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     else:
         optimizer_results['optimizer'] = False
 
+
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
@@ -182,7 +183,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-6
-    prior_param = {"gamma": 0.1, "delta": 2.}    
+    prior_param = {"gamma": 0.040, "delta": 0.8}    
     mesh_filename = './meshes/circle.xdmf'
     run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
     

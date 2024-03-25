@@ -105,25 +105,61 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
-    noise = prior.generate_parameter("noise")
-    m0 = prior.generate_parameter(0)    
-    hpx.parRandom.normal(1.,noise)
-    prior.sample(noise,m0)
+    m0 = dlx.fem.Function(Vh_m)     
+    m0.interpolate(lambda x: np.exp(np.sin(x[0]) + np.sin( x[1]))   )
+    m0.x.scatter_forward() 
+    m0 = m0.x
 
-    #gives error
-    # prior.R_petsc.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
+    data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
+
+    data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
+   
+    # # #######################################
     
-    #works
-    # prior.R_instance.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true)) - works
+    prior_mean_copy = prior.generate_parameter(0)
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
-    #third attempt
-    # prior.Rmult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
+    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
-    # prior.R_petsc.mult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
-    # help1 = prior.A.createVecLeft()
-    # help2 = prior.A.createVecRight()
+    if rank == 0:
+        print( sep, "Find the MAP point", sep)    
+           
+    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    parameters["rel_tolerance"] = 1e-6
+    parameters["abs_tolerance"] = 1e-9
+    parameters["max_iter"]      = 500
+    parameters["cg_coarse_tolerance"] = 5e-1
+    parameters["globalization"] = "LS"
+    parameters["GN_iter"] = 20
+    if rank != 0:
+        parameters["print_level"] = -1
     
-    # prior.Rmult(dlx.la.create_petsc_vector_wrap(m_true),dlx.la.create_petsc_vector_wrap(m_true))
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    
+    x = solver.solve(x) 
+
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
+
+    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print (comm, "Final cost: ", solver.final_cost)
+    
+    optimizer_results = {}
+    if(solver.termination_reasons[solver.reason] == 'Norm of the gradient less than tolerance'):
+        optimizer_results['optimizer']  = True
+    else:
+        optimizer_results['optimizer'] = False
+
+
+    final_results = {"data_misfit_True":data_misfit_True,
+                     "data_misfit_False":data_misfit_False,
+                     "optimizer_results":optimizer_results}
+
+
+    return final_results
 
     #######################################
 
@@ -131,7 +167,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.1, "delta": 1.}
+    prior_param = {"gamma": 0.03, "delta": 0.3}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD

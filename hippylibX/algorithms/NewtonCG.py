@@ -334,7 +334,6 @@ class ReducedSpaceNewtonCG:
             
             self.it += 1
             
-
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
             
             HessApply = ReducedHessian(self.model)
