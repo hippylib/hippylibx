@@ -208,7 +208,6 @@ class CGSolverSteihaug:
             
             return
         
-
         self.A.mult(self.d, self.Ad)
         den = inner(self.Ad, self.d)
         if den <= 0.0:
