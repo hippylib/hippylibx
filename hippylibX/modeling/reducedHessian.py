@@ -88,6 +88,7 @@ class ReducedHessian:
             self.TrueHessian(x_dlx,y_dlx)
         
         tmp = dlx.la.create_petsc_vector_wrap(y_dlx)
+
         y.axpy(1.,tmp)
         tmp.destroy()
         x_tmp_dlx.destroy()
