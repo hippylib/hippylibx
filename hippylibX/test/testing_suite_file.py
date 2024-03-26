@@ -20,10 +20,10 @@ def data_parser(data):
         err_H = data['err_H']
         sym_Hessian_value = data['sym_Hessian_value']
 
-        slope_grad_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_grad[20:30]), 1)
+        slope_grad_coeffs = np.polyfit(np.log(eps[18:28]), np.log(err_grad[18:28]), 1)
         slope_grad = slope_grad_coeffs[0]
 
-        slope_H_coeffs = np.polyfit(np.log(eps[20:30]), np.log(err_H[20:30]), 1)
+        slope_H_coeffs = np.polyfit(np.log(eps[18:28]), np.log(err_H[18:28]), 1)
         slope_H = slope_H_coeffs[0]
 
         return sym_Hessian_value, slope_grad, slope_H
@@ -33,15 +33,15 @@ def check_output(self,out):
     
     # misfit = True, slope and symmmetric nature of Hessian
     sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_True'])
-    self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-    self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
-    self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
+    self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "misfit True: Symmetric Hessian check value is greater than 1e-10")
+    self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="misfit True: FD Gradient check slope is not close to 1")
+    self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="misfit True: FD Hessian check slope is not close to 1")
 
     # misfit = False, slope and symmmetric nature of Hessian
     sym_Hessian_value, slope_grad, slope_H = data_parser(out['data_misfit_False'])
-    self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "qpact misfit True: Symmetric Hessian check value is greater than 1e-10")
-    self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="qpact misfit True: FD Gradient check slope is not close to 1")
-    self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="qpact misfit True: FD Hessian check slope is not close to 1")
+    self.assertLessEqual(np.abs(sym_Hessian_value), 1e-10, "misfit False: Symmetric Hessian check value is greater than 1e-10")
+    self.assertAlmostEqual(slope_grad, 1, delta=1e-1, msg="misfit False: FD Gradient check slope is not close to 1")
+    self.assertAlmostEqual(slope_H, 1, delta=1e-1, msg="misfit False: FD Hessian check slope is not close to 1")
 
 
 class Testing_Execution(unittest.TestCase):
