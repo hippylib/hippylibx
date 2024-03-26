@@ -54,6 +54,47 @@ class _BilaplacianR:
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
 
+class _BilaplacianRsolver():
+    """
+    Operator that represent the action of the inverse the regularization/precision matrix
+    for the Bilaplacian prior.
+    """
+
+    def __init__(self, Asolver : petsc4py.PETSc.KSP, M : petsc4py.PETSc.Mat):
+        self.Asolver = Asolver
+        self.M = M
+        
+        self.help1, self.help2 = self.M.createVecLeft(), self.M.createVecLeft()
+
+    @unused_function
+    def init_vector(self,dim):        
+        if(dim == 0):
+            x = self.M.createVecLeft()
+        else:
+            x = self.M.createVecRight() 
+        return x
+    
+    # def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
+    #     temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
+    #     temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+    #     self.Asolver.solve(temp_petsc_vec_b, self.help1)
+    #     nit = self.Asolver.its
+    #     self.M.mult(self.help1, self.help2)
+    #     self.Asolver.solve(self.help2,temp_petsc_vec_x)
+    #     nit += self.Asolver.its
+    #     temp_petsc_vec_b.destroy()
+    #     temp_petsc_vec_x.destroy()
+    #     return nit
+
+    def solve(self,b : petsc4py.PETSc.Vec, x : petsc4py.PETSc.Vec):
+        self.Asolver.solve(b, self.help1)
+        nit = self.Asolver.its
+        self.M.mult(self.help1, self.help2)
+        self.Asolver.solve(self.help2,x)
+        nit += self.Asolver.its
+        return nit
+
+
 
 class SqrtPrecisionPDE_Prior:
     def __init__(self, Vh : dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None):
@@ -141,24 +182,27 @@ class SqrtPrecisionPDE_Prior:
         self.R.setPythonContext(R_object)
         self.R.setUp()
 
-        petsc_options_Rsolver = {"ksp_type": "cg", "pc_type": "hypre", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true", "ksp_initial_guess_nonzero":"false"}
-        self.Rsolver = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
+        # petsc_options_Rsolver = {"ksp_type": "cg", "pc_type": "hypre", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true", "ksp_initial_guess_nonzero":"false"}
+        # self.Rsolver = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
         
-        problem_prefix = f"dolfinx_solve_{id(self)}"
-        self.Rsolver.setOptionsPrefix(problem_prefix)
-        opts = petsc4py.PETSc.Options()
-        opts.prefixPush(problem_prefix)        
-        if petsc_options_Rsolver is not None:
-            for k, v in petsc_options_Rsolver.items():
-                opts[k] = v
-        opts.prefixPop()
-        self.Rsolver.setFromOptions()
-        if(petsc_options_Rsolver['pc_type'] == 'hypre'):
-            pc = self.Rsolver.getPC()
-            pc.setHYPREType('boomeramg')
+        # problem_prefix = f"dolfinx_solve_{id(self)}"
+        # self.Rsolver.setOptionsPrefix(problem_prefix)
+        # opts = petsc4py.PETSc.Options()
+        # opts.prefixPush(problem_prefix)        
+        # if petsc_options_Rsolver is not None:
+        #     for k, v in petsc_options_Rsolver.items():
+        #         opts[k] = v
+        # opts.prefixPop()
+        # self.Rsolver.setFromOptions()
+        # if(petsc_options_Rsolver['pc_type'] == 'hypre'):
+        #     pc = self.Rsolver.getPC()
+        #     pc.setHYPREType('boomeramg')
 
-        self.Rsolver.setOperators(self.R)
+        # self.Rsolver.setOperators(self.R)
 
+        # self.R = _BilaplacianR(self.A, self.Msolver)      
+
+        self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         self.mean = mean
         
         if self.mean is None:            

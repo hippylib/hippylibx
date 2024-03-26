@@ -46,19 +46,21 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
 
     model.setPointForHessianEvaluations(x)
  
-    # H = ReducedHessian(model, misfit_only=misfit_only)
- 
-    H_obj = ReducedHessian(model, misfit_only=misfit_only)
-    H  = petsc4py.PETSc.Mat().createPython(model.prior.M.getSizes(),comm=model.prior.Vh.mesh.comm)
-    H.setPythonContext(H_obj)
-    H.setUp()
+    H_object = ReducedHessian(model, misfit_only=misfit_only)
+    H = H_object.as_petsc_wrapper()
+
+
+    # H_obj = ReducedHessian(model, misfit_only=misfit_only)
+    # H  = petsc4py.PETSc.Mat().createPython(model.prior.M.getSizes(),comm=model.prior.Vh.mesh.comm)
+    # H.setPythonContext(H_obj)
+    # H.setUp()
 
     Hh = model.generate_vector(PARAMETER)
     temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
     temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
     
     H.mult(temp_petsc_vec_h, temp_petsc_vec_Hh)
-
+    # H.mult(h,Hh)
     temp_petsc_vec_h.destroy()
     temp_petsc_vec_Hh.destroy()
 
@@ -115,9 +117,10 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
     yy = model.generate_vector(PARAMETER)
     parRandom.normal(1., yy)
 
-    # ytHx = H_obj.inner(yy,xx)
-    # xtHy = H_obj.inner(xx,yy)
+    # ytHx = H.inner(yy,xx)
+    # xtHy = H.inner(xx,yy)
 
+    #######################################
     temp_petsc_vec_xx = dlx.la.create_petsc_vector_wrap(xx)
     temp_petsc_vec_yy = dlx.la.create_petsc_vector_wrap(yy)
     
@@ -135,7 +138,8 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
     temp_petsc_vec_Ay.destroy()
     temp_petsc_vec_xx.destroy()
     temp_petsc_vec_yy.destroy()
-
+    # #######################################
+    
 
     if np.abs(ytHx + xtHy) > 0.: 
         rel_symm_error = 2*abs(ytHx - xtHy)/(ytHx + xtHy)

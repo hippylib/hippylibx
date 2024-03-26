@@ -21,7 +21,7 @@ from .cgsolverSteihaug import CGSolverSteihaug
 import dolfinx as dlx
 import dolfinx.fem.petsc
 from ..algorithms.linalg import inner
-import petsc4py
+
 
 def LS_ParameterList():
     """
@@ -211,18 +211,9 @@ class ReducedSpaceNewtonCG:
 
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
         
-            # HessApply = ReducedHessian(self.model)
-            # solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            # solver.set_operator(HessApply)
             HessApply = ReducedHessian(self.model)
-            Hess  = petsc4py.PETSc.Mat().createPython(self.model.prior.M.getSizes(),comm=self.model.prior.Vh.mesh.comm)
-            Hess.setPythonContext(HessApply)
-            Hess.setUp()
-
             solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            # solver.set_operator(HessApply)
-            solver.set_operator(Hess)
-
+            solver.set_operator(HessApply)
             solver.set_preconditioner(self.model.Rsolver())
             solver.parameters["rel_tolerance"] = tolcg
             solver.parameters["max_iter"] = cg_max_iter
@@ -343,17 +334,12 @@ class ReducedSpaceNewtonCG:
             
             self.it += 1
             
+
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
             
             HessApply = ReducedHessian(self.model)
-
-            Hess  = petsc4py.PETSc.Mat().createPython(self.model.prior.M.getSizes(),comm=self.model.prior.Vh.mesh.comm)
-            Hess.setPythonContext(HessApply)
-            Hess.setUp()
-
             solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            # solver.set_operator(HessApply)
-            solver.set_operator(Hess)
+            solver.set_operator(HessApply)
             solver.set_preconditioner(self.model.Rsolver())
             if self.it > 1:
                 solver.set_TR(delta_TR, self.model.prior.R)
@@ -366,14 +352,7 @@ class ReducedSpaceNewtonCG:
             self.total_cg_iter += HessApply.ncalls
 
             if self.it == 1:
-                temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
-                temp_petsc_vec_R_mhat = dlx.la.create_petsc_vector_wrap(R_mhat)
-
-                # self.model.prior.R.mult(mhat,R_mhat)
-                self.model.prior.R.mult(temp_petsc_vec_mhat,temp_petsc_vec_R_mhat)
-                temp_petsc_vec_mhat.destroy()
-                temp_petsc_vec_R_mhat.destroy()
-                
+                self.model.prior.R.mult(mhat,R_mhat)
                 mhat_Rnorm = R_mhat.inner(mhat)
                 delta_TR = max(math.sqrt(mhat_Rnorm),1)
 
@@ -388,16 +367,7 @@ class ReducedSpaceNewtonCG:
             #Calculate Predicted Reduction
             H_mhat = self.model.generate_vector(PARAMETER)
             H_mhat.array[:] = 0.
-            # HessApply.mult(mhat,H_mhat)
-            temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
-            temp_petsc_vec_H_mhat = dlx.la.create_petsc_vector_wrap(H_mhat)
-            
-            # H.mult(mhat,H_mhat)
-
-            Hess.mult(temp_petsc_vec_mhat, temp_petsc_vec_H_mhat)
-            temp_petsc_vec_H_mhat.destroy()
-            temp_petsc_vec_mhat.destroy()
-
+            HessApply.mult(mhat,H_mhat)
             mg_mhat = mg.inner(mhat)
             PRED_RED = -0.5*mhat.inner(H_mhat) - mg_mhat
             # print( "PREDICTED REDUCTION", PRED_RED, "ACTUAL REDUCTION", ACTUAL_RED)

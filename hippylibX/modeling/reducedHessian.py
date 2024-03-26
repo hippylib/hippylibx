@@ -74,13 +74,12 @@ class ReducedHessian:
         """
         Apply the reduced Hessian (or the Gauss-Newton approximation) to the vector :code:`x`. Return the result in :code:`y`.
         """
-        x_dlx = self.model.init_parameter(0)
-        y_dlx = self.model.init_parameter(0)
+    
+        x_dlx = self.model.generate_vector(PARAMETER)
+        y_dlx = self.model.generate_vector(PARAMETER)
     
         x_tmp_dlx = dlx.la.create_petsc_vector_wrap(x_dlx)
         x_tmp_dlx.axpy(1.,x)
-        y_tmp_dlx = dlx.la.create_petsc_vector_wrap(y_dlx)
-        y_tmp_dlx.axpy(1.,y)
     
         if self.gauss_newton_approx:
             self.GNHessian(x_dlx,y_dlx)
@@ -89,13 +88,13 @@ class ReducedHessian:
         
         tmp = dlx.la.create_petsc_vector_wrap(y_dlx)
 
-        y.axpy(1.,tmp)
+        y.axpby(1.,0.,tmp) #y = 1. tmp + 0.*y
         tmp.destroy()
         x_tmp_dlx.destroy()
-        y_tmp_dlx.destroy()
-
+        
         self.ncalls += 1
-    
+
+
     def inner(self, x : dlx.la.Vector, y : dlx.la.Vector):
         """
         Perform the inner product between :code:`x` and :code:`y` in the norm induced by the reduced
@@ -151,4 +150,9 @@ class ReducedHessian:
             self.model.applyR(x,self.yhelp)
             y.array[:] += self.yhelp.array
         
- 
+    
+    def as_petsc_wrapper(self) -> petsc4py.PETSc.Mat:
+        H  = petsc4py.PETSc.Mat().createPython(self.model.prior.M.getSizes(),comm=self.model.prior.Vh.mesh.comm)
+        H.setPythonContext(self)
+        H.setUp()
+        return H

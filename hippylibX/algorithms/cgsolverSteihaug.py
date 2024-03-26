@@ -94,13 +94,15 @@ class CGSolverSteihaug:
     def set_operator(self, A):
         """
         Set the operator :math:`A`.
-        """        
+        """
+        
         self.A = A
-        self.r = self.A.createVecLeft()
-        self.z = self.A.createVecLeft()
-        self.d = self.A.createVecLeft()
-        self.Ad = self.A.createVecLeft()
+        self.r = self.A.init_vector(0)
+        self.z = self.A.init_vector(0)
+        self.d = self.A.init_vector(0)
+        self.Ad = self.A.init_vector(0)
                 
+        
     def set_preconditioner(self, B_solver):
         """
         Set the preconditioner :math:`B`.
@@ -163,46 +165,28 @@ class CGSolverSteihaug:
 
 
         if self.parameters["zero_initial_guess"]:
-            # self.r.array[:] = b.array
-            self.r.scale(0.)
-            temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-            self.r.axpy(1.,temp_petsc_vec_b)
-            temp_petsc_vec_b.destroy()            
-
+            self.r.array[:] = b.array
+            
             x.array[:] = 0.
                         
         else:
             assert self.TR_radius_2==None
-            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-            # self.A.mult(x,self.r)
-            self.A.mult(temp_petsc_vec_x, self.r)
-            # self.r.array[:] *= -1.
-            # self.r.array[:] += b.array
-            self.r.scale(-1.)
-            temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-            self.r.axpy(1., temp_petsc_vec_b)
-            temp_petsc_vec_b.destroy()
+            self.A.mult(x,self.r)
+            self.r.array[:] *= -1.
+            self.r.array[:] += b.array
 
-        # self.z.array[:] = 0.
-        self.z.scale(0.)
-
-        # temp_vec_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-        # temp_vec_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+        self.z.array[:] = 0.
         
-        # self.B_solver.solve(temp_vec_self_r,temp_vec_self_z) #z = B^-1 r
-        self.B_solver.solve(self.r,self.z) #z = B^-1 r
+        temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+        temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+        self.B_solver.solve(temp_self_r, temp_self_z) #expects (b,x)
+        temp_self_z.destroy()
+        temp_self_r.destroy()
 
+        self.d.array[:] = self.z.array
 
-        # temp_vec_self_r.destroy()
-        # temp_vec_self_z.destroy()
+        nom0 = inner(self.d,self.r)
 
-        # self.d.array[:] = self.z.array
-        self.d.scale(0.)
-        self.d.axpy(1., self.z)
-
-        #expects dlx
-        # nom0 = inner(self.d,self.r)
-        nom0 = self.d.dot(self.r)
         nom = nom0
         
         if self.parameters["print_level"] == 1:
@@ -222,23 +206,22 @@ class CGSolverSteihaug:
             
             return
         
+
         self.A.mult(self.d, self.Ad)
-        # den = inner(self.Ad, self.d)
-        den = self.Ad.dot(self.d)
+        den = inner(self.Ad, self.d)
         if den <= 0.0:
             self.converged = True
             self.reasonid = 2
-            # x.array[:] += self.d.array
-            # self.r.array[:] -= self.Ad.array
-            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-            temp_petsc_vec_x.axpy(1., self.d)
-            self.r.axpy(-1., self.Ad)
-            temp_petsc_vec_x.destroy()
-            
-            self.B_solver.solve(self.r, self.z)
+            x.array[:] += self.d.array
+            self.r.array[:] -= self.Ad.array
 
-            # nom = inner(self.r, self.z)
-            nom = self.r.dot(self.z)
+            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+            self.B_solver.solve(temp_self_r, temp_self_z) #expects (b,x)
+            temp_self_z.destroy()
+            temp_self_r.destroy()
+
+            nom = inner(self.r, self.z)
             self.final_norm = math.sqrt(nom)
             if(self.parameters["print_level"] >= 0):
                 print( self.reason[self.reasonid])
@@ -260,21 +243,18 @@ class CGSolverSteihaug:
                     print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
                 break
 
-            # self.r.array[:] -= alpha*self.Ad.array
-            self.r.axpy(-alpha, self.Ad)
-            # temp_vec_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-            # temp_vec_self_z = dlx.la.create_petsc_vector_wrap(self.z)
-            
-            # self.B_solver.solve(temp_vec_self_r,temp_vec_self_z) #z = B^-1 r
-            self.B_solver.solve(self.r,self.z) #z = B^-1 r
+            self.r.array[:] -= alpha*self.Ad.array
 
-            # temp_vec_self_r.destroy()
-            # temp_vec_self_z.destroy()
+            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+            self.B_solver.solve(temp_self_r, temp_self_z) #expects (b,x)
+            temp_self_z.destroy()
+            temp_self_r.destroy()
 
-            # betanom = inner(self.r, self.z)
-            betanom = self.r.dot(self.z)
+            betanom = inner(self.r, self.z)
             if self.parameters["print_level"] == 1:
                 print( " Iteration : ", self.iter, " (B r, r) = ", betanom)
+
             
             if betanom < r0:
                 self.converged = True
@@ -284,6 +264,7 @@ class CGSolverSteihaug:
                     print( self.reason[self.reasonid])
                     print( "Converged in ", self.iter, " iterations with final norm ", self.final_norm)
                 break
+
     
             self.iter += 1
             if self.iter > self.parameters["max_iter"]:
@@ -296,16 +277,11 @@ class CGSolverSteihaug:
                 break
         
             beta = betanom/nom
-            # self.d.array[:] = beta*self.d.array
-            # self.d.array[:] += self.z.array
-
-            self.d.scale(beta)
-            self.d.axpy(1., self.z)
-
+            self.d.array[:] = beta*self.d.array
+            self.d.array[:] += self.z.array
             self.A.mult(self.d,self.Ad)
                 
-            # den = inner(self.d, self.Ad)
-            den = self.d.dot(self.Ad)
+            den = inner(self.d, self.Ad)
             if den <= 0.0:
                 self.converged = True
                 self.reasonid = 2
