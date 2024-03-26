@@ -47,7 +47,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)    
 
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 1)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
@@ -85,6 +85,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.x.scatter_forward() 
     m_true = m_true.x
 
+    test_func = hpx.vector2Function(m_true,Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_true_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(test_func) 
+
     u_true = pde.generate_state()  
     x_true = [u_true, m_true, None] 
     pde.solveFwd(u_true,x_true)
@@ -105,10 +110,10 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
-    m0 = dlx.fem.Function(Vh_m)     
-    m0.interpolate(lambda x: np.exp(np.sin(x[0]) + np.sin( x[1]))   )
-    m0.x.scatter_forward() 
-    m0 = m0.x
+    noise = prior.generate_parameter("noise")
+    m0 = prior.generate_parameter(0)    
+    hpx.parRandom.normal(1.,noise)
+    prior.sample(noise,m0)
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
@@ -138,6 +143,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     x = solver.solve(x) 
 
+    test_func = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "dirichlet_poisson_estimated_para_func_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(test_func) 
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -166,7 +176,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.03, "delta": 0.3}
+    prior_param = {"gamma": 0.1, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD

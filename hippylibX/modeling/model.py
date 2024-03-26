@@ -182,6 +182,8 @@ class Model:
         
         mg_petsc.destroy()
         tmp_petsc.destroy()
+
+        
         
         return return_value
     
@@ -347,7 +349,7 @@ class Model:
         operator :math:`R`.
         
         The solver object should implement the method :code:`Rsolver.solve(z,r)` such that
-        :math:`Rr \approx z`.
+        :math:`Rz \approx r`.
         """
         return self.prior.Rsolver
 

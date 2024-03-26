@@ -49,15 +49,11 @@ class _BilaplacianR:
     def mpi_comm(self):
         return self.A.comm
         
-    # def mult(self, mat, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
-    #     self.A.mult(x,self.help1)
-    #     self.Msolver.solve(self.help1, self.help2)
-    #     self.A.mult(self.help2, y)
-
-    def mult(self, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
+    def mult(self,x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
         self.A.mult(x,self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
+
 
 class _BilaplacianRsolver():
     """
@@ -79,26 +75,17 @@ class _BilaplacianRsolver():
             x = self.M.createVecRight() 
         return x
     
-    # def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
-    #     temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-    #     temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-    #     self.Asolver.solve(temp_petsc_vec_b, self.help1)
-    #     nit = self.Asolver.its
-    #     self.M.mult(self.help1, self.help2)
-    #     self.Asolver.solve(self.help2,temp_petsc_vec_x)
-    #     nit += self.Asolver.its
-    #     temp_petsc_vec_b.destroy()
-    #     temp_petsc_vec_x.destroy()
-    #     return nit
-
-    def solve(self,b : petsc4py.PETSc.Vec, x : petsc4py.PETSc.Vec):
-        self.Asolver.solve(b, self.help1)
+    def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
+        temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
+        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+        self.Asolver.solve(temp_petsc_vec_b, self.help1)
         nit = self.Asolver.its
         self.M.mult(self.help1, self.help2)
-        self.Asolver.solve(self.help2,x)
+        self.Asolver.solve(self.help2,temp_petsc_vec_x)
         nit += self.Asolver.its
+        temp_petsc_vec_b.destroy()
+        temp_petsc_vec_x.destroy()
         return nit
-
 
 
 class SqrtPrecisionPDE_Prior:
@@ -181,33 +168,9 @@ class SqrtPrecisionPDE_Prior:
 
         self.sqrtM = MixedM.matMult(Mqh)
                    
-        # R_object = _BilaplacianR(self.A, self.Msolver)      
-        
-        # self.R = petsc4py.PETSc.Mat().createPython(self.A.getSizes(),comm = Vh.mesh.comm)
-        # self.R.setPythonContext(R_object)
-        # self.R.setUp()
-
-        # petsc_options_Rsolver = {"ksp_type": "cg", "pc_type": "hypre", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true", "ksp_initial_guess_nonzero":"false"}
-        # self.Rsolver = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
-        
-        # problem_prefix = f"dolfinx_solve_{id(self)}"
-        # self.Rsolver.setOptionsPrefix(problem_prefix)
-        # opts = petsc4py.PETSc.Options()
-        # opts.prefixPush(problem_prefix)        
-        # if petsc_options_Rsolver is not None:
-        #     for k, v in petsc_options_Rsolver.items():
-        #         opts[k] = v
-        # opts.prefixPop()
-        # self.Rsolver.setFromOptions()
-        # if(petsc_options_Rsolver['pc_type'] == 'hypre'):
-        #     pc = self.Rsolver.getPC()
-        #     pc.setHYPREType('boomeramg')
-
-        # self.Rsolver.setOperators(self.R)
-
         self.R = _BilaplacianR(self.A, self.Msolver)      
-
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
+        
         self.mean = mean
         
         if self.mean is None:            
@@ -303,7 +266,6 @@ class SqrtPrecisionPDE_Prior:
         self.M.destroy()
         self.A.destroy()
         self.sqrtM.destroy()
-        #FIX ME: add self.R and self.Rsolver here too (changed to petsc objects)
 
 
 def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, robin_bc=False) -> SqrtPrecisionPDE_Prior:

@@ -94,11 +94,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     prior = hpx.BiLaplacianPrior(Vh_m,prior_param["gamma"],prior_param["delta"],mean =  prior_mean)
     model = hpx.Model(pde, prior, misfit)
-    
-    m0 = dlx.fem.Function(Vh_m)     
-    m0.interpolate(lambda x: np.exp(np.sin(x[0]) + np.sin( x[1]))   )
-    m0.x.scatter_forward() 
-    m0 = m0.x    
+
+    noise = prior.generate_parameter("noise")
+    m0 = prior.generate_parameter(0)    
+    hpx.parRandom.normal(1.,noise)
+    prior.sample(noise,m0)
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
@@ -143,6 +143,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     else:
         optimizer_results['optimizer'] = False
 
+
     final_results = {"data_misfit_True":data_misfit_True,
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
@@ -157,7 +158,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.07, "delta": 0.7}
+    prior_param = {"gamma": 0.1, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD

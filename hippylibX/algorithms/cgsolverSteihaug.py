@@ -176,13 +176,16 @@ class CGSolverSteihaug:
             self.r.array[:] += b.array
 
         self.z.array[:] = 0.
-        
-        temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
-        temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-        self.B_solver.solve(temp_self_r, temp_self_z) #expects (b,x)
-        temp_self_z.destroy()
-        temp_self_r.destroy()
 
+        if(isinstance(self.B_solver,petsc4py.PETSc.KSP)):
+            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+            self.B_solver(temp_self_r, temp_self_z) #expects (b,x)
+            temp_self_z.destroy()
+            temp_self_r.destroy()
+        else:
+            self.B_solver.solve(self.z,self.r) #z = B^-1 r  #giving (x,b)
+        
         self.d.array[:] = self.z.array
 
         nom0 = inner(self.d,self.r)
@@ -206,6 +209,7 @@ class CGSolverSteihaug:
             
             return
         
+
         self.A.mult(self.d, self.Ad)
         den = inner(self.Ad, self.d)
         if den <= 0.0:
@@ -214,11 +218,7 @@ class CGSolverSteihaug:
             x.array[:] += self.d.array
             self.r.array[:] -= self.Ad.array
 
-            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
-            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-            self.B_solver.solve(temp_self_r, temp_self_z) #expects (b,x)
-            temp_self_z.destroy()
-            temp_self_r.destroy()
+            self.B_solver.solve(self.z, self.r)
 
             nom = inner(self.r, self.z)
             self.final_norm = math.sqrt(nom)
@@ -244,11 +244,14 @@ class CGSolverSteihaug:
 
             self.r.array[:] -= alpha*self.Ad.array
 
-            temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
-            temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
-            self.B_solver.solve(temp_self_r, temp_self_z) #expects (b,x)
-            temp_self_z.destroy()
-            temp_self_r.destroy()
+            if(isinstance(self.B_solver,petsc4py.PETSc.KSP)):
+                temp_self_z = dlx.la.create_petsc_vector_wrap(self.z)
+                temp_self_r = dlx.la.create_petsc_vector_wrap(self.r)
+                self.B_solver(temp_self_r, temp_self_z) #expects (b,x)
+                temp_self_z.destroy()
+                temp_self_r.destroy()
+            else:
+                self.B_solver.solve(self.z,self.r) #z = B^-1 r  #giving (x,b)
 
             betanom = inner(self.r, self.z)
             if self.parameters["print_level"] == 1:

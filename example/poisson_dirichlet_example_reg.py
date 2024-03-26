@@ -40,20 +40,16 @@ class PoissonMisfitForm:
 
 # functional handler for prior:
 class H1TikhonvFunctional:
-    def __init__(self, gamma, delta, m0 = None):	
+    def __init__(self, gamma, delta):	
         self.gamma = gamma #These are dlx Constant, Expression, or Function
         self.delta = delta
-        self.m0 = m0
+        # self.m0 = m0
         self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
 
-    def __call__(self, m): #Here m is a dlx Function
-        if(self.m0 is None):
-            dm = m
-        else:
-            dm = m - self.m0
 
-        return ufl.inner(self.gamma * ufl.grad(dm), ufl.grad(dm) ) *self.dx + \
-               ufl.inner(self.delta*dm, dm )*self.dx
+    def __call__(self, m): #Here m is a dlx Function
+        return ufl.inner(self.gamma * ufl.grad(m), ufl.grad(m) ) *self.dx + \
+               ufl.inner(self.delta * m, m)*self.dx
 
 
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
@@ -118,27 +114,25 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
-    
+    prior_mean = prior_mean.x
+
     prior_gamma = prior_param['gamma']
     prior_delta = prior_param['delta']
     
-    prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta,prior_mean)
+    prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta)
     prior = hpx.VariationalRegularization(Vh_m, prior_handler)
 
     model = hpx.Model(pde, prior, misfit)
     
-    m0 = dlx.fem.Function(Vh_m)     
-    m0.interpolate(lambda x: np.exp(np.sin(x[0]) + np.sin( x[1]))   )
-    m0.x.scatter_forward() 
-    m0 = m0.x
-
+    m0 = pde.generate_parameter()
+    hpx.parRandom.normal(1.,m0)
+    
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
    
     # # #######################################
-
-    prior_mean = prior_mean.x    
+    
     prior_mean_copy = pde.generate_parameter()
     prior_mean_copy.array[:] = prior_mean.array[:]
 
@@ -160,6 +154,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
     x = solver.solve(x) 
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -179,6 +174,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
                      "data_misfit_False":data_misfit_False,
                      "optimizer_results":optimizer_results}
 
+
     return final_results
 
     #######################################
@@ -187,7 +183,7 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-4
-    prior_param = {"gamma": 0.08, "delta": 0.8}
+    prior_param = {"gamma": 0.1, "delta": 1.}
     run_inversion(nx, ny, noise_variance, prior_param)
     
     comm = MPI.COMM_WORLD
