@@ -130,51 +130,51 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     # # #######################################
     
-    # prior_mean_copy = prior.generate_parameter(0)
-    # prior_mean_copy.array[:] = prior_mean.array[:]
+    prior_mean_copy = prior.generate_parameter(0)
+    prior_mean_copy.array[:] = prior_mean.array[:]
 
-    # x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
 
 
-    # if rank == 0:
-    #     print( sep, "Find the MAP point", sep)    
+    if rank == 0:
+        print( sep, "Find the MAP point", sep)    
            
-    # parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    # parameters["rel_tolerance"] = 1e-6
-    # parameters["abs_tolerance"] = 1e-9
-    # parameters["max_iter"]      = 500
-    # parameters["cg_coarse_tolerance"] = 5e-1
-    # parameters["globalization"] = "LS"
-    # parameters["GN_iter"] = 20
-    # if rank != 0:
-    #     parameters["print_level"] = -1
+    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    parameters["rel_tolerance"] = 1e-6
+    parameters["abs_tolerance"] = 1e-9
+    parameters["max_iter"]      = 500
+    parameters["cg_coarse_tolerance"] = 5e-1
+    parameters["globalization"] = "LS"
+    parameters["GN_iter"] = 20
+    if rank != 0:
+        parameters["print_level"] = -1
     
-    # solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
-    # x = solver.solve(x) 
+    x = solver.solve(x) 
 
-    # if solver.converged:
-    #     master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    # else:
-    #     master_print(comm, "\nNot Converged")
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
 
-    # master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
-    # master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
-    # master_print (comm, "Final cost: ", solver.final_cost)
-
-
-    # optimizer_results = {}
-    # if(solver.termination_reasons[solver.reason] == 'Norm of the gradient less than tolerance'):
-    #     optimizer_results['optimizer']  = True
-    # else:
-    #     optimizer_results['optimizer'] = False
+    master_print (comm, "Termination reason: ", solver.termination_reasons[solver.reason])
+    master_print (comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print (comm, "Final cost: ", solver.final_cost)
 
 
-    # final_results = {"data_misfit_True":data_misfit_True,
-    #                  "data_misfit_False":data_misfit_False,
-    #                  "optimizer_results":optimizer_results}
+    optimizer_results = {}
+    if(solver.termination_reasons[solver.reason] == 'Norm of the gradient less than tolerance'):
+        optimizer_results['optimizer']  = True
+    else:
+        optimizer_results['optimizer'] = False
 
-    # return final_results
+
+    final_results = {"data_misfit_True":data_misfit_True,
+                     "data_misfit_False":data_misfit_False,
+                     "optimizer_results":optimizer_results}
+
+    return final_results
 
 
     #######################################
