@@ -46,23 +46,9 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
 
     model.setPointForHessianEvaluations(x)
  
-    H_object = ReducedHessian(model, misfit_only=misfit_only)
-    H = H_object.as_petsc_wrapper()
-
-
-    # H_obj = ReducedHessian(model, misfit_only=misfit_only)
-    # H  = petsc4py.PETSc.Mat().createPython(model.prior.M.getSizes(),comm=model.prior.Vh.mesh.comm)
-    # H.setPythonContext(H_obj)
-    # H.setUp()
-
+    H = ReducedHessian(model, misfit_only=misfit_only)
     Hh = model.generate_vector(PARAMETER)
-    temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
-    temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
-    
-    H.mult(temp_petsc_vec_h, temp_petsc_vec_Hh)
-    # H.mult(h,Hh)
-    temp_petsc_vec_h.destroy()
-    temp_petsc_vec_Hh.destroy()
+    H.mult(h, Hh)
 
     if eps is None:
         n_eps = 32
@@ -114,32 +100,13 @@ def modelVerify(model, m0 : dlx.la.Vector, is_quadratic = False, misfit_only=Fal
     xx = model.generate_vector(PARAMETER)
     parRandom.normal(1., xx)
 
+
     yy = model.generate_vector(PARAMETER)
     parRandom.normal(1., yy)
 
-    # ytHx = H.inner(yy,xx)
-    # xtHy = H.inner(xx,yy)
+    ytHx = H.inner(yy,xx)
 
-    #######################################
-    temp_petsc_vec_xx = dlx.la.create_petsc_vector_wrap(xx)
-    temp_petsc_vec_yy = dlx.la.create_petsc_vector_wrap(yy)
-    
-    # #in two separate operations:
-    Ay = model.generate_vector(PARAMETER)
-    temp_petsc_vec_Ay = dlx.la.create_petsc_vector_wrap(Ay)
-    temp_petsc_vec_Ay.scale(0.)
-    H.mult(temp_petsc_vec_xx,temp_petsc_vec_Ay)
-    ytHx = temp_petsc_vec_yy.dot(temp_petsc_vec_Ay)
-    
-    temp_petsc_vec_Ay.scale(0.)
-    H.mult(temp_petsc_vec_yy, temp_petsc_vec_Ay)
-    xtHy = temp_petsc_vec_xx.dot(temp_petsc_vec_Ay)    
-
-    temp_petsc_vec_Ay.destroy()
-    temp_petsc_vec_xx.destroy()
-    temp_petsc_vec_yy.destroy()
-    # #######################################
-    
+    xtHy = H.inner(xx,yy)
 
     if np.abs(ytHx + xtHy) > 0.: 
         rel_symm_error = 2*abs(ytHx - xtHy)/(ytHx + xtHy)

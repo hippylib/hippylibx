@@ -19,7 +19,6 @@ import dolfinx as dlx
 from ..algorithms import linalg
 import numpy as np
 from ..utils import vector2Function
-import petsc4py
 
 #decorator for functions in classes that are not used -> may not be needed in the final
 #version of X
@@ -69,32 +68,18 @@ class ReducedHessian:
         return self.model.init_parameter(dim)
         
 
-    def mult(self,mat, x : petsc4py.PETSc.Vec ,y : petsc4py.PETSc.Vec ) -> None:
+    def mult(self,x : dlx.la.Vector ,y : dlx.la.Vector ) -> None:
 
         """
         Apply the reduced Hessian (or the Gauss-Newton approximation) to the vector :code:`x`. Return the result in :code:`y`.
         """
-    
-        x_dlx = self.model.generate_vector(PARAMETER)
-        y_dlx = self.model.generate_vector(PARAMETER)
-    
-        x_tmp_dlx = dlx.la.create_petsc_vector_wrap(x_dlx)
-        x_tmp_dlx.axpy(1.,x)
-    
         if self.gauss_newton_approx:
-            self.GNHessian(x_dlx,y_dlx)
+            self.GNHessian(x,y)
         else:
-            self.TrueHessian(x_dlx,y_dlx)
-        
-        tmp = dlx.la.create_petsc_vector_wrap(y_dlx)
-
-        y.axpby(1.,0.,tmp) #y = 1. tmp + 0.*y
-        tmp.destroy()
-        x_tmp_dlx.destroy()
+            self.TrueHessian(x,y)
         
         self.ncalls += 1
-
-
+    
     def inner(self, x : dlx.la.Vector, y : dlx.la.Vector):
         """
         Perform the inner product between :code:`x` and :code:`y` in the norm induced by the reduced
@@ -150,9 +135,4 @@ class ReducedHessian:
             self.model.applyR(x,self.yhelp)
             y.array[:] += self.yhelp.array
         
-    
-    def as_petsc_wrapper(self) -> petsc4py.PETSc.Mat:
-        H  = petsc4py.PETSc.Mat().createPython(self.model.prior.M.getSizes(),comm=self.model.prior.Vh.mesh.comm)
-        H.setPythonContext(self)
-        H.setUp()
-        return H
+ 
