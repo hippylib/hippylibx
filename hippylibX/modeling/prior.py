@@ -40,7 +40,18 @@ class _BilaplacianR:
         
         self.help1 = self.A.createVecLeft()
         self.help2 = self.A.createVecRight()
-        
+
+        self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(self.A.getSizes(),comm = self.A.getComm())
+        self.petsc_wrapper.setPythonContext(self)
+        self.petsc_wrapper.setUp()
+
+    def __del__(self):
+        self.petsc_wrapper.destroy()
+    
+    @property
+    def mat(self):
+        return self.petsc_wrapper
+
     def mpi_comm(self):
         return self.A.comm
         
@@ -48,9 +59,6 @@ class _BilaplacianR:
         self.A.mult(x,self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
-
-
-    
 
 class _BilaplacianRsolver():
     """
@@ -60,17 +68,8 @@ class _BilaplacianRsolver():
 
     def __init__(self, Asolver : petsc4py.PETSc.KSP, M : petsc4py.PETSc.Mat):
         self.Asolver = Asolver
-        self.M = M
-        
+        self.M = M        
         self.help1, self.help2 = self.M.createVecLeft(), self.M.createVecLeft()
-
-    @unused_function
-    def init_vector(self,dim):        
-        if(dim == 0):
-            x = self.M.createVecLeft()
-        else:
-            x = self.M.createVecRight() 
-        return x
 
     def solve(self,b : petsc4py.PETSc.Vec, x : petsc4py.PETSc.Vec):
         self.Asolver.solve(b, self.help1)
@@ -157,33 +156,10 @@ class SqrtPrecisionPDE_Prior:
         MixedM.assemble()
 
         self.sqrtM = MixedM.matMult(Mqh)
-                   
+        
+        self.R = _BilaplacianR(self.A, self.Msolver)      
         R_object = _BilaplacianR(self.A, self.Msolver)      
         
-        self.R = petsc4py.PETSc.Mat().createPython(self.A.getSizes(),comm = Vh.mesh.comm)
-        self.R.setPythonContext(R_object)
-        self.R.setUp()
-
-        # petsc_options_Rsolver = {"ksp_type": "cg", "pc_type": "hypre", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true", "ksp_initial_guess_nonzero":"false"}
-        # self.Rsolver = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
-        
-        # problem_prefix = f"dolfinx_solve_{id(self)}"
-        # self.Rsolver.setOptionsPrefix(problem_prefix)
-        # opts = petsc4py.PETSc.Options()
-        # opts.prefixPush(problem_prefix)        
-        # if petsc_options_Rsolver is not None:
-        #     for k, v in petsc_options_Rsolver.items():
-        #         opts[k] = v
-        # opts.prefixPop()
-        # self.Rsolver.setFromOptions()
-        # if(petsc_options_Rsolver['pc_type'] == 'hypre'):
-        #     pc = self.Rsolver.getPC()
-        #     pc.setHYPREType('boomeramg')
-
-        # self.Rsolver.setOperators(self.R)
-
-        # self.R = _BilaplacianR(self.A, self.Msolver)      
-
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         self.mean = mean
         
@@ -252,7 +228,7 @@ class SqrtPrecisionPDE_Prior:
         temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
         
         #mult used, so need to have petsc4py Vec objects
-        self.R.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
+        self.R.mat.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
         
         return_value = .5*temp_petsc_vec_Rd.dot(temp_petsc_vec_d)
         temp_petsc_vec_d.destroy()
@@ -266,7 +242,7 @@ class SqrtPrecisionPDE_Prior:
         temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
-        self.R.mult(temp_petsc_vec_d,temp_petsc_vec_out)
+        self.R.mat.mult(temp_petsc_vec_d,temp_petsc_vec_out)
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_self_mean.destroy()
         temp_petsc_vec_out.destroy()
@@ -280,7 +256,6 @@ class SqrtPrecisionPDE_Prior:
         self.M.destroy()
         self.A.destroy()
         self.sqrtM.destroy()
-        #FIX ME: add self.R and self.Rsolver here too (changed to petsc objects)
 
 
 def BiLaplacianPrior(Vh : dlx.fem.FunctionSpace, gamma : float, delta : float, Theta = None, mean=None, robin_bc=False) -> SqrtPrecisionPDE_Prior:

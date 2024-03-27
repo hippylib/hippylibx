@@ -78,11 +78,6 @@ class PDEVariationalProblem:
         """ Return a vector in the shape of the parameter. """
         return dlx.la.vector(self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs) 
         
-    @unused_function   
-    def init_parameter(self, m):
-        """ Initialize the parameter."""
-        dummy = self.generate_parameter()
-        m.init(dummy.mpi_comm(), dummy.dofmap.index_map)
 
     def solveFwd(self, state : dlx.la.Vector, x : list) -> None: #state is a vector
         """ Solve the possibly nonlinear forward problem:

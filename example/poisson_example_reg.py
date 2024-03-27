@@ -74,6 +74,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true = dlx.fem.Function(Vh_m)     
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
+
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_Var_Reg_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(m_true) 
+
     m_true = m_true.x
     u_true = pde.generate_state()  
     
@@ -132,6 +137,12 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
     x = solver.solve(x) 
+
+    estimated_parameter = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_Var_Reg_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(estimated_parameter) 
+
     
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")

@@ -40,23 +40,31 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     comm = MPI.COMM_WORLD
     rank  = comm.rank
     nproc = comm.size
+    
     msh = dlx.mesh.create_unit_square(comm, nx, ny)    
     Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
+    
     ndofs = [Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs, Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs ]
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
+    
     # FORWARD MODEL 
     alpha = 100.
     f = 1.
     pde_handler = Poisson_Approximation(alpha, f)  
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [],  is_fwd_linear=True)
+    
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_BiLaplacian_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(m_true) 
+
     m_true = m_true.x
     u_true = pde.generate_state()  
     
@@ -108,6 +116,11 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     
     x = solver.solve(x) 
     
+    estimated_parameter = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_BiLaplacian_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(estimated_parameter) 
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:

@@ -50,6 +50,8 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     sep = "\n"+"#"*80+"\n"    
     comm = MPI.COMM_WORLD
     rank  = comm.rank
+    nproc = comm.size
+    
     fname = mesh_filename
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
@@ -57,8 +59,10 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
     ndofs = [Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs, Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs ]
+    
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
     master_print (comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs) )
+    
     # FORWARD MODEL    
     u0 = 1.
     D = 1./24.
@@ -69,6 +73,11 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     m_true = dlx.fem.Function(Vh_m)     
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) 
     m_true.x.scatter_forward() 
+
+    with dlx.io.XDMFFile(msh.comm, "qpact_BiLaplacian_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(m_true) 
+
     m_true = m_true.x
     u_true = pde.generate_state() 
     
@@ -125,6 +134,12 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
     
     x = solver.solve(x) 
+
+    estimated_parameter = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(msh.comm, "qpact_BiLaplacian_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+        file.write_mesh(msh)
+        file.write_function(estimated_parameter) 
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:

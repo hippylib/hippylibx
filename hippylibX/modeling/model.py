@@ -3,6 +3,7 @@ import math
 from .variables import STATE, PARAMETER, ADJOINT
 from ..utils import vector2Function
 import numpy as np
+import petsc4py
 
 # Copyright (c) 2016-2018, The University of Texas at Austin 
 # & University of California--Merced.
@@ -337,7 +338,10 @@ class Model:
         """
         temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
+        if(isinstance(self.prior.R,petsc4py.PETSc.Mat)):
+            self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out) #for Variational Regularization prior
+        else:
+            self.prior.R.mat.mult(temp_petsc_vec_dm, temp_petsc_vec_out) #for BiLaplacian prior
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
         
@@ -374,21 +378,3 @@ class Model:
             self.misfit.apply_ij(PARAMETER,PARAMETER, dm, tmp)
         
             out.array[:] += tmp.array
-
-
-    @unused_function    
-    def apply_ij(self, i, j, d, out):
-        if i == STATE and j == STATE:
-            self.applyWuu(d,out)
-        elif i == STATE and j == PARAMETER:
-            self.applyWum(d,out)
-        elif i == PARAMETER and j == STATE:
-            self.applyWmu(d, out)
-        elif i == PARAMETER and j == PARAMETER:
-            self.applyWmm(d,out)
-        elif i == PARAMETER and j == ADJOINT:
-            self.applyCt(d,out)
-        elif i == ADJOINT and j == PARAMETER:
-            self.applyC(d,out)
-        else:
-            raise IndexError("apply_ij not allowed for i = {0}, j = {1}".format(i,j))
