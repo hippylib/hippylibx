@@ -102,9 +102,14 @@ class CGSolverSteihaug:
         self.update_x = self.update_x_with_TR
         self.B_op = B_op
         self.B_op.init_vector(self.Bx,0)
-    def update_x_without_TR(self,x : dlx.la.Vector, alpha : float, d : dlx.la.Vector):
-        x.array[:] += alpha*d.array
+    
+    def update_x_without_TR(self,x : dlx.la.Vector, alpha : float, d : petsc4py.PETSc.Vec):
+        # x.array[:] += alpha*d.array
+        temp_petsc_vec_x =  dlx.la.create_petsc_vector_wrap(x)
+        temp_petsc_vec_x.axpy(alpha, self.d)
+        temp_petsc_vec_x.destroy()
         return False
+    
     def update_x_with_TR(self,x,alpha,d):
         x_bk = x.copy()
         x.axpy(alpha,d)
