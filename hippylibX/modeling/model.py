@@ -338,10 +338,7 @@ class Model:
         """
         temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        if(isinstance(self.prior.R,petsc4py.PETSc.Mat)):
-            self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out) #for Variational Regularization prior
-        else:
-            self.prior.R.mat.mult(temp_petsc_vec_dm, temp_petsc_vec_out) #for BiLaplacian prior
+        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out) #for Variational Regularization prior
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
         

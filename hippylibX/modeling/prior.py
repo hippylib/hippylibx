@@ -157,14 +157,17 @@ class SqrtPrecisionPDE_Prior:
 
         self.sqrtM = MixedM.matMult(Mqh)
         
-        self.R = _BilaplacianR(self.A, self.Msolver)      
-        R_object = _BilaplacianR(self.A, self.Msolver)      
+        self._R = _BilaplacianR(self.A, self.Msolver)      
         
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         self.mean = mean
         
         if self.mean is None:            
             self.mean = self.init_vector(0)
+
+    @property
+    def R(self):
+        return self._R.mat
 
     def generate_parameter(self, dim : int) -> dlx.la.Vector:      
         """
@@ -228,7 +231,7 @@ class SqrtPrecisionPDE_Prior:
         temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
         
         #mult used, so need to have petsc4py Vec objects
-        self.R.mat.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
+        self.R.mult(temp_petsc_vec_d,temp_petsc_vec_Rd)
         
         return_value = .5*temp_petsc_vec_Rd.dot(temp_petsc_vec_d)
         temp_petsc_vec_d.destroy()
@@ -242,7 +245,7 @@ class SqrtPrecisionPDE_Prior:
         temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
         temp_petsc_vec_d.axpy(-1., temp_petsc_vec_self_mean)
-        self.R.mat.mult(temp_petsc_vec_d,temp_petsc_vec_out)
+        self.R.mult(temp_petsc_vec_d,temp_petsc_vec_out)
         temp_petsc_vec_d.destroy()
         temp_petsc_vec_self_mean.destroy()
         temp_petsc_vec_out.destroy()
