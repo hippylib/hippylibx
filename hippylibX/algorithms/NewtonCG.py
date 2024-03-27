@@ -12,7 +12,6 @@
 # hIPPYlib is free software; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License (as published by the Free
 # Software Foundation) version 2.0 dated June 1991.
-
 import math
 from ..utils.parameterList import ParameterList
 from ..modeling.reducedHessian import ReducedHessian
@@ -21,8 +20,6 @@ from .cgsolverSteihaug import CGSolverSteihaug
 import dolfinx as dlx
 import dolfinx.fem.petsc
 from ..algorithms.linalg import inner
-
-
 def LS_ParameterList():
     """
     Generate a ParameterList for line search globalization.
@@ -33,7 +30,6 @@ def LS_ParameterList():
     parameters["max_backtracking_iter"] = [10, "Maximum number of backtracking iterations"]
     
     return ParameterList(parameters)
-
 def TR_ParameterList():
     """
     Generate a ParameterList for Trust Region globalization.
@@ -43,7 +39,6 @@ def TR_ParameterList():
     parameters["eta"] = [0.05, "Reject step if (actual reduction)/(predicted reduction) < eta"]
     
     return ParameterList(parameters)
-
 def ReducedSpaceNewtonCG_ParameterList():
     """
     Generate a ParameterList for ReducedSpaceNewtonCG.
@@ -65,7 +60,6 @@ def ReducedSpaceNewtonCG_ParameterList():
     return ParameterList(parameters)
   
     
-
 class ReducedSpaceNewtonCG:
     
     """
@@ -73,10 +67,8 @@ class ReducedSpaceNewtonCG:
     The Newton system is solved inexactly by early termination of CG iterations via Eisenstat-Walker
     (to prevent oversolving) and Steihaug (to avoid negative curvature) criteria.
     Globalization is performed using one of the following methods:
-
     - line search (LS) based on the armijo sufficient reduction condition; or
     - trust region (TR) based on the prior preconditioned norm of the update direction.
-
     The stopping criterion is based on a control on the norm of the gradient and a control of the
     inner product between the gradient and the Newton direction.
        
@@ -124,7 +116,6 @@ class ReducedSpaceNewtonCG:
                optional callback function to be called at the end of each iteration. Takes as input the iteration number, and
                the list of vectors for the state, parameter, adjoint.
         """
-
         self.model = model
         self.parameters = parameters
         
@@ -139,7 +130,6 @@ class ReducedSpaceNewtonCG:
         
     def solve(self, x : list):
         """
-
         Input: 
             :code:`x = [u, m, p]` represents the initial guess (u and p may be None). 
             :code:`x` will be overwritten on return.
@@ -208,32 +198,26 @@ class ReducedSpaceNewtonCG:
                 break
                         
             self.it += 1            
-
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
-        
+
             HessApply = ReducedHessian(self.model)
+            HessApply_wrap = HessApply.as_petsc_wrapper()
             solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            solver.set_operator(HessApply)
+            solver.set_operator(HessApply_wrap)
             solver.set_preconditioner(self.model.Rsolver())
             solver.parameters["rel_tolerance"] = tolcg
             solver.parameters["max_iter"] = cg_max_iter
             solver.parameters["zero_initial_guess"] = True
             solver.parameters["print_level"] = print_level-1
-
             mg_neg = self.model.generate_vector(PARAMETER)
-
             mg_neg.array[:] = -1*mg.array[:]
-
             solver.solve(mhat,mg_neg)         
-
             self.total_cg_iter += HessApply.ncalls
-
             alpha = 1.0
             descent = 0
             n_backtrack = 0
             
             mg_mhat = inner(mg,mhat)
-
             
             while descent == 0 and n_backtrack < max_backtracking_iter:
                 
@@ -241,25 +225,18 @@ class ReducedSpaceNewtonCG:
                 
                 x_star[STATE].array[:] = x[STATE].array
         
-
                 self.model.solveFwd(x_star[STATE], x_star)
                             
                 cost_new, reg_new, misfit_new = self.model.cost(x_star)
-
                 # Check if armijo conditions are satisfied
                 if (cost_new < cost_old + alpha * c_armijo * mg_mhat) or (-mg_mhat <= self.parameters["gdm_tolerance"]):
                     cost_old = cost_new
                     descent = 1
-
                     x[PARAMETER].array[:] = x_star[PARAMETER].array
-
                     x[STATE].array[:] = x_star[STATE].array
-
                 else:
                     n_backtrack += 1
                     alpha *= 0.5
-
-
             if(print_level >= 0) and (self.it == 1):
                 print( "\n{0:3} {1:3} {2:15} {3:15} {4:15} {5:15} {6:14} {7:14} {8:14}".format(
                       "It", "cg_it", "cost", "misfit", "reg", "(g,dm)", "||g||L2", "alpha", "tolcg") )
@@ -267,8 +244,6 @@ class ReducedSpaceNewtonCG:
             if print_level >= 0:
                 print( "{0:3d} {1:3d} {2:15e} {3:15e} {4:15e} {5:15e} {6:14e} {7:14e} {8:14e}".format(
                         self.it, HessApply.ncalls, cost_new, misfit_new, reg_new, mg_mhat, gradnorm, alpha, tolcg) )
-
-
             if self.callback:
                 self.callback(self.it, x)
                 
@@ -282,7 +257,6 @@ class ReducedSpaceNewtonCG:
                 self.reason = 3
                 break
       
-
         self.final_grad_norm = gradnorm
         self.final_cost   = cost_new
        
@@ -308,7 +282,6 @@ class ReducedSpaceNewtonCG:
         
         mhat = self.model.generate_vector(PARAMETER) 
         R_mhat = self.model.generate_vector(PARAMETER)   
-
         mg = self.model.generate_vector(PARAMETER)
         
         x_star = [None, None, None] + x[3::]
@@ -334,12 +307,12 @@ class ReducedSpaceNewtonCG:
             
             self.it += 1
             
-
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
-            
+
             HessApply = ReducedHessian(self.model)
+            HessApply_wrap = HessApply.as_petsc_wrapper()
             solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            solver.set_operator(HessApply)
+            solver.set_operator(HessApply_wrap)
             solver.set_preconditioner(self.model.Rsolver())
             if self.it > 1:
                 solver.set_TR(delta_TR, self.model.prior.R)
@@ -350,43 +323,35 @@ class ReducedSpaceNewtonCG:
             
             solver.solve(mhat, -mg)
             self.total_cg_iter += HessApply.ncalls
-
             if self.it == 1:
                 self.model.prior.R.mult(mhat,R_mhat)
                 mhat_Rnorm = R_mhat.inner(mhat)
                 delta_TR = max(math.sqrt(mhat_Rnorm),1)
-
-
             x_star[PARAMETER].array[:] = x[PARAMETER].array + mhat.array
-
             x_star[STATE].array[:] = x[STATE].array
-
             self.model.solveFwd(x_star[STATE], x_star)
             cost_star, reg_star, misfit_star = self.model.cost(x_star)
             ACTUAL_RED = cost_old - cost_star
             #Calculate Predicted Reduction
             H_mhat = self.model.generate_vector(PARAMETER)
             H_mhat.array[:] = 0.
-            HessApply.mult(mhat,H_mhat)
+            # HessApply.mult(mhat,H_mhat)
+            HessApply_wrap.mult(mhat,H_mhat)
             mg_mhat = mg.inner(mhat)
             PRED_RED = -0.5*mhat.inner(H_mhat) - mg_mhat
             # print( "PREDICTED REDUCTION", PRED_RED, "ACTUAL REDUCTION", ACTUAL_RED)
             rho_TR = ACTUAL_RED/PRED_RED
-
-
             # Nocedal and Wright Trust Region conditions (page 69)
             if rho_TR < 0.25:
                 delta_TR *= 0.5
             elif rho_TR > 0.75 and solver.reasonid == 3:
                 delta_TR *= 2.0
             
-
             # print( "rho_TR", rho_TR, "eta_TR", eta_TR, "rho_TR > eta_TR?", rho_TR > eta_TR , "\n")
             if rho_TR > eta_TR:
                 
                 x[PARAMETER].array[:] = x_star[PARAMETER].array                
                 x[STATE].array[:] = x_star[STATE].array
-
                 cost_old = cost_star
                 reg_old = reg_star
                 misfit_old = misfit_star
@@ -405,7 +370,6 @@ class ReducedSpaceNewtonCG:
                 print( "{0:3d} {1:3d} {2:15e} {3:15e} {4:15e} {5:15e} {6:14e} {7:14e} {8:14e} {9:11} {10:14e}".format(
                         self.it, HessApply.ncalls, cost_old, misfit_old, reg_old, mg_mhat, gradnorm, delta_TR, rho_TR, accept_step,tolcg) )
                 
-
             #TR radius can make this term arbitrarily small and prematurely exit.
             if -mg_mhat <= self.parameters["gdm_tolerance"]:
                 self.converged = True

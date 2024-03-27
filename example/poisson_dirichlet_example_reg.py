@@ -110,13 +110,10 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     model = hpx.Model(pde, prior, misfit)
 
-    # m0 = dlx.fem.Function(Vh_m)     
-    # m0.interpolate(lambda x: np.exp(np.sin(x[0]) + np.sin( x[1]))   )
-    # m0.x.scatter_forward() 
-    # m0 = m0.x
-
-    m0 = pde.generate_parameter()
-    hpx.parRandom.normal(1.,m0)
+    m0 = dlx.fem.Function(Vh_m)     
+    m0.interpolate(lambda x: np.exp(np.sin(x[0]) + np.sin( x[1]))   )
+    m0.x.scatter_forward() 
+    m0 = m0.x
 
     data_misfit_True = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=True,verbose=(rank == 0))
 
