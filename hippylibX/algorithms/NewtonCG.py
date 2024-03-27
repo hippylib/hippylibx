@@ -335,7 +335,6 @@ class ReducedSpaceNewtonCG:
             #Calculate Predicted Reduction
             H_mhat = self.model.generate_vector(PARAMETER)
             H_mhat.array[:] = 0.
-            # HessApply.mult(mhat,H_mhat)
             HessApply_wrap.mult(mhat,H_mhat)
             mg_mhat = mg.inner(mhat)
             PRED_RED = -0.5*mhat.inner(H_mhat) - mg_mhat

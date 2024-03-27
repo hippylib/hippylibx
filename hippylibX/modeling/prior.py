@@ -78,18 +78,6 @@ class _BilaplacianRsolver():
         else:
             x = self.M.createVecRight() 
         return x
-    
-    # def solve(self,x : dlx.la.Vector, b : dlx.la.Vector):
-    #     temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-    #     temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-    #     self.Asolver.solve(temp_petsc_vec_b, self.help1)
-    #     nit = self.Asolver.its
-    #     self.M.mult(self.help1, self.help2)
-    #     self.Asolver.solve(self.help2,temp_petsc_vec_x)
-    #     nit += self.Asolver.its
-    #     temp_petsc_vec_b.destroy()
-    #     temp_petsc_vec_x.destroy()
-    #     return nit
 
     def solve(self,b : petsc4py.PETSc.Vec, x : petsc4py.PETSc.Vec):
         self.Asolver.solve(b, self.help1)
@@ -136,8 +124,6 @@ class SqrtPrecisionPDE_Prior:
     
         self.Msolver = self._createsolver(self.petsc_options_M)
         self.Msolver.setOperators(self.M)
-
-        # print(self.Msolver.view())
         
         self.A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(sqrt_precision_varf_handler(trial, test) ))        
         self.A.assemble()
