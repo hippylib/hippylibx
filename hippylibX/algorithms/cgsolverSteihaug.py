@@ -103,11 +103,8 @@ class CGSolverSteihaug:
         self.B_op = B_op
         self.B_op.init_vector(self.Bx,0)
     
-    def update_x_without_TR(self,x : dlx.la.Vector, alpha : float, d : petsc4py.PETSc.Vec):
-        # x.array[:] += alpha*d.array
-        temp_petsc_vec_x =  dlx.la.create_petsc_vector_wrap(x)
-        temp_petsc_vec_x.axpy(alpha, self.d)
-        temp_petsc_vec_x.destroy()
+    def update_x_without_TR(self,x : petsc4py.PETSc.Vec, alpha : float, d : petsc4py.PETSc.Vec):
+        x.axpy(alpha, self.d)
         return False
     
     def update_x_with_TR(self,x,alpha,d):
@@ -138,7 +135,17 @@ class CGSolverSteihaug:
             x.axpy(tau*alpha, d)
             return  True
         
-    def solve(self,x,b):
+
+    def solve(self,x : dlx.la.Vector ,b : dlx.la.Vector):
+        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+        temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
+        self.solve_petsc(temp_petsc_vec_x, temp_petsc_vec_b)
+        temp_petsc_vec_x.destroy()
+        temp_petsc_vec_b.destroy()
+
+
+
+    def solve_petsc(self, x: petsc4py.PETSc.Vec, b : petsc4py.PETSc.Vec):
         """
         Solve the linear system :math:`Ax = b`
         """
@@ -153,20 +160,15 @@ class CGSolverSteihaug:
 
         if self.parameters["zero_initial_guess"]:
             self.r.scale(0.)
-            temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-            self.r.axpy(1.,temp_petsc_vec_b)
-            temp_petsc_vec_b.destroy()            
+            self.r.axpy(1.,b)
 
-            x.array[:] = 0.
+            x.scale(0.)
 
         else:
             assert self.TR_radius_2==None
-            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-            self.A.mult(temp_petsc_vec_x, self.r)
+            self.A.mult(x, self.r)
             self.r.scale(-1.)
-            temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-            self.r.axpy(1., temp_petsc_vec_b)
-            temp_petsc_vec_b.destroy()
+            self.r.axpy(1., b)
 
         self.z.scale(0.)
 
@@ -202,10 +204,8 @@ class CGSolverSteihaug:
         if den <= 0.0:
             self.converged = True
             self.reasonid = 2
-            temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-            temp_petsc_vec_x.axpy(1., self.d)
+            x.axpy(1., self.d)
             self.r.axpy(-1., self.Ad)
-            temp_petsc_vec_x.destroy()
 
             self.B_solver.solve(self.r, self.z)
 
