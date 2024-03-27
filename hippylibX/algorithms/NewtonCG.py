@@ -201,9 +201,8 @@ class ReducedSpaceNewtonCG:
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
 
             HessApply = ReducedHessian(self.model)
-            HessApply_wrap = HessApply.as_petsc_wrapper()
             solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            solver.set_operator(HessApply_wrap)
+            solver.set_operator(HessApply.mat)
             solver.set_preconditioner(self.model.Rsolver())
             solver.parameters["rel_tolerance"] = tolcg
             solver.parameters["max_iter"] = cg_max_iter
@@ -310,9 +309,8 @@ class ReducedSpaceNewtonCG:
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm/gradnorm_ini))
 
             HessApply = ReducedHessian(self.model)
-            HessApply_wrap = HessApply.as_petsc_wrapper()
             solver = CGSolverSteihaug(comm = self.model.prior.Vh.mesh.comm) 
-            solver.set_operator(HessApply_wrap)
+            solver.set_operator(HessApply.mat)
             solver.set_preconditioner(self.model.Rsolver())
             if self.it > 1:
                 solver.set_TR(delta_TR, self.model.prior.R)
@@ -335,7 +333,7 @@ class ReducedSpaceNewtonCG:
             #Calculate Predicted Reduction
             H_mhat = self.model.generate_vector(PARAMETER)
             H_mhat.array[:] = 0.
-            HessApply_wrap.mult(mhat,H_mhat)
+            HessApply.mat.mult(mhat,H_mhat)
             mg_mhat = mg.inner(mhat)
             PRED_RED = -0.5*mhat.inner(H_mhat) - mg_mhat
             # print( "PREDICTED REDUCTION", PRED_RED, "ACTUAL REDUCTION", ACTUAL_RED)
