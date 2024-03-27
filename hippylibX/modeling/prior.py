@@ -41,23 +41,16 @@ class _BilaplacianR:
         self.help1 = self.A.createVecLeft()
         self.help2 = self.A.createVecRight()
         
-    @unused_function
-    def init_vector(self, dim : int) -> petsc4py.PETSc.Vec:
-        x = self.A.createVecRight() 
-        return x
-
     def mpi_comm(self):
         return self.A.comm
         
-    # def mult(self, mat, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
-    #     self.A.mult(x,self.help1)
-    #     self.Msolver.solve(self.help1, self.help2)
-    #     self.A.mult(self.help2, y)
-
-    def mult(self, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
+    def mult(self, mat, x : petsc4py.PETSc.Vec, y : petsc4py.PETSc.Vec) -> None:
         self.A.mult(x,self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
+
+
+    
 
 class _BilaplacianRsolver():
     """
@@ -86,8 +79,6 @@ class _BilaplacianRsolver():
         self.Asolver.solve(self.help2,x)
         nit += self.Asolver.its
         return nit
-
-
 
 class SqrtPrecisionPDE_Prior:
     def __init__(self, Vh : dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None):
@@ -167,11 +158,11 @@ class SqrtPrecisionPDE_Prior:
 
         self.sqrtM = MixedM.matMult(Mqh)
                    
-        # R_object = _BilaplacianR(self.A, self.Msolver)      
+        R_object = _BilaplacianR(self.A, self.Msolver)      
         
-        # self.R = petsc4py.PETSc.Mat().createPython(self.A.getSizes(),comm = Vh.mesh.comm)
-        # self.R.setPythonContext(R_object)
-        # self.R.setUp()
+        self.R = petsc4py.PETSc.Mat().createPython(self.A.getSizes(),comm = Vh.mesh.comm)
+        self.R.setPythonContext(R_object)
+        self.R.setUp()
 
         # petsc_options_Rsolver = {"ksp_type": "cg", "pc_type": "hypre", "ksp_rtol":"1e-12", "ksp_max_it":"1000", "ksp_error_if_not_converged":"true", "ksp_initial_guess_nonzero":"false"}
         # self.Rsolver = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
@@ -191,7 +182,7 @@ class SqrtPrecisionPDE_Prior:
 
         # self.Rsolver.setOperators(self.R)
 
-        self.R = _BilaplacianR(self.A, self.Msolver)      
+        # self.R = _BilaplacianR(self.A, self.Msolver)      
 
         self.Rsolver = _BilaplacianRsolver(self.Asolver, self.M)
         self.mean = mean

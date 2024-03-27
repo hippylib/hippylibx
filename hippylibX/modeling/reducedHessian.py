@@ -57,19 +57,7 @@ class ReducedHessian:
     @property
     def mat(self):
         return self.petsc_wrapper
-    
-    def init_vector(self, dim: int) -> dlx.la.Vector:
-        """
-        Reshape the Vector :code:`x` so that it is compatible with the reduced Hessian
-        operator.
-        Parameters:
-        - :code:`x`: the vector to reshape.
-        - :code:`dim`: if 0 then :code:`x` will be reshaped to be compatible with the range of the reduced Hessian, if 1 then :code:`x` will be reshaped to be compatible with the domain of the reduced Hessian.
-               
-        .. note:: Since the reduced Hessian is a self adjoint operator, the range and the domain is the same. Either way, we choosed to add the parameter :code:`dim` for consistency with the interface of :code:`Matrix` in dolfin.
-        """
-        return self.model.init_parameter(dim)
-        
+
     def mult(self,mat, x : petsc4py.PETSc.Vec ,y : petsc4py.PETSc.Vec ) -> None:
         """
         Apply the reduced Hessian (or the Gauss-Newton approximation) to the vector :code:`x`. Return the result in :code:`y`.
@@ -94,17 +82,6 @@ class ReducedHessian:
 
         self.ncalls += 1
 
-
-    def inner(self, x : dlx.la.Vector, y : dlx.la.Vector):
-        """
-        Perform the inner product between :code:`x` and :code:`y` in the norm induced by the reduced
-        Hessian :math:`H,\\,(x, y)_H = x' H y`.
-        """
-        Ay = self.model.generate_vector(PARAMETER)
-        Ay.array[:] = 0.
-        self.mult(y,Ay)
-        
-        return linalg.inner(x,Ay)
     def GNHessian(self,x,y):
         """
         Apply the Gauss-Newton approximation of the reduced Hessian to the vector :code:`x`.

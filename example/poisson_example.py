@@ -140,4 +140,4 @@ if __name__ == "__main__":
     comm = MPI.COMM_WORLD
     if(comm.rank == 0):
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
-plt.show()
+        plt.show()
