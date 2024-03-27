@@ -46,6 +46,17 @@ class ReducedHessian:
         self.uhat = model.generate_vector(STATE)
         self.phat = model.generate_vector(ADJOINT)
         self.yhelp = model.generate_vector(PARAMETER)
+
+        self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(self.model.prior.M.getSizes(),comm=self.model.prior.Vh.mesh.comm)
+        self.petsc_wrapper.setPythonContext(self)
+        self.petsc_wrapper.setUp()
+
+    def __del__(self):
+        self.petsc_wrapper.destroy()
+
+    @property
+    def mat(self):
+        return self.petsc_wrapper
     
     def init_vector(self, dim: int) -> dlx.la.Vector:
         """
@@ -129,10 +140,3 @@ class ReducedHessian:
         if not self.misfit_only:
             self.model.applyR(x,self.yhelp)
             y.array[:] += self.yhelp.array
-
-
-    def as_petsc_wrapper(self) -> petsc4py.PETSc.Mat:
-        H  = petsc4py.PETSc.Mat().createPython(self.model.prior.M.getSizes(),comm=self.model.prior.Vh.mesh.comm)
-        H.setPythonContext(self)
-        H.setUp()
-        return H
