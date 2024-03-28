@@ -51,7 +51,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     comm = MPI.COMM_WORLD
     rank  = comm.rank
     nproc = comm.size
-    
+
     fname = mesh_filename
     fid = dlx.io.XDMFFile(comm,fname,"r")
     msh = fid.read_mesh(name='mesh')
@@ -115,9 +115,9 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     # # #######################################
 
-    prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_copy.array[:] = prior_mean.array[:]
-    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    intial_guess_m = prior.generate_parameter(0)
+    intial_guess_m.array[:] = prior_mean.array[:]
+    x = [model.generate_vector(hpx.STATE), intial_guess_m, model.generate_vector(hpx.ADJOINT)]
     if rank == 0:
         print( sep, "Find the MAP point", sep)    
            

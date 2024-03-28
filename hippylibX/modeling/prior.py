@@ -163,7 +163,7 @@ class SqrtPrecisionPDE_Prior:
         self.mean = mean
         
         if self.mean is None:            
-            self.mean = self.init_vector(0)
+            self.mean = self.generate_parameter(0) 
 
     @property
     def R(self):

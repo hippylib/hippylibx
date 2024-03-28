@@ -282,8 +282,6 @@ class PDEVariationalProblem:
             dlx.fem.petsc.assemble_matrix(self.Wuu, dlx.fem.form(ufl.derivative(g_form[STATE],x_fun[STATE],x_fun_trial[STATE])), self.bc0, diagonal = 0.)
             self.Wuu.assemble()
             
-
-            #assemble Wum instead, set bc, transpose and delete the original matrix.            
             if self.Wum is None:
                 self.Wum = dlx.fem.petsc.create_matrix(dlx.fem.form( ufl.derivative(g_form[STATE],x_fun[PARAMETER],x_fun_trial[PARAMETER])))
             

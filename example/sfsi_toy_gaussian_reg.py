@@ -89,6 +89,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)     
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) 
+
     m_true.x.scatter_forward()
 
     with dlx.io.XDMFFile(msh.comm, "qpact_Var_Reg_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
@@ -128,7 +129,7 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     model = hpx.Model(pde, prior, misfit)
 
     m0 = dlx.fem.Function(Vh_m)     
-    m0.interpolate(lambda x: np.sin(x[0])) 
+    m0.interpolate(lambda x:  (2*np.log(0.01) + 3)/2 + 3/2 * np.sin(np.pi*x[0])*np.cos( np.pi* x[1]) )
     m0.x.scatter_forward() 
     m0 = m0.x
 
@@ -136,12 +137,11 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
 
     data_misfit_False = hpx.modelVerify(model,m0,is_quadratic=False,misfit_only=False,verbose=(rank == 0))
 
-    # # #######################################
-    prior_mean = prior_mean.x
-    prior_mean_copy = pde.generate_parameter()
-    prior_mean_copy.array[:] = prior_mean.array[:]
+    # # # #######################################
+    initial_guess_m = pde.generate_parameter()
+    initial_guess_m.array[:] = prior_mean.x.array[:]
 
-    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    x = [model.generate_vector(hpx.STATE), initial_guess_m, model.generate_vector(hpx.ADJOINT)]
     if rank == 0:
         print( sep, "Find the MAP point", sep)    
            

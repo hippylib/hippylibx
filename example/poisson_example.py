@@ -96,9 +96,9 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
    
     # # #######################################
     
-    prior_mean_copy = prior.generate_parameter(0)
-    prior_mean_copy.array[:] = prior_mean.array[:]
-    x = [model.generate_vector(hpx.STATE), prior_mean_copy, model.generate_vector(hpx.ADJOINT)]
+    initial_guess_m = prior.generate_parameter(0)
+    initial_guess_m.array[:] = prior_mean.array[:]
+    x = [model.generate_vector(hpx.STATE), initial_guess_m, model.generate_vector(hpx.ADJOINT)]
     if rank == 0:
         print( sep, "Find the MAP point", sep)    
            

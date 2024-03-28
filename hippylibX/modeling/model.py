@@ -163,9 +163,6 @@ class Model:
         self.problem.evalGradientParameter(x, mg)
 
         self.misfit.grad(PARAMETER,x,tmp)        
-        
-        #see below - prior.Msolve expects petsc Vecs, hence vector operations are not
-        #modified to be numpy array operations
 
         mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
         tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
@@ -338,7 +335,7 @@ class Model:
         """
         temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
         temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out) #for Variational Regularization prior
+        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out) 
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
         
