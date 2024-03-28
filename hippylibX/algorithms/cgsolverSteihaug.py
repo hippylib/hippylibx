@@ -159,24 +159,19 @@ class CGSolverSteihaug:
 
 
         if self.parameters["zero_initial_guess"]:
-            self.r.scale(0.)
-            self.r.axpy(1.,b)
-
+            self.r.axpby(1., 0., b) #r = 1.*b + 0.*r
             x.scale(0.)
 
         else:
             assert self.TR_radius_2==None
             self.A.mult(x, self.r)
-            self.r.scale(-1.)
-            self.r.axpy(1., b)
-
+            self.r.axpby(1., -1., b) #r = 1*b - 1*r
+        
         self.z.scale(0.)
-
 
         self.B_solver.solve(self.r,self.z) #z = B^-1 r
 
-        self.d.scale(0.)
-        self.d.axpy(1., self.z)
+        self.d.axpby(1., 0., self.z) # d = 1.*z + 0.*d
 
         #expects dlx
         nom0 = self.d.dot(self.r)
@@ -259,9 +254,7 @@ class CGSolverSteihaug:
 
             beta = betanom/nom
 
-            self.d.scale(beta)
-            self.d.axpy(1., self.z)
-
+            self.d.axpby(1., beta, self.z)  # d= 1*z + beta*d
             self.A.mult(self.d,self.Ad)
 
             den = self.d.dot(self.Ad)

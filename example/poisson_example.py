@@ -42,8 +42,8 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     nproc = comm.size
     
     msh = dlx.mesh.create_unit_square(comm, nx, ny)    
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
-    Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("Lagrange", 2)) 
+    Vh_m = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
     
     ndofs = [Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs, Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs ]
@@ -61,7 +61,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
     
-    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_BiLaplacian_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_BiLaplacian_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: 
         file.write_mesh(msh)
         file.write_function(m_true) 
 
@@ -117,7 +117,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x = solver.solve(x) 
     
     estimated_parameter = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_BiLaplacian_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_BiLaplacian_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: 
         file.write_mesh(msh)
         file.write_function(estimated_parameter) 
 

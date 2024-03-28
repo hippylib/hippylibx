@@ -6,6 +6,22 @@ import numpy as np
 import hippylibX as hpx
 import dolfinx as dlx
 
+# functional handler for prior:
+class H1TikhonvFunctional:
+    def __init__(self, gamma, delta, m0 = None):
+        self.gamma = gamma #These are dlx Constant, Expression, or Function
+        self.delta = delta
+        self.m0 = m0
+        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
+
+    def __call__(self, m): #Here m is a dlx Function
+        if self.m0 is None:
+            dm = m
+        else:
+            dm = m - self.m0
+
+        return ufl.inner(self.gamma * ufl.grad(dm), ufl.grad(dm) ) *self.dx + \
+               ufl.inner(self.delta*dm, dm )*self.dx
 
 
 class VariationalRegularization:

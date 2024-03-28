@@ -35,32 +35,14 @@ class PoissonMisfitForm:
     def __call__(self, u : dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:   
         return .5/self.sigma2*ufl.inner(u - self.d, u - self.d)*self.dx
 
-# functional handler for prior:
-class H1TikhonvFunctional:
-    def __init__(self, gamma, delta, m0 = None):	
-        self.gamma = gamma #These are dlx Constant, Expression, or Function
-        self.delta = delta
-        self.m0 = m0
-        self.dx = ufl.Measure("dx",metadata={"quadrature_degree":4})
-
-    def __call__(self, m): #Here m is a dlx Function
-        if(self.m0 is None):
-            dm = m
-        else:
-            dm = m - self.m0
-
-        return ufl.inner(self.gamma * ufl.grad(dm), ufl.grad(dm) ) *self.dx + \
-                ufl.inner(self.delta*dm, dm )*self.dx
-
-
 def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict) -> None:
     sep = "\n"+"#"*80+"\n"    
     comm = MPI.COMM_WORLD
     rank  = comm.rank
     nproc = comm.size
     msh = dlx.mesh.create_unit_square(comm, nx, ny)    
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("CG", 2)) 
-    Vh_m = dlx.fem.FunctionSpace(msh, ("CG", 1))
+    Vh_phi = dlx.fem.FunctionSpace(msh, ("Lagrange", 2)) 
+    Vh_m = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
     ndofs = [Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs, Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs ]
     master_print (comm, sep, "Set up the mesh and finite element spaces", sep)
@@ -75,7 +57,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     m_true.interpolate(lambda x: np.log(2 + 7*( (    (x[0] - 0.5)**2 + (x[1] - 0.5)**2)**0.5 > 0.2)) )
     m_true.x.scatter_forward() 
 
-    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_Var_Reg_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_Var_Reg_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: 
         file.write_mesh(msh)
         file.write_function(m_true) 
 
@@ -100,7 +82,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     prior_gamma = prior_param['gamma']
     prior_delta = prior_param['delta']
 
-    prior_handler = H1TikhonvFunctional(prior_gamma, prior_delta,prior_mean)
+    prior_handler = hpx.H1TikhonvFunctional(prior_gamma, prior_delta,prior_mean)
     prior = hpx.VariationalRegularization(Vh_m, prior_handler)
 
     model = hpx.Model(pde, prior, misfit)
@@ -138,7 +120,7 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
     x = solver.solve(x) 
 
     estimated_parameter = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_Var_Reg_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: #works!!
+    with dlx.io.XDMFFile(msh.comm, "Robin_poisson_Var_Reg_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: 
         file.write_mesh(msh)
         file.write_function(estimated_parameter) 
 
