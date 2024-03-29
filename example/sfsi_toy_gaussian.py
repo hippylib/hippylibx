@@ -74,10 +74,6 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     m_true.interpolate(lambda x: np.log(0.01) + 3.*( ( ( (x[0]-2.)*(x[0]-2.) + (x[1]-2.)*(x[1]-2.) ) < 1.) )) 
     m_true.x.scatter_forward() 
 
-    with dlx.io.XDMFFile(msh.comm, "qpact_BiLaplacian_Prior_true_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: 
-        file.write_mesh(msh)
-        file.write_function(m_true) 
-
     m_true = m_true.x
     u_true = pde.generate_state() 
     
@@ -135,10 +131,25 @@ def run_inversion(mesh_filename: str, nx : int, ny : int, noise_variance : float
     
     x = solver.solve(x) 
 
-    estimated_parameter = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(msh.comm, "qpact_BiLaplacian_Prior_estimated_parameter_np{0:d}_X.xdmf".format(nproc),"w") as file: 
-        file.write_mesh(msh)
-        file.write_function(estimated_parameter) 
+    m_fun = hpx.vector2Function(x[hpx.PARAMETER],Vh[hpx.PARAMETER],name = 'm_map')
+    m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name = 'm_true')
+    
+    V_P1 = dlx.fem.FunctionSpace(msh, ("Lagrange", 1) )
+
+    u_true_fun = dlx.fem.Function(V_P1, name='u_true')
+    u_true_fun.interpolate( hpx.vector2Function(u_true, Vh[hpx.STATE] ) )
+    u_true_fun.x.scatter_forward()
+
+    u_map_fun = dlx.fem.Function(V_P1, name='u_map')
+    u_map_fun.interpolate( hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE] ) )
+    u_map_fun.x.scatter_forward()
+    
+    d_fun = dlx.fem.Function(V_P1, name='data')
+    d_fun.interpolate(d)
+    d_fun.x.scatter_forward()
+        
+    with dlx.io.VTXWriter(msh.comm, "qpact_BiLaplacian_prior_np{0:d}_Prior.bp".format(nproc), [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun] ) as vtx:
+        vtx.write(0.0)
 
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
