@@ -23,16 +23,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Set up python
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: 3.10.12
-
-      # - name: Install dependencies
-      #   run: |
-      #     python3 -m pip install --upgrade pip
-      #     pip install ruff
-
       - name: ruff file checks
         run: |
           cd example/
@@ -40,7 +30,7 @@ jobs:
           ruff check .
           ruff format --check .
           cd ..
-          cd hippylibx/
+          cd hippylibx/modeling/
           ruff check .
           ruff format --check .
 
