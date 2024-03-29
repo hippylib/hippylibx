@@ -30,7 +30,7 @@ jobs:
           ruff check .
           ruff format --check .
           cd ..
-          cd hippylibx/modeling/
+          cd hippylibX/modeling/
           ruff check .
           ruff format --check .
 
