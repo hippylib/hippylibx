@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - linter_branch #FIX ME: create pull request to main and get rid of this line
   pull_request:
 
 defaults:
@@ -21,6 +22,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: ruff file checks
+        run: |
+          cd example/
+          ruff check .
+          ruff format --check .
+          cd ..
+          cd hippylibx/
+          ruff check .
+          ruff format --check .
+          
       - name: run serial check
         run: |
           cd ./hippylibX/test && 

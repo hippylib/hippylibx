@@ -1,8 +1,6 @@
-from .PDEProblem import PDEVariationalProblem
-from .variables import *
-from .Regularization import *
-from .misfit import *
-from .model import *
-from .modelVerify import *
-from .prior import *
-from .reducedHessian import *
+from .PDEProblem import PDEVariationalProblem  # noqa
+from .misfit import NonGaussianContinuousMisfit  # noqa
+from .prior import BiLaplacianPrior  # noqa
+from .model import Model  # noqa
+from .modelVerify import modelVerify  # noqa
+from .Regularization import H1TikhonvFunctional, VariationalRegularization  # noqa
