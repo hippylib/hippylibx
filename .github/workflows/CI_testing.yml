@@ -14,7 +14,6 @@ jobs:
   style:
     runs-on: ubuntu-22.04
     container:
-      # image: dolfinx/dolfinx:stable
       image: venuvgr/dolfinx_image:v2
       options: --user 1001 --privileged 
     name: CI test
