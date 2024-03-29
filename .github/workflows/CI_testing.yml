@@ -14,7 +14,8 @@ jobs:
   style:
     runs-on: ubuntu-22.04
     container:
-      image: dolfinx/dolfinx:stable
+      # image: dolfinx/dolfinx:stable
+      image: venuvgr/dolfinx_image.v2
       options: --user 1001 --privileged 
     name: CI test
 
@@ -32,16 +33,16 @@ jobs:
       #     python3 -m pip install --upgrade pip
       #     pip install ruff
 
-      # - name: ruff file checks
-      #   run: |
-      #     cd example/
-      #     import ruff
-      #     ruff check .
-      #     ruff format --check .
-      #     cd ..
-      #     cd hippylibx/
-      #     ruff check .
-      #     ruff format --check .
+      - name: ruff file checks
+        run: |
+          cd example/
+          import ruff
+          ruff check .
+          ruff format --check .
+          cd ..
+          cd hippylibx/
+          ruff check .
+          ruff format --check .
 
       - name: run serial check
         run: |
