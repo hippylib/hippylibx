@@ -25,21 +25,21 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
 
-      # - name: Install dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install ruff
-
-      - name: ruff file checks
+      - name: Install dependencies
         run: |
-          cd example/
-          import ruff
-          ruff check .
-          ruff format --check .
-          cd ..
-          cd hippylibx/
-          ruff check .
-          ruff format --check .
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      # - name: ruff file checks
+      #   run: |
+      #     cd example/
+      #     import ruff
+      #     ruff check .
+      #     ruff format --check .
+      #     cd ..
+      #     cd hippylibx/
+      #     ruff check .
+      #     ruff format --check .
 
       - name: run serial check
         run: |
