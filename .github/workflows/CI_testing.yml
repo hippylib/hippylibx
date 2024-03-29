@@ -25,7 +25,6 @@ jobs:
       - name: ruff file checks
         run: |
           cd example/
-          import ruff
           ruff check .
           ruff format --check .
           cd ..
