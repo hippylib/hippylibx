@@ -25,6 +25,9 @@ jobs:
       - name: Install ruff
         run: pip install ruff
 
+      - name: ruff alias
+        run: echo "alias ruff=$(python -m site --user-base)/bin/ruff" >> ~/.bashrc
+
       - name: ruff file checks
         run: |
           cd example/
