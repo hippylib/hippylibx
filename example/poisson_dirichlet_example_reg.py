@@ -84,7 +84,6 @@ def run_inversion(nx : int, ny : int, noise_variance : float, prior_param : dict
 
     m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name = 'm_true')
     
-
     # # LIKELIHOOD
     d = dlx.fem.Function(Vh[hpx.STATE])
     d.x.array[:] = u_true.array[:]
