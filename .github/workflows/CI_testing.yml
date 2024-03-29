@@ -27,10 +27,10 @@ jobs:
         with:
           python-version: 3.10.12
 
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install ruff
+      # - name: Install dependencies
+      #   run: |
+      #     python3 -m pip install --upgrade pip
+      #     pip install ruff
 
       # - name: ruff file checks
       #   run: |
