@@ -17,11 +17,6 @@ jobs:
       image: dolfinx/dolfinx:stable
       options: --user 1001 --privileged 
     name: CI test
-    script: 
-      - apt-get update -q -y
-      - apt-get install -y python-pip
-      - python -V
-      - pip install ruff
 
     steps:
       - name: Checkout code
@@ -30,11 +25,10 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
 
-      # - name: Install ruff
-      #   run: pip install ruff
-
-      # - name: ruff alias
-      #   run: echo "alias ruff=$(python -m site --user-base)/bin/ruff" >> ~/.bashrc
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
 
       - name: ruff file checks
         run: |
