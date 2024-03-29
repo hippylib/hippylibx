@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - linter_branch #FIX ME: create pull request to main and get rid of this line
   pull_request:
 
 defaults:
