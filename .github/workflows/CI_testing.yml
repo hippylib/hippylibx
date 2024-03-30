@@ -23,12 +23,7 @@ jobs:
 
       - name: ruff file checks
         run: |
-          cd example/
           pip install ruff
-          ruff check .
-          ruff format --check . 
-          cd ..
-          cd hippylibX/modeling/
           ruff check .
           ruff format --check .
 
