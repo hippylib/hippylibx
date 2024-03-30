@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: dolfinx/dolfinx:stable
-      options: --user 1001 --privileged 
+      options: --privileged 
     name: CI test
 
     steps:
