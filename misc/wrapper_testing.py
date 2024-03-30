@@ -1,4 +1,3 @@
-import unittest
 import sys
 import os
 import numpy as np
@@ -31,7 +30,7 @@ def generate_parameter(Vh) -> dlx.la.Vector:
 
 def _createsolver(Vh, petsc_options) -> petsc4py.PETSc.KSP:
     ksp = petsc4py.PETSc.KSP().create(Vh.mesh.comm)
-    problem_prefix = f"dolfinx_solve_prior"
+    problem_prefix = "dolfinx_solve_prior"
     ksp.setOptionsPrefix(problem_prefix)
 
     # Set PETSc options
