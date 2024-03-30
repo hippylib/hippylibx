@@ -1,3 +1,2 @@
-from .linalg import * 
-from .NewtonCG import *
-
+from .linalg import inner  # noqa
+from .NewtonCG import ReducedSpaceNewtonCG, ReducedSpaceNewtonCG_ParameterList  # noqa

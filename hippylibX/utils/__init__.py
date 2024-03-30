@@ -1,3 +1,2 @@
-from .vector2function import vector2Function, updateFromVector
-from .projection import projection
-from .random import parRandom
+from .vector2function import vector2Function, updateFromVector  # noqa
+from .random import parRandom  # noqa

@@ -13,7 +13,7 @@ jobs:
   style:
     runs-on: ubuntu-22.04
     container:
-      image: venuvgr/dolfinx_image:v2
+      image: dolfinx/dolfinx:stable
       options: --user 1001 --privileged 
     name: CI test
 
@@ -24,8 +24,9 @@ jobs:
       - name: ruff file checks
         run: |
           cd example/
+          pip install ruff
           ruff check .
-          ruff format --check .
+          ruff format --check . 
           cd ..
           cd hippylibX/modeling/
           ruff check .

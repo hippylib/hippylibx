@@ -2,12 +2,13 @@ import dolfinx as dlx
 import ufl
 import petsc4py
 
+
 def projection(v, target_func, bcs=[]):
-    #reference:
+    # reference:
     # https://github.com/michalhabera/dolfiny/blob/master/dolfiny/projection.py
-    
-    #v -> expression to project
-    #target_func -> function that contains the projection
+
+    # v -> expression to project
+    # target_func -> function that contains the projection
 
     V = target_func.function_space
     dx = ufl.dx(V.mesh)
@@ -21,7 +22,9 @@ def projection(v, target_func, bcs=[]):
     A.assemble()
     b = dlx.fem.petsc.assemble_vector(L)
     dlx.fem.petsc.apply_lifting(b, [a], [bcs])
-    b.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE)
+    b.ghostUpdate(
+        addv=petsc4py.PETSc.InsertMode.ADD, mode=petsc4py.PETSc.ScatterMode.REVERSE
+    )
 
     solver = petsc4py.PETSc.KSP().create()
     solver.setOperators(A)
