@@ -18,10 +18,9 @@ from ..modeling.reducedHessian import ReducedHessian
 from ..modeling.variables import STATE, PARAMETER, ADJOINT
 from .cgsolverSteihaug import CGSolverSteihaug
 
-# import dolfinx as dlx
-# import dolfinx.fem.petsc
 from ..algorithms.linalg import inner
-
+import petsc4py
+import dolfinx as dlx
 
 def LS_ParameterList():
     """
@@ -160,6 +159,53 @@ class ReducedSpaceNewtonCG:
         self.final_grad_norm = 0
 
         self.callback = callback
+
+
+        self.petsc_options = {
+            "ksp_type":'stcg',
+            "ksp_rtol": self.parameters['rel_tolerance'],
+            # "ksp_max_it": self.parameters["cg_max_iter"],
+            "ksp_initial_guess_nonzero": "true",
+
+        }
+
+
+        # if self.it > 1:
+            #     solver.set_TR(delta_TR, self.model.prior.R)
+            # solver.parameters["rel_tolerance"] = tolcg
+            # self.parameters["max_iter"] = cg_max_iter
+            # solver.parameters["zero_initial_guess"] = True
+            # solver.parameters["print_level"] = print_level - 1
+
+        # rel_tol = self.parameters["rel_tolerance"]
+        # abs_tol = self.parameters["abs_tolerance"]
+        # max_iter = self.parameters["max_iter"]
+        # print_level = self.parameters["print_level"]
+        # GN_iter = self.parameters["GN_iter"]
+        # cg_coarse_tolerance = self.parameters["cg_coarse_tolerance"]
+        # cg_max_iter = self.parameters["cg_max_iter"]
+        # tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
+
+
+    def _createLUSolver(self) -> petsc4py.PETSc.KSP:
+        ksp = petsc4py.PETSc.KSP().create(self.model.prior.Vh.mesh.comm)
+        problem_prefix = f"dolfinx_solve_{id(self)}"
+        ksp.setOptionsPrefix(problem_prefix)
+
+        # Set PETSc options
+        opts = petsc4py.PETSc.Options()
+        opts.prefixPush(problem_prefix)
+        # petsc options for solver
+
+        # Example:
+        if self.petsc_options is not None:
+            for k, v in self.petsc_options.items():
+                opts[k] = v
+        opts.prefixPop()
+        ksp.setFromOptions()
+
+        return ksp
+
 
     def solve(self, x: list):
         """
@@ -367,21 +413,47 @@ class ReducedSpaceNewtonCG:
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
 
             HessApply = ReducedHessian(self.model)
-            solver = CGSolverSteihaug(comm=self.model.prior.Vh.mesh.comm)
-            solver.set_operator(HessApply.mat)
-            solver.set_preconditioner(self.model.Rsolver())
-            if self.it > 1:
-                solver.set_TR(delta_TR, self.model.prior.R)
-            solver.parameters["rel_tolerance"] = tolcg
-            self.parameters["max_iter"] = cg_max_iter
-            solver.parameters["zero_initial_guess"] = True
-            solver.parameters["print_level"] = print_level - 1
+            # solver = CGSolverSteihaug(comm=self.model.prior.Vh.mesh.comm)
+            # solver.set_operator(HessApply.mat)
+            # solver.set_preconditioner(self.model.Rsolver())
+            
+            solver = self._createLUSolver()
+            solver.setTolerances(rtol=tolcg)
+            solver.its = cg_max_iter #setting max_iter of solver to be max_iter or cg_max_iter?
 
-            solver.solve(mhat, -mg)
+            #Q: set_TR and print_level?
+            #I think set_TR is internal to solver, so not needed to be set.
+            # print_level: never changes I think:
+            #print_level = 0 throughout, self.parameters[print_level] = 0 throughout
+            
+            # if self.it > 1:
+            #     solver.set_TR(delta_TR, self.model.prior.R)
+            # solver.parameters["rel_tolerance"] = tolcg
+            # self.parameters["max_iter"] = cg_max_iter
+            # solver.parameters["zero_initial_guess"] = True
+            # solver.parameters["print_level"] = print_level - 1
+
+            # solver.solve(mhat, -mg)            
+            mg_neg = self.model.generate_vector(PARAMETER)
+            mg_neg.array[:] = -1 * mg.array[:]
+            temp_petsc_vec_mg_neg = dlx.la.create_petsc_vector_wrap(mg_neg)
+            temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
+            solver.solve(temp_petsc_vec_mg_neg, temp_petsc_vec_mhat) #error -> both n, N can't be petsc decide
+            temp_petsc_vec_mhat.destroy()
+            temp_petsc_vec_mg_neg.destroy()
+
             self.total_cg_iter += HessApply.ncalls
             if self.it == 1:
-                self.model.prior.R.mult(mhat, R_mhat)
-                mhat_Rnorm = R_mhat.inner(mhat)
+                temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
+                temp_petsc_vec_R_mhat = dlx.la.create_petsc_vector_wrap(R_mhat)
+                
+                # self.model.prior.R.mult(mhat, R_mhat)
+                # mhat_Rnorm = R_mhat.inner(mhat)
+                self.model.prior.R.mult(temp_petsc_vec_mhat, temp_petsc_vec_R_mhat)
+                mhat_Rnorm = temp_petsc_vec_R_mhat.dot(temp_petsc_vec_mhat)
+                temp_petsc_vec_mhat.destroy()
+                temp_petsc_vec_R_mhat.destroy()
+
                 delta_TR = max(math.sqrt(mhat_Rnorm), 1)
             x_star[PARAMETER].array[:] = x[PARAMETER].array + mhat.array
             x_star[STATE].array[:] = x[STATE].array
@@ -391,9 +463,30 @@ class ReducedSpaceNewtonCG:
             # Calculate Predicted Reduction
             H_mhat = self.model.generate_vector(PARAMETER)
             H_mhat.array[:] = 0.0
-            HessApply.mat.mult(mhat, H_mhat)
-            mg_mhat = mg.inner(mhat)
-            PRED_RED = -0.5 * mhat.inner(H_mhat) - mg_mhat
+            
+            # HessApply.mat.mult(mhat, H_mhat)
+            temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
+            temp_petsc_vec_H_mhat = dlx.la.create_petsc_vector_wrap(H_mhat)
+            HessApply.mat.mult(temp_petsc_vec_mhat,temp_petsc_vec_H_mhat)
+            temp_petsc_vec_mhat.destroy()
+            temp_petsc_vec_H_mhat.destroy()
+            
+            # mg_mhat = mg.inner(mhat)
+            temp_petsc_vec_mg = dlx.la.create_petsc_vector_wrap(mg)
+            temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
+            mg_mhat = temp_petsc_vec_mg.dot(temp_petsc_vec_mhat)
+            temp_petsc_vec_mg.destroy()
+            temp_petsc_vec_mhat.destroy()
+
+            # PRED_RED = -0.5 * mhat.inner(H_mhat) - mg_mhat
+            temp_petsc_vec_mhat = dlx.la.create_petsc_vector_wrap(mhat)
+            temp_petsc_vec_H_mhat = dlx.la.create_petsc_vector_wrap(H_mhat)
+
+            PRED_RED = -0.5 * temp_petsc_vec_mhat.dot(temp_petsc_vec_H_mhat) - mg_mhat
+            temp_petsc_vec_mhat.destroy()
+            temp_petsc_vec_H_mhat.destroy()
+
+            
             # print( "PREDICTED REDUCTION", PRED_RED, "ACTUAL REDUCTION", ACTUAL_RED)
             rho_TR = ACTUAL_RED / PRED_RED
             # Nocedal and Wright Trust Region conditions (page 69)

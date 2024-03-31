@@ -120,13 +120,13 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     hpx.parRandom.normal(1.0, noise)
     prior.sample(noise, m0)
 
-    data_misfit_True = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
-    )
+    # data_misfit_True = hpx.modelVerify(
+    #     model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
+    # )
 
-    data_misfit_False = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
-    )
+    # data_misfit_False = hpx.modelVerify(
+    #     model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
+    # )
 
     # # #######################################
 
@@ -146,7 +146,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     parameters["abs_tolerance"] = 1e-9
     parameters["max_iter"] = 500
     parameters["cg_coarse_tolerance"] = 5e-1
-    parameters["globalization"] = "LS"
+    parameters["globalization"] = "TR"
     parameters["GN_iter"] = 20
     if rank != 0:
         parameters["print_level"] = -1
@@ -198,13 +198,13 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     else:
         optimizer_results["optimizer"] = False
 
-    final_results = {
-        "data_misfit_True": data_misfit_True,
-        "data_misfit_False": data_misfit_False,
-        "optimizer_results": optimizer_results,
-    }
+    # final_results = {
+    #     "data_misfit_True": data_misfit_True,
+    #     "data_misfit_False": data_misfit_False,
+    #     "optimizer_results": optimizer_results,
+    # }
 
-    return final_results
+    # return final_results
     #######################################
 
 
