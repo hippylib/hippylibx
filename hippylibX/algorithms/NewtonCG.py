@@ -165,8 +165,9 @@ class ReducedSpaceNewtonCG:
             "ksp_type":'stcg',
             "ksp_rtol": self.parameters['rel_tolerance'],
             # "ksp_max_it": self.parameters["cg_max_iter"],
+            "ksp_error_if_not_converged": "true",
             "ksp_initial_guess_nonzero": "true",
-
+            "ksp_cg_radius": 5
         }
 
 
@@ -420,6 +421,11 @@ class ReducedSpaceNewtonCG:
             solver = self._createLUSolver()
             solver.setTolerances(rtol=tolcg)
             solver.its = cg_max_iter #setting max_iter of solver to be max_iter or cg_max_iter?
+            # help(solver.getType() )
+            #how to set TR radius  = delta_TR here??
+
+            petsc4py.PETSc.TAO().setInitialTrustRegionRadius(delta_TR)
+            
 
             #Q: set_TR and print_level?
             #I think set_TR is internal to solver, so not needed to be set.

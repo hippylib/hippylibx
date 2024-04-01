@@ -146,7 +146,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     parameters["abs_tolerance"] = 1e-9
     parameters["max_iter"] = 500
     parameters["cg_coarse_tolerance"] = 5e-1
-    parameters["globalization"] = "TR"
+    parameters["globalization"] = "LS"
     parameters["GN_iter"] = 20
     if rank != 0:
         parameters["print_level"] = -1
@@ -197,7 +197,8 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
         optimizer_results["optimizer"] = True
     else:
         optimizer_results["optimizer"] = False
-
+    
+    return misfit.cost(x)
     # final_results = {
     #     "data_misfit_True": data_misfit_True,
     #     "data_misfit_False": data_misfit_False,
