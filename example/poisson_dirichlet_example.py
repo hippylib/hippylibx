@@ -146,7 +146,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     parameters["abs_tolerance"] = 1e-9
     parameters["max_iter"] = 500
     parameters["cg_coarse_tolerance"] = 5e-1
-    parameters["globalization"] = "LS"
+    parameters["globalization"] = "TR"
     parameters["GN_iter"] = 20
     if rank != 0:
         parameters["print_level"] = -1

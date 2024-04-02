@@ -160,35 +160,17 @@ class ReducedSpaceNewtonCG:
 
         self.callback = callback
 
-
         self.petsc_options = {
-            "ksp_type":'stcg',
-            "ksp_rtol": self.parameters['rel_tolerance'],
+            "ksp_type":'stcg'
+            # "pc_type":"jacobi",
+            # "ksp_rtol": self.parameters['rel_tolerance'],
             # "ksp_max_it": self.parameters["cg_max_iter"],
-            "ksp_error_if_not_converged": "true",
-            "ksp_initial_guess_nonzero": "true",
-            "ksp_cg_radius": 5
+            # "ksp_error_if_not_converged": "true",
+            # "ksp_initial_guess_nonzero": "false"
+            # "ksp_cg_radius": 5
         }
 
-
-        # if self.it > 1:
-            #     solver.set_TR(delta_TR, self.model.prior.R)
-            # solver.parameters["rel_tolerance"] = tolcg
-            # self.parameters["max_iter"] = cg_max_iter
-            # solver.parameters["zero_initial_guess"] = True
-            # solver.parameters["print_level"] = print_level - 1
-
-        # rel_tol = self.parameters["rel_tolerance"]
-        # abs_tol = self.parameters["abs_tolerance"]
-        # max_iter = self.parameters["max_iter"]
-        # print_level = self.parameters["print_level"]
-        # GN_iter = self.parameters["GN_iter"]
-        # cg_coarse_tolerance = self.parameters["cg_coarse_tolerance"]
-        # cg_max_iter = self.parameters["cg_max_iter"]
-        # tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
-
-
-    def _createLUSolver(self) -> petsc4py.PETSc.KSP:
+    def _createLUSolver(self,cg_radius) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.model.prior.Vh.mesh.comm)
         problem_prefix = f"dolfinx_solve_{id(self)}"
         ksp.setOptionsPrefix(problem_prefix)
@@ -202,6 +184,11 @@ class ReducedSpaceNewtonCG:
         if self.petsc_options is not None:
             for k, v in self.petsc_options.items():
                 opts[k] = v
+        
+        if cg_radius is None:
+            cg_radius = 0
+
+        opts['ksp_cg_radius'] = cg_radius
         opts.prefixPop()
         ksp.setFromOptions()
 
@@ -288,6 +275,11 @@ class ReducedSpaceNewtonCG:
             solver.parameters["max_iter"] = cg_max_iter
             solver.parameters["zero_initial_guess"] = True
             solver.parameters["print_level"] = print_level - 1
+
+            # print(self.model.prior.Vh.mesh.comm.rank,":",print_level,":",solver.parameters['print_level'])
+            # 0: 0, -1
+            # rest: -1, -2
+            
             mg_neg = self.model.generate_vector(PARAMETER)
             mg_neg.array[:] = -1 * mg.array[:]
             solver.solve(mhat, mg_neg)
@@ -414,32 +406,27 @@ class ReducedSpaceNewtonCG:
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
 
             HessApply = ReducedHessian(self.model)
+
+            #need to substitute following code:
             # solver = CGSolverSteihaug(comm=self.model.prior.Vh.mesh.comm)
             # solver.set_operator(HessApply.mat)
             # solver.set_preconditioner(self.model.Rsolver())
             
-            solver = self._createLUSolver()
-            solver.setTolerances(rtol=tolcg)
-            solver.its = cg_max_iter #setting max_iter of solver to be max_iter or cg_max_iter?
-            # help(solver.getType() )
-            #how to set TR radius  = delta_TR here??
+            solver = self._createLUSolver(delta_TR)
+            # print(solver.view())
 
-            petsc4py.PETSc.TAO().setInitialTrustRegionRadius(delta_TR)
+            # if self.petsc_options["pc_type"] == "hypre":
+            #     pc = solver.getPC()
+            #     pc.setHYPREType("boomeramg")
+
+            solver.setOperators(HessApply.mat)
+        
+            # solver.setPC(self.model.Rsolver())
+            # print(solver.view())
+            # setPC??
+            solver.setTolerances(rtol=tolcg,max_it=max_iter)
+            solver.setInitialGuessNonzero(False)
             
-
-            #Q: set_TR and print_level?
-            #I think set_TR is internal to solver, so not needed to be set.
-            # print_level: never changes I think:
-            #print_level = 0 throughout, self.parameters[print_level] = 0 throughout
-            
-            # if self.it > 1:
-            #     solver.set_TR(delta_TR, self.model.prior.R)
-            # solver.parameters["rel_tolerance"] = tolcg
-            # self.parameters["max_iter"] = cg_max_iter
-            # solver.parameters["zero_initial_guess"] = True
-            # solver.parameters["print_level"] = print_level - 1
-
-            # solver.solve(mhat, -mg)            
             mg_neg = self.model.generate_vector(PARAMETER)
             mg_neg.array[:] = -1 * mg.array[:]
             temp_petsc_vec_mg_neg = dlx.la.create_petsc_vector_wrap(mg_neg)

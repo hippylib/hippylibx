@@ -131,7 +131,6 @@ class PDEVariationalProblem:
             )
             dlx.fem.petsc.set_bc(b, self.bc)
             state_vec = dlx.la.create_petsc_vector_wrap(state)
-
             self.solver.solve(b, state_vec)
 
             state_vec.destroy()
