@@ -14,43 +14,47 @@ class Random:
     def replay(self):
         self.rng = np.random.MT19937(self.child_seeds[self.rank])
 
-    def normal(self, sigma, out):
-        if(hasattr(out,"nvec")):
-            num_local_values = out[0].getLocalSize()
-        else:
-            num_local_values = out.index_map.size_local + out.index_map.num_ghosts
-        
+    def _normal_perturb_vec(self, sigma, out):
+        num_local_values = out.index_map.size_local + out.index_map.num_ghosts
         loc_random_numbers = np.random.default_rng(self.rng).normal(
             loc=0, scale=sigma, size=num_local_values
         )
-        if(hasattr(out,"nvec")): #for multivec
-            for i in range(out.nvec):
-                out[i].setArray(loc_random_numbers)                
-        else:
-            out.array[:] = loc_random_numbers
-            dlx.la.create_petsc_vector_wrap(out).ghostUpdate(
-                petsc4py.PETSc.InsertMode.INSERT, petsc4py.PETSc.ScatterMode.FORWARD
+        out.array[:] += loc_random_numbers
+        dlx.la.create_petsc_vector_wrap(out).ghostUpdate(
+            petsc4py.PETSc.InsertMode.INSERT, petsc4py.PETSc.ScatterMode.FORWARD
+        )
+
+    def _normal_perturb_multivec(self, sigma, out):
+        num_local_values = out[0].getLocalSize()
+        for i in range(out.nvec):
+            loc_random_numbers = np.random.default_rng(self.rng).normal(
+                loc=0, scale=sigma, size=num_local_values
             )
+            out[i].setValues(
+                np.arange(
+                    out[i].getOwnershipRange()[0],
+                    out[i].getOwnershipRange()[1],
+                    dtype=np.int32,
+                ),
+                loc_random_numbers,
+                addv=petsc4py.PETSc.InsertMode.ADD,
+            )
+            out[i].assemble()
 
     def normal_perturb(self, sigma, out):
-
-        if(hasattr(out,"nvec")):
-            num_local_values = out[0].getLocalSize()
+        if hasattr(out, "nvec"):
+            self._normal_perturb_multivec(sigma, out)
         else:
-            num_local_values = out.index_map.size_local + out.index_map.num_ghosts
-    
-        loc_random_numbers = np.random.default_rng(self.rng).normal(
-            loc=0, scale=sigma, size=num_local_values
-        )
-        if(hasattr(out,"nvec")): #for multivec
-            for i in range(out.nvec):
-                out[i].setValues(np.arange(out[i].getOwnershipRange()[0], out[i].getOwnershipRange()[1], dtype=np.int32 ), loc_random_numbers, addv=petsc4py.PETSc.InsertMode.ADD)
+            self._normal_perturb_vec(sigma, out)
 
+    def normal(self, sigma, out):
+        if hasattr(out, "nvec"):
+            for d in out:
+                d.scale(0.0)
         else:
-            out.array[:] += loc_random_numbers
-            dlx.la.create_petsc_vector_wrap(out).ghostUpdate(
-                petsc4py.PETSc.InsertMode.INSERT, petsc4py.PETSc.ScatterMode.FORWARD
-            )
+            out.array[:] = 0.0
+
+        self.normal_perturb(sigma, out)
 
 
 _world_rank = MPI.COMM_WORLD.rank
