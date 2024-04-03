@@ -44,8 +44,8 @@ class Random:
         )
         if(hasattr(out,"nvec")): #for multivec
             for i in range(out.nvec):
-                # out[i] += loc_random_numbers
-                out[i].axpy(1., loc_random_numbers) #FIXME: add values to petsc Vec               
+                out[i].setValues(np.arange(out[i].getOwnershipRange()[0], out[i].getOwnershipRange()[1], dtype=np.int32 ), loc_random_numbers, addv=petsc4py.PETSc.InsertMode.ADD)
+
         else:
             out.array[:] += loc_random_numbers
             dlx.la.create_petsc_vector_wrap(out).ghostUpdate(
