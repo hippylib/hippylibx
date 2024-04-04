@@ -20,9 +20,7 @@ class Random:
             loc=0, scale=sigma, size=num_local_values
         )
         out.array[:] += loc_random_numbers
-        dlx.la.create_petsc_vector_wrap(out).ghostUpdate(
-            petsc4py.PETSc.InsertMode.INSERT, petsc4py.PETSc.ScatterMode.FORWARD
-        )
+        out.scatter_forward()
 
     def _normal_perturb_multivec(self, sigma, out):
         num_local_values = out[0].getLocalSize()
@@ -48,9 +46,8 @@ class Random:
             self._normal_perturb_vec(sigma, out)
 
     def normal(self, sigma, out):
-        if hasattr(out, "nvec"):
-            for d in out:
-                d.scale(0.0)
+        if hasattr(out, "scale"):
+            out.scale(0.0)
         else:
             out.array[:] = 0.0
 
