@@ -14,7 +14,7 @@ class Random:
     def replay(self):
         self.rng = np.random.MT19937(self.child_seeds[self.rank])
 
-    def _normal_perturb_vec(self, sigma, out):
+    def _normal_perturb_dlxVector(self, sigma, out):
         num_local_values = out.index_map.size_local + out.index_map.num_ghosts
         loc_random_numbers = np.random.default_rng(self.rng).normal(
             loc=0, scale=sigma, size=num_local_values
@@ -28,22 +28,19 @@ class Random:
             loc_random_numbers = np.random.default_rng(self.rng).normal(
                 loc=0, scale=sigma, size=num_local_values
             )
-            out[i].setValues(
-                np.arange(
-                    out[i].getOwnershipRange()[0],
-                    out[i].getOwnershipRange()[1],
-                    dtype=np.int32,
-                ),
-                loc_random_numbers,
-                addv=petsc4py.PETSc.InsertMode.ADD,
+            with out[i].localForm() as v_array:
+                v_array[0:num_local_values] += loc_random_numbers
+                
+            out[i].ghostUpdate(
+                addv=PETSc.InsertMode.INSERT,
+                mode=PETSc.ScatterMode.FORWARD
             )
-            out[i].assemble()
 
     def normal_perturb(self, sigma, out):
         if hasattr(out, "nvec"):
             self._normal_perturb_multivec(sigma, out)
         else:
-            self._normal_perturb_vec(sigma, out)
+            self._normal_perturb_dlxVector(sigma, out)
 
     def normal(self, sigma, out):
         if hasattr(out, "scale"):
