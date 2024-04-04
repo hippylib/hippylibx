@@ -1,367 +1,364 @@
-import sys
-import os
-import numpy as np
-from mpi4py import MPI
-import dolfinx as dlx
-import ufl
-import petsc4py
-import dolfinx.fem.petsc
+# import sys
+# import os
+# import numpy as np
+# from mpi4py import MPI
+# import dolfinx as dlx
+# import ufl
+# import petsc4py
+# import dolfinx.fem.petsc
+# import copy
 
-sys.path.append(os.path.abspath("../"))
-import hippylibX as hpx
-sys.path.append(os.path.abspath("../example"))
-from hippylibX.modeling.reducedHessian import ReducedHessian
+# sys.path.append(os.path.abspath("../"))
+# import hippylibX as hpx
+# sys.path.append(os.path.abspath("../example"))
+# from hippylibX.modeling.reducedHessian import ReducedHessian
 
-class MultiVector:
-    def __init__(self,example_vec: petsc4py.PETSc.Vec, nvec:int):
-        self.data = []
-        self.nvec = nvec
+# class MultiVector:
+#     def __init__(self,example_vec=None, nvec=None, mv = None):
+#         if mv is None: #original
+#             self.data = []
+#             self.nvec = nvec
 
-        for i in range(self.nvec):
-            self.data.append(example_vec.duplicate(example_vec.getArray()))
+#             for i in range(self.nvec):
+#                 self.data.append(example_vec.duplicate())
+#         else: #copy
+#             self.nvec = mv.nvec
+#             self.data = copy.deepcopy(mv.data)
 
-    def __getitem__(self,k):
-        return self.data[k]
+#     def __del__(self):
+#         for d in self.data:
+#             d.destroy()
 
-    def scale(self,k : int, a: float):
-        self[k].scale(a)
+#     def __getitem__(self,k):
+#         return self.data[k]
 
-    def dot_v(self, v : petsc4py.PETSc.Vec) -> np.array:
-        return_values = []
-        for i in range(self.nvec):
-            return_values.append(self[i].dot(v)  )            
-        return np.array(return_values)
+#     def scale(self, alpha):
+#         if(isinstance(alpha,float)):
+#             for d in self.data:
+#                 d.scale(alpha)
+#         elif(isinstance(alpha,np.array)):
+#             for i,d in enumerate(self.data):
+#                 d.scale(alpha[i])
 
-    def reduce(self, alpha: np.array) -> petsc4py.PETSc.Vec:
-        return_vec = self[0].duplicate()
-        for i in range(self.nvec):
-            return_vec.axpy(alpha[i],self[i])
-        return return_vec   
-    
-    def Borthogonalize(self,B):
-        """ 
-        Returns :math:`QR` decomposition of self. :math:`Q` and :math:`R` satisfy the following relations in exact arithmetic
+#     def dot(self, v) -> np.array:
+#         if(isinstance(v,petsc4py.PETSc.Vec)):
+#             return_values = []
+#             for i in range(self.nvec):
+#                 return_values.append(self[i].dot(v)  )
+#             return np.array(return_values)
 
-        .. math::
-            R \\,= \\,Z, && (1),
+#         elif(isinstance(v,MultiVector)):
+#             return_values = []
+#             for i in range(self.nvec):
+#                 return_row = []
+#                 for j in range(v.nvec):
+#                     return_row.append(self[i].dot(v[j]))
+#                 return_values.append(return_row)
+#             return np.array(return_values)
 
-            Q^*BQ\\, = \\, I, && (2),
+#     def reduce(self, alpha: np.array) -> petsc4py.PETSc.Vec:
+#         return_vec = self[0].duplicate()
+#         return_vec.scale(0.)
+#         for i in range(self.nvec):
+#             return_vec.axpy(alpha[i],self[i])
+#         return return_vec
 
-            Q^*BZ \\, = \\,R, && (3),
+#     def Borthogonalize(self,B):
+#         return self._mgs_stable(B)
 
-            ZR^{-1} \\, = \\, Q, && (4). 
-        
-        Returns:
+#     def _mgs_stable(self, B : petsc4py.PETSc.Mat):
+#         n = self.nvec
+#         Bq = MultiVector(self[0], n)
+#         r  = np.zeros((n,n), dtype = 'd')
+#         reorth = np.zeros((n,), dtype = 'd')
+#         eps = np.finfo(np.float64).eps
 
-            :code:`Bq` of type :code:`MultiVector` -> :code:`B`:math:`^{-1}`-orthogonal vectors
-            :code:`r` of type :code:`ndarray` -> The :math:`r` of the QR decomposition.
-        
-        .. note:: :code:`self` is overwritten by :math:`Q`.    
-        """
-        return self._mgs_stable(B)
+#         for k in np.arange(n):
+#             B.mult(self[k], Bq[k])
+#             t = np.sqrt( Bq[k].dot(self[k]))
 
-    def _mgs_stable(self, B : petsc4py.PETSc.Mat):
-        """ 
-        Returns :math:`QR` decomposition of self, which satisfies conditions (1)--(4).
-        Uses Modified Gram-Schmidt with re-orthogonalization (Rutishauser variant)
-        for computing the :math:`B`-orthogonal :math:`QR` factorization.
-        
-        References:
-            1. `A.K. Saibaba, J. Lee and P.K. Kitanidis, Randomized algorithms for Generalized \
-            Hermitian Eigenvalue Problems with application to computing \
-            Karhunen-Loe've expansion http://arxiv.org/abs/1307.6885`
-            2. `W. Gander, Algorithms for the QR decomposition. Res. Rep, 80(02), 1980`
-        
-        https://github.com/arvindks/kle
-        
-        """
-        n = self.nvec
-        Bq = MultiVector(self[0], n) 
-        r  = np.zeros((n,n), dtype = 'd')
-        reorth = np.zeros((n,), dtype = 'd')
-        eps = np.finfo(np.float64).eps
-        
-        for k in np.arange(n):
-            B.mult(self[k], Bq[k])
-            t = np.sqrt( Bq[k].dot(self[k]))
-            
-            nach = 1;    u = 0;
-            while nach:
-                u += 1
-                for i in np.arange(k):
-                    s = Bq[i].dot(self[k])
-                    r[i,k] += s
-                    self[k].axpy(-s, self[i])
-                    
-                B.mult(self[k], Bq[k])
-                tt = np.sqrt(Bq[k].dot(self[k]))
-                if tt > t*10.*eps and tt < t/10.:
-                    nach = 1;    t = tt;
-                else:
-                    nach = 0;
-                    if tt < 10.*eps*t:
-                        tt = 0.
-            
+#             nach = 1;    u = 0;
+#             while nach:
+#                 u += 1
+#                 for i in np.arange(k):
+#                     s = Bq[i].dot(self[k])
+#                     r[i,k] += s
+#                     self[k].axpy(-s, self[i])
 
-            reorth[k] = u
-            r[k,k] = tt
-            if np.abs(tt*eps) > 0.:
-                tt = 1./tt
-            else:
-                tt = 0.
-                
-            self.scale(k, tt)
-            Bq.scale(k, tt)
-            
-        return Bq, r 
+#                 B.mult(self[k], Bq[k])
+#                 tt = np.sqrt(Bq[k].dot(self[k]))
+#                 if tt > t*10.*eps and tt < t/10.:
+#                     nach = 1;    t = tt;
+#                 else:
+#                     nach = 0;
+#                     if tt < 10.*eps*t:
+#                         tt = 0.
 
-def MatMvMult(A, x, y):
-    assert x.nvec() == y.nvec(), "x and y have non-matching number of vectors"
-    if hasattr(A,'matMvMult'):
-        A.matMvMult(x,y)
-    else:
-        for i in range(x.nvec()):
-            A.mult(x[i], y[i])
+#             reorth[k] = u
+#             r[k,k] = tt
+#             if np.abs(tt*eps) > 0.:
+#                 tt = 1./tt
+#             else:
+#                 tt = 0.
 
-def MatMvTranspmult(A, x, y):
-    assert x.nvec() == y.nvec(), "x and y have non-matching number of vectors"
-    assert hasattr(A,'transpmult'), "A does not have transpmult method implemented"
-    if hasattr(A,'matMvTranspmult'):
-        A.matMvTranspmult(x,y)
-    else:
-        for i in range(x.nvec()):
-            A.transpmult(x[i], y[i])
-        
-def MvDSmatMult(X, A, Y):
-    assert X.nvec() == A.shape[0], "X Number of vecs incompatible with number of rows in A"
-    assert Y.nvec() == A.shape[1], "Y Number of vecs incompatible with number of cols in A"
-    for j in range(Y.nvec()):
-        Y[j].zero()
-        X.reduce(Y[j], A[:,j].flatten())
+#             self[k].scale(tt)
+#             Bq[k].scale(tt)
+
+#         return Bq, r
+
+# def MatMvMult(A, x, y):
+#     assert x.nvec() == y.nvec(), "x and y have non-matching number of vectors"
+#     if hasattr(A,'matMvMult'):
+#         A.matMvMult(x,y)
+#     else:
+#         for i in range(x.nvec()):
+#             A.mult(x[i], y[i])
+
+# def MatMvTranspmult(A, x, y):
+#     assert x.nvec() == y.nvec(), "x and y have non-matching number of vectors"
+#     assert hasattr(A,'transpmult'), "A does not have transpmult method implemented"
+#     if hasattr(A,'matMvTranspmult'):
+#         A.matMvTranspmult(x,y)
+#     else:
+#         for i in range(x.nvec()):
+#             A.multTranspose(x[i], y[i])
+
+# def MvDSmatMult(X, A, Y):
+#     assert X.nvec() == A.shape[0], "X Number of vecs incompatible with number of rows in A"
+#     assert Y.nvec() == A.shape[1], "Y Number of vecs incompatible with number of cols in A"
+#     for j in range(Y.nvec()):
+#         Y[j].zero()
+#         X.reduce(Y[j], A[:,j].flatten())
 
 
-class Poisson_Approximation:
-    def __init__(self, f: float):
-        self.f = f
-        self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
+# nx = 1
+# ny = 1
+# noise_variance = 1e-6
 
-    def __call__(
-        self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function
-    ) -> ufl.form.Form:
-        return (
-            ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p)) * self.dx
-            - self.f * p * self.dx
-        )
+# comm = MPI.COMM_WORLD
+# rank = comm.rank
+# nproc = comm.size
+# msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
+# Vh = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
 
 
-class PoissonMisfitForm:
-    def __init__(self, d: float, sigma2: float):
-        self.d = d
-        self.sigma2 = sigma2
-        self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
+# #1. Mass matrix: - check if its symmetric:
+# trial = ufl.TrialFunction(Vh)
+# test = ufl.TestFunction(Vh)
+# varfM = ufl.inner(trial, test) *  ufl.Measure("dx", metadata={"quadrature_degree": 4})
+# M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
+# M.assemble()
 
-    def __call__(self, u: dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:
-        return 0.5 / self.sigma2 * ufl.inner(u - self.d, u - self.d) * self.dx
+# def petsc2array(v):
+#     s=v.getValues(range(0, v.getSize()[0]), range(0,  v.getSize()[1]))
+#     return s
 
+# # print(petsc2array(M))
+# # is symmetric - so can just work with M:
+# sample_vec1 = dlx.fem.Function(Vh)
+# sample_vec1 = sample_vec1.x
+# hpx.parRandom.normal(1., sample_vec1)
+# # print(sample_vec1.array[:])
 
-def master_print(comm, *args, **kwargs):
-    if comm.rank == 0:
-        print(*args, **kwargs)
+# # sample_vec2 = dlx.fem.Function(Vh)
+# # sample_vec2 = sample_vec2.x
+# # hpx.parRandom.normal(1., sample_vec2)
 
+# # print(sample_vec1.array[:])
+# # print(sample_vec2.array[:])
 
-def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) -> None:
-    sep = "\n" + "#" * 80 + "\n"
-    comm = MPI.COMM_WORLD
-    rank = comm.rank
-    nproc = comm.size
+# # print(sample_vec1[:],'\n',sample_vec2[:])
 
-    msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("Lagrange", 2))
-    Vh_m = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
-    Vh = [Vh_phi, Vh_m, Vh_phi]
-    ndofs = [
-        Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs,
-        Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs,
-    ]
-    master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
-    master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
+# sample_petsc_vec = dlx.la.create_petsc_vector_wrap(sample_vec1)
 
-    # dirichlet B.C.
-    uD = dlx.fem.Function(Vh[hpx.STATE])
-    uD.interpolate(lambda x: x[1])
-    uD.x.scatter_forward()
+# Omega = MultiVector(sample_petsc_vec,3)
 
-    def top_bottom_boundary(x):
-        return np.logical_or(np.isclose(x[1], 1), np.isclose(x[1], 0))
+# hpx.parRandom.normal(1.,Omega)
+# # for d in Omega:
+# #     d.assemble()
 
-    fdim = msh.topology.dim - 1
-    top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(
-        msh, fdim, top_bottom_boundary
-    )
-    dirichlet_dofs = dlx.fem.locate_dofs_topological(
-        Vh[hpx.STATE], fdim, top_bottom_boundary_facets
-    )
-    bc = dlx.fem.dirichletbc(uD, dirichlet_dofs)
+# # for i in range(Omega.nvec):
+# #     print(Omega[i].getArray())
 
-    # bc0
-    uD_0 = dlx.fem.Function(Vh[hpx.STATE])
-    uD_0.interpolate(lambda x: 0.0 * x[0])
-    uD_0.x.scatter_forward()
-    bc0 = dlx.fem.dirichletbc(uD_0, dirichlet_dofs)
+# Q = MultiVector(mv = Omega)
+# Bq, r = Omega.Borthogonalize(M)
 
-    # # FORWARD MODEL
-    f = dlx.fem.Constant(msh, dlx.default_scalar_type(0.0))
-    pde_handler = Poisson_Approximation(f)
-    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0], is_fwd_linear=True)
+# # print(r)
+# print("Omega\n")
+# for i in range(Omega.nvec):
+#     print(Omega[i].getArray())
 
-    # GROUND TRUTH
-    m_true = dlx.fem.Function(Vh_m)
-    m_true.interpolate(
-        lambda x: np.log(2 + 7 * (((x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2) ** 0.5 > 0.2))
-    )
-    m_true.x.scatter_forward()
+# # print("Mass matrix\n")
+# # print(petsc2array(M))
 
-    m_true = m_true.x
-    u_true = pde.generate_state()
-    x_true = [u_true, m_true, None]
-    pde.solveFwd(u_true, x_true)
+# # print(petsc2array(M))
 
-    # # LIKELIHOOD
-    d = dlx.fem.Function(Vh[hpx.STATE])
-    d.x.array[:] = u_true.array[:]
-    hpx.parRandom.normal_perturb(np.sqrt(noise_variance), d.x)
-    d.x.scatter_forward()
-    misfit_form = PoissonMisfitForm(d, noise_variance)
-    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form, [bc0])
-    prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
-    prior_mean = prior_mean.x
+# # print("Omega\n")
+# # for i in range(Omega.nvec):
+# #     print(Omega[i].getArray())
 
-    prior = hpx.BiLaplacianPrior(
-        Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean
-    )
-    model = hpx.Model(pde, prior, misfit)
-
-    noise = prior.generate_parameter("noise")
-    m0 = prior.generate_parameter(0)
-    hpx.parRandom.normal(1.0, noise)
-    prior.sample(noise, m0)
+# print("Q\n")
+# for i in range(Q.nvec):
+#     print(Q[i].getArray())
 
 
-    initial_guess_m = prior.generate_parameter(0)
-    initial_guess_m.array[:] = prior_mean.array[:]
+# mult = Omega.dot(Q)
 
-    x = [
-        model.generate_vector(hpx.STATE),
-        initial_guess_m,
-        model.generate_vector(hpx.ADJOINT),
-    ]
-    if rank == 0:
-        print(sep, "Find the MAP point", sep)
+# print('\n',mult)
 
-    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    parameters["rel_tolerance"] = 1e-6
-    parameters["abs_tolerance"] = 1e-9
-    parameters["max_iter"] = 500
-    parameters["cg_coarse_tolerance"] = 5e-1
-    parameters["globalization"] = "LS"
-    parameters["GN_iter"] = 20
-    if rank != 0:
-        parameters["print_level"] = -1
+# #     master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
+# #     master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
 
-    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+# #     # FORWARD MODEL
+# #     u0 = 1.0
+# #     D = 1.0 / 24.0
+# #     pde_handler = DiffusionApproximation(D, u0)
 
-    x = solver.solve(x)
+# #     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [], is_fwd_linear=True)
+# #     # GROUND TRUTH
+# #     m_true = dlx.fem.Function(Vh_m)
+# #     m_true.interpolate(
+# #         lambda x: np.log(0.01)
+# #         + 3.0 * (((x[0] - 2.0) * (x[0] - 2.0) + (x[1] - 2.0) * (x[1] - 2.0)) < 1.0)
+# #     )
+# #     m_true.x.scatter_forward()
 
-    m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
-    m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
+# #     m_true = m_true.x
+# #     u_true = pde.generate_state()
 
-    V_P1 = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
+# #     x_true = [u_true, m_true, None]
+# #     pde.solveFwd(u_true, x_true)
+# #     xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
+# #     # LIKELIHOOD
+# #     hpx.updateFromVector(xfun[hpx.STATE], u_true)
+# #     u_fun_true = xfun[hpx.STATE]
+# #     hpx.updateFromVector(xfun[hpx.PARAMETER], m_true)
+# #     m_fun_true = xfun[hpx.PARAMETER]
 
-    u_true_fun = dlx.fem.Function(V_P1, name="u_true")
-    u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
-    u_true_fun.x.scatter_forward()
+# #     d = dlx.fem.Function(Vh[hpx.STATE])
+# #     expr = u_fun_true * ufl.exp(m_fun_true)
+# #     hpx.projection(expr, d)
+# #     hpx.parRandom.normal_perturb(np.sqrt(noise_variance), d.x)
+# #     d.x.scatter_forward()
+# #     misfit_form = PACTMisfitForm(d, noise_variance)
+# #     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
+# #     prior_mean = dlx.fem.Function(Vh_m)
+# #     prior_mean.x.array[:] = np.log(0.01)
+# #     prior_mean = prior_mean.x
 
-    u_map_fun = dlx.fem.Function(V_P1, name="u_map")
-    u_map_fun.interpolate(hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE]))
-    u_map_fun.x.scatter_forward()
+# #     prior = hpx.BiLaplacianPrior(
+# #         Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean
+# #     )
+# #     model = hpx.Model(pde, prior, misfit)
 
-    d_fun = dlx.fem.Function(V_P1, name="data")
-    d_fun.interpolate(d)
-    d_fun.x.scatter_forward()
+# #     noise = prior.generate_parameter("noise")
+# #     m0 = prior.generate_parameter(0)
+# #     hpx.parRandom.normal(1.0, noise)
+# #     prior.sample(noise, m0)
 
-    with dlx.io.VTXWriter(
-        msh.comm,
-        "poisson_Dirichlet_BiLaplacian_prior_np{0:d}_Prior.bp".format(nproc),
-        [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
-    ) as vtx:
-        vtx.write(0.0)
+# #     # # #######################################
 
-    if solver.converged:
-        master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    else:
-        master_print(comm, "\nNot Converged")
-    master_print(
-        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    )
-    master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
-    master_print(comm, "Final cost: ", solver.final_cost)
+# #     intial_guess_m = prior.generate_parameter(0)
+# #     intial_guess_m.array[:] = prior_mean.array[:]
+# #     x = [
+# #         model.generate_vector(hpx.STATE),
+# #         intial_guess_m,
+# #         model.generate_vector(hpx.ADJOINT),
+# #     ]
+# #     if rank == 0:
+# #         print(sep, "Find the MAP point", sep)
 
-    optimizer_results = {}
-    if (
-        solver.termination_reasons[solver.reason]
-        == "Norm of the gradient less than tolerance"
-    ):
-        optimizer_results["optimizer"] = True
-    else:
-        optimizer_results["optimizer"] = False
+# #     parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+# #     parameters["rel_tolerance"] = 1e-6
+# #     parameters["abs_tolerance"] = 1e-9
+# #     parameters["max_iter"] = 500
+# #     parameters["cg_coarse_tolerance"] = 5e-1
+# #     parameters["globalization"] = "LS"
+# #     parameters["GN_iter"] = 20
+# #     if rank != 0:
+# #         parameters["print_level"] = -1
 
+# #     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
 
-    model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
-    Hmisfit = ReducedHessian(model, misfit_only=True)
-    k = 80
-    p = 20
-    if rank == 0:
-        print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
-    
-    temp_petsc_vec_x_para = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
-    Omega = MultiVector(temp_petsc_vec_x_para, k+p)
-    Bq,r = Omega.Borthogonalize(prior.R)
+# #     x = solver.solve(x)
 
-    def petsc2array(v):
-        s=v.getValues(range(0, v.getSize()[0]), range(0,  v.getSize()[1]))
-        return s
-
-
-    # print(petsc2array(Bq))
-    print(r)
-
-    ###########ignore for now#############################
-
-
-    #doublepass G stuff:
-    # nvec = Omega.nvec
-    # Ybar = MultiVector(Omega[0], nvec)
-    # Q = Omega
-    # for i in range(s):
-    #     MatMvMult(A, Q, Ybar)
-    #     MatMvMult(Solver2Operator(Binv), Ybar, Q)
-    
-    # Q = MultiVector(Omega)
-    # Bq,r = Omega.Borthogonalize(prior.R)
-
-    # print(r)
-    
+# #     if solver.converged:
+# #         master_print(comm, "\nConverged in ", solver.it, " iterations.")
+# #     else:
+# #         master_print(comm, "\nNot Converged")
+# #     master_print(
+# #         comm, "Termination reason: ", solver.termination_reasons[solver.reason]
+# #     )
+# #     master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
+# #     master_print(comm, "Final cost: ", solver.final_cost)
+# #     optimizer_results = {}
+# #     if (
+# #         solver.termination_reasons[solver.reason]
+# #         == "Norm of the gradient less than tolerance"
+# #     ):
+# #         optimizer_results["optimizer"] = True
+# #     else:
+# #         optimizer_results["optimizer"] = False
 
 
-if __name__ == "__main__":
-    nx = 64
-    ny = 64
-    noise_variance = 1e-4
-    prior_param = {"gamma": 0.03, "delta": 0.3}
-    run_inversion(nx, ny, noise_variance, prior_param)
+# #     model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
+# #     Hmisfit = ReducedHessian(model, misfit_only=True)
+# #     k = 80
+# #     p = 20
+# #     if rank == 0:
+# #         print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
 
-    comm = MPI.COMM_WORLD
-    # if comm.rank == 0:
-    #     plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
-    #     plt.show()
+# #     # temp_petsc_vec_x_para = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+# #     # Omega = MultiVector(temp_petsc_vec_x_para, k+p)
+# #     # Bq,r = Omega.Borthogonalize(prior.R)
+
+# #     # def petsc2array(v):
+# #     #     s=v.getValues(range(0, v.getSize()[0]), range(0,  v.getSize()[1]))
+# #     #     return s
+# #     temp_par_vector = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+# #     # Omega = hpx.MultiVector(x[hpx.PARAMETER], k+p)
+# #     Omega = hpx.MultiVector(temp_par_vector, k+p)
+# #     hpx.parRandom.normal(1., Omega)
+# #     Bq,r = Omega.Borthogonalize(prior.R)
+
+# #     #validity: Omega.T @ Bq = I
+# #             #  (nvec,m) @ (m,nvec)
+
+# #     print(r)
+
+# #     # print(r)
+# #     # print(type(Bq))
+
+# #     # # print(petsc2array(Bq))
+# #     # print(r)
+# #     # print(type(Bq))
+
+# #     ###########ignore for now#############################
+
+
+# #     #doublepass G stuff:
+# #     # nvec = Omega.nvec
+# #     # Ybar = MultiVector(Omega[0], nvec)
+# #     # Q = Omega
+# #     # for i in range(s):
+# #     #     MatMvMult(A, Q, Ybar)
+# #     #     MatMvMult(Solver2Operator(Binv), Ybar, Q)
+
+# #     # Q = MultiVector(Omega)
+# #     # Bq,r = Omega.Borthogonalize(prior.R)
+
+# #     # print(r)
+
+
+# # if __name__ == "__main__":
+# #     nx = 64
+# #     ny = 64
+# #     noise_variance = 1e-6
+# #     prior_param = {"gamma": 0.040, "delta": 0.8}
+# #     mesh_filename = "../example/meshes/circle.xdmf"
+# #     run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+# #     comm = MPI.COMM_WORLD
+# #     # if comm.rank == 0:
+# #     #     plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
+# #     #     plt.show()
