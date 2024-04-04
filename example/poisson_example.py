@@ -102,13 +102,13 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     hpx.parRandom.normal(1.0, noise)
     prior.sample(noise, m0)
 
-    # data_misfit_True = hpx.modelVerify(
-    #     model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
-    # )
+    data_misfit_True = hpx.modelVerify(
+        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
+    )
 
-    # data_misfit_False = hpx.modelVerify(
-    #     model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
-    # )
+    data_misfit_False = hpx.modelVerify(
+        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
+    )
 
     # # #######################################
 
@@ -171,22 +171,20 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     ) as vtx:
         vtx.write(0.0)
 
+    # model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
+    # Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
+    # k = 80
+    # p = 20
+    # if rank == 0:
+    #     print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
 
-    model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
-    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
-    k = 80
-    p = 20
-    if rank == 0:
-        print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
-    
-    temp_petsc_vec_par = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
-    # Omega = hpx.MultiVector(x[hpx.PARAMETER], k+p)
-    Omega = hpx.MultiVector(temp_petsc_vec_par, k+p)
-    temp_petsc_vec_par.destroy()
-    hpx.parRandom.normal(1., Omega)
+    # temp_petsc_vec_par = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+    # # Omega = hpx.MultiVector(x[hpx.PARAMETER], k+p)
+    # Omega = hpx.MultiVector(temp_petsc_vec_par, k+p)
+    # temp_petsc_vec_par.destroy()
+    # hpx.parRandom.normal(1., Omega)
 
     # d, U = hp.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
-   
 
     optimizer_results = {}
     if (
@@ -197,20 +195,13 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     else:
         optimizer_results["optimizer"] = False
 
+    final_results = {
+        "data_misfit_True": data_misfit_True,
+        "data_misfit_False": data_misfit_False,
+        "optimizer_results": optimizer_results,
+    }
 
-
-
-
-    # final_results = {
-    #     "data_misfit_True": data_misfit_True,
-    #     "data_misfit_False": data_misfit_False,
-    #     "optimizer_results": optimizer_results,
-    # }
-
-
-
-
-    # return final_results
+    return final_results
     #######################################
 
 

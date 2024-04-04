@@ -11,9 +11,10 @@ sys.path.append(os.path.abspath("../misc"))
 
 from misc import multivector_sample_script
 
-def check_output(self,result):
+
+def check_output(self, result):
     self.assertTrue(result.shape[0] == result.shape[1])
-    self.assertTrue(np.allclose(result, np.eye(result.shape[0]),atol=1e-6))
+    self.assertTrue(np.allclose(result, np.eye(result.shape[0]), atol=1e-6))
 
 
 class Testing_Execution(unittest.TestCase):
@@ -23,7 +24,8 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         nvec = 10
         result = multivector_sample_script.multi_vector_testing(nx, ny, nvec)
-        check_output(self,result)
+        check_output(self, result)
+
 
 if __name__ == "__main__":
     unittest.main()
