@@ -1,19 +1,25 @@
 import numpy as np
 import petsc4py
-import copy
 
 
 class MultiVector:
-    def __init__(self, example_vec=None, nvec=None, mv=None):
-        if mv is None:  # original
-            self.data = []
-            self.nvec = nvec
+    def __init__(self, example_vec, nvec):
+        self.nvec = nvec
+        self.data = []
+        for i in range(self.nvec):
+            self.data.append(example_vec.duplicate())
 
-            for i in range(self.nvec):
-                self.data.append(example_vec.duplicate())
-        else:  # copy
-            self.nvec = mv.nvec
-            self.data = copy.deepcopy(mv.data)
+    @classmethod
+    def createFromVec(cls, example_vec, nvec):
+        return cls(example_vec, nvec)
+
+    @classmethod
+    def createFromMultiVec(cls, mv):
+        mv_copy = cls(mv[0], mv.nvec)
+        for i in range(mv_copy.nvec):
+            mv_copy.data[i] = mv.data[i].duplicate(mv.data[i].getArray())
+
+        return mv_copy
 
     def __del__(self):
         for d in self.data:
@@ -32,19 +38,17 @@ class MultiVector:
 
     def dot(self, v) -> np.array:
         if isinstance(v, petsc4py.PETSc.Vec):
-            return_values = []
+            return_values = np.zeros(self.nvec)
             for i in range(self.nvec):
-                return_values.append(self[i].dot(v))
-            return np.array(return_values)
+                return_values[i] = self[i].dot(v)
 
         elif isinstance(v, MultiVector):
-            return_values = []
+            return_values = np.zeros((self.nvec, v.nvec))
             for i in range(self.nvec):
-                return_row = []
                 for j in range(v.nvec):
-                    return_row.append(self[i].dot(v[j]))
-                return_values.append(return_row)
-            return np.array(return_values)
+                    return_values[i][j] = self[i].dot(v[j])
+
+        return return_values
 
     def reduce(self, alpha: np.array) -> petsc4py.PETSc.Vec:
         return_vec = self[0].duplicate()
