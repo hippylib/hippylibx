@@ -25,14 +25,20 @@ jobs:
         run: |
           pip install ruff && ruff check . && ruff format --check .
 
+      - name: multivector testing
+        run: |
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_multivector.py
+      
       - name: run serial check
         run: |
           cd ./hippylibX/test && 
-          mpirun -n 1 python3 testing_suite_file.py 
+          mpirun -n 1 python3 test_model.py 
 
       - name: run parallel check
         run: |
           cd ./hippylibX/test && 
-          mpirun -n 2 python3 testing_suite_file.py 
+          mpirun -n 2 python3 test_model.py 
 
+      
 
