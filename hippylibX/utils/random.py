@@ -1,5 +1,4 @@
 import numpy as np
-import dolfinx as dlx
 import petsc4py
 from mpi4py import MPI
 
@@ -30,10 +29,10 @@ class Random:
             )
             with out[i].localForm() as v_array:
                 v_array[0:num_local_values] += loc_random_numbers
-                
+
             out[i].ghostUpdate(
-                addv=PETSc.InsertMode.INSERT,
-                mode=PETSc.ScatterMode.FORWARD
+                addv=petsc4py.PETSc.InsertMode.INSERT,
+                mode=petsc4py.PETSc.ScatterMode.FORWARD,
             )
 
     def normal_perturb(self, sigma, out):
