@@ -50,6 +50,7 @@ class MultiVector:
 
         return return_values
 
+    # X.reduce(Y[j], A[:, j].flatten())
     def reduce(self, alpha: np.array) -> petsc4py.PETSc.Vec:
         return_vec = self[0].duplicate()
         return_vec.scale(0.0)
@@ -103,32 +104,33 @@ class MultiVector:
         return Bq, r
 
 
-def MatMvMult(A, x, y):
-    assert x.nvec() == y.nvec(), "x and y have non-matching number of vectors"
+def MatMvMult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector):
+    assert x.nvec == y.nvec, "x and y have non-matching number of vectors"
     if hasattr(A, "matMvMult"):
         A.matMvMult(x, y)
     else:
-        for i in range(x.nvec()):
+        for i in range(x.nvec):
             A.mult(x[i], y[i])
 
 
-def MatMvTranspmult(A, x, y):
-    assert x.nvec() == y.nvec(), "x and y have non-matching number of vectors"
+def MatMvTranspmult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector):
+    assert x.nvec == y.nvec, "x and y have non-matching number of vectors"
     assert hasattr(A, "transpmult"), "A does not have transpmult method implemented"
     if hasattr(A, "matMvTranspmult"):
         A.matMvTranspmult(x, y)
     else:
-        for i in range(x.nvec()):
+        for i in range(x.nvec):
             A.multTranspose(x[i], y[i])
 
 
-def MvDSmatMult(X, A, Y):
+def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector):
     assert (
-        X.nvec() == A.shape[0]
+        X.nvec == A.shape[0]
     ), "X Number of vecs incompatible with number of rows in A"
     assert (
-        Y.nvec() == A.shape[1]
+        Y.nvec == A.shape[1]
     ), "Y Number of vecs incompatible with number of cols in A"
-    for j in range(Y.nvec()):
-        Y[j].zero()
-        X.reduce(Y[j], A[:, j].flatten())
+    for j in range(Y.nvec):
+        Y[j].scale(0.0)
+        reduced_vec = X.reduce(A[:, j].flatten())
+        Y[j] = X[0].duplicate(reduced_vec.getArray())

@@ -124,13 +124,13 @@ def run_inversion(
     hpx.parRandom.normal(1.0, noise)
     prior.sample(noise, m0)
 
-    data_misfit_True = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
-    )
+    # data_misfit_True = hpx.modelVerify(
+    #     model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
+    # )
 
-    data_misfit_False = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
-    )
+    # data_misfit_False = hpx.modelVerify(
+    #     model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
+    # )
 
     # # #######################################
 
@@ -203,27 +203,28 @@ def run_inversion(
     else:
         optimizer_results["optimizer"] = False
 
-    final_results = {
-        "data_misfit_True": data_misfit_True,
-        "data_misfit_False": data_misfit_False,
-        "optimizer_results": optimizer_results,
-    }
+    # final_results = {
+    #     "data_misfit_True": data_misfit_True,
+    #     "data_misfit_False": data_misfit_False,
+    #     "optimizer_results": optimizer_results,
+    # }
 
-    # Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
-    # k = 80
-    # p = 20
-    # if rank == 0:
-    #     print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
+    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
 
-    # temp_para_vec = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
-    # Omega = hpx.MultiVector(temp_para_vec, k+p)
-    # temp_para_vec.destroy()
+    k = 80
+    p = 20
+    if rank == 0:
+        print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
 
-    # hpx.parRandom.normal(1., Omega)
+    temp_para_vec = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+    Omega = hpx.MultiVector(temp_para_vec, k+p)
+    temp_para_vec.destroy()
 
-    # d, U = hpx.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
+    hpx.parRandom.normal(1., Omega)
 
-    return final_results
+    d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
+
+    # return final_results
     #######################################
 
 
