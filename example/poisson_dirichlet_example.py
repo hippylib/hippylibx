@@ -1,6 +1,6 @@
 # Poisson example with DirichletBC on the 2d square mesh with
 # u_d = 1 on top, 0 on bottom using BiLaplacian Prior.
-import ufl
+import ufl  # type: ignore
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
@@ -8,12 +8,14 @@ import sys
 import os
 import dolfinx.fem.petsc
 from matplotlib import pyplot as plt
+from typing import Sequence, Dict
+
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx
+import hippylibX as hpx  # type: ignore
 
 
-def master_print(comm, *args, **kwargs):
+def master_print(comm: MPI.Comm, *args, **kwargs) -> None:
     if comm.rank == 0:
         print(*args, **kwargs)
 
@@ -42,7 +44,9 @@ class PoissonMisfitForm:
         return 0.5 / self.sigma2 * ufl.inner(u - self.d, u - self.d) * self.dx
 
 
-def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) -> None:
+def run_inversion(
+    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float]
+) -> Dict[str, Dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -64,7 +68,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     uD.interpolate(lambda x: x[1])
     uD.x.scatter_forward()
 
-    def top_bottom_boundary(x):
+    def top_bottom_boundary(x: Sequence[float]) -> Sequence[bool]:
         return np.logical_or(np.isclose(x[1], 1), np.isclose(x[1], 0))
 
     fdim = msh.topology.dim - 1
@@ -94,7 +98,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     )
     m_true.x.scatter_forward()
 
-    m_true = m_true.x
+    m_true = m_true.x  # type: ignore
     u_true = pde.generate_state()
     x_true = [u_true, m_true, None]
     pde.solveFwd(u_true, x_true)
@@ -108,7 +112,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form, [bc0])
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
-    prior_mean = prior_mean.x
+    prior_mean = prior_mean.x  # type: ignore
 
     prior = hpx.BiLaplacianPrior(
         Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean
@@ -155,6 +159,17 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
 
     x = solver.solve(x)
 
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
+
+    master_print(
+        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
+    )
+    master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print(comm, "Final cost: ", solver.final_cost)
+
     m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
     m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
 
@@ -179,16 +194,6 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     ) as vtx:
         vtx.write(0.0)
 
-    if solver.converged:
-        master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    else:
-        master_print(comm, "\nNot Converged")
-    master_print(
-        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    )
-    master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
-    master_print(comm, "Final cost: ", solver.final_cost)
-
     optimizer_results = {}
     if (
         solver.termination_reasons[solver.reason]
@@ -203,6 +208,20 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
         "data_misfit_False": data_misfit_False,
         "optimizer_results": optimizer_results,
     }
+
+    # Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
+    # k = 80
+    # p = 20
+    # if rank == 0:
+    #     print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
+
+    # temp_para_vec = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+    # Omega = hpx.MultiVector(temp_para_vec, k+p)
+    # temp_para_vec.destroy()
+
+    # hpx.parRandom.normal(1., Omega)
+
+    # d, U = hpx.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
 
     return final_results
     #######################################

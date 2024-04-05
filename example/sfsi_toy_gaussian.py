@@ -1,5 +1,5 @@
 # qpact problem with BiLaplacian Prior.
-import ufl
+import ufl  # type: ignore
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
@@ -7,9 +7,10 @@ import sys
 import os
 import dolfinx.fem.petsc
 from matplotlib import pyplot as plt
+from typing import Dict
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx
+import hippylibX as hpx  # type: ignore
 
 
 def master_print(comm, *args, **kwargs):
@@ -61,8 +62,12 @@ class PACTMisfitForm:
 
 
 def run_inversion(
-    mesh_filename: str, nx: int, ny: int, noise_variance: float, prior_param: dict
-) -> None:
+    mesh_filename: str,
+    nx: int,
+    ny: int,
+    noise_variance: float,
+    prior_param: Dict[str, float],
+) -> Dict[str, Dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -96,7 +101,7 @@ def run_inversion(
     )
     m_true.x.scatter_forward()
 
-    m_true = m_true.x
+    m_true = m_true.x  # type: ignore
     u_true = pde.generate_state()
 
     x_true = [u_true, m_true, None]
@@ -117,7 +122,7 @@ def run_inversion(
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = np.log(0.01)
-    prior_mean = prior_mean.x
+    prior_mean = prior_mean.x  # type: ignore
 
     prior = hpx.BiLaplacianPrior(
         Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean

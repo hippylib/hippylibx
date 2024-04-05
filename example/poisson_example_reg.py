@@ -1,5 +1,5 @@
 # poisson example with Robin BC using VariationalRegularization prior
-import ufl
+import ufl  # type: ignore
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
@@ -7,12 +7,13 @@ import sys
 import os
 import dolfinx.fem.petsc
 from matplotlib import pyplot as plt
+from typing import Dict
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx
+import hippylibX as hpx  # type: ignore
 
 
-def master_print(comm, *args, **kwargs):
+def master_print(comm: MPI.Comm, *args, **kwargs):
     if comm.rank == 0:
         print(*args, **kwargs)
 
@@ -44,7 +45,9 @@ class PoissonMisfitForm:
         return 0.5 / self.sigma2 * ufl.inner(u - self.d, u - self.d) * self.dx
 
 
-def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) -> None:
+def run_inversion(
+    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float]
+) -> Dict[str, Dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -71,7 +74,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
     )
     m_true.x.scatter_forward()
 
-    m_true = m_true.x
+    m_true = m_true.x  # type: ignore
     u_true = pde.generate_state()
 
     x_true = [u_true, m_true, None]
@@ -103,7 +106,7 @@ def run_inversion(nx: int, ny: int, noise_variance: float, prior_param: dict) ->
         + (np.log(9) - np.log(2)) / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
     )
     m0.x.scatter_forward()
-    m0 = m0.x
+    m0 = m0.x  # type: ignore
 
     data_misfit_True = hpx.modelVerify(
         model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)

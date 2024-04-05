@@ -143,7 +143,7 @@ class Model:
 
     def evalGradientParameter(
         self, x: list, mg: dlx.la.Vector, misfit_only=False
-    ) -> tuple[float, dlx.la.Vector]:
+    ) -> float:
         """
         Evaluate the gradient for the variational parameter equation at the point :code:`x=[u,m,p]`.
 

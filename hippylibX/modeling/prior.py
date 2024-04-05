@@ -14,7 +14,7 @@
 # Software Foundation) version 2.0 dated June 1991.
 
 import dolfinx as dlx
-import ufl
+import ufl  # type: ignore
 import numpy as np
 import petsc4py
 
@@ -32,14 +32,14 @@ class _BilaplacianR:
     for the Bilaplacian prior.
     """
 
-    def __init__(self, A: petsc4py.PETSc.Mat, Msolver: petsc4py.PETSc.KSP):
+    def __init__(self, A: petsc4py.PETSc.Mat, Msolver: petsc4py.PETSc.KSP):  # type: ignore
         self.A = A  # should be petsc4py.PETSc.Mat
         self.Msolver = Msolver
 
         self.help1 = self.A.createVecLeft()
         self.help2 = self.A.createVecRight()
 
-        self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(
+        self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(  # type: ignore
             self.A.getSizes(), comm=self.A.getComm()
         )
         self.petsc_wrapper.setPythonContext(self)
@@ -55,7 +55,7 @@ class _BilaplacianR:
     def mpi_comm(self):
         return self.A.comm
 
-    def mult(self, mat, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
+    def mult(self, mat, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:  # type: ignore
         self.A.mult(x, self.help1)
         self.Msolver.solve(self.help1, self.help2)
         self.A.mult(self.help2, y)
@@ -67,12 +67,12 @@ class _BilaplacianRsolver:
     for the Bilaplacian prior.
     """
 
-    def __init__(self, Asolver: petsc4py.PETSc.KSP, M: petsc4py.PETSc.Mat):
+    def __init__(self, Asolver: petsc4py.PETSc.KSP, M: petsc4py.PETSc.Mat):  # type: ignore
         self.Asolver = Asolver
         self.M = M
         self.help1, self.help2 = self.M.createVecLeft(), self.M.createVecLeft()
 
-    def solve(self, b: petsc4py.PETSc.Vec, x: petsc4py.PETSc.Vec):
+    def solve(self, b: petsc4py.PETSc.Vec, x: petsc4py.PETSc.Vec) -> int:  # type: ignore
         self.Asolver.solve(b, self.help1)
         nit = self.Asolver.its
         self.M.mult(self.help1, self.help2)
@@ -83,7 +83,10 @@ class _BilaplacianRsolver:
 
 class SqrtPrecisionPDE_Prior:
     def __init__(
-        self, Vh: dlx.fem.FunctionSpace, sqrt_precision_varf_handler, mean=None
+        self,
+        Vh: dlx.fem.FunctionSpace,
+        sqrt_precision_varf_handler,
+        mean=None,  # type: ignore
     ):
         """
         Construct the prior model.
@@ -126,13 +129,13 @@ class SqrtPrecisionPDE_Prior:
 
         varfM = ufl.inner(trial, test) * self.dx
 
-        self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
+        self.M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))  # type: ignore
         self.M.assemble()
 
         self.Msolver = self._createsolver(self.petsc_options_M)
         self.Msolver.setOperators(self.M)
 
-        self.A = dlx.fem.petsc.assemble_matrix(
+        self.A = dlx.fem.petsc.assemble_matrix(  # type: ignore
             dlx.fem.form(sqrt_precision_varf_handler(trial, test))
         )
         self.A.assemble()
@@ -144,10 +147,10 @@ class SqrtPrecisionPDE_Prior:
 
         self.Asolver.setOperators(self.A)
 
-        qdegree = 2 * Vh._ufl_element.degree()
+        qdegree = 2 * Vh._ufl_element.degree()  # type: ignore
         metadata = {"quadrature_degree": qdegree}
 
-        num_sub_spaces = Vh.num_sub_spaces
+        num_sub_spaces = Vh.num_sub_spaces  # type: ignore
 
         if num_sub_spaces <= 1:  # SCALAR PARAMETER
             element = ufl.FiniteElement(

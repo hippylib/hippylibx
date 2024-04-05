@@ -1,5 +1,5 @@
 import dolfinx as dlx
-import ufl
+import ufl  # type: ignore
 import petsc4py
 
 

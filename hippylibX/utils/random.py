@@ -34,15 +34,15 @@ class Random:
                 v_array[0:num_local_values] += loc_random_numbers
 
             out[i].ghostUpdate(
-                addv=petsc4py.PETSc.InsertMode.INSERT,
-                mode=petsc4py.PETSc.ScatterMode.FORWARD,
+                addv=petsc4py.PETSc.InsertMode.INSERT,  # type: ignore
+                mode=petsc4py.PETSc.ScatterMode.FORWARD,  # type: ignore
             )
 
     def normal_perturb(
         self, sigma: float, out: Union[dlx.la.Vector, MultiVector]
     ) -> None:
         if hasattr(out, "nvec"):
-            self._normal_perturb_multivec(sigma, out)
+            self._normal_perturb_multivec(sigma, out)  # type: ignore
         else:
             self._normal_perturb_dlxVector(sigma, out)
 
