@@ -1,7 +1,9 @@
 import dolfinx as dlx
 import math
 from .variables import STATE, PARAMETER, ADJOINT
-
+from typing import Union
+from ..modeling.prior import _BilaplacianRsolver
+import petsc4py
 # Copyright (c) 2016-2018, The University of Texas at Austin
 # & University of California--Merced.
 # Copyright (c) 2019-2020, The University of Texas at Austin
@@ -179,7 +181,7 @@ class Model:
 
         return return_value
 
-    def setPointForHessianEvaluations(self, x: list, gauss_newton_approx=False):
+    def setPointForHessianEvaluations(self, x: list, gauss_newton_approx=False) -> None:
         """
         Specify the point :code:`x = [u,m,p]` at which the Hessian operator (or the Gauss-Newton approximation)
         needs to be evaluated.
@@ -196,7 +198,7 @@ class Model:
         self.misfit.setLinearizationPoint(x, self.gauss_newton_approx)
         self.prior.setLinearizationPoint(x[PARAMETER], self.gauss_newton_approx)
 
-    def solveFwdIncremental(self, sol: dlx.la.Vector, rhs: dlx.la.Vector):
+    def solveFwdIncremental(self, sol: dlx.la.Vector, rhs: dlx.la.Vector) -> None:
         """
         Solve the linearized (incremental) forward problem for a given right-hand side
         Parameters:
@@ -206,7 +208,7 @@ class Model:
         self.n_inc_solve = self.n_inc_solve + 1
         self.problem.solveIncremental(sol, rhs, False)
 
-    def solveAdjIncremental(self, sol, rhs):
+    def solveAdjIncremental(self, sol: dlx.la.Vector, rhs: dlx.la.Vector) -> None:
         """
         Solve the incremental adjoint problem for a given right-hand side
 
@@ -218,7 +220,7 @@ class Model:
         self.n_inc_solve = self.n_inc_solve + 1
         self.problem.solveIncremental(sol, rhs, True)
 
-    def applyC(self, dm, out):
+    def applyC(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the :math:`C` block of the Hessian to a (incremental) parameter variable, i.e.
         :code:`out` = :math:`C dm`
@@ -233,7 +235,7 @@ class Model:
 
         self.problem.apply_ij(ADJOINT, PARAMETER, dm, out)
 
-    def applyCt(self, dp, out):
+    def applyCt(self, dp: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the transpose of the :math:`C` block of the Hessian to a (incremental) adjoint variable.
         :code:`out` = :math:`C^t dp`
@@ -247,7 +249,7 @@ class Model:
         """
         self.problem.apply_ij(PARAMETER, ADJOINT, dp, out)
 
-    def applyWuu(self, du, out):
+    def applyWuu(self, du: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the :math:`W_{uu}` block of the Hessian to a (incremental) state variable.
         :code:`out` = :math:`W_{uu} du`
@@ -266,7 +268,7 @@ class Model:
 
             out.array[:] += tmp.array
 
-    def applyWum(self, dm, out):
+    def applyWum(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the :math:`W_{um}` block of the Hessian to a (incremental) parameter variable.
         :code:`out` = :math:`W_{um} dm`
@@ -287,7 +289,7 @@ class Model:
             self.misfit.apply_ij(STATE, PARAMETER, dm, tmp)
             out.array[:] += tmp.array
 
-    def applyWmu(self, du, out):
+    def applyWmu(self, du: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the :math:`W_{mu}` block of the Hessian to a (incremental) state variable.
         :code:`out` = :math:`W_{mu} du`
@@ -308,7 +310,7 @@ class Model:
             self.misfit.apply_ij(PARAMETER, STATE, du, tmp)
             out.array[:] += tmp.array
 
-    def applyR(self, dm, out):
+    def applyR(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the regularization :math:`R` to a (incremental) parameter variable.
         :code:`out` = :math:`R dm`
@@ -326,7 +328,7 @@ class Model:
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
 
-    def Rsolver(self):
+    def Rsolver(self) -> Union[petsc4py.PETSc.KSP, _BilaplacianRsolver]:
         """
         Return an object :code:`Rsovler` that is a suitable solver for the regularization
         operator :math:`R`.
@@ -336,7 +338,7 @@ class Model:
         """
         return self.prior.Rsolver
 
-    def applyWmm(self, dm, out):
+    def applyWmm(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the :math:`W_{mm}` block of the Hessian to a (incremental) parameter variable.
         :code:`out` = :math:`W_{mm} dm`

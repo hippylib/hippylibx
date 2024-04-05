@@ -12,6 +12,7 @@
 # hIPPYlib is free software; you can redistribute it and/or modify it under the
 # terms of the GNU General Public License (as published by the Free
 # Software Foundation) version 2.0 dated June 1991.
+import petsc4py.PETSc
 from .variables import STATE, PARAMETER, ADJOINT
 import dolfinx as dlx
 import petsc4py
@@ -59,7 +60,7 @@ class ReducedHessian:
         self.petsc_wrapper.destroy()
 
     @property
-    def mat(self):
+    def mat(self) -> petsc4py.PETSc.Mat:
         return self.petsc_wrapper
 
     def mult(self, mat, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
@@ -86,7 +87,7 @@ class ReducedHessian:
 
         self.ncalls += 1
 
-    def GNHessian(self, x, y):
+    def GNHessian(self, x: dlx.la.Vector, y: dlx.la.Vector) -> None:
         """
         Apply the Gauss-Newton approximation of the reduced Hessian to the vector :code:`x`.
         Return the result in :code:`y`.

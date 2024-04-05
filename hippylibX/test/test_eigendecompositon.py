@@ -14,7 +14,7 @@ from example import poisson_dirichlet_example
 
 def check_g(
     A: petsc4py.PETSc.Mat, B: petsc4py.PETSc.Mat, U: hpx.MultiVector, d: np.array
-):
+) -> tuple[float, float, np.array]:
     nvec = U.nvec
     AU = hpx.MultiVector.createFromVec(U[0], nvec)
     BU = hpx.MultiVector.createFromVec(U[0], nvec)
@@ -46,7 +46,7 @@ def check_g(
     return err_Bortho, err_Aortho, res_norms
 
 
-def check_output(self, result):
+def check_output(self, result: tuple[float, float, np.array]):
     self.assertLessEqual(
         np.abs(result[0]),
         1e-10,

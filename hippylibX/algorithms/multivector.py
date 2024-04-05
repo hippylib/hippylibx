@@ -3,34 +3,38 @@ import petsc4py
 from typing import Union
 from typing import Type
 
+import petsc4py.PETSc
+
 
 class MultiVector:
-    def __init__(self, example_vec, nvec):
+    def __init__(self, example_vec: petsc4py.PETSc.Vec, nvec: int):
         self.nvec = nvec
         self.data = []
         for i in range(self.nvec):
             self.data.append(example_vec.duplicate())
 
     @classmethod
-    def createFromVec(cls, example_vec, nvec):
+    def createFromVec(
+        cls, example_vec: petsc4py.PETSc.Vec, nvec: int
+    ) -> Type["MultiVector"]:
         return cls(example_vec, nvec)
 
     @classmethod
-    def createFromMultiVec(cls, mv):
+    def createFromMultiVec(cls, mv: Type["MultiVector"]) -> Type["MultiVector"]:
         mv_copy = cls(mv[0], mv.nvec)
         for i in range(mv_copy.nvec):
             mv_copy.data[i] = mv.data[i].duplicate(mv.data[i].getArray())
 
         return mv_copy
 
-    def __del__(self):
+    def __del__(self) -> None:
         for d in self.data:
             d.destroy()
 
-    def __getitem__(self, k):
+    def __getitem__(self, k: int) -> petsc4py.PETSc.Vec:
         return self.data[k]
 
-    def scale(self, alpha):
+    def scale(self, alpha: Union[float, np.ndarray]) -> None:
         if isinstance(alpha, float):
             for d in self.data:
                 d.scale(alpha)
@@ -38,7 +42,7 @@ class MultiVector:
             for i, d in enumerate(self.data):
                 d.scale(alpha[i])
 
-    def dot(self, v) -> np.array:
+    def dot(self, v: Union[petsc4py.PETSc.Vec, Type["MultiVector"]]) -> np.array:
         if isinstance(v, petsc4py.PETSc.Vec):
             return_values = np.zeros(self.nvec)
             for i in range(self.nvec):
@@ -74,10 +78,12 @@ class MultiVector:
             norm_vals[i] = self[i].norm(norm_type)
         return norm_vals
 
-    def Borthogonalize(self, B):
+    def Borthogonalize(self, B: petsc4py.PETSc.Mat):
         return self._mgs_stable(B)
 
-    def _mgs_stable(self, B: petsc4py.PETSc.Mat):
+    def _mgs_stable(
+        self, B: petsc4py.PETSc.Mat
+    ) -> tuple[Type["MultiVector"], np.array]:
         n = self.nvec
         Bq = MultiVector(self[0], n)
         r = np.zeros((n, n), dtype="d")
@@ -120,7 +126,7 @@ class MultiVector:
         return Bq, r
 
 
-def MatMvMult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector):
+def MatMvMult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector) -> None:
     assert x.nvec == y.nvec, "x and y have non-matching number of vectors"
     if hasattr(A, "matMvMult"):
         A.matMvMult(x, y)
@@ -129,7 +135,7 @@ def MatMvMult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector):
             A.mult(x[i], y[i])
 
 
-def MatMvTranspmult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector):
+def MatMvTranspmult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector) -> None:
     assert x.nvec == y.nvec, "x and y have non-matching number of vectors"
     assert hasattr(A, "transpmult"), "A does not have transpmult method implemented"
     if hasattr(A, "matMvTranspmult"):
@@ -139,7 +145,7 @@ def MatMvTranspmult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector):
             A.multTranspose(x[i], y[i])
 
 
-def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector):
+def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector) -> None:
     assert (
         X.nvec == A.shape[0]
     ), "X Number of vecs incompatible with number of rows in A"

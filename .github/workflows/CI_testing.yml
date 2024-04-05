@@ -29,7 +29,12 @@ jobs:
         run: |
           cd ./hippylibX/test &&
           mpirun -n 2 python3 test_multivector.py
-      
+
+      - name: eigendecomposition testing
+        run: |
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_eigendecomposition.py
+
       - name: run serial check
         run: |
           cd ./hippylibX/test && 

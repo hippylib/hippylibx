@@ -1,5 +1,5 @@
 # qpact problem with Variational Regularization Prior.
-import ufl  # type: ignore
+import ufl
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from typing import Dict
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx  # type: ignore
+import hippylibX as hpx
 
 
 def master_print(comm, *args, **kwargs):
@@ -101,7 +101,7 @@ def run_inversion(
 
     m_true.x.scatter_forward()
 
-    m_true = m_true.x  # type: ignore
+    m_true = m_true.x
     u_true = pde.generate_state()
 
     x_true = [u_true, m_true, None]
@@ -138,7 +138,7 @@ def run_inversion(
         + 3 / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
     )
     m0.x.scatter_forward()
-    m0 = m0.x  # type: ignore
+    m0 = m0.x
 
     data_misfit_True = hpx.modelVerify(
         model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)

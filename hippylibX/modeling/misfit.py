@@ -31,7 +31,7 @@ class NonGaussianContinuousMisfit(object):
         glb_cost_proc = dlx.fem.assemble_scalar(dlx.fem.form(loc_cost))
         return self.Vh[hpx.STATE].mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM)
 
-    def grad(self, i: int, x: list, out: dlx.la.Vector) -> dlx.la.Vector:
+    def grad(self, i: int, x: list, out: dlx.la.Vector) -> None:
         hpx.updateFromVector(self.xfun[hpx.STATE], x[hpx.STATE])
         u_fun = self.xfun[hpx.STATE]
 
@@ -52,7 +52,7 @@ class NonGaussianContinuousMisfit(object):
         dlx.fem.petsc.set_bc(tmp_out, self.bc0)
         tmp_out.destroy()
 
-    def setLinearizationPoint(self, x: list, gauss_newton_approx=False):
+    def setLinearizationPoint(self, x: list, gauss_newton_approx=False) -> None:
         hpx.updateFromVector(self.xfun[hpx.STATE], x[hpx.STATE])
         u_fun = self.xfun[hpx.STATE]
         hpx.updateFromVector(self.xfun[hpx.PARAMETER], x[hpx.PARAMETER])
@@ -60,7 +60,7 @@ class NonGaussianContinuousMisfit(object):
         self.x_lin_fun = [u_fun, m_fun]
         self.gauss_newton_approx = gauss_newton_approx
 
-    def apply_ij(self, i: int, j: int, dir: dlx.la.Vector, out: dlx.la.Vector):
+    def apply_ij(self, i: int, j: int, dir: dlx.la.Vector, out: dlx.la.Vector) -> None:
         form = self.form(*self.x_lin_fun)
         if j == hpx.STATE:
             dlx.fem.set_bc(dir.array, self.bc0)

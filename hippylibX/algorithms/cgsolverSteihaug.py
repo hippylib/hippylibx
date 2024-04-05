@@ -13,10 +13,13 @@
 # terms of the GNU General Public License (as published by the Free
 # Software Foundation) version 2.0 dated June 1991.
 import dolfinx as dlx
+import petsc4py.PETSc
 from ..utils.parameterList import ParameterList
 import math
 import mpi4py
 import petsc4py
+from typing import Union
+from ..modeling.prior import _BilaplacianRsolver
 
 
 def CGSolverSteihaug_ParameterList():
@@ -99,7 +102,7 @@ class CGSolverSteihaug:
 
         self.comm = comm
 
-    def set_operator(self, A):
+    def set_operator(self, A: petsc4py.PETSc.Mat):
         """
         Set the operator :math:`A`.
         """
@@ -109,7 +112,9 @@ class CGSolverSteihaug:
         self.d = self.A.createVecLeft()
         self.Ad = self.A.createVecLeft()
 
-    def set_preconditioner(self, B_solver):
+    def set_preconditioner(
+        self, B_solver: Union[petsc4py.PETSc.KSP, _BilaplacianRsolver]
+    ):
         """
         Set the preconditioner :math:`B`.
         """
@@ -158,14 +163,14 @@ class CGSolverSteihaug:
             x.axpy(tau * alpha, d)
             return True
 
-    def solve(self, x: dlx.la.Vector, b: dlx.la.Vector):
+    def solve(self, x: dlx.la.Vector, b: dlx.la.Vector) -> None:
         temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
         temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
         self.solve_petsc(temp_petsc_vec_x, temp_petsc_vec_b)
         temp_petsc_vec_x.destroy()
         temp_petsc_vec_b.destroy()
 
-    def solve_petsc(self, x: petsc4py.PETSc.Vec, b: petsc4py.PETSc.Vec):
+    def solve_petsc(self, x: petsc4py.PETSc.Vec, b: petsc4py.PETSc.Vec) -> None:
         """
         Solve the linear system :math:`Ax = b`
         """

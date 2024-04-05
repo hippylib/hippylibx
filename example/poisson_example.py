@@ -1,5 +1,5 @@
 # poisson example with Robin BC using BiLaplacian prior
-import ufl  # type: ignore
+import ufl
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from typing import Dict
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx  # type: ignore
+import hippylibX as hpx
 
 
 def master_print(comm, *args, **kwargs):
@@ -78,7 +78,7 @@ def run_inversion(
     )
     m_true.x.scatter_forward()
 
-    m_true = m_true.x  # type: ignore
+    m_true = m_true.x
     u_true = pde.generate_state()
 
     x_true = [u_true, m_true, None]
@@ -93,7 +93,7 @@ def run_inversion(
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
-    prior_mean = prior_mean.x  # type: ignore
+    prior_mean = prior_mean.x
 
     prior = hpx.BiLaplacianPrior(
         Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean

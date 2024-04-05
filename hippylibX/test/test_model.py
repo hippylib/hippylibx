@@ -18,7 +18,7 @@ from example import (
 )
 
 
-def data_parser(data):
+def data_parser(data: dict) -> tuple[float, float, float]:
     eps = data["eps"]
     err_grad = data["err_grad"]
     err_H = data["err_H"]
@@ -33,7 +33,7 @@ def data_parser(data):
     return sym_Hessian_value, slope_grad, slope_H
 
 
-def check_output(self, out):
+def check_output(self, out: dict):
     self.assertEqual(out["optimizer_results"]["optimizer"], True, "Did not converge")
 
     # misfit = True, slope and symmmetric nature of Hessian

@@ -161,7 +161,7 @@ class ReducedSpaceNewtonCG:
 
         self.callback = callback
 
-    def solve(self, x: list):
+    def solve(self, x: list) -> list:
         """
         Input:
             :code:`x = [u, m, p]` represents the initial guess (u and p may be None).
@@ -183,7 +183,7 @@ class ReducedSpaceNewtonCG:
         else:
             raise ValueError(self.parameters["globalization"])
 
-    def _solve_ls(self, x):
+    def _solve_ls(self, x: list) -> list:
         """
         Solve the constrained optimization problem with initial guess :code:`x`.
         """

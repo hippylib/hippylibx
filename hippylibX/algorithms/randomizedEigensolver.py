@@ -13,10 +13,10 @@ def doublePassG(
     B: petsc4py.PETSc.Mat,
     Binv: Union[_BilaplacianRsolver, petsc4py.PETSc.KSP],
     Omega: MultiVector,
-    k,
+    k: int,
     s=1,
     check=False,
-):
+) -> dict:
     nvec = Omega.nvec
     assert nvec >= k
     Ybar = MultiVector.createFromVec(Omega[0], nvec)

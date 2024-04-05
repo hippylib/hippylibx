@@ -91,7 +91,7 @@ class PDEVariationalProblem:
             self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs
         )
 
-    def solveFwd(self, state: dlx.la.Vector, x: list) -> None:  # state is a vector
+    def solveFwd(self, state: dlx.la.Vector, x: list) -> None:
         """Solve the possibly nonlinear forward problem:
         Given :math:`m`, find :math:`u` such that
             .. math:: \\delta_p F(u, m, p;\\hat{p}) = 0,\\quad \\forall \\hat{p}."""

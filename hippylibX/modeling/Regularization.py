@@ -13,7 +13,7 @@ class H1TikhonvFunctional:
         self.m0 = m0
         self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
 
-    def __call__(self, m):  # Here m is a dlx Function
+    def __call__(self, m: dlx.fem.Function) -> ufl.form.Form:
         if self.m0 is None:
             dm = m
         else:
@@ -77,7 +77,7 @@ class VariationalRegularization:
         self.Msolver.destroy()
         self.M.destroy()
 
-    def _createsolver(self, petsc_options) -> petsc4py.PETSc.KSP:
+    def _createsolver(self, petsc_options: dict) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
         problem_prefix = f"dolfinx_solve_{id(self)}"
         ksp.setOptionsPrefix(problem_prefix)
@@ -94,7 +94,7 @@ class VariationalRegularization:
 
         return ksp
 
-    def cost(self, m: dlx.la.Vector):
+    def cost(self, m: dlx.la.Vector) -> float:
         hpx.updateFromVector(self.mfun, m)
         cost_functional = self.functional_handler(self.mfun)
         local_cost = dlx.fem.assemble_scalar(dlx.fem.form(cost_functional))
@@ -117,7 +117,9 @@ class VariationalRegularization:
         )
         tmp_out.destroy()
 
-    def setLinearizationPoint(self, m: dlx.la.Vector, gauss_newton_approx=False):
+    def setLinearizationPoint(
+        self, m: dlx.la.Vector, gauss_newton_approx=False
+    ) -> None:
         if self.isQuadratic and (self.R is not None):
             return
         hpx.updateFromVector(self.mfun, m)

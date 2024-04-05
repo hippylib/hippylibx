@@ -1,6 +1,6 @@
 # Poisson example with DirichletBC on the 2d square mesh with
 # u_d = 1 on top, 0 on bottom using BiLaplacian Prior.
-import ufl  # type: ignore
+import ufl
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
@@ -12,7 +12,7 @@ from typing import Sequence, Dict
 
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx  # type: ignore
+import hippylibX as hpx
 
 
 def master_print(comm: MPI.Comm, *args, **kwargs) -> None:
@@ -98,7 +98,7 @@ def run_inversion(
     )
     m_true.x.scatter_forward()
 
-    m_true = m_true.x  # type: ignore
+    m_true = m_true.x
     u_true = pde.generate_state()
     x_true = [u_true, m_true, None]
     pde.solveFwd(u_true, x_true)
@@ -112,7 +112,7 @@ def run_inversion(
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form, [bc0])
     prior_mean = dlx.fem.Function(Vh_m)
     prior_mean.x.array[:] = 0.01
-    prior_mean = prior_mean.x  # type: ignore
+    prior_mean = prior_mean.x
 
     prior = hpx.BiLaplacianPrior(
         Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean

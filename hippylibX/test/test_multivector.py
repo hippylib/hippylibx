@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath("../.."))
 import hippylibX as hpx
 
 
-def multi_vector_testing(nx, ny, nvec):
+def multi_vector_testing(nx: int, ny: int, nvec: int) -> np.array:
     comm = MPI.COMM_WORLD
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
     Vh = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
@@ -37,7 +37,7 @@ def multi_vector_testing(nx, ny, nvec):
     return result
 
 
-def check_output(self, result):
+def check_output(self, result: np.array):
     self.assertTrue(result.shape[0] == result.shape[1])
     self.assertTrue(np.allclose(result, np.eye(result.shape[0]), atol=1e-6))
 
