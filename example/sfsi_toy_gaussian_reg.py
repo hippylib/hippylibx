@@ -173,7 +173,17 @@ def run_inversion(
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
 
     x = solver.solve(x)
-
+    
+    if solver.converged:
+        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        master_print(comm, "\nNot Converged")
+    master_print(
+        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
+    )
+    master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
+    master_print(comm, "Final cost: ", solver.final_cost)
+    
     m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
     m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
 
@@ -198,15 +208,6 @@ def run_inversion(
     ) as vtx:
         vtx.write(0.0)
 
-    if solver.converged:
-        master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    else:
-        master_print(comm, "\nNot Converged")
-    master_print(
-        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    )
-    master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
-    master_print(comm, "Final cost: ", solver.final_cost)
     optimizer_results = {}
     if (
         solver.termination_reasons[solver.reason]
@@ -221,7 +222,31 @@ def run_inversion(
         "optimizer_results": optimizer_results,
     }
 
-    return final_results
+    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
+
+    k = 80
+    p = 20
+    if rank == 0:
+        print(
+            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
+                k, p
+            )
+        )
+
+    temp_para_vec = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+    Omega = hpx.MultiVector(temp_para_vec, k + p)
+    temp_para_vec.destroy()
+
+    hpx.parRandom.normal(1.0, Omega)
+
+    d, U = hpx.doublePassG(
+        Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False
+    )
+
+    results_eigen_decompositon = [k,d]
+
+    return final_results,results_eigen_decompositon
+
     #######################################
 
 
@@ -231,9 +256,12 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.15, "delta": 3.0}
     mesh_filename = "./meshes/circle.xdmf"
-    run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
-
+    _,eigen_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    k,d = eigen_results[0],eigen_results[1]
     comm = MPI.COMM_WORLD
-    if comm.rank == 0:
+    if(comm.rank == 0):
         plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
-        plt.show()
+        plt.figure()
+        plt.plot(range(0,k), d, 'b*', range(0,k), np.ones(k), '-r')
+        plt.yscale('log')
+        plt.savefig("qpact_Eigen_Decomposition_results.png")    

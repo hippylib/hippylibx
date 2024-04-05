@@ -174,21 +174,6 @@ def run_inversion(
     ) as vtx:
         vtx.write(0.0)
 
-    # model.setPointForHessianEvaluations(x, gauss_newton_approx = False)
-    # Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
-    # k = 80
-    # p = 20
-    # if rank == 0:
-    #     print ("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k,p) )
-
-    # temp_petsc_vec_par = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
-    # # Omega = hpx.MultiVector(x[hpx.PARAMETER], k+p)
-    # Omega = hpx.MultiVector(temp_petsc_vec_par, k+p)
-    # temp_petsc_vec_par.destroy()
-    # hpx.parRandom.normal(1., Omega)
-
-    # d, U = hp.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
-
     optimizer_results = {}
     if (
         solver.termination_reasons[solver.reason]
@@ -204,7 +189,31 @@ def run_inversion(
         "optimizer_results": optimizer_results,
     }
 
-    return final_results
+    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
+
+    k = 80
+    p = 20
+    if rank == 0:
+        print(
+            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
+                k, p
+            )
+        )
+
+    temp_para_vec = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
+    Omega = hpx.MultiVector(temp_para_vec, k + p)
+    temp_para_vec.destroy()
+
+    hpx.parRandom.normal(1.0, Omega)
+
+    d, U = hpx.doublePassG(
+        Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False
+    )
+
+    results_eigen_decompositon = [k,d]
+
+    return final_results, results_eigen_decompositon
+
     #######################################
 
 
@@ -213,9 +222,12 @@ if __name__ == "__main__":
     ny = 64
     noise_variance = 1e-4
     prior_param = {"gamma": 0.07, "delta": 0.7}
-    run_inversion(nx, ny, noise_variance, prior_param)
-
+    _,eigen_results = run_inversion(nx, ny, noise_variance, prior_param)
+    k,d = eigen_results[0],eigen_results[1]
     comm = MPI.COMM_WORLD
     if comm.rank == 0:
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
-        plt.show()
+        plt.figure()
+        plt.plot(range(0,k), d, 'b*', range(0,k), np.ones(k), '-r')
+        plt.yscale('log')
+        plt.savefig("poisson_Eigen_Decomposition_results.png")    

@@ -1,6 +1,7 @@
 import numpy as np
 import petsc4py
-
+from typing import Union
+from typing import Type
 
 class MultiVector:
     def __init__(self, example_vec, nvec):
@@ -32,7 +33,7 @@ class MultiVector:
         if isinstance(alpha, float):
             for d in self.data:
                 d.scale(alpha)
-        elif isinstance(alpha, np.array):
+        else:
             for i, d in enumerate(self.data):
                 d.scale(alpha[i])
 
@@ -50,13 +51,27 @@ class MultiVector:
 
         return return_values
 
-    # X.reduce(Y[j], A[:, j].flatten())
     def reduce(self, alpha: np.array) -> petsc4py.PETSc.Vec:
         return_vec = self[0].duplicate()
         return_vec.scale(0.0)
         for i in range(self.nvec):
             return_vec.axpy(alpha[i], self[i])
         return return_vec
+
+    def axpy(self, alpha: Union[float,np.array], Y : Type['MultiVector']) -> None:
+        if(isinstance(alpha,float)):
+            for i in range(self.nvec):
+                self[i].axpy(alpha,Y[i])
+
+        else:
+            for i in range(self.nvec):
+                self[i].axpy(alpha[i],Y[i])
+         
+    def norm(self,norm_type:petsc4py.PETSc.NormType) -> np.array:
+        norm_vals = np.zeros(self.nvec)
+        for i in range(self.nvec):
+            norm_vals[i] = self[i].norm(norm_type)
+        return norm_vals
 
     def Borthogonalize(self, B):
         return self._mgs_stable(B)
