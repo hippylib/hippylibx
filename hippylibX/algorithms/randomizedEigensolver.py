@@ -4,6 +4,7 @@ from .linalg import Solver2Operator
 
 # d, U = hpx.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
 
+
 def doublePassG(A, B, Binv, Omega, k, s=1, check=False):
     nvec = Omega.nvec
     assert nvec >= k

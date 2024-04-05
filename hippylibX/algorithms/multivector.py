@@ -133,4 +133,4 @@ def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector):
     for j in range(Y.nvec):
         Y[j].scale(0.0)
         reduced_vec = X.reduce(A[:, j].flatten())
-        Y[j] = X[0].duplicate(reduced_vec.getArray())
+        Y.data[j] = X.data[0].duplicate(reduced_vec.getArray())

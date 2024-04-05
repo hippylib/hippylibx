@@ -80,6 +80,9 @@ class _BilaplacianRsolver:
         nit += self.Asolver.its
         return nit
 
+    def generate_vector(self):
+        return self.M.createVecLeft()
+
 
 class SqrtPrecisionPDE_Prior:
     def __init__(

@@ -11,7 +11,12 @@ class Solver2Operator:
     def __init__(self, S, mpi_comm=MPI.COMM_WORLD, init_vector=None):
         self.S = S
         # self.tmp = dlx.la.Vector(mpi_comm)
-        self.tmp = self.S.createVecLeft()
+        # self.tmp = self.S.createVecLeft()
+        if isinstance(self.S, petsc4py.PETSc.KSP):
+            M, _ = self.S.getOperators()
+            self.tmp = M.createVecLeft()
+        else:
+            self.tmp = self.S.generate_vector()
 
         # self.my_init_vector = init_vector
 
