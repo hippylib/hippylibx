@@ -206,11 +206,9 @@ def run_inversion(
 
     hpx.parRandom.normal(1.0, Omega)
 
-    d, U = hpx.doublePassG(
+    results_eigen_decompositon = hpx.doublePassG(
         Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False
     )
-
-    results_eigen_decompositon = [k,d]
 
     return final_results, results_eigen_decompositon
 
@@ -222,12 +220,12 @@ if __name__ == "__main__":
     ny = 64
     noise_variance = 1e-4
     prior_param = {"gamma": 0.07, "delta": 0.7}
-    _,eigen_results = run_inversion(nx, ny, noise_variance, prior_param)
-    k,d = eigen_results[0],eigen_results[1]
+    _, eigen_results = run_inversion(nx, ny, noise_variance, prior_param)
+    k, d = eigen_results["k"], eigen_results["d"]
     comm = MPI.COMM_WORLD
     if comm.rank == 0:
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0,k), d, 'b*', range(0,k), np.ones(k), '-r')
-        plt.yscale('log')
-        plt.savefig("poisson_Eigen_Decomposition_results.png")    
+        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.yscale("log")
+        plt.savefig("poisson_Eigen_Decomposition_results.png")

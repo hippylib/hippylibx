@@ -3,6 +3,7 @@ import petsc4py
 from typing import Union
 from typing import Type
 
+
 class MultiVector:
     def __init__(self, example_vec, nvec):
         self.nvec = nvec
@@ -58,16 +59,16 @@ class MultiVector:
             return_vec.axpy(alpha[i], self[i])
         return return_vec
 
-    def axpy(self, alpha: Union[float,np.array], Y : Type['MultiVector']) -> None:
-        if(isinstance(alpha,float)):
+    def axpy(self, alpha: Union[float, np.array], Y: Type["MultiVector"]) -> None:
+        if isinstance(alpha, float):
             for i in range(self.nvec):
-                self[i].axpy(alpha,Y[i])
+                self[i].axpy(alpha, Y[i])
 
         else:
             for i in range(self.nvec):
-                self[i].axpy(alpha[i],Y[i])
-         
-    def norm(self,norm_type:petsc4py.PETSc.NormType) -> np.array:
+                self[i].axpy(alpha[i], Y[i])
+
+    def norm(self, norm_type: petsc4py.PETSc.NormType) -> np.array:
         norm_vals = np.zeros(self.nvec)
         for i in range(self.nvec):
             norm_vals[i] = self[i].norm(norm_type)

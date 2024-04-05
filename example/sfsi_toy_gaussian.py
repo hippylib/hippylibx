@@ -167,7 +167,7 @@ def run_inversion(
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
 
     x = solver.solve(x)
-    
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -233,13 +233,12 @@ def run_inversion(
 
     hpx.parRandom.normal(1.0, Omega)
 
-    d, U = hpx.doublePassG(
+    results_eigen_decompositon = hpx.doublePassG(
         Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False
     )
 
-    results_eigen_decompositon = [k,d]
+    return final_results, results_eigen_decompositon
 
-    return final_results,results_eigen_decompositon
     #######################################
 
 
@@ -249,12 +248,12 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.040, "delta": 0.8}
     mesh_filename = "./meshes/circle.xdmf"
-    _,eigen_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
-    k,d = eigen_results[0],eigen_results[1]
+    _, eigen_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    k, d = eigen_results["k"], eigen_results["d"]
     comm = MPI.COMM_WORLD
-    if(comm.rank == 0):
+    if comm.rank == 0:
         plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0,k), d, 'b*', range(0,k), np.ones(k), '-r')
-        plt.yscale('log')
-        plt.savefig("qpact_Eigen_Decomposition_results.png")    
+        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.yscale("log")
+        plt.savefig("qpact_Eigen_Decomposition_results.png")

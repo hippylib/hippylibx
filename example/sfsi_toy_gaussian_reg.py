@@ -173,7 +173,7 @@ def run_inversion(
     solver = hpx.ReducedSpaceNewtonCG(model, parameters)
 
     x = solver.solve(x)
-    
+
     if solver.converged:
         master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
@@ -183,7 +183,7 @@ def run_inversion(
     )
     master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
     master_print(comm, "Final cost: ", solver.final_cost)
-    
+
     m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
     m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
 
@@ -239,13 +239,11 @@ def run_inversion(
 
     hpx.parRandom.normal(1.0, Omega)
 
-    d, U = hpx.doublePassG(
+    results_eigen_decompositon = hpx.doublePassG(
         Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False
     )
 
-    results_eigen_decompositon = [k,d]
-
-    return final_results,results_eigen_decompositon
+    return final_results, results_eigen_decompositon
 
     #######################################
 
@@ -256,12 +254,12 @@ if __name__ == "__main__":
     noise_variance = 1e-6
     prior_param = {"gamma": 0.15, "delta": 3.0}
     mesh_filename = "./meshes/circle.xdmf"
-    _,eigen_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
-    k,d = eigen_results[0],eigen_results[1]
+    _, eigen_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    k, d = eigen_results["k"], eigen_results["d"]
     comm = MPI.COMM_WORLD
-    if(comm.rank == 0):
+    if comm.rank == 0:
         plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0,k), d, 'b*', range(0,k), np.ones(k), '-r')
-        plt.yscale('log')
-        plt.savefig("qpact_Eigen_Decomposition_results.png")    
+        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.yscale("log")
+        plt.savefig("qpact_Eigen_Decomposition_results.png")
