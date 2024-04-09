@@ -74,10 +74,15 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        _, out = poisson_dirichlet_example.run_inversion(
+        out = poisson_dirichlet_example.run_inversion(
             nx, ny, noise_variance, prior_param
         )
-        A, B, d, U = out["A"], out["B"], out["d"], out["U"]
+        A, B, d, U = (
+            out["eigen_decomposition_results"]["A"],
+            out["eigen_decomposition_results"]["B"],
+            out["eigen_decomposition_results"]["d"],
+            out["eigen_decomposition_results"]["U"],
+        )
         result = check_g(A, B, U, d)
         check_output(self, result)
 

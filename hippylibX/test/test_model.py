@@ -85,7 +85,7 @@ class Testing_Execution(unittest.TestCase):
         noise_variance = 1e-6
         prior_param = {"gamma": 0.1, "delta": 2.0}
         mesh_filename = "../../example/meshes/circle.xdmf"
-        out, _ = sfsi_toy_gaussian.run_inversion(
+        out = sfsi_toy_gaussian.run_inversion(
             mesh_filename, nx, ny, noise_variance, prior_param
         )
         check_output(self, out)
@@ -96,7 +96,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out, _ = poisson_example.run_inversion(nx, ny, noise_variance, prior_param)
+        out = poisson_example.run_inversion(nx, ny, noise_variance, prior_param)
         check_output(self, out)
 
     def test_poisson_dirichlet_bilap_prior_execution(self):
@@ -105,7 +105,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out, _ = poisson_dirichlet_example.run_inversion(
+        out = poisson_dirichlet_example.run_inversion(
             nx, ny, noise_variance, prior_param
         )
         check_output(self, out)
@@ -118,7 +118,7 @@ class Testing_Execution(unittest.TestCase):
         prior_param = {"gamma": 0.1, "delta": 2.0}
         mesh_filename = "../../example/meshes/circle.xdmf"
 
-        out, _ = sfsi_toy_gaussian_reg.run_inversion(
+        out = sfsi_toy_gaussian_reg.run_inversion(
             mesh_filename, nx, ny, noise_variance, prior_param
         )
         check_output(self, out)
@@ -129,7 +129,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out, _ = poisson_example_reg.run_inversion(nx, ny, noise_variance, prior_param)
+        out = poisson_example_reg.run_inversion(nx, ny, noise_variance, prior_param)
         check_output(self, out)
 
     def test_poisson_dirichlet_var_reg_prior_execution(self):
@@ -138,7 +138,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out, _ = poisson_dirichlet_example_reg.run_inversion(
+        out = poisson_dirichlet_example_reg.run_inversion(
             nx, ny, noise_variance, prior_param
         )
         check_output(self, out)

@@ -18,8 +18,7 @@ from ..utils.parameterList import ParameterList
 import math
 import mpi4py
 import petsc4py
-from typing import Union
-from ..modeling.prior import _BilaplacianRsolver
+from typing import Any
 
 
 def CGSolverSteihaug_ParameterList():
@@ -112,9 +111,7 @@ class CGSolverSteihaug:
         self.d = self.A.createVecLeft()
         self.Ad = self.A.createVecLeft()
 
-    def set_preconditioner(
-        self, B_solver: Union[petsc4py.PETSc.KSP, _BilaplacianRsolver]
-    ):
+    def set_preconditioner(self, B_solver: Any):
         """
         Set the preconditioner :math:`B`.
         """

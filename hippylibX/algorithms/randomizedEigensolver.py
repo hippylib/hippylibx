@@ -3,15 +3,13 @@ import petsc4py.PETSc
 from .multivector import MultiVector, MatMvMult, MvDSmatMult
 from .linalg import Solver2Operator
 import petsc4py
-from typing import Union
-from ..modeling.prior import _BilaplacianRsolver
+from typing import Any
 
 
-# d, U = hp.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1, check=False)
 def doublePassG(
     A: petsc4py.PETSc.Mat,
     B: petsc4py.PETSc.Mat,
-    Binv: Union[_BilaplacianRsolver, petsc4py.PETSc.KSP],
+    Binv: Any,
     Omega: MultiVector,
     k: int,
     s=1,
@@ -42,6 +40,4 @@ def doublePassG(
     U = MultiVector.createFromVec(Omega[0], k)
     MvDSmatMult(Q, V, U)
 
-    check_values = {"A": A, "B": B, "U": U, "d": d, "k": k}
-
-    return check_values
+    return d, U

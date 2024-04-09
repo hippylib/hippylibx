@@ -13,11 +13,6 @@ sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
 
 
-def master_print(comm: MPI.Comm, *args, **kwargs):
-    if comm.rank == 0:
-        print(*args, **kwargs)
-
-
 class Poisson_Approximation:
     def __init__(self, alpha: float, f: float):
         self.alpha = alpha
@@ -60,8 +55,8 @@ def run_inversion(
         Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs,
         Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs,
     ]
-    master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
-    master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
+    hpx.master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
+    hpx.master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
     # FORWARD MODEL
     alpha = 100.0
     f = 1.0
@@ -144,14 +139,14 @@ def run_inversion(
     x = solver.solve(x)
 
     if solver.converged:
-        master_print(comm, "\nConverged in ", solver.it, " iterations.")
+        hpx.master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
-        master_print(comm, "\nNot Converged")
-    master_print(
+        hpx.master_print(comm, "\nNot Converged")
+    hpx.master_print(
         comm, "Termination reason: ", solver.termination_reasons[solver.reason]
     )
-    master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
-    master_print(comm, "Final cost: ", solver.final_cost)
+    hpx.master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
+    hpx.master_print(comm, "Final cost: ", solver.final_cost)
 
     m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
     m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
@@ -185,11 +180,6 @@ def run_inversion(
         optimizer_results["optimizer"] = True
     else:
         optimizer_results["optimizer"] = False
-    final_results = {
-        "data_misfit_True": data_misfit_True,
-        "data_misfit_False": data_misfit_False,
-        "optimizer_results": optimizer_results,
-    }
 
     Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
 
@@ -208,12 +198,26 @@ def run_inversion(
 
     hpx.parRandom.normal(1.0, Omega)
 
-    results_eigen_decompositon = hpx.doublePassG(
+    d, U = hpx.doublePassG(
         Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1, check=False
     )
 
-    return final_results, results_eigen_decompositon
+    eigen_decomposition_results = {
+        "A": Hmisfit.mat,
+        "B": prior.R,
+        "k": k,
+        "d": d,
+        "U": U,
+    }
 
+    final_results = {
+        "data_misfit_True": data_misfit_True,
+        "data_misfit_False": data_misfit_False,
+        "optimizer_results": optimizer_results,
+        "eigen_decomposition_results": eigen_decomposition_results,
+    }
+
+    return final_results
     #######################################
 
 
@@ -222,8 +226,11 @@ if __name__ == "__main__":
     ny = 64
     noise_variance = 1e-4
     prior_param = {"gamma": 0.02, "delta": 0.2}
-    _, eigen_results = run_inversion(nx, ny, noise_variance, prior_param)
-    k, d = eigen_results["k"], eigen_results["d"]
+    final_results = run_inversion(nx, ny, noise_variance, prior_param)
+    k, d = (
+        final_results["eigen_decomposition_results"]["k"],
+        final_results["eigen_decomposition_results"]["d"],
+    )
     comm = MPI.COMM_WORLD
     if comm.rank == 0:
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")

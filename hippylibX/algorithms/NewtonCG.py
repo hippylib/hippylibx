@@ -17,9 +17,6 @@ from ..utils.parameterList import ParameterList
 from ..modeling.reducedHessian import ReducedHessian
 from ..modeling.variables import STATE, PARAMETER, ADJOINT
 from .cgsolverSteihaug import CGSolverSteihaug
-
-# import dolfinx as dlx
-# import dolfinx.fem.petsc
 from ..algorithms.linalg import inner
 
 

@@ -52,7 +52,7 @@ class MultiVector:
             return_values = np.zeros((self.nvec, v.nvec))
             for i in range(self.nvec):
                 for j in range(v.nvec):
-                    return_values[i][j] = self[i].dot(v[j])
+                    return_values[i, j] = self[i].dot(v[j])
 
         return return_values
 

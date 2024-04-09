@@ -1,9 +1,7 @@
 import dolfinx as dlx
 import math
 from .variables import STATE, PARAMETER, ADJOINT
-from typing import Union
-from ..modeling.prior import _BilaplacianRsolver
-import petsc4py
+from typing import Any
 # Copyright (c) 2016-2018, The University of Texas at Austin
 # & University of California--Merced.
 # Copyright (c) 2019-2020, The University of Texas at Austin
@@ -328,7 +326,7 @@ class Model:
         temp_petsc_vec_dm.destroy()
         temp_petsc_vec_out.destroy()
 
-    def Rsolver(self) -> Union[petsc4py.PETSc.KSP, _BilaplacianRsolver]:
+    def Rsolver(self) -> Any:
         """
         Return an object :code:`Rsovler` that is a suitable solver for the regularization
         operator :math:`R`.
