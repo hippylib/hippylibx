@@ -43,7 +43,7 @@ def check_output(self, result: np.array):
 
 
 class Testing_Execution(unittest.TestCase):
-    def multivector_testing(self):
+    def test_multivector(self):
         hpx.parRandom.replay()
         nx = 64
         ny = 64
