@@ -14,12 +14,12 @@ class Solver2Operator:
         S: Any,
         mpi_comm=MPI.COMM_WORLD,
         # init_vector=None,
-        createVecLeft = None,
-        createVecRight = None
+        createVecLeft=None,
+        createVecRight=None,
     ) -> None:
         self.S = S
         self.createVecLeft = createVecLeft
         self.createVecRight = createVecRight
-         
+
     def mult(self, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
         self.S.solve(x, y)
