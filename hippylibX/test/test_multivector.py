@@ -26,9 +26,7 @@ def multi_vector_testing(nx: int, ny: int, nvec: int) -> np.array:
     )
     M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
     M.assemble()
-    sample_vec1 = dlx.fem.Function(Vh)
-    sample_vec1 = sample_vec1.x
-    sample_petsc_vec = dlx.la.create_petsc_vector_wrap(sample_vec1)
+    sample_petsc_vec = dlx.fem.petsc.create_vector(dlx.fem.form(test*ufl.dx))
     Omega = hpx.MultiVector.createFromVec(sample_petsc_vec, nvec)
     sample_petsc_vec.destroy()
     hpx.parRandom.normal(1.0, Omega)

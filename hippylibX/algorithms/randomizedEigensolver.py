@@ -14,7 +14,7 @@ def doublePassG(
     k: int,
     s=1,
     check=False,
-) -> dict:
+) -> tuple[np.array, MultiVector]:
     nvec = Omega.nvec
     assert nvec >= k
     Ybar = MultiVector.createFromVec(Omega[0], nvec)

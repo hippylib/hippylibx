@@ -13,19 +13,13 @@ class Solver2Operator:
         self,
         S: Any,
         mpi_comm=MPI.COMM_WORLD,
-        init_vector=None,
+        # init_vector=None,
+        createVecLeft = None,
+        createVecRight = None
     ) -> None:
         self.S = S
-
-        if hasattr(self.S, "generate_vector"):
-            self.tmp = self.S.generate_vector()
-        elif hasattr(self.S, "getOperators"):
-            M, _ = self.S.getOperators()
-            self.tmp = M.createVecLeft()
-        else:
-            raise NotImplementedError(
-                "one of generate vector or getOperators not implemented for Solver object"
-            )
-
+        self.createVecLeft = createVecLeft
+        self.createVecRight = createVecRight
+         
     def mult(self, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
         self.S.solve(x, y)
