@@ -55,6 +55,9 @@ class LowRankHessian:
     def __del__(self) -> None:
         for i in range(self.U.nvec):
             self.U[i].destroy()
+        
+        self.help.destroy()
+        self.help1.destroy()
 
     def mult(self, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
         self.prior.R.mult(x, y)
@@ -63,7 +66,6 @@ class LowRankHessian:
         y.axpy(1, self.help1)
 
     def solve(self, sol: petsc4py.PETSc.Vec, rhs: petsc4py.PETSc.Vec) -> None:
-        # self.prior.Rsolver.solve(sol, rhs)
         self.prior.Rsolver.solve(rhs, sol)
         self.LowRankHinv.mult(rhs, self.help)
         sol.axpy(-1, self.help)
@@ -101,7 +103,9 @@ class LowRankPosteriorSampler:
     def __del__(self) -> None:
         for i in range(self.U.nvec):
             self.U[i].destroy()
-
+        
+        self.help.destroy()
+        
     def sample(self, noise: dlx.la.Vector, s: dlx.la.Vector):
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
