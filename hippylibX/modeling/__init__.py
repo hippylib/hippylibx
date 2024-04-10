@@ -6,3 +6,8 @@ from .modelVerify import modelVerify  # noqa
 from .Regularization import H1TikhonvFunctional, VariationalRegularization  # noqa
 from .variables import STATE, PARAMETER, ADJOINT, NVAR  # noqa
 from .reducedHessian import ReducedHessian  # noqa
+from .laplaceApproximation import (
+    LowRankHessian,  # noqa
+    LowRankPosteriorSampler,  # noqa
+    LaplaceApproximator,  # noqa
+)

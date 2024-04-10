@@ -56,18 +56,15 @@ class MultiVector:
 
         return return_values
 
-    def reduce(self, alpha: np.array) -> petsc4py.PETSc.Vec:
-        return_vec = self[0].duplicate()
-        return_vec.scale(0.0)
+    def reduce(self, y: petsc4py.PETSc.Vec, alpha: np.array) -> None:
+        y.scale(0.0)
         for i in range(self.nvec):
-            return_vec.axpy(alpha[i], self[i])
-        return return_vec
+            y.axpy(alpha[i], self[i])
 
     def axpy(self, alpha: Union[float, np.array], Y: Type["MultiVector"]) -> None:
         if isinstance(alpha, float):
             for i in range(self.nvec):
                 self[i].axpy(alpha, Y[i])
-
         else:
             for i in range(self.nvec):
                 self[i].axpy(alpha[i], Y[i])
@@ -154,5 +151,6 @@ def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector) -> None:
     ), "Y Number of vecs incompatible with number of cols in A"
     for j in range(Y.nvec):
         Y[j].scale(0.0)
-        reduced_vec = X.reduce(A[:, j].flatten())
+        reduced_vec = X[0].duplicate()
+        X.reduce(reduced_vec, A[:, j].flatten())
         Y.data[j] = X.data[0].duplicate(reduced_vec.getArray())
