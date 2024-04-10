@@ -13,7 +13,6 @@ class Solver2Operator:
         self,
         S: Any,
         mpi_comm=MPI.COMM_WORLD,
-        # init_vector=None,
         createVecLeft=None,
         createVecRight=None,
     ) -> None:
