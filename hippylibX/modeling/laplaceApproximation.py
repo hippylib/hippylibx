@@ -41,10 +41,11 @@ class LowRankHessian:
         createVecLeft=None,
         createVecRight=None,
     ):
+        self.U = U
         self.prior = prior
-        self.LowRankH = LowRankOperator(d, U)
+        self.LowRankH = LowRankOperator(d, self.U)
         dsolve = d / (np.ones(d.shape, dtype=d.dtype) + d)
-        self.LowRankHinv = LowRankOperator(dsolve, U)
+        self.LowRankHinv = LowRankOperator(dsolve, self.U)
 
         self.createVecLeft = createVecLeft
         self.createVecRight = createVecRight
@@ -55,7 +56,7 @@ class LowRankHessian:
     def __del__(self) -> None:
         for i in range(self.U.nvec):
             self.U[i].destroy()
-        
+
         self.help.destroy()
         self.help1.destroy()
 
@@ -91,21 +92,22 @@ class LowRankPosteriorSampler:
         createVecLeft=None,
         createVecRight=None,
     ):
+        self.U = U
         self.prior = prior
         self.createVecLeft = createVecLeft
         self.createVecRight = createVecRight
 
         ones = np.ones(d.shape, dtype=d.dtype)
         self.d = ones - np.power(ones + d, -0.5)
-        self.lrsqrt = LowRankOperator(self.d, U)
+        self.lrsqrt = LowRankOperator(self.d, self.U)
         self.help = self.prior.R.createVecLeft()
 
     def __del__(self) -> None:
         for i in range(self.U.nvec):
             self.U[i].destroy()
-        
+
         self.help.destroy()
-        
+
     def sample(self, noise: dlx.la.Vector, s: dlx.la.Vector):
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
@@ -161,7 +163,7 @@ class LaplaceApproximator:
             dm = m - self.mean
         temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
         self.Hlr.mult(temp_petsc_vec_dm, self.Hlr.help1)
-        return_value = 0.5 * self.Hlr.dot(self.Hlr.help1)
+        return_value = 0.5 * self.Hlr.help1.dot(temp_petsc_vec_dm)
         temp_petsc_vec_dm.destroy()
         return return_value
 

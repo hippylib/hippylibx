@@ -93,28 +93,3 @@ class LowRankOperator:
             tr = np.sum(self.d * diagWUtU)
 
         return tr
-
-    def trace2(self, W=None) -> float:
-        """
-        Compute the trace of :math:`A A` (Note this is the square of Frobenius norm, since :math:`A` is symmetic).
-        If the weight :code:`W` is provided, it will compute the trace of :math:`(AW)^2`.
-
-        This is equivalent to :math:`\mbox{tr}_W(A) = \sum_i \lambda_i^2`,
-        where :math:`\lambda_i` are the generalized eigenvalues of
-        :math:`A x = \lambda W^{-1} x`.
-
-        .. note:: If :math:`U` is a :math:`W`-orthogonal matrix then :math:`\mbox{tr}_W(A) = \sum_i D(i,i)^2`.
-        """
-        if W is None:
-            UtU = self.U.dot(self.U)
-            dUtU = self.d[:, None] * UtU  # diag(d)*UtU.
-            tr2 = np.sum(dUtU * dUtU)
-        else:
-            WU = MultiVector.createFromVec(self.U[0], self.U.nvec)
-            MatMvMult(W, self.U, WU)
-            WU = np.zeros(self.U.shape, dtype=self.U.dtype)
-            UtWU = self.U.dot(WU)
-            dUtWU = self.d[:, None] * UtWU  # diag(d)*UtU.
-            tr2 = np.power(np.linalg.norm(dUtWU), 2)
-
-        return tr2
