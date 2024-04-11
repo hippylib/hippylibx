@@ -27,10 +27,6 @@ class MultiVector:
 
         return mv_copy
 
-    def __del__(self) -> None:
-        for d in self.data:
-            d.destroy()
-
     def __getitem__(self, k: int) -> petsc4py.PETSc.Vec:
         return self.data[k]
 
@@ -57,7 +53,6 @@ class MultiVector:
         return return_values
 
     def reduce(self, y: petsc4py.PETSc.Vec, alpha: np.array) -> None:
-        y.scale(0.0)
         for i in range(self.nvec):
             y.axpy(alpha[i], self[i])
 
@@ -151,6 +146,4 @@ def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector) -> None:
     ), "Y Number of vecs incompatible with number of cols in A"
     for j in range(Y.nvec):
         Y[j].scale(0.0)
-        reduced_vec = X[0].duplicate()
-        X.reduce(reduced_vec, A[:, j].flatten())
-        Y.data[j] = X.data[0].duplicate(reduced_vec.getArray())
+        X.reduce(Y[j],A[:,j].flatten())

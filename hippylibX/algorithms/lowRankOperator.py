@@ -37,10 +37,6 @@ class LowRankOperator:
         self.createVecLeft = createVecLeft
         self.createVecRight = createVecRight
 
-    def __del__(self) -> None:
-        for i in range(self.U.nvec):
-            self.U[i].destroy()
-
     def mult(self, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
         """
         Compute :math:`y = Ax = U D U^T x`
@@ -49,7 +45,7 @@ class LowRankOperator:
         dUtx = self.d * Utx  # elementwise mult
         self.U.reduce(y, dUtx)
 
-    def solve(self, sol: petsc4py.PETSc.Vec, rhs: petsc4py.PETSc.Vec) -> None:
+    def solve(self, rhs: petsc4py.PETSc.Vec, sol: petsc4py.PETSc.Vec) -> None:
         """
         Compute :math:`\mbox{sol} = U D^-1 U^T x`
         """
@@ -63,10 +59,8 @@ class LowRankOperator:
         """
         diag.scale(0.0)
         tmp = self.U[0].duplicate()
-        for i in range(self.U.nvec):
-            tmp.scale(0.0)
-            tmp.axpy(1.0, self.U[i])
-            tmp.pointwiseMult(tmp, self.U[i])
+        for i in range(self.U.nvec):           
+            tmp.pointwiseMult(self.U[i], self.U[i])
             diag.axpy(self.d[i], tmp)
 
     def trace(self, W=None) -> float:

@@ -54,9 +54,6 @@ class LowRankHessian:
         self.help1 = self.prior.R.createVecLeft()
 
     def __del__(self) -> None:
-        for i in range(self.U.nvec):
-            self.U[i].destroy()
-
         self.help.destroy()
         self.help1.destroy()
 
@@ -66,7 +63,7 @@ class LowRankHessian:
         self.prior.R.mult(self.help, self.help1)
         y.axpy(1, self.help1)
 
-    def solve(self, sol: petsc4py.PETSc.Vec, rhs: petsc4py.PETSc.Vec) -> None:
+    def solve(self, rhs: petsc4py.PETSc.Vec, sol: petsc4py.PETSc.Vec) -> None:
         self.prior.Rsolver.solve(rhs, sol)
         self.LowRankHinv.mult(rhs, self.help)
         sol.axpy(-1, self.help)
@@ -103,9 +100,6 @@ class LowRankPosteriorSampler:
         self.help = self.prior.R.createVecLeft()
 
     def __del__(self) -> None:
-        for i in range(self.U.nvec):
-            self.U[i].destroy()
-
         self.help.destroy()
 
     def sample(self, noise: dlx.la.Vector, s: dlx.la.Vector):
@@ -151,10 +145,6 @@ class LaplaceApproximator:
         self.Hlr = LowRankHessian(prior, d, U)
         self.sampler = LowRankPosteriorSampler(self.prior, self.d, self.U)
         self.mean = None
-
-    def __del__(self) -> None:
-        for i in range(self.U.nvec):
-            self.U[i].destroy()
 
     def cost(self, m: dlx.la.Vector) -> float:
         if self.mean is None:
