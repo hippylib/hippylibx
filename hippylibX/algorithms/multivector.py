@@ -146,4 +146,4 @@ def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector) -> None:
     ), "Y Number of vecs incompatible with number of cols in A"
     for j in range(Y.nvec):
         Y[j].scale(0.0)
-        X.reduce(Y[j],A[:,j].flatten())
+        X.reduce(Y[j], A[:, j].flatten())

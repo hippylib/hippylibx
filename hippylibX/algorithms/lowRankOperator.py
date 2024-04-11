@@ -59,7 +59,7 @@ class LowRankOperator:
         """
         diag.scale(0.0)
         tmp = self.U[0].duplicate()
-        for i in range(self.U.nvec):           
+        for i in range(self.U.nvec):
             tmp.pointwiseMult(self.U[i], self.U[i])
             diag.axpy(self.d[i], tmp)
 
