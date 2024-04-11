@@ -13,7 +13,6 @@ def doublePassG(
     Omega: MultiVector,
     k: int,
     s=1,
-    check=False,
 ) -> tuple[np.array, MultiVector]:
     nvec = Omega.nvec
     assert nvec >= k
