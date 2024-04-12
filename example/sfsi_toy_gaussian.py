@@ -225,21 +225,17 @@ def run_inversion(
 
     d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
 
-    lap_aprx = hpx.LaplaceApproximator(
-        prior,
-        d,
-        U,
-    )
+    lap_aprx = hpx.LaplaceApproximator(prior, d, U)
     lap_aprx.mean = prior.generate_parameter(0)
-    lap_aprx.mean.array[:] = prior_mean.array[:]
+    lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
 
     noise = prior.generate_parameter("noise")
     hpx.parRandom.normal(1.0, noise)
 
-    m0 = prior.generate_parameter(0)
+    m_prior = prior.generate_parameter(0)
     m_post = prior.generate_parameter(0)
 
-    lap_aprx.sample(noise, m0, m_post)
+    lap_aprx.sample(noise, m_prior, m_post)
 
     true_param = hpx.vector2Function(m_true, Vh[hpx.PARAMETER])
     with dlx.io.XDMFFile(
@@ -248,7 +244,7 @@ def run_inversion(
         file.write_mesh(msh)
         file.write_function(true_param)
 
-    prior_sample = hpx.vector2Function(m0, Vh[hpx.PARAMETER])
+    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
     with dlx.io.XDMFFile(
         msh.comm, "qpact_prior_sample_np{0:d}_X.xdmf".format(nproc), "w"
     ) as file:
