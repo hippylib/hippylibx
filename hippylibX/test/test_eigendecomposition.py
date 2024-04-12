@@ -83,7 +83,7 @@ class Testing_Execution(unittest.TestCase):
             out["eigen_decomposition_results"]["d"],
             out["eigen_decomposition_results"]["U"],
         )
-        result = check_g(A, B, U, d)
+        result = check_g(A, B.R, U, d)
         check_output(self, result)
 
 

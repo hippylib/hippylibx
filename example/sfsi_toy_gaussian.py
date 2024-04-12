@@ -260,7 +260,7 @@ def run_inversion(
 
     eigen_decomposition_results = {
         "A": Hmisfit.mat,
-        "B": prior.R,
+        "B": prior,
         "k": k,
         "d": d,
         "U": U,

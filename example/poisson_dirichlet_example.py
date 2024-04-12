@@ -10,7 +10,6 @@ import dolfinx.fem.petsc
 from matplotlib import pyplot as plt
 from typing import Sequence, Dict
 
-
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
 
@@ -250,13 +249,7 @@ def run_inversion(
         file.write_mesh(msh)
         file.write_function(posterior_sample)
 
-    eigen_decomposition_results = {
-        "A": Hmisfit.mat,
-        "B": prior.R,
-        "k": k,
-        "d": d,
-        "U": U,
-    }
+    eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
 
     final_results = {
         "data_misfit_True": data_misfit_True,
