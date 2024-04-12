@@ -144,7 +144,10 @@ class LaplaceApproximator:
         self.U = U
         self.Hlr = LowRankHessian(prior, d, U)
         self.sampler = LowRankPosteriorSampler(self.prior, self.d, self.U)
-        self.mean = None
+        self.mean = mean
+
+        if self.mean is None:
+            self.mean = self.prior.generate_parameter(0)
 
     def cost(self, m: dlx.la.Vector) -> float:
         if self.mean is None:
@@ -190,12 +193,29 @@ class LaplaceApproximator:
         if len(args) == 2:
             self._sample_given_prior(args[0], args[1])
             if add_mean:
-                args[1].axpy(1.0, self.mean)
+                temp_petsc_vec_arg1 = dlx.la.create_petsc_vector_wrap(args[1])
+                temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
+                temp_petsc_vec_arg1.axpy(1.0, temp_petsc_vec_mean)
+                temp_petsc_vec_arg1.destroy()
+                temp_petsc_vec_mean.destroy()
+
         elif len(args) == 3:
             self._sample_given_white_noise(args[0], args[1], args[2])
             if add_mean:
-                args[1].axpy(1.0, self.prior.mean)
-                args[2].axpy(1.0, self.mean)
+                temp_petsc_vec_arg1 = dlx.la.create_petsc_vector_wrap(args[1])
+                temp_petsc_vec_prior_mean = dlx.la.create_petsc_vector_wrap(
+                    self.prior.mean
+                )
+                temp_petsc_vec_arg2 = dlx.la.create_petsc_vector_wrap(args[2])
+                temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
+
+                temp_petsc_vec_arg1.axpy(1.0, temp_petsc_vec_prior_mean)
+                temp_petsc_vec_arg2.axpy(1.0, temp_petsc_vec_mean)
+
+                temp_petsc_vec_arg1.destroy()
+                temp_petsc_vec_prior_mean.destroy()
+                temp_petsc_vec_arg2.destroy()
+                temp_petsc_vec_mean.destroy()
         else:
             raise NameError("Invalid number of parameters in Posterior::sample")
 

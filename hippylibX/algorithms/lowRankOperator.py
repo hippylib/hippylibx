@@ -43,6 +43,7 @@ class LowRankOperator:
         """
         Utx = self.U.dot(x)
         dUtx = self.d * Utx  # elementwise mult
+        y.scale(0.0)
         self.U.reduce(y, dUtx)
 
     def solve(self, rhs: petsc4py.PETSc.Vec, sol: petsc4py.PETSc.Vec) -> None:
@@ -51,6 +52,7 @@ class LowRankOperator:
         """
         Utr = self.U.dot(rhs)
         dinvUtr = Utr / self.d
+        sol.scale(0.0)
         self.U.reduce(sol, dinvUtr)
 
     def get_diagonal(self, diag: petsc4py.PETSc.Vec) -> None:

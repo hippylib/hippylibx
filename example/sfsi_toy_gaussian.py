@@ -205,11 +205,6 @@ def run_inversion(
         optimizer_results["optimizer"] = True
     else:
         optimizer_results["optimizer"] = False
-    final_results = {
-        "data_misfit_True": data_misfit_True,
-        "data_misfit_False": data_misfit_False,
-        "optimizer_results": optimizer_results,
-    }
 
     Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
 
@@ -230,6 +225,43 @@ def run_inversion(
 
     d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
 
+    lap_aprx = hpx.LaplaceApproximator(
+        prior,
+        d,
+        U,
+    )
+    lap_aprx.mean = prior.generate_parameter(0)
+    lap_aprx.mean.array[:] = prior_mean.array[:]
+
+    noise = prior.generate_parameter("noise")
+    hpx.parRandom.normal(1.0, noise)
+
+    m0 = prior.generate_parameter(0)
+    m_post = prior.generate_parameter(0)
+
+    lap_aprx.sample(noise, m0, m_post)
+
+    true_param = hpx.vector2Function(m_true, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "qpact_true_para_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(true_param)
+
+    prior_sample = hpx.vector2Function(m0, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "qpact_prior_sample_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(prior_sample)
+
+    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "qpact_posterior_sample_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(posterior_sample)
+
     eigen_decomposition_results = {
         "A": Hmisfit.mat,
         "B": prior.R,
@@ -246,7 +278,7 @@ def run_inversion(
     }
 
     return final_results
-    #######################################
+    ######################################
 
 
 if __name__ == "__main__":

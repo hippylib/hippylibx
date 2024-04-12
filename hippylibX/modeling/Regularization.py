@@ -77,6 +77,9 @@ class VariationalRegularization:
         self.Msolver.destroy()
         self.M.destroy()
 
+    def generate_parameter(self, dim: int) -> dlx.la.Vector:
+        return dlx.la.Vector(self.Vh.dofmap.index_map)
+
     def _createsolver(self, petsc_options: dict) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
         problem_prefix = f"dolfinx_solve_{id(self)}"
