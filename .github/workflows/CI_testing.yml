@@ -35,6 +35,11 @@ jobs:
           cd ./hippylibX/test &&
           mpirun -n 2 python3 test_eigendecomposition.py
 
+      - name: low rank Hessian testing
+        run: |
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_lowRankHessian.py
+
       - name: run serial check
         run: |
           cd ./hippylibX/test && 
