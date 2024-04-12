@@ -220,31 +220,67 @@ def run_inversion(
     lap_aprx.mean = prior.generate_parameter(0)
     lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
 
-    noise = prior.generate_parameter("noise")
-    hpx.parRandom.normal(1.0, noise)
-
     m_prior = prior.generate_parameter(0)
     m_post = prior.generate_parameter(0)
 
-    lap_aprx.sample(noise, m_prior, m_post)
+    noise = prior.generate_parameter("noise")
 
-    true_param = hpx.vector2Function(m_true, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "dirichlet_Poisson_true_para_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(true_param)
+    ######################################################
+    hpx.parRandom.normal(1.0, noise)
+    lap_aprx.sample(noise, m_prior, m_post)
 
     prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
     with dlx.io.XDMFFile(
-        msh.comm, "dirichlet_Poisson_prior_sample_np{0:d}_X.xdmf".format(nproc), "w"
+        msh.comm, "dirichlet_Poisson_prior_sample_1_np{0:d}_X.xdmf".format(nproc), "w"
     ) as file:
         file.write_mesh(msh)
         file.write_function(prior_sample)
 
     posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
     with dlx.io.XDMFFile(
-        msh.comm, "dirichlet_Poisson_posterior_sample_np{0:d}_X.xdmf".format(nproc), "w"
+        msh.comm,
+        "dirichlet_Poisson_posterior_sample_1_np{0:d}_X.xdmf".format(nproc),
+        "w",
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(posterior_sample)
+
+    ######################################################
+    hpx.parRandom.normal(1.0, noise)
+    lap_aprx.sample(noise, m_prior, m_post)
+
+    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "dirichlet_Poisson_prior_sample_2_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(prior_sample)
+
+    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm,
+        "dirichlet_Poisson_posterior_sample_2_np{0:d}_X.xdmf".format(nproc),
+        "w",
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(posterior_sample)
+
+    ######################################################
+    hpx.parRandom.normal(1.0, noise)
+    lap_aprx.sample(noise, m_prior, m_post)
+
+    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "dirichlet_Poisson_prior_sample_3_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(prior_sample)
+
+    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm,
+        "dirichlet_Poisson_posterior_sample_3_np{0:d}_X.xdmf".format(nproc),
+        "w",
     ) as file:
         file.write_mesh(msh)
         file.write_function(posterior_sample)
@@ -265,8 +301,12 @@ def run_inversion(
 if __name__ == "__main__":
     nx = 64
     ny = 64
-    noise_variance = 1e-4
-    prior_param = {"gamma": 0.03, "delta": 0.3}
+    # noise_variance = 1e-4
+    # prior_param = {"gamma": 0.03, "delta": 0.3}
+
+    noise_variance = (1 / 100) * 1e-4
+    prior_param = {"gamma": 10 * 0.03, "delta": 10 * 0.3}
+
     final_results = run_inversion(nx, ny, noise_variance, prior_param)
     k, d = (
         final_results["eigen_decomposition_results"]["k"],

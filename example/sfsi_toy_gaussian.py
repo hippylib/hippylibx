@@ -229,42 +229,66 @@ def run_inversion(
     lap_aprx.mean = prior.generate_parameter(0)
     lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
 
-    noise = prior.generate_parameter("noise")
-    hpx.parRandom.normal(1.0, noise)
-
     m_prior = prior.generate_parameter(0)
     m_post = prior.generate_parameter(0)
 
-    lap_aprx.sample(noise, m_prior, m_post)
+    noise = prior.generate_parameter("noise")
 
-    true_param = hpx.vector2Function(m_true, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "qpact_true_para_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(true_param)
+    ######################################################
+    hpx.parRandom.normal(1.0, noise)
+    lap_aprx.sample(noise, m_prior, m_post)
 
     prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
     with dlx.io.XDMFFile(
-        msh.comm, "qpact_prior_sample_np{0:d}_X.xdmf".format(nproc), "w"
+        msh.comm, "pact_prior_sample_1_np{0:d}_X.xdmf".format(nproc), "w"
     ) as file:
         file.write_mesh(msh)
         file.write_function(prior_sample)
 
     posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
     with dlx.io.XDMFFile(
-        msh.comm, "qpact_posterior_sample_np{0:d}_X.xdmf".format(nproc), "w"
+        msh.comm, "pact_posterior_sample_1_np{0:d}_X.xdmf".format(nproc), "w"
     ) as file:
         file.write_mesh(msh)
         file.write_function(posterior_sample)
 
-    eigen_decomposition_results = {
-        "A": Hmisfit.mat,
-        "B": prior,
-        "k": k,
-        "d": d,
-        "U": U,
-    }
+    ######################################################
+    hpx.parRandom.normal(1.0, noise)
+    lap_aprx.sample(noise, m_prior, m_post)
+
+    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "pact_prior_sample_2_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(prior_sample)
+
+    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "pact_posterior_sample_2_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(posterior_sample)
+
+    ######################################################
+    hpx.parRandom.normal(1.0, noise)
+    lap_aprx.sample(noise, m_prior, m_post)
+
+    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "pact_prior_sample_3_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(prior_sample)
+
+    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
+    with dlx.io.XDMFFile(
+        msh.comm, "pact_posterior_sample_3_np{0:d}_X.xdmf".format(nproc), "w"
+    ) as file:
+        file.write_mesh(msh)
+        file.write_function(posterior_sample)
+
+    eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
 
     final_results = {
         "data_misfit_True": data_misfit_True,
@@ -273,6 +297,8 @@ def run_inversion(
         "eigen_decomposition_results": eigen_decomposition_results,
     }
 
+    print(comm.rank, ":", misfit.cost(x))
+
     return final_results
     ######################################
 
@@ -280,8 +306,12 @@ def run_inversion(
 if __name__ == "__main__":
     nx = 64
     ny = 64
-    noise_variance = 1e-6
-    prior_param = {"gamma": 0.040, "delta": 0.8}
+    # noise_variance = 1e-6
+    # prior_param = {"gamma": 0.040, "delta": 0.8}
+
+    noise_variance = (1 / 100) * 1e-6
+    prior_param = {"gamma": 10 * 0.040, "delta": 10 * 0.8}
+
     mesh_filename = "./meshes/circle.xdmf"
     final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
     k, d = (

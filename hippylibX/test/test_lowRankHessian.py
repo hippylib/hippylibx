@@ -52,6 +52,10 @@ def low_Rank_Hessian_mult_solve(
 
     value2 = temp_petsc_vec3.norm(petsc4py.PETSc.NormType.N2)
 
+    temp_petsc_vec1.destroy()
+    temp_petsc_vec2.destroy()
+    temp_petsc_vec3.destroy()
+
     return value1, value2
 
 
