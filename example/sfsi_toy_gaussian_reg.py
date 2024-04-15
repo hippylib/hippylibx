@@ -231,48 +231,6 @@ def run_inversion(
 
     d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
 
-    # generating prior and posterior samples
-    lap_aprx = hpx.LaplaceApproximator(prior, d, U)
-    lap_aprx.mean = prior.generate_parameter(0)
-    lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
-
-    m_prior = prior.generate_parameter(0)
-    m_post = prior.generate_parameter(0)
-
-    noise = prior.generate_parameter("noise")
-
-    num_samples_generate = 5
-
-    prior_samples = []
-    posterior_samples = []
-    for i in range(num_samples_generate):
-        hpx.parRandom.normal(1.0, noise)
-        lap_aprx.sample(noise, m_prior, m_post)
-        prior_sample = hpx.vector2Function(
-            m_prior, Vh[hpx.PARAMETER], name=f"prior_sample_{i}"
-        )
-        posterior_sample = hpx.vector2Function(
-            m_post, Vh[hpx.PARAMETER], name=f"posterior_sample_{i}"
-        )
-        prior_samples.append(prior_sample)
-        posterior_samples.append(posterior_sample)
-
-    with dlx.io.VTXWriter(
-        msh.comm,
-        "qpact_prior_Variational_Regularization_samples_prior_np{0:d}.bp".format(nproc),
-        prior_samples,
-    ) as vtx:
-        vtx.write(0.0)
-
-    with dlx.io.VTXWriter(
-        msh.comm,
-        "qpact_prior_Variational_Regularization_samples_posterior_np{0:d}.bp".format(
-            nproc
-        ),
-        posterior_samples,
-    ) as vtx:
-        vtx.write(0.0)
-
     eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
 
     final_results = {
