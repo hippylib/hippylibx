@@ -225,6 +225,7 @@ def run_inversion(
 
     d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
 
+    # generating prior and posterior samples
     lap_aprx = hpx.LaplaceApproximator(prior, d, U)
     lap_aprx.mean = prior.generate_parameter(0)
     lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
@@ -234,59 +235,35 @@ def run_inversion(
 
     noise = prior.generate_parameter("noise")
 
-    ######################################################
-    hpx.parRandom.normal(1.0, noise)
-    lap_aprx.sample(noise, m_prior, m_post)
+    num_samples_generate = 5
 
-    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "pact_prior_sample_1_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(prior_sample)
+    prior_samples = []
+    posterior_samples = []
+    for i in range(num_samples_generate):
+        hpx.parRandom.normal(1.0, noise)
+        lap_aprx.sample(noise, m_prior, m_post)
+        prior_sample = hpx.vector2Function(
+            m_prior, Vh[hpx.PARAMETER], name=f"prior_sample_{i}"
+        )
+        posterior_sample = hpx.vector2Function(
+            m_post, Vh[hpx.PARAMETER], name=f"posterior_sample_{i}"
+        )
+        prior_samples.append(prior_sample)
+        posterior_samples.append(posterior_sample)
 
-    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "pact_posterior_sample_1_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(posterior_sample)
+    with dlx.io.VTXWriter(
+        msh.comm,
+        "qpact_prior_Bilaplacian_samples_prior_np{0:d}.bp".format(nproc),
+        prior_samples,
+    ) as vtx:
+        vtx.write(0.0)
 
-    ######################################################
-    hpx.parRandom.normal(1.0, noise)
-    lap_aprx.sample(noise, m_prior, m_post)
-
-    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "pact_prior_sample_2_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(prior_sample)
-
-    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "pact_posterior_sample_2_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(posterior_sample)
-
-    ######################################################
-    hpx.parRandom.normal(1.0, noise)
-    lap_aprx.sample(noise, m_prior, m_post)
-
-    prior_sample = hpx.vector2Function(m_prior, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "pact_prior_sample_3_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(prior_sample)
-
-    posterior_sample = hpx.vector2Function(m_post, Vh[hpx.PARAMETER])
-    with dlx.io.XDMFFile(
-        msh.comm, "pact_posterior_sample_3_np{0:d}_X.xdmf".format(nproc), "w"
-    ) as file:
-        file.write_mesh(msh)
-        file.write_function(posterior_sample)
+    with dlx.io.VTXWriter(
+        msh.comm,
+        "qpact_prior_Bilaplacian_samples_posterior_np{0:d}.bp".format(nproc),
+        posterior_samples,
+    ) as vtx:
+        vtx.write(0.0)
 
     eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
 
@@ -297,8 +274,6 @@ def run_inversion(
         "eigen_decomposition_results": eigen_decomposition_results,
     }
 
-    print(comm.rank, ":", misfit.cost(x))
-
     return final_results
     ######################################
 
@@ -306,12 +281,8 @@ def run_inversion(
 if __name__ == "__main__":
     nx = 64
     ny = 64
-    # noise_variance = 1e-6
-    # prior_param = {"gamma": 0.040, "delta": 0.8}
-
-    noise_variance = (1 / 100) * 1e-6
-    prior_param = {"gamma": 10 * 0.040, "delta": 10 * 0.8}
-
+    noise_variance = 1e-6
+    prior_param = {"gamma": 0.040, "delta": 0.8}
     mesh_filename = "./meshes/circle.xdmf"
     final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
     k, d = (

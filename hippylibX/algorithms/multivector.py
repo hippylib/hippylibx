@@ -27,6 +27,10 @@ class MultiVector:
 
         return mv_copy
 
+    def __del__(self) -> None:
+        for d in self.data:
+            d.destroy()
+
     def __getitem__(self, k: int) -> petsc4py.PETSc.Vec:
         return self.data[k]
 

@@ -13,6 +13,7 @@
 # terms of the GNU General Public License (as published by the Free
 # Software Foundation) version 2.0 dated June 1991.
 
+import petsc4py.PETSc
 from ..algorithms.lowRankOperator import LowRankOperator
 from ..algorithms.multivector import MultiVector
 import numpy as np
@@ -33,22 +34,12 @@ class LowRankHessian:
     of the Hessian and of its inverse.
     """
 
-    def __init__(
-        self,
-        prior,
-        d: np.array,
-        U: MultiVector,
-        createVecLeft=None,
-        createVecRight=None,
-    ):
+    def __init__(self, prior, d: np.array, U: MultiVector):
         self.U = U
         self.prior = prior
         self.LowRankH = LowRankOperator(d, self.U)
         dsolve = d / (np.ones(d.shape, dtype=d.dtype) + d)
         self.LowRankHinv = LowRankOperator(dsolve, self.U)
-
-        self.createVecLeft = createVecLeft
-        self.createVecRight = createVecRight
 
         self.help = self.prior.R.createVecRight()
         self.help1 = self.prior.R.createVecLeft()
@@ -56,6 +47,12 @@ class LowRankHessian:
     def __del__(self) -> None:
         self.help.destroy()
         self.help1.destroy()
+
+    def createVecRight(self) -> petsc4py.PETSc.Vec:
+        return self.prior.R.createVecRight()
+
+    def createVecLeft(self) -> petsc4py.PETSc.Vec:
+        return self.prior.R.createVecLeft()
 
     def mult(self, x: petsc4py.PETSc.Vec, y: petsc4py.PETSc.Vec) -> None:
         self.prior.R.mult(x, y)
@@ -86,13 +83,9 @@ class LowRankPosteriorSampler:
         prior,
         d: np.array,
         U: MultiVector,
-        createVecLeft=None,
-        createVecRight=None,
     ):
         self.U = U
         self.prior = prior
-        self.createVecLeft = createVecLeft
-        self.createVecRight = createVecRight
 
         ones = np.ones(d.shape, dtype=d.dtype)
         self.d = ones - np.power(ones + d, -0.5)
@@ -102,14 +95,21 @@ class LowRankPosteriorSampler:
     def __del__(self) -> None:
         self.help.destroy()
 
+    def createVecRight(self) -> petsc4py.PETSc.Vec:
+        return self.prior.R.createVecRight()
+
+    def createVecLeft(self) -> petsc4py.PETSc.Vec:
+        return self.prior.R.createVecLeft()
+
     def sample(self, noise: dlx.la.Vector, s: dlx.la.Vector):
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
 
         self.prior.R.mult(temp_petsc_vec_noise, self.help)
         self.lrsqrt.mult(self.help, temp_petsc_vec_s)
-        temp_petsc_vec_s.axpy(-1.0, temp_petsc_vec_noise)
-        temp_petsc_vec_s.scale(-1.0)
+        # temp_petsc_vec_s.axpy(-1.0, temp_petsc_vec_noise)
+        # temp_petsc_vec_s.scale(-1.0)
+        temp_petsc_vec_s.axpby(-1.0, 1.0, temp_petsc_vec_noise)
         temp_petsc_vec_noise.destroy()
         temp_petsc_vec_s.destroy()
 
@@ -193,29 +193,13 @@ class LaplaceApproximator:
         if len(args) == 2:
             self._sample_given_prior(args[0], args[1])
             if add_mean:
-                temp_petsc_vec_arg1 = dlx.la.create_petsc_vector_wrap(args[1])
-                temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
-                temp_petsc_vec_arg1.axpy(1.0, temp_petsc_vec_mean)
-                temp_petsc_vec_arg1.destroy()
-                temp_petsc_vec_mean.destroy()
+                args[1].array[:] += self.mean.array
 
         elif len(args) == 3:
             self._sample_given_white_noise(args[0], args[1], args[2])
             if add_mean:
-                temp_petsc_vec_arg1 = dlx.la.create_petsc_vector_wrap(args[1])
-                temp_petsc_vec_prior_mean = dlx.la.create_petsc_vector_wrap(
-                    self.prior.mean
-                )
-                temp_petsc_vec_arg2 = dlx.la.create_petsc_vector_wrap(args[2])
-                temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
-
-                temp_petsc_vec_arg1.axpy(1.0, temp_petsc_vec_prior_mean)
-                temp_petsc_vec_arg2.axpy(1.0, temp_petsc_vec_mean)
-
-                temp_petsc_vec_arg1.destroy()
-                temp_petsc_vec_prior_mean.destroy()
-                temp_petsc_vec_arg2.destroy()
-                temp_petsc_vec_mean.destroy()
+                args[1].array[:] += self.prior.mean.array
+                args[2].array[:] += self.mean.array
         else:
             raise NameError("Invalid number of parameters in Posterior::sample")
 
