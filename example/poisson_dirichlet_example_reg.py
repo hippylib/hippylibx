@@ -226,7 +226,6 @@ def run_inversion(
     hpx.parRandom.normal(1.0, Omega)
 
     d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
-  
 
     eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
 
