@@ -107,8 +107,6 @@ class LowRankPosteriorSampler:
 
         self.prior.R.mult(temp_petsc_vec_noise, self.help)
         self.lrsqrt.mult(self.help, temp_petsc_vec_s)
-        # temp_petsc_vec_s.axpy(-1.0, temp_petsc_vec_noise)
-        # temp_petsc_vec_s.scale(-1.0)
         temp_petsc_vec_s.axpby(-1.0, 1.0, temp_petsc_vec_noise)
         temp_petsc_vec_noise.destroy()
         temp_petsc_vec_s.destroy()
