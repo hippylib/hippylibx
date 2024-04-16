@@ -223,7 +223,7 @@ def run_inversion(
 
     hpx.parRandom.normal(1.0, Omega)
 
-    d, U = hpx.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k, s=1)
+    d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
 
     # generating prior and posterior samples
     lap_aprx = hpx.LaplaceApproximator(prior, d, U)
