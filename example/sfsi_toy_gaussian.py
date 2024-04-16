@@ -265,7 +265,7 @@ def run_inversion(
     ) as vtx:
         vtx.write(0.0)
 
-    eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
+    eigen_decomposition_results = {"A": Hmisfit, "B": prior, "k": k, "d": d, "U": U}
 
     final_results = {
         "data_misfit_True": data_misfit_True,
