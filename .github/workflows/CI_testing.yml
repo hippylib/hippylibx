@@ -40,6 +40,16 @@ jobs:
           cd ./hippylibX/test &&
           mpirun -n 2 python3 test_lowRankHessian.py
 
+      - name: low rank Hessian precondtioner testing
+        run: |
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_lowRankHessian_preconditioner.py
+
+      - name: sample testing
+        run: |
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_sampling.py
+
       - name: run serial check
         run: |
           cd ./hippylibX/test && 

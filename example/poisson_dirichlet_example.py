@@ -258,7 +258,7 @@ def run_inversion(
     ) as vtx:
         vtx.write(0.0)
 
-    eigen_decomposition_results = {"A": Hmisfit.mat, "B": prior, "k": k, "d": d, "U": U}
+    eigen_decomposition_results = {"A": Hmisfit, "B": prior, "k": k, "d": d, "U": U}
 
     final_results = {
         "data_misfit_True": data_misfit_True,
@@ -266,40 +266,6 @@ def run_inversion(
         "optimizer_results": optimizer_results,
         "eigen_decomposition_results": eigen_decomposition_results,
     }
-
-    # Hlr = hpx.LowRankHessian(prior, d, U)
-    # matr = final_results['eigen_decomposition_results']['A']
-    # vec1 = dlx.la.vector(prior.Vh.dofmap.index_map)
-    # hpx.parRandom.normal(1.0, vec1)
-
-    # vec1 = dlx.fem.Function(Vh_m)
-    # vec1.interpolate(
-    #     lambda x: np.log(2 + 7 * (((x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2) ** 0.5 > 0.2))
-    # )
-    # vec1.x.scatter_forward()
-    # vec1 = vec1.x
-
-    # model.evalGradientParameter(x,vec1)
-    # vec1.array[:] *= -1.
-
-    # print(vec1.array.min(),":",vec1.array.max())
-
-    # need to manufacture a vec1 that will not blow up the solver
-    # vec1 = dlx.la.vector(prior.Vh.dofmap.index_map)
-    # hpx.parRandom.normal(1.0, vec1)
-
-    # vec2 = dlx.la.vector(prior.Vh.dofmap.index_map)
-
-    # parameters = hpx.algorithms.cgsolverSteihaug.CGSolverSteihaug_ParameterList()
-    # solver = hpx.algorithms.cgsolverSteihaug.CGSolverSteihaug(parameters, comm)
-    # solver.set_operator(matr)
-
-    # # solver.set_preconditioner(prior.Rsolver)
-    # solver.set_preconditioner(Hlr)
-
-    # solver.solve(vec1, vec2)
-    # print(vec2.array.min(),":",vec2.array.max())
-    # print(solver.iter)
 
     return final_results
 
