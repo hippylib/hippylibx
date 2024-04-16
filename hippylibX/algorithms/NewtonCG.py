@@ -240,7 +240,7 @@ class ReducedSpaceNewtonCG:
             solver.parameters["print_level"] = print_level - 1
             mg_neg = self.model.generate_vector(PARAMETER)
             mg_neg.array[:] = -1 * mg.array[:]
-            solver.solve(mhat, mg_neg)
+            solver.solve(mg_neg, mhat)
             self.total_cg_iter += HessApply.ncalls
             alpha = 1.0
             descent = 0
@@ -374,7 +374,8 @@ class ReducedSpaceNewtonCG:
             solver.parameters["zero_initial_guess"] = True
             solver.parameters["print_level"] = print_level - 1
 
-            solver.solve(mhat, -mg)
+            # solver.solve(mhat, -mg)
+            solver.solve(-mg, mhat)
             self.total_cg_iter += HessApply.ncalls
             if self.it == 1:
                 self.model.prior.R.mult(mhat, R_mhat)

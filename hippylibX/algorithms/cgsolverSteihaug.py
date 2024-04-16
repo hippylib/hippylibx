@@ -160,14 +160,14 @@ class CGSolverSteihaug:
             x.axpy(tau * alpha, d)
             return True
 
-    def solve(self, x: dlx.la.Vector, b: dlx.la.Vector) -> None:
+    def solve(self, b: dlx.la.Vector, x: dlx.la.Vector) -> None:
         temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
         temp_petsc_vec_b = dlx.la.create_petsc_vector_wrap(b)
-        self.solve_petsc(temp_petsc_vec_x, temp_petsc_vec_b)
+        self.solve_petsc(temp_petsc_vec_b, temp_petsc_vec_x)
         temp_petsc_vec_x.destroy()
         temp_petsc_vec_b.destroy()
 
-    def solve_petsc(self, x: petsc4py.PETSc.Vec, b: petsc4py.PETSc.Vec) -> None:
+    def solve_petsc(self, b: petsc4py.PETSc.Vec, x: petsc4py.PETSc.Vec) -> None:
         """
         Solve the linear system :math:`Ax = b`
         """
