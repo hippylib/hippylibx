@@ -1,19 +1,18 @@
-# testing the lowRankHessian.mult method from modeling/laplaceApproximation.py
-# x, y petsc vectors
-# h1 = Hlr(x)
-# h2 = Hlr(y)
-# result1 = h2.h1 (inner product)
-
-# h1 = Hlr(x)
-# h2 = Hlr(h1)
-# result2 = y.dot(h2) (inner product)
-
-# result1 == result2
+# testing the lowRankPosteriorSampler.sample method from modeling/laplaceApproximation.py
+# x : random vector
+# prior.Rsolver.solve(x, x1)
+# Hlrsampler.sample(x1, x2)
+# Hlrsampler.sample(x2, x3)
+# Hlr.solve(x, y)
+# assert x3 == y
 
 import unittest
 import sys
 import os
 import dolfinx as dlx
+import petsc4py
+import dolfinx.fem.petsc
+import numpy as np
 
 sys.path.append(os.path.abspath("../.."))
 
@@ -41,42 +40,42 @@ class Testing_Execution(unittest.TestCase):
         )
 
         x = dlx.la.vector(prior.Vh.dofmap.index_map)
+        x1 = dlx.la.vector(prior.Vh.dofmap.index_map)
+        x2 = dlx.la.vector(prior.Vh.dofmap.index_map)
+        x3 = dlx.la.vector(prior.Vh.dofmap.index_map)
+        y = dlx.la.vector(prior.Vh.dofmap.index_map)
+
         hpx.parRandom.normal(1.0, x)
 
-        y = dlx.la.vector(prior.Vh.dofmap.index_map)
-        hpx.parRandom.normal(1.0, y)
-
-        sx, sy = (
-            dlx.la.vector(prior.Vh.dofmap.index_map),
-            dlx.la.vector(prior.Vh.dofmap.index_map),
-        )
+        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
+        temp_petsc_vec_x1 = dlx.la.create_petsc_vector_wrap(x1)
+        prior.Rsolver.solve(temp_petsc_vec_x, temp_petsc_vec_x1)
 
         PS_lr = hpx.LowRankPosteriorSampler(prior, d, U)
-        PS_lr.sample(x, sx)
-        PS_lr.sample(y, sy)
-
-        result_1 = dlx.cpp.la.inner_product(sy._cpp_object, sx._cpp_object)
+        PS_lr.sample(x1, x2)
+        PS_lr.sample(x2, x3)
 
         Hlr = hpx.LowRankHessian(prior, d, U)
-        Hx = dlx.la.create_petsc_vector(prior.Vh.dofmap.index_map, prior.Vh.dofmap.bs)
 
-        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
         temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
+        Hlr.solve(temp_petsc_vec_x, temp_petsc_vec_y)
 
-        Hlr.mult(temp_petsc_vec_x, Hx)
-        result_2 = temp_petsc_vec_y.dot(Hx)
+        # assert x3 == y
+        temp_petsc_vec_x3 = dlx.la.create_petsc_vector_wrap(x3)
+        temp_petsc_vec_y.axpy(-1.0, temp_petsc_vec_x3)
+
+        value = temp_petsc_vec_y.norm(petsc4py.PETSc.NormType.N2)
 
         temp_petsc_vec_x.destroy()
+        temp_petsc_vec_x1.destroy()
+        temp_petsc_vec_x3.destroy()
         temp_petsc_vec_y.destroy()
-        Hx.destroy()
 
-        print(result_1, result_2)
-
-        # self.assertLessEqual(
-        #     np.abs(result_1 - result_2),
-        #     1e-3,
-        #     "lowRankHessian.mult failed",
-        # )
+        self.assertLessEqual(
+            np.abs(value),
+            1e-6,
+            "lowRankPosteriorSampler.sample failed",
+        )
 
 
 if __name__ == "__main__":
