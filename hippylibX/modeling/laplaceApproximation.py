@@ -101,7 +101,7 @@ class LowRankPosteriorSampler:
     def createVecLeft(self) -> petsc4py.PETSc.Vec:
         return self.prior.R.createVecLeft()
 
-    def sample(self, noise: dlx.la.Vector, s: dlx.la.Vector):
+    def mult(self, noise: dlx.la.Vector, s: dlx.la.Vector):
         temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
         temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
 
@@ -205,10 +205,10 @@ class LaplaceApproximator:
         self, noise: dlx.la.Vector, s_prior: dlx.la.Vector, s_post: dlx.la.Vector
     ):
         self.prior.sample(noise, s_prior, add_mean=False)
-        self.sampler.sample(s_prior, s_post)
+        self.sampler.mult(s_prior, s_post)
 
     def _sample_given_prior(self, s_prior: dlx.la.Vector, s_post: dlx.la.Vector):
-        self.sampler.sample(s_prior, s_post)
+        self.sampler.mult(s_prior, s_post)
 
     @not_implemented
     def trace(self, **kwargs):

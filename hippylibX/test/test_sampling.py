@@ -52,8 +52,8 @@ class Testing_Execution(unittest.TestCase):
         prior.Rsolver.solve(temp_petsc_vec_x, temp_petsc_vec_x1)
 
         PS_lr = hpx.LowRankPosteriorSampler(prior, d, U)
-        PS_lr.sample(x1, x2)
-        PS_lr.sample(x2, x3)
+        PS_lr.mult(x1, x2)
+        PS_lr.mult(x2, x3)
 
         Hlr = hpx.LowRankHessian(prior, d, U)
 
