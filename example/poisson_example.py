@@ -87,7 +87,7 @@ def run_inversion(
     misfit_form = PoissonMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
+    prior_mean.x.array[:] = np.log(2)
     prior_mean = prior_mean.x
 
     prior = hpx.BiLaplacianPrior(
@@ -254,9 +254,10 @@ def run_inversion(
 if __name__ == "__main__":
     nx = 64
     ny = 64
-    noise_variance = 1e-4
+    noise_variance = 1e-6
     prior_param = {"gamma": 0.07, "delta": 0.7}
     final_results = run_inversion(nx, ny, noise_variance, prior_param)
+
     k, d = (
         final_results["eigen_decomposition_results"]["k"],
         final_results["eigen_decomposition_results"]["d"],

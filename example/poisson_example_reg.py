@@ -85,7 +85,7 @@ def run_inversion(
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
 
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
+    prior_mean.x.array[:] = np.log(2)
 
     prior_gamma = prior_param["gamma"]
     prior_delta = prior_param["delta"]
@@ -216,7 +216,7 @@ def run_inversion(
 if __name__ == "__main__":
     nx = 64
     ny = 64
-    noise_variance = 1e-4
+    noise_variance = 1e-6
     prior_param = {"gamma": 0.02, "delta": 0.2}
     final_results = run_inversion(nx, ny, noise_variance, prior_param)
     k, d = (

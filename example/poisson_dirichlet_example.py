@@ -105,7 +105,7 @@ def run_inversion(
     misfit_form = PoissonMisfitForm(d, noise_variance)
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form, [bc0])
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
+    prior_mean.x.array[:] = np.log(2)
     prior_mean = prior_mean.x
 
     prior = hpx.BiLaplacianPrior(
@@ -242,43 +242,21 @@ def run_inversion(
         prior_samples.append(prior_sample)
         posterior_samples.append(posterior_sample)
 
-    with dlx.io.XDMFFile(
+    with dlx.io.VTXWriter(
         msh.comm,
-        "poisson_Dirichlet_prior_Bilaplacian_samples_prior_np{0:d}.xdmf".format(nproc),
-        "w",
-    ) as file:
-        file.write_mesh(msh)
-        for i, sample in enumerate(prior_samples):
-            time_value = i / (num_samples_generate - 1)
-            file.write_function(sample, time_value)
+        "poisson_Dirichlet_prior_Bilaplacian_samples_prior_np{0:d}.bp".format(nproc),
+        prior_samples,
+    ) as vtx:
+        vtx.write(0.0)
 
-    with dlx.io.XDMFFile(
+    with dlx.io.VTXWriter(
         msh.comm,
-        "poisson_Dirichlet_prior_Bilaplacian_samples_posterior_np{0:d}.xdmf".format(
+        "poisson_Dirichlet_prior_Bilaplacian_samples_posterior_np{0:d}.bp".format(
             nproc
         ),
-        "w",
-    ) as file:
-        file.write_mesh(msh)
-        for i, sample in enumerate(posterior_samples):
-            time_value = i / (num_samples_generate - 1)
-            file.write_function(sample, time_value)
-
-    # with dlx.io.VTXWriter(
-    #     msh.comm,
-    #     "poisson_Dirichlet_prior_Bilaplacian_samples_prior_np{0:d}.bp".format(nproc),
-    #     prior_samples,
-    # ) as vtx:
-    #     vtx.write(0.0)
-
-    # with dlx.io.VTXWriter(
-    #     msh.comm,
-    #     "poisson_Dirichlet_prior_Bilaplacian_samples_posterior_np{0:d}.bp".format(
-    #         nproc
-    #     ),
-    #     posterior_samples,
-    # ) as vtx:
-    #     vtx.write(0.0)
+        posterior_samples,
+    ) as vtx:
+        vtx.write(0.0)
 
     eigen_decomposition_results = {"A": Hmisfit, "B": prior, "k": k, "d": d, "U": U}
 

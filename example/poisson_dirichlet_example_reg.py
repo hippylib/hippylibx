@@ -109,7 +109,7 @@ def run_inversion(
     misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form, [bc0])
 
     prior_mean = dlx.fem.Function(Vh_m)
-    prior_mean.x.array[:] = 0.01
+    prior_mean.x.array[:] = np.log(2)
 
     prior_gamma = prior_param["gamma"]
     prior_delta = prior_param["delta"]
