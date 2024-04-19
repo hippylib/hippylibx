@@ -242,6 +242,29 @@ def run_inversion(
         prior_samples.append(prior_sample)
         posterior_samples.append(posterior_sample)
 
+    ############################################
+    # time series in XDMFFile format:
+    with dlx.io.XDMFFile(
+        msh.comm,
+        "poisson_Dirichlet_prior_Bilaplacian_samples_prior_np{0:d}.xdmf".format(nproc),
+        "w",
+    ) as file:
+        file.write_mesh(msh)
+        for sample in prior_samples:
+            file.write_function(sample)
+
+    with dlx.io.XDMFFile(
+        msh.comm,
+        "poisson_Dirichlet_prior_Bilaplacian_samples_posterior_np{0:d}.xdmf".format(
+            nproc
+        ),
+        "w",
+    ) as file:
+        file.write_mesh(msh)
+        for sample in posterior_samples:
+            file.write_function(sample)
+    ############################################
+
     with dlx.io.VTXWriter(
         msh.comm,
         "poisson_Dirichlet_prior_Bilaplacian_samples_prior_np{0:d}.bp".format(nproc),
