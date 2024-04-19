@@ -221,8 +221,6 @@ def run_inversion(
     lap_aprx.mean = prior.generate_parameter(0)
     lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
 
-    m_prior = prior.generate_parameter(0)
-    m_post = prior.generate_parameter(0)
 
     noise = prior.generate_parameter("noise")
 
