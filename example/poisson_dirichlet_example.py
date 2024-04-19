@@ -221,18 +221,17 @@ def run_inversion(
     lap_aprx.mean = prior.generate_parameter(0)
     lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
 
-
     noise = prior.generate_parameter("noise")
 
     num_samples_generate = 5
-    use_vtx = False 
+    use_vtx = False
     prior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="prior_sample")
-    posterior_sample =  dlx.fem.Function(Vh[hpx.PARAMETER], name="posterior_sample")    
+    posterior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="posterior_sample")
     if use_vtx:
         with dlx.io.VTXWriter(
             msh.comm,
             "poisson_Dirichlet_prior_Bilaplacian_samples_np{0:d}.bp".format(nproc),
-            [prior_sample, posterior_sample]
+            [prior_sample, posterior_sample],
         ) as vtx:
             for i in range(num_samples_generate):
                 hpx.parRandom.normal(1.0, noise)
@@ -240,8 +239,8 @@ def run_inversion(
                 prior_sample.x.scatter_forward()
                 posterior_sample.x.scatter_forward()
                 vtx.write(float(i))
-    else:   
-    ############################################
+    else:
+        ############################################
         with dlx.io.XDMFFile(
             msh.comm,
             "poisson_Dirichlet_prior_Bilaplacian_samples_np{0:d}.xdmf".format(nproc),
@@ -255,7 +254,6 @@ def run_inversion(
                 posterior_sample.x.scatter_forward()
                 file.write_function(prior_sample, float(i))
                 file.write_function(posterior_sample, float(i))
-
 
     eigen_decomposition_results = {"A": Hmisfit, "B": prior, "k": k, "d": d, "U": U}
 
