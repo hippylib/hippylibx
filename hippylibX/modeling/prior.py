@@ -151,15 +151,37 @@ class SqrtPrecisionPDE_Prior:
 
         self.Asolver.setOperators(self.A)
 
-        qdegree = 2 * Vh._ufl_element.degree()
+        qdegree = 2 * Vh._ufl_element.degree
         metadata = {"quadrature_degree": qdegree}
 
         num_sub_spaces = Vh.num_sub_spaces
 
         if num_sub_spaces <= 1:  # SCALAR PARAMETER
-            element = ufl.FiniteElement(
-                "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
-            )
+            
+            # element = dlx.fem.FiniteElement(
+            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
+            # )
+
+            # element = ufl.FiniteElement(
+            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
+            # )
+
+            # element = ufl.finiteelement.finiteelement.FiniteElement(
+            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
+            # )
+
+            # element = ufl.finiteelement.FiniteElement(
+            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree
+            # )
+
+            # element = ufl.FiniteElement(
+            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
+            # )
+
+            element = ufl.finiteelement.FiniteElement(
+                "Quadrature", Vh.mesh.ufl_cell(), qdegree, (3,) , ufl.identity_pullback, ufl.sobolevspace.H1)
+        
+
 
         else:  # Vector FIELD PARAMETER
             element = ufl.VectorElement(
@@ -290,12 +312,12 @@ class SqrtPrecisionPDE_Prior:
     ) -> None:
         return
 
-    def __del__(self):
-        self.Msolver.destroy()
-        self.Asolver.destroy()
-        self.M.destroy()
-        self.A.destroy()
-        self.sqrtM.destroy()
+    # def __del__(self):
+    #     self.Msolver.destroy()
+    #     self.Asolver.destroy()
+    #     self.M.destroy()
+    #     self.A.destroy()
+    #     self.sqrtM.destroy()
 
 
 def BiLaplacianPrior(
