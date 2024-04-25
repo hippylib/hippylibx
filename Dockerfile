@@ -1,4 +1,3 @@
-# FROM  dolfinx/dolfinx:stable
 FROM dolfinx/dolfinx:v0.8.0
 MAINTAINER Venugopal Ranganathan <venu22@utexas.edu>
 RUN pip install memory_profiler
