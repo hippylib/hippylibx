@@ -259,25 +259,27 @@ class SqrtPrecisionPDE_Prior:
         d.axpy(-1.0, m.petsc_vec)
         Rd = self.generate_parameter(0)
         self.R.mult(d, Rd.petsc_vec)
-
-        return 0.5 * Rd.petsc_vec.dot(d)
+        return_value = 0.5 * Rd.petsc_vec.dot(d)
+        d.destroy()
+        return return_value
 
     def grad(self, m: dlx.la.Vector, out: dlx.la.Vector) -> None:
         d = m.petsc_vec.copy()
         d.axpy(-1.0, self.mean.petsc_vec)
         self.R.mult(d, out.petsc_vec)
+        d.destroy()
 
     def setLinearizationPoint(
         self, m: dlx.la.Vector, gauss_newton_approx=False
     ) -> None:
         return
 
-    # def __del__(self):
-    #     self.Msolver.destroy()
-    #     self.Asolver.destroy()
-    #     self.M.destroy()
-    #     self.A.destroy()
-    #     self.sqrtM.destroy()
+    def __del__(self):
+        self.Msolver.destroy()
+        self.Asolver.destroy()
+        self.M.destroy()
+        self.A.destroy()
+        self.sqrtM.destroy()
 
 
 def BiLaplacianPrior(
