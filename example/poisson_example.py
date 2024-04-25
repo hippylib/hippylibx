@@ -49,8 +49,8 @@ def run_inversion(
     nproc = comm.size
 
     msh = dlx.mesh.create_unit_square(comm, nx, ny)
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("Lagrange", 2))
-    Vh_m = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
+    Vh_phi = dlx.fem.functionspace(msh, ("Lagrange", 2))
+    Vh_m = dlx.fem.functionspace(msh, ("Lagrange", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
 
     ndofs = [

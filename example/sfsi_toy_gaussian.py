@@ -71,8 +71,8 @@ def run_inversion(
     fname = mesh_filename
     fid = dlx.io.XDMFFile(comm, fname, "r")
     msh = fid.read_mesh(name="mesh")
-    Vh_phi = dlx.fem.FunctionSpace(msh, ("Lagrange", 2))
-    Vh_m = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
+    Vh_phi = dlx.fem.functionspace(msh, ("Lagrange", 2))
+    Vh_m = dlx.fem.functionspace(msh, ("Lagrange", 1))
     Vh = [Vh_phi, Vh_m, Vh_phi]
     ndofs = [
         Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs,
