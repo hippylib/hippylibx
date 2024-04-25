@@ -158,22 +158,7 @@ class SqrtPrecisionPDE_Prior:
 
         if num_sub_spaces <= 1:  # SCALAR PARAMETER
             
-            # element = dlx.fem.FiniteElement(
-            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
-            # )
-
-            # element = ufl.FiniteElement(
-            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
-            # )
-
-            # element = ufl.finiteelement.finiteelement.FiniteElement(
-            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
-            # )
-
-            # element = ufl.finiteelement.FiniteElement(
-            #     "Quadrature", Vh.mesh.ufl_cell(), qdegree
-            # )
-
+            #Original code in v7 of dolfinx:
             # element = ufl.FiniteElement(
             #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
             # )
