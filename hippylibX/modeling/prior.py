@@ -163,17 +163,8 @@ class SqrtPrecisionPDE_Prior:
             )
 
         else:  # Vector FIELD PARAMETER
-            # code in dlx v7
-            # element = ufl.VectorElement(
-            #     "Quadrature",
-            #     Vh.mesh.ufl_cell(),
-            #     qdegree,
-            #     dim=num_sub_spaces,
-            #     quad_scheme="default",
-            # )
-
             element = basix.ufl.element(
-                "Quadrature",
+                "Lagrange",
                 Vh.mesh.topology.cell_name(),
                 degree=qdegree,
                 shape=(num_sub_spaces,),
