@@ -18,7 +18,7 @@ import hippylibX as hpx
 def multi_vector_testing(nx: int, ny: int, nvec: int) -> np.array:
     comm = MPI.COMM_WORLD
     msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
-    Vh = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
+    Vh = dlx.fem.functionspace(msh, ("Lagrange", 1))
     trial = ufl.TrialFunction(Vh)
     test = ufl.TestFunction(Vh)
     varfM = ufl.inner(trial, test) * ufl.Measure(
