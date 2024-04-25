@@ -2,18 +2,15 @@
 # in modeling/prior.py:
 # sqrtM . sqrtM.T . x == M . x
 
-import ufl
 import dolfinx as dlx
 from mpi4py import MPI
-import numpy as np
 import sys
 import os
 import dolfinx.fem.petsc
-from matplotlib import pyplot as plt
-from typing import Sequence, Dict
 import petsc4py
 import unittest
-
+import ufl
+import numpy as np
 
 # import ufl.sobolevspace
 import basix.ufl
@@ -21,6 +18,7 @@ import basix.ufl
 sys.path.append(os.path.abspath("../.."))
 
 import hippylibX as hpx
+
 
 class Testing_Execution(unittest.TestCase):
     def test_prior_mass_matrix(self):
@@ -34,7 +32,9 @@ class Testing_Execution(unittest.TestCase):
         qdegree = 2 * Vh._ufl_element.degree
         metadata = {"quadrature_degree": qdegree}
 
-        element = basix.ufl.quadrature_element(Vh.mesh.topology.cell_name(), degree = qdegree)        
+        element = basix.ufl.quadrature_element(
+            Vh.mesh.topology.cell_name(), degree=qdegree
+        )
 
         trial = ufl.TrialFunction(Vh)
         test = ufl.TestFunction(Vh)
@@ -43,7 +43,6 @@ class Testing_Execution(unittest.TestCase):
 
         ph = ufl.TrialFunction(Qh)
         qh = ufl.TestFunction(Qh)
-
 
         Mqh = dlx.fem.petsc.assemble_matrix(
             dlx.fem.form(ufl.inner(ph, qh) * ufl.dx(metadata=metadata))
@@ -64,32 +63,34 @@ class Testing_Execution(unittest.TestCase):
 
         sqrtM = MixedM.matMult(Mqh)
 
-        varfM = ufl.inner(trial, test) *ufl.Measure("dx", metadata={"quadrature_degree": 4})
+        varfM = ufl.inner(trial, test) * ufl.Measure(
+            "dx", metadata={"quadrature_degree": 4}
+        )
 
         M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
         M.assemble()
 
-
         x = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
         hpx.parRandom.replay()
-        hpx.parRandom.normal(1., x)
+        hpx.parRandom.normal(1.0, x)
         y1 = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
         y2 = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
 
         temp = sqrtM.createVecRight()
 
-        sqrtM.multTranspose(x.petsc_vec,temp)
-        sqrtM.mult(temp,y1.petsc_vec)
+        sqrtM.multTranspose(x.petsc_vec, temp)
+        sqrtM.mult(temp, y1.petsc_vec)
 
-        M.mult(x.petsc_vec,y2.petsc_vec)
+        M.mult(x.petsc_vec, y2.petsc_vec)
 
-        y2.petsc_vec.axpy(-1., y1.petsc_vec)
+        y2.petsc_vec.axpy(-1.0, y1.petsc_vec)
         value = y2.petsc_vec.norm(petsc4py.PETSc.NormType.N2)
         self.assertLessEqual(
             np.abs(value),
             1e-6,
             "prior_sqrtM creation failed",
         )
+
 
 if __name__ == "__main__":
     unittest.main()

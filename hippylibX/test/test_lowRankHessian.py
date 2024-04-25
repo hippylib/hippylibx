@@ -34,27 +34,20 @@ def low_Rank_Hessian_mult_solve(
     vec3 = dlx.la.vector(prior.Vh.dofmap.index_map)
 
     hpx.parRandom.normal(1.0, vec1)
-    temp_petsc_vec1 = dlx.la.create_petsc_vector_wrap(vec1)
-    temp_petsc_vec2 = dlx.la.create_petsc_vector_wrap(vec2)
-    temp_petsc_vec3 = dlx.la.create_petsc_vector_wrap(vec3)
 
-    Hlr.mult(temp_petsc_vec1, temp_petsc_vec2)
-    Hlr.solve(temp_petsc_vec2, temp_petsc_vec3)
-    temp_petsc_vec3.axpy(-1.0, temp_petsc_vec1)
+    Hlr.mult(vec1.petsc_vec, vec2.petsc_vec)
+    Hlr.solve(vec2.petsc_vec, vec3.petsc_vec)
+    vec3.petsc_vec.axpy(-1.0, vec1.petsc_vec)
 
-    value1 = temp_petsc_vec3.norm(petsc4py.PETSc.NormType.N2)
+    value1 = vec3.petsc_vec.norm(petsc4py.PETSc.NormType.N2)
 
     hpx.parRandom.normal(1.0, vec1)
 
-    Hlr.solve(temp_petsc_vec1, temp_petsc_vec2)
-    Hlr.mult(temp_petsc_vec2, temp_petsc_vec3)
-    temp_petsc_vec3.axpy(-1.0, temp_petsc_vec1)
+    Hlr.solve(vec1.petsc_vec, vec2.petsc_vec)
+    Hlr.mult(vec2.petsc_vec, vec3.petsc_vec)
+    vec3.petsc_vec.axpy(-1.0, vec1.petsc_vec)
 
-    value2 = temp_petsc_vec3.norm(petsc4py.PETSc.NormType.N2)
-
-    temp_petsc_vec1.destroy()
-    temp_petsc_vec2.destroy()
-    temp_petsc_vec3.destroy()
+    value2 = vec3.petsc_vec.norm(petsc4py.PETSc.NormType.N2)
 
     return value1, value2
 

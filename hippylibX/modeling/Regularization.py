@@ -106,19 +106,19 @@ class VariationalRegularization:
     def grad(self, m: dlx.la.Vector, out: dlx.la.Vector) -> dlx.la.Vector:
         hpx.updateFromVector(self.mfun, m)
         out.array[:] = 0.0
-        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+
         dlx.fem.petsc.assemble_vector(
-            tmp_out,
+            out.petsc_vec,
             dlx.fem.form(
                 ufl.derivative(
                     self.functional_handler(self.mfun), self.mfun, self.mtest
                 )
             ),
         )
-        tmp_out.ghostUpdate(
+
+        out.petsc_vec.ghostUpdate(
             petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
         )
-        tmp_out.destroy()
 
     def setLinearizationPoint(
         self, m: dlx.la.Vector, gauss_newton_approx=False

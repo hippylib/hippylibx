@@ -102,14 +102,9 @@ class LowRankPosteriorSampler:
         return self.prior.R.createVecLeft()
 
     def mult(self, noise: dlx.la.Vector, s: dlx.la.Vector):
-        temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
-        temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
-
-        self.prior.R.mult(temp_petsc_vec_noise, self.help)
-        self.lrsqrt.mult(self.help, temp_petsc_vec_s)
-        temp_petsc_vec_s.axpby(-1.0, 1.0, temp_petsc_vec_noise)
-        temp_petsc_vec_noise.destroy()
-        temp_petsc_vec_s.destroy()
+        self.prior.R.mult(noise.petsc_vec, self.help)
+        self.lrsqrt.mult(self.help, s.petsc_vec)
+        s.petsc_vec.axpby(-1.0, 1.0, noise.petsc_vec)
 
 
 class LaplaceApproximator:
@@ -152,11 +147,9 @@ class LaplaceApproximator:
             dm = m
         else:
             dm = m - self.mean
-        temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
-        self.Hlr.mult(temp_petsc_vec_dm, self.Hlr.help1)
-        return_value = 0.5 * self.Hlr.help1.dot(temp_petsc_vec_dm)
-        temp_petsc_vec_dm.destroy()
-        return return_value
+
+        self.Hlr.mult(dm.petsc_vec, self.Hlr.help1)
+        return 0.5 * self.Hlr.help1.dot(dm.petsc_vec)
 
     def sample(self, *args, **kwargs):
         """

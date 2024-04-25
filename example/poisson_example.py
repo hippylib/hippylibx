@@ -148,7 +148,7 @@ def run_inversion(
     m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
     m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
 
-    V_P1 = dlx.fem.FunctionSpace(msh, ("Lagrange", 1))
+    V_P1 = dlx.fem.functionspace(msh, ("Lagrange", 1))
 
     u_true_fun = dlx.fem.Function(V_P1, name="u_true")
     u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
@@ -189,9 +189,7 @@ def run_inversion(
             )
         )
 
-    temp_para_vec = dlx.la.create_petsc_vector_wrap(x[hpx.PARAMETER])
-    Omega = hpx.MultiVector(temp_para_vec, k + p)
-    temp_para_vec.destroy()
+    Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 
     hpx.parRandom.normal(1.0, Omega)
 

@@ -38,19 +38,13 @@ def modelVerify(
     grad_x = model.generate_vector(PARAMETER)
     model.evalGradientParameter(x, grad_x, misfit_only=misfit_only)
     grad_xh = linalg.inner(grad_x, h)
-    temp_petsc_vec_grad_x = dlx.la.create_petsc_vector_wrap(grad_x)
 
     model.setPointForHessianEvaluations(x)
 
     H = ReducedHessian(model, misfit_only=misfit_only)
 
     Hh = model.generate_vector(PARAMETER)
-    temp_petsc_vec_h = dlx.la.create_petsc_vector_wrap(h)
-    temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
-
-    H.mat.mult(temp_petsc_vec_h, temp_petsc_vec_Hh)
-    temp_petsc_vec_h.destroy()
-    temp_petsc_vec_Hh.destroy()
+    H.mat.mult(h.petsc_vec, Hh.petsc_vec)
 
     if eps is None:
         n_eps = 32
@@ -77,20 +71,16 @@ def modelVerify(
         grad_xplus = model.generate_vector(PARAMETER)
         model.evalGradientParameter(x_plus, grad_xplus, misfit_only=misfit_only)
 
-        temp_petsc_vec_grad_xplus = dlx.la.create_petsc_vector_wrap(grad_xplus)
+        err = grad_xplus.petsc_vec - grad_x.petsc_vec
 
-        err = temp_petsc_vec_grad_xplus - temp_petsc_vec_grad_x
-        temp_petsc_vec_grad_xplus.destroy()
         err.scale(1.0 / my_eps)
-        temp_petsc_vec_Hh = dlx.la.create_petsc_vector_wrap(Hh)
-        err.axpy(-1.0, temp_petsc_vec_Hh)
-        temp_petsc_vec_Hh.destroy()
+        err.axpy(-1.0, Hh.petsc_vec)
+
         err_H[i] = err.norm(petsc4py.PETSc.NormType.NORM_INFINITY)
+
         err.destroy()
     if verbose:
         modelVerifyPlotErrors(is_quadratic, eps, err_grad, err_H)
-
-    temp_petsc_vec_grad_x.destroy()
 
     xx = model.generate_vector(PARAMETER)
     parRandom.normal(1.0, xx)
@@ -98,22 +88,16 @@ def modelVerify(
     parRandom.normal(1.0, yy)
 
     #######################################
-    temp_petsc_vec_xx = dlx.la.create_petsc_vector_wrap(xx)
-    temp_petsc_vec_yy = dlx.la.create_petsc_vector_wrap(yy)
-
     Ay = model.generate_vector(PARAMETER)
-    temp_petsc_vec_Ay = dlx.la.create_petsc_vector_wrap(Ay)
-    temp_petsc_vec_Ay.scale(0.0)
-    H.mat.mult(temp_petsc_vec_xx, temp_petsc_vec_Ay)
-    ytHx = temp_petsc_vec_yy.dot(temp_petsc_vec_Ay)
+    Ay.petsc_vec.scale(0.0)
+    H.mat.mult(xx.petsc_vec, Ay.petsc_vec)
+    ytHx = yy.petsc_vec.dot(Ay.petsc_vec)
 
-    temp_petsc_vec_Ay.scale(0.0)
-    H.mat.mult(temp_petsc_vec_yy, temp_petsc_vec_Ay)
-    xtHy = temp_petsc_vec_xx.dot(temp_petsc_vec_Ay)
-    temp_petsc_vec_Ay.destroy()
-    temp_petsc_vec_xx.destroy()
-    temp_petsc_vec_yy.destroy()
-    # #######################################
+    Ay.petsc_vec.scale(0.0)
+    H.mat.mult(yy.petsc_vec, Ay.petsc_vec)
+    xtHy = xx.petsc_vec.dot(Ay.petsc_vec)
+
+    # # #######################################
 
     if np.abs(ytHx + xtHy) > 0.0:
         rel_symm_error = 2 * abs(ytHx - xtHy) / (ytHx + xtHy)

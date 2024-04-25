@@ -19,6 +19,7 @@ import ufl
 import numpy as np
 import petsc4py
 from mpi4py import MPI
+import basix.ufl
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X
 
@@ -157,27 +158,33 @@ class SqrtPrecisionPDE_Prior:
         num_sub_spaces = Vh.num_sub_spaces
 
         if num_sub_spaces <= 1:  # SCALAR PARAMETER
-            
-            #Original code in v7 of dolfinx:
+            # Original code in v7 of dolfinx:
             # element = ufl.FiniteElement(
             #     "Quadrature", Vh.mesh.ufl_cell(), qdegree, quad_scheme="default"
             # )
 
-            element = ufl.finiteelement.FiniteElement(
-                "Quadrature", Vh.mesh.ufl_cell(), qdegree, (3,) , ufl.identity_pullback, ufl.sobolevspace.H1)
-        
-
-
-        else:  # Vector FIELD PARAMETER
-            element = ufl.VectorElement(
-                "Quadrature",
-                Vh.mesh.ufl_cell(),
-                qdegree,
-                dim=num_sub_spaces,
-                quad_scheme="default",
+            element = basix.ufl.quadrature_element(
+                Vh.mesh.topology.cell_name(), degree=qdegree
             )
 
-        self.Qh = dlx.fem.FunctionSpace(Vh.mesh, element)
+        else:  # Vector FIELD PARAMETER
+            # code in dlx v7
+            # element = ufl.VectorElement(
+            #     "Quadrature",
+            #     Vh.mesh.ufl_cell(),
+            #     qdegree,
+            #     dim=num_sub_spaces,
+            #     quad_scheme="default",
+            # )
+
+            element = basix.ufl.element(
+                "Quadrature",
+                Vh.mesh.topology.cell_name(),
+                degree=qdegree,
+                shape=(num_sub_spaces,),
+            )
+
+        self.Qh = dlx.fem.functionspace(Vh.mesh, element)
 
         ph = ufl.TrialFunction(self.Qh)
         qh = ufl.TestFunction(self.Qh)
@@ -230,22 +237,17 @@ class SqrtPrecisionPDE_Prior:
 
         If :code:`add_mean == True` add the prior mean value to :code:`s`.
         """
-        temp_petsc_vec_noise = dlx.la.create_petsc_vector_wrap(noise)
 
         rhs = self.sqrtM.createVecLeft()
-        self.sqrtM.mult(temp_petsc_vec_noise, rhs)
-        temp_petsc_vec_noise.destroy()
 
-        temp_petsc_vec_s = dlx.la.create_petsc_vector_wrap(s)
-        self.Asolver.solve(rhs, temp_petsc_vec_s)
+        self.sqrtM.mult(noise.petsc_vec, rhs)
+
+        self.Asolver.solve(rhs, s.petsc_vec)
 
         if add_mean:
-            temp_petsc_vec_mean = dlx.la.create_petsc_vector_wrap(self.mean)
-            temp_petsc_vec_s.axpy(1.0, temp_petsc_vec_mean)
-            temp_petsc_vec_mean.destroy()
+            s.petsc_vec.axpy(1.0, self.mean.petsc_vec)
 
         rhs.destroy()
-        temp_petsc_vec_s.destroy()
 
     def _createsolver(self, petsc_options: dict) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
@@ -267,30 +269,17 @@ class SqrtPrecisionPDE_Prior:
         return ksp
 
     def cost(self, m: dlx.la.Vector) -> float:
-        temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(self.mean).copy()
-        temp_petsc_vec_m = dlx.la.create_petsc_vector_wrap(m)
-        temp_petsc_vec_d.axpy(-1.0, temp_petsc_vec_m)
-        temp_petsc_vec_Rd = dlx.la.create_petsc_vector_wrap(self.generate_parameter(0))
+        d = self.mean.petsc_vec.copy()
+        d.axpy(-1.0, m.petsc_vec)
+        Rd = self.generate_parameter(0)
+        self.R.mult(d, Rd.petsc_vec)
 
-        # mult used, so need to have petsc4py Vec objects
-        self.R.mult(temp_petsc_vec_d, temp_petsc_vec_Rd)
-
-        return_value = 0.5 * temp_petsc_vec_Rd.dot(temp_petsc_vec_d)
-        temp_petsc_vec_d.destroy()
-        temp_petsc_vec_m.destroy()
-        temp_petsc_vec_Rd.destroy()
-
-        return return_value
+        return 0.5 * Rd.petsc_vec.dot(d)
 
     def grad(self, m: dlx.la.Vector, out: dlx.la.Vector) -> None:
-        temp_petsc_vec_d = dlx.la.create_petsc_vector_wrap(m).copy()
-        temp_petsc_vec_self_mean = dlx.la.create_petsc_vector_wrap(self.mean)
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        temp_petsc_vec_d.axpy(-1.0, temp_petsc_vec_self_mean)
-        self.R.mult(temp_petsc_vec_d, temp_petsc_vec_out)
-        temp_petsc_vec_d.destroy()
-        temp_petsc_vec_self_mean.destroy()
-        temp_petsc_vec_out.destroy()
+        d = m.petsc_vec.copy()
+        d.axpy(-1.0, self.mean.petsc_vec)
+        self.R.mult(d, out.petsc_vec)
 
     def setLinearizationPoint(
         self, m: dlx.la.Vector, gauss_newton_approx=False

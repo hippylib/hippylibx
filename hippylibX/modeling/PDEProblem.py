@@ -130,11 +130,7 @@ class PDEVariationalProblem:
                 petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
             )
             dlx.fem.petsc.set_bc(b, self.bc)
-            state_vec = dlx.la.create_petsc_vector_wrap(state)
-
-            self.solver.solve(b, state_vec)
-
-            state_vec.destroy()
+            self.solver.solve(b, state.petsc_vec)
 
             A.destroy()
             b.destroy()
@@ -169,12 +165,8 @@ class PDEVariationalProblem:
 
         self.solver.setOperators(Aadj)
 
-        temp_petsc_vec_adj = dlx.la.create_petsc_vector_wrap(adj)
-        temp_petsc_vec_adj_rhs = dlx.la.create_petsc_vector_wrap(adj_rhs)
+        self.solver.solve(adj_rhs.petsc_vec, adj.petsc_vec)
 
-        self.solver.solve(temp_petsc_vec_adj_rhs, temp_petsc_vec_adj)
-        temp_petsc_vec_adj.destroy()
-        temp_petsc_vec_adj_rhs.destroy()
         Aadj.destroy()
 
     def evalGradientParameter(self, x: list, out: dlx.la.Vector) -> None:
@@ -193,14 +185,13 @@ class PDEVariationalProblem:
         res_form = self.varf_handler(u, m, p)
 
         out.array[:] = 0.0
-        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+
         dlx.fem.petsc.assemble_vector(
-            tmp_out, dlx.fem.form(ufl.derivative(res_form, m, dm))
+            out.petsc_vec, dlx.fem.form(ufl.derivative(res_form, m, dm))
         )
-        tmp_out.ghostUpdate(
+        out.petsc_vec.ghostUpdate(
             petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
         )
-        tmp_out.destroy()
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh[0].mesh.comm)
@@ -399,23 +390,18 @@ class PDEVariationalProblem:
         KKT[ADJOINT, STATE] = self.A
         KKT[ADJOINT, PARAMETER] = self.C
 
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        temp_petsc_vec_dir = dlx.la.create_petsc_vector_wrap(dir)
-
         if i >= j:
             if KKT[i, j] is None:
-                temp_petsc_vec_out.scale(0.0)
+                out.petsc_vec.scale(0.0)
             else:
-                KKT[i, j].mult(temp_petsc_vec_dir, temp_petsc_vec_out)
+                KKT[i, j].mult(dir.petsc_vec, out.petsc_vec)
 
         else:
             if KKT[j, i] is None:
-                temp_petsc_vec_out.scale(0.0)
-            else:
-                KKT[j, i].multTranspose(temp_petsc_vec_dir, temp_petsc_vec_out)
+                out.petsc_vec.scale(0.0)
 
-        temp_petsc_vec_out.destroy()
-        temp_petsc_vec_dir.destroy()
+            else:
+                KKT[j, i].multTranspose(dir.petsc_vec, out.petsc_vec)
 
     def solveIncremental(
         self, out: dlx.la.Vector, rhs: dlx.la.Vector, is_adj: bool
@@ -434,16 +420,10 @@ class PDEVariationalProblem:
 
             .. math:: \\delta_{up} F(u, m, p; \\hat{u}, \\tilde{p}) = \\mbox{rhs},\\quad \\forall \\hat{u}.
         """
-        temp_petsc_vec_rhs = dlx.la.create_petsc_vector_wrap(rhs)
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-
         if is_adj:
             self.n_calls["incremental_adjoint"] += 1
-            self.solver_adj_inc.solve(temp_petsc_vec_rhs, temp_petsc_vec_out)
+            self.solver_adj_inc.solve(rhs.petsc_vec, out.petsc_vec)
 
         else:
             self.n_calls["incremental_forward"] += 1
-            self.solver_fwd_inc.solve(temp_petsc_vec_rhs, temp_petsc_vec_out)
-
-        temp_petsc_vec_out.destroy()
-        temp_petsc_vec_rhs.destroy()
+            self.solver_fwd_inc.solve(rhs.petsc_vec, out.petsc_vec)

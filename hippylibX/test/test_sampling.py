@@ -47,9 +47,7 @@ class Testing_Execution(unittest.TestCase):
 
         hpx.parRandom.normal(1.0, x)
 
-        temp_petsc_vec_x = dlx.la.create_petsc_vector_wrap(x)
-        temp_petsc_vec_x1 = dlx.la.create_petsc_vector_wrap(x1)
-        prior.Rsolver.solve(temp_petsc_vec_x, temp_petsc_vec_x1)
+        prior.Rsolver.solve(x.petsc_vec, x1.petsc_vec)
 
         PS_lr = hpx.LowRankPosteriorSampler(prior, d, U)
         PS_lr.mult(x1, x2)
@@ -57,19 +55,12 @@ class Testing_Execution(unittest.TestCase):
 
         Hlr = hpx.LowRankHessian(prior, d, U)
 
-        temp_petsc_vec_y = dlx.la.create_petsc_vector_wrap(y)
-        Hlr.solve(temp_petsc_vec_x, temp_petsc_vec_y)
+        Hlr.solve(x.petsc_vec, y.petsc_vec)
 
         # assert x3 == y
-        temp_petsc_vec_x3 = dlx.la.create_petsc_vector_wrap(x3)
-        temp_petsc_vec_y.axpy(-1.0, temp_petsc_vec_x3)
+        y.petsc_vec.axpy(-1.0, x3.petsc_vec)
 
-        value = temp_petsc_vec_y.norm(petsc4py.PETSc.NormType.N2)
-
-        temp_petsc_vec_x.destroy()
-        temp_petsc_vec_x1.destroy()
-        temp_petsc_vec_x3.destroy()
-        temp_petsc_vec_y.destroy()
+        value = y.petsc_vec.norm(petsc4py.PETSc.NormType.N2)
 
         self.assertLessEqual(
             np.abs(value),

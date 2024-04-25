@@ -71,19 +71,14 @@ class ReducedHessian:
         x_dlx = self.model.generate_vector(PARAMETER)
         y_dlx = self.model.generate_vector(PARAMETER)
 
-        x_tmp_dlx = dlx.la.create_petsc_vector_wrap(x_dlx)
-        x_tmp_dlx.axpy(1.0, x)
+        x_dlx.petsc_vec.axpy(1.0, x)
 
         if self.gauss_newton_approx:
             self.GNHessian(x_dlx, y_dlx)
         else:
             self.TrueHessian(x_dlx, y_dlx)
 
-        tmp = dlx.la.create_petsc_vector_wrap(y_dlx)
-
-        y.axpby(1.0, 0.0, tmp)  # y = 1. tmp + 0.*y
-        tmp.destroy()
-        x_tmp_dlx.destroy()
+        y.axpby(1.0, 0.0, y_dlx.petsc_vec)  # y = 1. y_dlx + 0.*y
 
         self.ncalls += 1
 

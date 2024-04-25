@@ -41,16 +41,15 @@ class NonGaussianContinuousMisfit(object):
         x_fun = [u_fun, m_fun]
 
         out.array[:] = 0.0
-        tmp_out = dlx.la.create_petsc_vector_wrap(out)
+
         dlx.fem.petsc.assemble_vector(
-            tmp_out,
+            out.petsc_vec,
             dlx.fem.form(ufl.derivative(self.form(*x_fun), x_fun[i], self.x_test[i])),
         )
-        tmp_out.ghostUpdate(
+        out.petsc_vec.ghostUpdate(
             petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
         )
-        dlx.fem.petsc.set_bc(tmp_out, self.bc0)
-        tmp_out.destroy()
+        dlx.fem.petsc.set_bc(out.petsc_vec, self.bc0)
 
     def setLinearizationPoint(self, x: list, gauss_newton_approx=False) -> None:
         hpx.updateFromVector(self.xfun[hpx.STATE], x[hpx.STATE])
@@ -74,11 +73,9 @@ class NonGaussianContinuousMisfit(object):
             )
         )
         out.array[:] = 0.0
-        tmp_out = dlx.la.create_petsc_vector_wrap(out)
-        dlx.fem.petsc.assemble_vector(tmp_out, action)
-        tmp_out.ghostUpdate(
+        dlx.fem.petsc.assemble_vector(out.petsc_vec, action)
+        out.petsc_vec.ghostUpdate(
             petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
         )
         if i == hpx.STATE:
-            dlx.fem.petsc.set_bc(tmp_out, self.bc0)
-        tmp_out.destroy()
+            dlx.fem.petsc.set_bc(out.petsc_vec, self.bc0)

@@ -160,24 +160,16 @@ class Model:
 
         self.misfit.grad(PARAMETER, x, tmp)
 
-        mg_petsc = dlx.la.create_petsc_vector_wrap(mg)
-        tmp_petsc = dlx.la.create_petsc_vector_wrap(tmp)
-
-        mg_petsc.axpy(1.0, tmp_petsc)
+        mg.petsc_vec.axpy(1.0, tmp.petsc_vec)
 
         if not misfit_only:
             self.prior.grad(x[PARAMETER], tmp)
 
-            mg_petsc.axpy(1.0, tmp_petsc)
+            mg.petsc_vec.axpy(1.0, tmp.petsc_vec)
 
-        self.prior.Msolver.solve(mg_petsc, tmp_petsc)
+        self.prior.Msolver.solve(mg.petsc_vec, tmp.petsc_vec)
 
-        return_value = math.sqrt(mg_petsc.dot(tmp_petsc))
-
-        mg_petsc.destroy()
-        tmp_petsc.destroy()
-
-        return return_value
+        return math.sqrt(mg.petsc_vec.dot(tmp.petsc_vec))
 
     def setPointForHessianEvaluations(self, x: list, gauss_newton_approx=False) -> None:
         """
@@ -320,11 +312,7 @@ class Model:
 
         .. note:: This routine assumes that :code:`out` has the correct shape.
         """
-        temp_petsc_vec_dm = dlx.la.create_petsc_vector_wrap(dm)
-        temp_petsc_vec_out = dlx.la.create_petsc_vector_wrap(out)
-        self.prior.R.mult(temp_petsc_vec_dm, temp_petsc_vec_out)
-        temp_petsc_vec_dm.destroy()
-        temp_petsc_vec_out.destroy()
+        self.prior.R.mult(dm.petsc_vec, out.petsc_vec)
 
     def Rsolver(self) -> Any:
         """
