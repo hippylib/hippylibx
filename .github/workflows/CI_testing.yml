@@ -13,7 +13,7 @@ jobs:
   style:
     runs-on: ubuntu-22.04
     container:
-      image: dolfinx/dolfinx:stable
+      image: dolfinx/dolfinx:v0.8.0
       options: --privileged 
     name: CI test
 
