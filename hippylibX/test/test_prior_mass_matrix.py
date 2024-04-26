@@ -33,11 +33,10 @@ class Testing_Execution(unittest.TestCase):
         hpx.parRandom.normal(1.0, x)
         y1 = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
         y2 = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
+        tmp = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
 
-        temp = prior.sqrtM.createVecRight()
-
-        prior.sqrtM.multTranspose(x.petsc_vec, temp)
-        prior.sqrtM.mult(temp, y1.petsc_vec)
+        prior.sqrtM.multTranspose(x.petsc_vec, tmp.petsc_vec)
+        prior.sqrtM.mult(tmp.petsc_vec, y1.petsc_vec)
 
         prior.M.mult(x.petsc_vec, y2.petsc_vec)
 
