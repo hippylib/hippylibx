@@ -146,7 +146,7 @@ git push -u origin feature-dev
 
 - List outstanding TODO items in the description.
 
-- Track the Github Actions CI [continuous integration](#automated-testing) builds at the end of the PR. These should run clean, so address any errors as soon as possible.
+- Track the Github Actions [continuous integration](#automated-testing) builds at the end of the PR. These should run clean, so address any errors as soon as possible.
 
 ### Pull Request Checklist
 
