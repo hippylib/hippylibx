@@ -13,6 +13,7 @@ import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
 from ..utils.vector2function import updateFromVector
 
+
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X
 def unused_function(func):

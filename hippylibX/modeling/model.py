@@ -12,6 +12,7 @@ import math
 from .variables import STATE, PARAMETER, ADJOINT
 from typing import Any
 
+
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X
 def unused_function(func):

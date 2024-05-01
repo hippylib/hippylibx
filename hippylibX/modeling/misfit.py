@@ -13,6 +13,7 @@ import ufl
 from mpi4py import MPI
 import petsc4py
 
+
 class NonGaussianContinuousMisfit(object):
     def __init__(self, Vh: list, form, bc0=[]):
         self.Vh = Vh

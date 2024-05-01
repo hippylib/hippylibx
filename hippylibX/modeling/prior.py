@@ -15,6 +15,7 @@ import petsc4py
 from mpi4py import MPI
 import basix.ufl
 
+
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X
 def unused_function(func):
