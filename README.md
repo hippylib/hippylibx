@@ -1,3 +1,4 @@
+[![CI](https://github.com/hippylib/hippylibx/actions/workflows/CI_testing.yml/badge.svg)](https://github.com/hippylib/hippylibx/actions/workflows/CI_testing.yml)
 # hippylibx
 ```
          __        ______  _______   _______   __      __  __  __  __     ______       _____  
