@@ -1,9 +1,17 @@
+# --------------------------------------------------------------------------bc-
+# Copyright (C) 2024 The University of Texas at Austin
+#
+# This file is part of the hIPPYlibx library. For more information and source
+# code availability see https://hippylib.github.io.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# --------------------------------------------------------------------------ec-
+
 import dolfinx as dlx
 import ufl
 import petsc4py
 from mpi4py import MPI
 import hippylibX as hpx
-
 
 # functional handler for prior:
 class H1TikhonvFunctional:

@@ -1,10 +1,17 @@
-############################################################
+# --------------------------------------------------------------------------bc-
+# Copyright (C) 2024 The University of Texas at Austin
+#
+# This file is part of the hIPPYlibx library. For more information and source
+# code availability see https://hippylib.github.io.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# --------------------------------------------------------------------------ec-
+
 import dolfinx as dlx
 import ufl
 import petsc4py
 from .variables import STATE, PARAMETER, ADJOINT
 from ..utils.vector2function import updateFromVector
-
 
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X

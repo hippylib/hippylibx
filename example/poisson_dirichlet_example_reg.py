@@ -1,3 +1,12 @@
+# --------------------------------------------------------------------------bc-
+# Copyright (C) 2024 The University of Texas at Austin
+#
+# This file is part of the hIPPYlibx library. For more information and source
+# code availability see https://hippylib.github.io.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# --------------------------------------------------------------------------ec-
+
 # Poisson example with DirichletBC on the 2d square mesh with
 # u_d=1 on top, 0 on bottom using Variational Regularization Prior.
 import ufl

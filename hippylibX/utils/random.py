@@ -1,10 +1,18 @@
+# --------------------------------------------------------------------------bc-
+# Copyright (C) 2024 The University of Texas at Austin
+#
+# This file is part of the hIPPYlibx library. For more information and source
+# code availability see https://hippylib.github.io.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# --------------------------------------------------------------------------ec-
+
 import numpy as np
 import petsc4py
 from mpi4py import MPI
 import dolfinx as dlx
 from ..algorithms.multivector import MultiVector
 from typing import Union
-
 
 class Random:
     def __init__(self, rank: int, nproc: int, seed=1) -> None:

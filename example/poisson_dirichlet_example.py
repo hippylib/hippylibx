@@ -1,3 +1,12 @@
+# --------------------------------------------------------------------------bc-
+# Copyright (C) 2024 The University of Texas at Austin
+#
+# This file is part of the hIPPYlibx library. For more information and source
+# code availability see https://hippylib.github.io.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# --------------------------------------------------------------------------ec-
+
 # Poisson example with DirichletBC on the 2d square mesh with
 # u_d = 1 on top, 0 on bottom using BiLaplacian Prior.
 import ufl
@@ -85,6 +94,17 @@ def run_inversion(
     f = dlx.fem.Constant(msh, dlx.default_scalar_type(0.0))
     pde_handler = Poisson_Approximation(f)
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0], is_fwd_linear=True)
+
+    # setting petsc options for timing purposes
+    pde.petsc_options = {
+        "ksp_type": "cg",
+        "pc_type": "hypre",
+        "ksp_rtol": "1e-12",
+        "ksp_max_it": "1000",
+        "ksp_error_if_not_converged": "true",
+        "ksp_initial_guess_nonzero": "false",
+        "pc_hypre_type": "boomeramg",
+    }
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)
@@ -267,13 +287,11 @@ def run_inversion(
 
 
 if __name__ == "__main__":
-    nx = 64
-    ny = 64
+    nx = 32
+    ny = 32
     noise_variance = 1e-4
     prior_param = {"gamma": 0.03, "delta": 0.3}
-
     final_results = run_inversion(nx, ny, noise_variance, prior_param)
-
     k, d = (
         final_results["eigen_decomposition_results"]["k"],
         final_results["eigen_decomposition_results"]["d"],

@@ -1,22 +1,16 @@
+# --------------------------------------------------------------------------bc-
+# Copyright (C) 2024 The University of Texas at Austin
+#
+# This file is part of the hIPPYlibx library. For more information and source
+# code availability see https://hippylib.github.io.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# --------------------------------------------------------------------------ec-
+
 import dolfinx as dlx
 import math
 from .variables import STATE, PARAMETER, ADJOINT
 from typing import Any
-# Copyright (c) 2016-2018, The University of Texas at Austin
-# & University of California--Merced.
-# Copyright (c) 2019-2020, The University of Texas at Austin
-# University of California--Merced, Washington University in St. Louis.
-#
-# All Rights reserved.
-# See file COPYRIGHT for details.
-#
-# This file is part of the hIPPYlib library. For more information and source code
-# availability see https://hippylib.github.io.
-#
-# hIPPYlib is free software; you can redistribute it and/or modify it under the
-# terms of the GNU General Public License (as published by the Free
-# Software Foundation) version 2.0 dated June 1991.
-
 
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X
