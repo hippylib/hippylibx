@@ -36,7 +36,7 @@ docker pull dolfinx/dolfinx:v0.8.0
 ```
 The above command can be specified in a [`Dockerfile`](https://github.com/hippylib/hippylibx/blob/main/Dockerfile) as in the `hIPPYlibx` directory.
 
-Once the `Dockerfile` is built, it can be run using the `docker run` command. The present  working directory can be shared when running the docker image which allows for ease in navigating the `hIPPYlibx` directory inside the Docker container.
+Once the `Dockerfile` is built, it can be run using the `docker run` command. The present working directory can be shared when running the Docker image which allows for ease in navigating the `hIPPYlibx` directory inside the Docker container.
 
 For instance the docker image can be built and run using the following commands:
 ```
