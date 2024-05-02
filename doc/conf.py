@@ -156,8 +156,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'hIPPYlibx.tex', u'hIPPYlibx Documentation',
-     u'Umberto Villa, Venugopal Ranganathan', 'manual'),
+    (
+        master_doc,
+        "hIPPYlibx.tex",
+        "hIPPYlibx Documentation",
+        "Umberto Villa, Venugopal Ranganathan",
+        "manual",
+    ),
 ]
 
 
