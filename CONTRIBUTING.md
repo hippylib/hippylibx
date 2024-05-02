@@ -22,7 +22,7 @@ $$/   $$/ $$$$$$/ $$/       $$/           $$/     $$/ $$/ $$$$$$$/_ $$_/      \_
 
 The `hIPPYlibx` team welcomes contributions at all levels: bugfixes, code improvements, new capabilities, improved documentation, or new examples/tutorials.
 
-Use a pull request (PR) toward the `hippylibx:master` branch to propose your contribution. If you are planning significant code changes, or have any questions, you should also open an [issue](https://github.com/hippylib/hippylibx/issues) before issuing a PR.
+Use a pull request (PR) toward the `hippylibx:main` branch to propose your contribution. If you are planning significant code changes, or have any questions, you should also open an [issue](https://github.com/hippylib/hippylibx/issues) before issuing a PR.
 
 See the [Quick Summary](#quick-summary) section for the main highlights of our GitHub workflow. For more details, consult the following sections and refer back to them before issuing pull requests:
 
@@ -40,10 +40,10 @@ Contributing to hIPPYlib requires knowledge of Git and, likely, inverse problems
 By submitting a pull request, you are affirming the [Developer's Certificate of Origin](#developers-certificate-of-origin-11) at the end of this file.
 ### Quick Summary
 
-- We encourage you to [join the hIPPYlib organization](#hippylib-organization) and create development branches off `hippylibx:master`.
+- We encourage you to [join the hIPPYlib organization](#hippylib-organization) and create development branches off `hippylibx:main`.
 - Please follow the [developer guidelines](#developer-guidelines), in particular with regards to documentation and code styling.
-- Pull requests should be issued toward `hippylibx:master`. Make sure to check the items off the [Pull Request Checklist](#pull-request-checklist).
-- After approval, hIPPYlib developers merge the PR in `hippylibx:master`.
+- Pull requests should be issued toward `hippylibx:main`. Make sure to check the items off the [Pull Request Checklist](#pull-request-checklist).
+- After approval, hIPPYlib developers merge the PR in `hippylibx:main`.
 - Don't hesitate to [contact us](#contact-information) if you have any questions.
 
 ### GitHub Workflow
@@ -75,7 +75,7 @@ This will simplify the workflow (by providing you additional permissions), and w
 
 - A new feature should be important enough that at least one person, the proposer, is willing to work on it and be its champion.
 
-- The proposer creates a branch for the new feature (with suffix `-dev`), off the `master` branch, or another existing feature branch, for example:
+- The proposer creates a branch for the new feature (with suffix `-dev`), off the `main` branch, or another existing feature branch, for example:
 
 ```
 # Clone assuming you have setup your ssh keys on GitHub:
@@ -84,8 +84,8 @@ git clone git@github.com:hippylib/hippylibx.git
 # Alternatively, clone using the "https" protocol:
 git clone https://github.com/hippylib/hippylibx.git
 
-# Create a new feature branch starting from "master":
-git checkout master
+# Create a new feature branch starting from "main":
+git checkout main
 git pull
 git checkout -b feature-dev
 
@@ -126,7 +126,7 @@ git push -u origin feature-dev
     - When manually resolving conflicts during a merge, make sure to mention the conflicted files in the commit message.
 
 ### Pull Requests
-- When your branch is ready for other developers to review / comment on the code, create a pull request towards `hippylibx:master`.
+- When your branch is ready for other developers to review / comment on the code, create a pull request towards `hippylibx:main`.
 
 - Pull request typically have titles like:
 
@@ -169,9 +169,9 @@ Before a PR can be merged, it should satisfy the following:
 
 ### Automated Testing
 
-We use Github Actions CI to drive the default tests on the master and feature branches. See the `.yml` file at [CI_testing.yml](https://github.com/hippylib/hippylibx/blob/main/.github/workflows/CI_testing.yml) 
+We use Github Actions CI to drive the default tests on the main and feature branches. See the `.yml` file at [CI_testing.yml](https://github.com/hippylib/hippylibx/blob/main/.github/workflows/CI_testing.yml) 
 
-- Tests on the `master` branch are triggered whenever a push is issued on this branch.
+- Tests on the `main` branch are triggered whenever a push is issued on this branch.
 
 ### Contact Information
 

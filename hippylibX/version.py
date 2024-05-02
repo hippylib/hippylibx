@@ -7,5 +7,5 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-version_info = (1, 0, 0)
+version_info = (0, 1, 0)
 __version__ = ".".join([str(x) for x in version_info])

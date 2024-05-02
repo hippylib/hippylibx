@@ -21,8 +21,8 @@
 
 `FEniCSx` needs to be built with the following dependencies enabled:
 * `numpy`, `scipy`, `matplotlib`, `mpi4py`
-* `petsc4py` (version 3.10.0 or above)
-* `slepc4py` (version 3.10.0 or above)
+* `petsc4py` (version 3.21.0 or above)
+* `slepc4py` (version 3.21.0 or above)
 
 # FEniCSx installation
 All the  methods to install `FEniCSx` are given on the FEniCSx [installation](https://github.com/FEniCS/dolfinx#installation) page.
@@ -38,7 +38,7 @@ The above command can be specified in a [`Dockerfile`](https://github.com/hippyl
 
 Once the `Dockerfile` is built, it can be run using the `docker run` command. The present working directory can be shared when running the Docker image which allows for ease in navigating the `hIPPYlibx` directory inside the Docker container.
 
-For instance the docker image can be built and run using the following commands:
+For instance, the Docker image can be built and run using the following commands:
 ```
 docker build -t hIPPYlibx_image:v1 .
 ```

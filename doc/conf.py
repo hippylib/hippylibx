@@ -38,12 +38,12 @@ autoclass_content = "both"
 # -- Project information -----------------------------------------------------
 
 project = "hIPPYlibx"
-copyright = "2024, The University of Texas at Austin"
-author = "Umberto Villa"
+copyright = "2024, Umberto Villa, Venugopal Ranganathan"
+author = "Umberto Villa, Venugopal Ranganathan"
 
 version = {}
 root_directory = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-with open(os.path.join(root_directory, "hippylibx/version.py")) as f:
+with open(os.path.join(root_directory, "hippylibX/version.py")) as f:
     exec(f.read(), version)
 
 VERSION = version["__version__"]
@@ -150,13 +150,14 @@ latex_elements = {
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
-}
+}z
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "hIPPYlibx.tex", "hIPPYlibx Documentation", "Umberto Villa", "manual"),
+    (master_doc, 'hIPPYlibx.tex', u'hIPPYlibx Documentation',
+     u'Umberto Villa, Venugopal Ranganathan', 'manual'),
 ]
 
 
