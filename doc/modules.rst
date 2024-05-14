@@ -1,7 +1,7 @@
-hippylibx
+hippylibX
 ========
 
 .. toctree::
    :maxdepth: 4
 
-   hippylibx
+   hippylibX

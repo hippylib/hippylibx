@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-hIPPYlibx - Inverse Problem PYthon library
+hIPPYlibX - Inverse Problem PYthon library
 ==========================================
 
 .. mdinclude:: ../README.md
@@ -16,4 +16,4 @@ hIPPYlibx - Inverse Problem PYthon library
    changelog
    contributing
    Complete API reference <modules>
-..   Complete API reference <hippylibx>
+..   Complete API reference <hippylibX>

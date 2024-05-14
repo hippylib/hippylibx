@@ -1,47 +1,47 @@
-hippylibx.utils package
+hippylibX.utils package
 ======================
 
 Submodules
 ----------
 
-hippylibx.utils.master_print module
+hippylibX.utils.master_print module
 ----------------------------------------
 
-.. automodule:: hippylibx.utils.master_print
+.. automodule:: hippylibX.utils.master_print
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-hippylibx.utils.parameterList module
+hippylibX.utils.parameterList module
 -----------------------------------
 
-.. automodule:: hippylibx.utils.parameterList
+.. automodule:: hippylibX.utils.parameterList
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-hippylibx.utils.projection module
+hippylibX.utils.projection module
 -------------------------------------
 
-.. automodule:: hippylibx.utils.projection
+.. automodule:: hippylibX.utils.projection
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.utils.random module
+hippylibX.utils.random module
 ----------------------------
 
-.. automodule:: hippylibx.utils.random
+.. automodule:: hippylibX.utils.random
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.utils.vector2function module
+hippylibX.utils.vector2function module
 ----------------------------
 
-.. automodule:: hippylibx.utils.vector2function
+.. automodule:: hippylibX.utils.vector2function
     :members:
     :undoc-members:
     :show-inheritance:
@@ -49,7 +49,7 @@ hippylibx.utils.vector2function module
 Module contents
 ---------------
 
-.. automodule:: hippylibx.utils
+.. automodule:: hippylibX.utils
     :members:
     :undoc-members:
     :show-inheritance:

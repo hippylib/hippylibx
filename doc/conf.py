@@ -18,7 +18,7 @@ import sys
 sys.path.insert(
     0,
     os.path.join(
-        os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "hippylibx"
+        os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "hippylibX"
     ),
 )
 sys.path.insert(0, os.path.abspath(".."))
@@ -37,7 +37,7 @@ autoclass_content = "both"
 
 # -- Project information -----------------------------------------------------
 
-project = "hIPPYlibx"
+project = "hIPPYlibX"
 copyright = "2024, Umberto Villa, Venugopal Ranganathan"
 author = "Umberto Villa, Venugopal Ranganathan"
 
@@ -68,7 +68,8 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
-    "m2r",
+    # "m2r",
+    "sphinx_mdinclude",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -132,7 +133,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "hIPPYlibxdoc"
+htmlhelp_basename = "hIPPYlibXdoc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -158,8 +159,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "hIPPYlibx.tex",
-        "hIPPYlibx Documentation",
+        "hIPPYlibX.tex",
+        "hIPPYlibX Documentation",
         "Umberto Villa, Venugopal Ranganathan",
         "manual",
     ),
@@ -170,7 +171,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "hippylibx", "hIPPYlibx Documentation", [author], 1)]
+man_pages = [(master_doc, "hippylibX", "hIPPYlibX Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -181,10 +182,10 @@ man_pages = [(master_doc, "hippylibx", "hIPPYlibx Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "hIPPYlibx",
-        "hIPPYlibx Documentation",
+        "hIPPYlibX",
+        "hIPPYlibX Documentation",
         author,
-        "hIPPYlibx",
+        "hIPPYlibX",
         "One line description of project.",
         "Miscellaneous",
     ),

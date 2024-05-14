@@ -17,7 +17,7 @@
                                         https://hippylib.github.io
 ```
 
-`hIPPYlibx` depends on [FEniCSx](https://fenicsproject.org/) version 0.8.0 released in April 2024.
+`hIPPYlibX` depends on [FEniCSx](https://fenicsproject.org/) version 0.8.0 released in April 2024.
 
 `FEniCSx` needs to be built with the following dependencies enabled:
 * `numpy`, `scipy`, `matplotlib`, `mpi4py`
@@ -34,17 +34,17 @@ For `FEniCSx` version 0.8.0, the Docker image is pulled using
 ```
 docker pull dolfinx/dolfinx:v0.8.0
 ```
-The above command can be specified in a [`Dockerfile`](https://github.com/hippylib/hippylibx/blob/main/Dockerfile) as in the `hIPPYlibx` directory.
+The above command can be specified in a [`Dockerfile`](https://github.com/hippylib/hippylibx/blob/main/Dockerfile) as in the `hIPPYlibX` directory.
 
-Once the `Dockerfile` is built, it can be run using the `docker run` command. The present working directory can be shared when running the Docker image which allows for ease in navigating the `hIPPYlibx` directory inside the Docker container.
+Once the `Dockerfile` is built, it can be run using the `docker run` command. The present working directory can be shared when running the Docker image which allows for ease in navigating the `hIPPYlibX` directory inside the Docker container.
 
 For instance, the Docker image can be built and run using the following commands:
 ```
-docker build -t hIPPYlibx_image:v1 .
+docker build -t hIPPYlibX_image:v1 .
 ```
 
 ```
-docker run -it -v $(pwd):/home hIPPYlibx_image:v1
+docker run -it -v $(pwd):/home hIPPYlibX_image:v1
 ```
 ### Other ways to build FEniCSx
-For instructions on other ways to build `FEniCSx`, we refer to the FEniCSx project [download page](https://github.com/FEniCS/dolfinx#installation). Note that this instructions always refer to the latest version of FEniCSx which may or may not be yet supported by hIPPYlibx. Always check the hIPPYlibx website for supported FEniCSx versions.
+For instructions on other ways to build `FEniCSx`, we refer to the FEniCSx project [download page](https://github.com/FEniCS/dolfinx#installation). Note that this instructions always refer to the latest version of FEniCSx which may or may not be yet supported by hIPPYlibX. Always check the hIPPYlibX website for supported FEniCSx versions.

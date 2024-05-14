@@ -1,56 +1,56 @@
-hippylibx.algorithms package
+hippylibX.algorithms package
 ===========================
 
 Submodules
 ----------
 
-hippylibx.algorithms.NewtonCG module
+hippylibX.algorithms.NewtonCG module
 -----------------------------------
 
-.. automodule:: hippylibx.algorithms.NewtonCG
+.. automodule:: hippylibX.algorithms.NewtonCG
     :members:
     :undoc-members:
     :show-inheritance:
        
-hippylibx.algorithms.cgsolverSteihaug module
+hippylibX.algorithms.cgsolverSteihaug module
 -------------------------------------------
 
-.. automodule:: hippylibx.algorithms.cgsolverSteihaug
+.. automodule:: hippylibX.algorithms.cgsolverSteihaug
     :members:
     :undoc-members:
     :show-inheritance:
     
 
-hippylibx.algorithms.linalg module
+hippylibX.algorithms.linalg module
 ---------------------------------
 
-.. automodule:: hippylibx.algorithms.linalg
+.. automodule:: hippylibX.algorithms.linalg
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.algorithms.lowRankOperator module
+hippylibX.algorithms.lowRankOperator module
 ------------------------------------------
 
-.. automodule:: hippylibx.algorithms.lowRankOperator
+.. automodule:: hippylibX.algorithms.lowRankOperator
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-hippylibx.algorithms.multivector module
+hippylibX.algorithms.multivector module
 --------------------------------------
 
-.. automodule:: hippylibx.algorithms.multivector
+.. automodule:: hippylibX.algorithms.multivector
     :members:
     :undoc-members:
     :show-inheritance:
     
 
-hippylibx.algorithms.randomizedEigensolver module
+hippylibX.algorithms.randomizedEigensolver module
 ------------------------------------------------
 
-.. automodule:: hippylibx.algorithms.randomizedEigensolver
+.. automodule:: hippylibX.algorithms.randomizedEigensolver
     :members:
     :undoc-members:
     :show-inheritance:
@@ -58,7 +58,7 @@ hippylibx.algorithms.randomizedEigensolver module
 Module contents
 ---------------
 
-.. automodule:: hippylibx.algorithms
+.. automodule:: hippylibX.algorithms
     :members:
     :undoc-members:
     :show-inheritance:

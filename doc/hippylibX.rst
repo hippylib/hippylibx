@@ -1,4 +1,4 @@
-hippylibx package
+hippylibX package
 ================
 
 Subpackages
@@ -6,14 +6,14 @@ Subpackages
 
 .. toctree::
 
-    hippylibx.modeling
-    hippylibx.algorithms
-    hippylibx.utils
+    hippylibX.modeling
+    hippylibX.algorithms
+    hippylibX.utils
 
 Module contents
 ---------------
 
-.. automodule:: hippylibx
+.. automodule:: hippylibX
     :members:
     :undoc-members:
     :show-inheritance:

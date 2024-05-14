@@ -1,78 +1,78 @@
-hippylibx.modeling package
+hippylibX.modeling package
 =========================
 
 Submodules
 ----------
 
-hippylibx.modeling.PDEProblem module
+hippylibX.modeling.PDEProblem module
 -----------------------------------
 
-.. automodule:: hippylibx.modeling.PDEProblem
+.. automodule:: hippylibX.modeling.PDEProblem
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.modeling.laplaceApproximation module
+hippylibX.modeling.laplaceApproximation module
 ----------------------------------
 
-.. automodule:: hippylibx.modeling.laplaceApproximation
+.. automodule:: hippylibX.modeling.laplaceApproximation
     :members:
     :undoc-members:
     :show-inheritance:
     
-hippylibx.modeling.misfit module
+hippylibX.modeling.misfit module
 -------------------------------
 
-.. automodule:: hippylibx.modeling.misfit
+.. automodule:: hippylibX.modeling.misfit
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.modeling.model module
+hippylibX.modeling.model module
 ------------------------------
 
-.. automodule:: hippylibx.modeling.model
+.. automodule:: hippylibX.modeling.model
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.modeling.modelVerify module
+hippylibX.modeling.modelVerify module
 ------------------------------------
 
-.. automodule:: hippylibx.modeling.modelVerify
+.. automodule:: hippylibX.modeling.modelVerify
     :members:
     :undoc-members:
     :show-inheritance:
     
-hippylibx.modeling.prior module
+hippylibX.modeling.prior module
 ------------------------------
 
-.. automodule:: hippylibx.modeling.prior
+.. automodule:: hippylibX.modeling.prior
     :members:
     :undoc-members:
     :show-inheritance:
     
-hippylibx.modeling.reducedHessian module
+hippylibX.modeling.reducedHessian module
 ---------------------------------------
 
-.. automodule:: hippylibx.modeling.reducedHessian
+.. automodule:: hippylibX.modeling.reducedHessian
     :members:
     :undoc-members:
     :show-inheritance:
 
-hippylibx.modeling.Regularization module
+hippylibX.modeling.Regularization module
 ----------------------------------
 
-.. automodule:: hippylibx.modeling.Regularization
+.. automodule:: hippylibX.modeling.Regularization
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-hippylibx.modeling.variables module
+hippylibX.modeling.variables module
 ----------------------------------
 
-.. automodule:: hippylibx.modeling.variables
+.. automodule:: hippylibX.modeling.variables
     :members:
     :undoc-members:
     :show-inheritance:
@@ -80,7 +80,7 @@ hippylibx.modeling.variables module
 Module contents
 ---------------
 
-.. automodule:: hippylibx.modeling
+.. automodule:: hippylibX.modeling
     :members:
     :undoc-members:
     :show-inheritance:

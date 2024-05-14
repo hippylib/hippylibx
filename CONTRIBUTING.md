@@ -20,7 +20,7 @@ $$/   $$/ $$$$$$/ $$/       $$/           $$/     $$/ $$/ $$$$$$$/_ $$_/      \_
 ```
 ### How to Contribute
 
-The `hIPPYlibx` team welcomes contributions at all levels: bugfixes, code improvements, new capabilities, improved documentation, or new examples/tutorials.
+The `hIPPYlibX` team welcomes contributions at all levels: bugfixes, code improvements, new capabilities, improved documentation, or new examples/tutorials.
 
 Use a pull request (PR) toward the `hippylibx:main` branch to propose your contribution. If you are planning significant code changes, or have any questions, you should also open an [issue](https://github.com/hippylib/hippylibx/issues) before issuing a PR.
 
@@ -69,7 +69,7 @@ This will simplify the workflow (by providing you additional permissions), and w
 
 - Project discussions and announcements will be posted at [https://github.com/orgs/hippylib/teams/everyone](https://github.com/orgs/hippylib/teams/everyone).
 
-- The hIPPYlibx source code is in the [hippylibx](https://github.com/hippylib/hippylibx) repository.
+- The hIPPYlibX source code is in the [hippylibX](https://github.com/hippylib/hippylibx) repository.
 
 ### New Feature Development
 
@@ -98,7 +98,7 @@ git push -u origin feature-dev
 ````
 - **We prefer that you create the new feature branch as a fork.** To allow hIPPYlib developers to edit the PR, please [enable upstream edits](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork).
 
-- The typical feature branch name is `new-feature-dev`, e.g. `optimal_exp_design-dev`. While not frequent in hIPPYlibx, other suffixes are possible, e.g. `-fix`, `-doc`, etc.
+- The typical feature branch name is `new-feature-dev`, e.g. `optimal_exp_design-dev`. While not frequent in hIPPYlibX, other suffixes are possible, e.g. `-fix`, `-doc`, etc.
 
 ### Developer Guidelines
 
@@ -116,8 +116,8 @@ git push -u origin feature-dev
     - Respect the needs of different users (current and/or future).
 
 - Keep things separate and logically organized
-    - General usage features go in hIPPYlibx (implemented in as much generality as possible), non-general features go into external apps/projects.
-    - Inside hIPPYlibx, compartmentalize between modeling, algorithms, utils, etc.
+    - General usage features go in hIPPYlibX (implemented in as much generality as possible), non-general features go into external apps/projects.
+    - Inside hIPPYlibX, compartmentalize between modeling, algorithms, utils, etc.
     - Contributions that are project-specific or have external dependencies are allowed (if they are of broader interest), but should be `#ifdef`-ed and not change the code by default.
 
 - Code specifics
