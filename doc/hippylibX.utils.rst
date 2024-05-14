@@ -1,11 +1,11 @@
 hippylibX.utils package
-======================
+=======================
 
 Submodules
 ----------
 
 hippylibX.utils.master_print module
-----------------------------------------
+-----------------------------------
 
 .. automodule:: hippylibX.utils.master_print
     :members:
@@ -14,7 +14,7 @@ hippylibX.utils.master_print module
 
 
 hippylibX.utils.parameterList module
------------------------------------
+------------------------------------
 
 .. automodule:: hippylibX.utils.parameterList
     :members:
@@ -23,7 +23,7 @@ hippylibX.utils.parameterList module
 
 
 hippylibX.utils.projection module
--------------------------------------
+---------------------------------
 
 .. automodule:: hippylibX.utils.projection
     :members:
@@ -31,7 +31,7 @@ hippylibX.utils.projection module
     :show-inheritance:
 
 hippylibX.utils.random module
-----------------------------
+-----------------------------
 
 .. automodule:: hippylibX.utils.random
     :members:
@@ -39,7 +39,7 @@ hippylibX.utils.random module
     :show-inheritance:
 
 hippylibX.utils.vector2function module
-----------------------------
+--------------------------------------
 
 .. automodule:: hippylibX.utils.vector2function
     :members:

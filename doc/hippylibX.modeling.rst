@@ -1,11 +1,11 @@
 hippylibX.modeling package
-=========================
+==========================
 
 Submodules
 ----------
 
 hippylibX.modeling.PDEProblem module
------------------------------------
+------------------------------------
 
 .. automodule:: hippylibX.modeling.PDEProblem
     :members:
@@ -13,7 +13,7 @@ hippylibX.modeling.PDEProblem module
     :show-inheritance:
 
 hippylibX.modeling.laplaceApproximation module
-----------------------------------
+----------------------------------------------
 
 .. automodule:: hippylibX.modeling.laplaceApproximation
     :members:
@@ -21,7 +21,7 @@ hippylibX.modeling.laplaceApproximation module
     :show-inheritance:
     
 hippylibX.modeling.misfit module
--------------------------------
+--------------------------------
 
 .. automodule:: hippylibX.modeling.misfit
     :members:
@@ -29,7 +29,7 @@ hippylibX.modeling.misfit module
     :show-inheritance:
 
 hippylibX.modeling.model module
-------------------------------
+-------------------------------
 
 .. automodule:: hippylibX.modeling.model
     :members:
@@ -37,7 +37,7 @@ hippylibX.modeling.model module
     :show-inheritance:
 
 hippylibX.modeling.modelVerify module
-------------------------------------
+-------------------------------------
 
 .. automodule:: hippylibX.modeling.modelVerify
     :members:
@@ -45,7 +45,7 @@ hippylibX.modeling.modelVerify module
     :show-inheritance:
     
 hippylibX.modeling.prior module
-------------------------------
+-------------------------------
 
 .. automodule:: hippylibX.modeling.prior
     :members:
@@ -53,7 +53,7 @@ hippylibX.modeling.prior module
     :show-inheritance:
     
 hippylibX.modeling.reducedHessian module
----------------------------------------
+----------------------------------------
 
 .. automodule:: hippylibX.modeling.reducedHessian
     :members:
@@ -61,7 +61,7 @@ hippylibX.modeling.reducedHessian module
     :show-inheritance:
 
 hippylibX.modeling.Regularization module
-----------------------------------
+----------------------------------------
 
 .. automodule:: hippylibX.modeling.Regularization
     :members:
@@ -70,7 +70,7 @@ hippylibX.modeling.Regularization module
 
 
 hippylibX.modeling.variables module
-----------------------------------
+-----------------------------------
 
 .. automodule:: hippylibX.modeling.variables
     :members:

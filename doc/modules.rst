@@ -1,5 +1,5 @@
 hippylibX
-========
+=========
 
 .. toctree::
    :maxdepth: 4

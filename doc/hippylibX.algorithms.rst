@@ -1,11 +1,11 @@
 hippylibX.algorithms package
-===========================
+============================
 
 Submodules
 ----------
 
 hippylibX.algorithms.NewtonCG module
------------------------------------
+------------------------------------
 
 .. automodule:: hippylibX.algorithms.NewtonCG
     :members:
@@ -13,7 +13,7 @@ hippylibX.algorithms.NewtonCG module
     :show-inheritance:
        
 hippylibX.algorithms.cgsolverSteihaug module
--------------------------------------------
+--------------------------------------------
 
 .. automodule:: hippylibX.algorithms.cgsolverSteihaug
     :members:
@@ -22,7 +22,7 @@ hippylibX.algorithms.cgsolverSteihaug module
     
 
 hippylibX.algorithms.linalg module
----------------------------------
+----------------------------------
 
 .. automodule:: hippylibX.algorithms.linalg
     :members:
@@ -30,7 +30,7 @@ hippylibX.algorithms.linalg module
     :show-inheritance:
 
 hippylibX.algorithms.lowRankOperator module
-------------------------------------------
+-------------------------------------------
 
 .. automodule:: hippylibX.algorithms.lowRankOperator
     :members:
@@ -39,7 +39,7 @@ hippylibX.algorithms.lowRankOperator module
 
 
 hippylibX.algorithms.multivector module
---------------------------------------
+---------------------------------------
 
 .. automodule:: hippylibX.algorithms.multivector
     :members:
@@ -48,7 +48,7 @@ hippylibX.algorithms.multivector module
     
 
 hippylibX.algorithms.randomizedEigensolver module
-------------------------------------------------
+-------------------------------------------------
 
 .. automodule:: hippylibX.algorithms.randomizedEigensolver
     :members:

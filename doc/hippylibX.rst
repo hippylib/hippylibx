@@ -1,5 +1,5 @@
 hippylibX package
-================
+=================
 
 Subpackages
 -----------
