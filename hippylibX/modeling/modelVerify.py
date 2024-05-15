@@ -15,6 +15,7 @@ import dolfinx as dlx
 import petsc4py
 from ..algorithms import linalg
 
+
 def modelVerify(
     model,
     m0: dlx.la.Vector,

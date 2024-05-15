@@ -287,8 +287,8 @@ def run_inversion(
 
 
 if __name__ == "__main__":
-    nx = 32
-    ny = 32
+    nx = 64
+    ny = 64
     noise_variance = 1e-4
     prior_param = {"gamma": 0.03, "delta": 0.3}
     final_results = run_inversion(nx, ny, noise_variance, prior_param)

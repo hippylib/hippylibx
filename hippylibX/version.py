@@ -7,9 +7,5 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-from mpi4py import MPI
-
-
-def master_print(comm: MPI.Comm, *args, **kwargs) -> None:
-    if comm.rank == 0:
-        print(*args, **kwargs)
+version_info = (0, 1, 0)
+__version__ = ".".join([str(x) for x in version_info])

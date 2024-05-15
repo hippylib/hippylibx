@@ -14,6 +14,7 @@ import dolfinx as dlx
 from ..algorithms.multivector import MultiVector
 from typing import Union
 
+
 class Random:
     def __init__(self, rank: int, nproc: int, seed=1) -> None:
         seed_sequence = np.random.SeedSequence(seed)

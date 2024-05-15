@@ -12,10 +12,12 @@ from .variables import STATE, PARAMETER, ADJOINT
 import dolfinx as dlx
 import petsc4py
 
+
 # decorator for functions in classes that are not used -> may not be needed in the final
 # version of X
 def unused_function(func):
     return None
+
 
 class ReducedHessian:
     """

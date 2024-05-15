@@ -13,6 +13,7 @@ import petsc4py
 from mpi4py import MPI
 import hippylibX as hpx
 
+
 # functional handler for prior:
 class H1TikhonvFunctional:
     def __init__(self, gamma, delta, m0=None):
