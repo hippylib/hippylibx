@@ -106,7 +106,7 @@ def run_inversion(
 
     noise = prior.generate_parameter("noise")
     m0 = prior.generate_parameter(0)
-    hpx.parRandom.normal(1.0, noise)
+    hpx.parRandom.normal(1e-2, noise)
     prior.sample(noise, m0)
 
     data_misfit_True = hpx.modelVerify(
@@ -211,7 +211,7 @@ def run_inversion(
 
     noise = prior.generate_parameter("noise")
 
-    num_samples_generate = 5
+    num_samples_generate = 6
     use_vtx = False
     prior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="prior_sample")
     posterior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="posterior_sample")
@@ -222,7 +222,7 @@ def run_inversion(
             [prior_sample, posterior_sample],
         ) as vtx:
             for i in range(num_samples_generate):
-                hpx.parRandom.normal(1.0, noise)
+                hpx.parRandom.normal(1e-2, noise)
                 lap_aprx.sample(noise, prior_sample.x, posterior_sample.x)
                 prior_sample.x.scatter_forward()
                 posterior_sample.x.scatter_forward()
@@ -236,7 +236,7 @@ def run_inversion(
         ) as file:
             file.write_mesh(msh)
             for i in range(num_samples_generate):
-                hpx.parRandom.normal(1.0, noise)
+                hpx.parRandom.normal(1e-2, noise)
                 lap_aprx.sample(noise, prior_sample.x, posterior_sample.x)
                 prior_sample.x.scatter_forward()
                 posterior_sample.x.scatter_forward()

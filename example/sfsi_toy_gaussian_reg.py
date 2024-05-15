@@ -248,7 +248,6 @@ def run_inversion(
     }
 
     return final_results
-
     #######################################
 
 
