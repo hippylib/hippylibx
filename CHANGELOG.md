@@ -1,4 +1,4 @@
-Version 0.1.0, released on May 1, 2024
+Version 0.1.0-rc, released on May 15, 2024
 --------------------------------------
 
-- Initial release under GPL-2.
+- Initial release candidate under GPL-2.
