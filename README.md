@@ -1,4 +1,5 @@
 [![CI](https://github.com/hippylib/hippylibx/actions/workflows/CI_testing.yml/badge.svg)](https://github.com/hippylib/hippylibx/actions/workflows/CI_testing.yml)
+[![Documentation Status](https://readthedocs.org/projects/hippylibx/badge/?version=latest)](https://hippylibx.readthedocs.io/en/latest/?badge=latest)
 # hippylibx
 ```
          __        ______  _______   _______   __      __  __  __  __     ______       _____  
