@@ -68,8 +68,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
-    "m2r",
-    "sphinx_mdinclude",
+    "sphinx_mdinclude"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
