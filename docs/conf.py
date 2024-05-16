@@ -68,7 +68,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
-    # "m2r",
+    "m2r",
     "sphinx_mdinclude",
 ]
 
