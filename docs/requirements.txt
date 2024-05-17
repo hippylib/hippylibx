@@ -1,5 +1,5 @@
 typing-extensions==4.11.0
 m2r==0.3.1
-mistune==0.8.4
+mistune==3.0.2
 sphinx-rtd-theme
 sphinx_mdinclude==0.6.1
