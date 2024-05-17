@@ -15,12 +15,7 @@
 import os
 import sys
 
-sys.path.insert(
-    0,
-    os.path.join(
-        os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "hippylibx"
-    ),
-)
+sys.path.insert(0,os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "hippylibx"))
 sys.path.insert(0, os.path.abspath(".."))
 autodoc_mock_imports = [
     "dolfinx",
