@@ -16,6 +16,10 @@ import hippylibX as hpx
 
 # functional handler for prior:
 class H1TikhonvFunctional:
+    """
+    The functional handler for the Variational Regularization prior.
+    """
+
     def __init__(self, gamma, delta, m0=None):
         self.gamma = gamma  # These are dlx Constant, Expression, or Function
         self.delta = delta

@@ -23,6 +23,7 @@ class ReducedHessian:
     """
     This class implements matrix free application of the reduced Hessian operator.
     The constructor takes the following parameters:
+
     - :code:`model`:               the object which contains the description of the problem.
     - :code:`misfit_only`:         a boolean flag that describes whenever the full Hessian or only the misfit component of the Hessian is used.
 

@@ -315,7 +315,7 @@ class Model:
         operator :math:`R`.
 
         The solver object should implement the method :code:`Rsolver.solve(z,r)` such that
-        :math:`Rz \approx r`.
+        :math: `Rz approx r`
         """
         return self.prior.Rsolver
 

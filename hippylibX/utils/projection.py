@@ -13,12 +13,17 @@ import petsc4py
 
 
 def projection(v, target_func, bcs=[]):
-    # reference:
-    # https://github.com/michalhabera/dolfiny/blob/master/dolfiny/projection.py
+    """
+    Return projection of given expression :code:`v` onto the finite element
+    space of a function :code:`target_func`.
 
-    # v -> expression to project
-    # target_func -> function that contains the projection
+    reference:
+    https://github.com/michalhabera/dolfiny/blob/master/dolfiny/projection.py
 
+    Inputs:
+        - :code:`v`:  expression to project
+        - :code:`target_func` : function that contains the projection
+    """
     V = target_func.function_space
     dx = ufl.dx(V.mesh)
     w = ufl.TestFunction(V)

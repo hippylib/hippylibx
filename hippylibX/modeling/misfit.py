@@ -15,6 +15,15 @@ import petsc4py
 
 
 class NonGaussianContinuousMisfit(object):
+    """
+    Abstract class to model the misfit component of the cost functional.
+    In the following :code:`x` will denote the variable :code:`[u, m, p]`, denoting respectively
+    the state :code:`u`, the parameter :code:`m`, and the adjoint variable :code:`p`.
+
+    The methods in the class misfit will usually access the state u and possibly the
+    parameter :code:`m`. The adjoint variables will never be accessed.
+    """
+
     def __init__(self, Vh: list, form, bc0=[]):
         self.Vh = Vh
         self.form = form
@@ -30,6 +39,10 @@ class NonGaussianContinuousMisfit(object):
         self.xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
 
     def cost(self, x: list) -> float:
+        """
+        Given x evaluate the cost functional.
+        Only the state u and (possibly) the parameter m are accessed.
+        """
         hpx.updateFromVector(self.xfun[hpx.STATE], x[hpx.STATE])
         u_fun = self.xfun[hpx.STATE]
 
@@ -41,6 +54,10 @@ class NonGaussianContinuousMisfit(object):
         return self.Vh[hpx.STATE].mesh.comm.allreduce(glb_cost_proc, op=MPI.SUM)
 
     def grad(self, i: int, x: list, out: dlx.la.Vector) -> None:
+        """
+        Given the state and the paramter in :code:`x`, compute the partial gradient of the misfit
+        functional in with respect to the state (:code:`i == STATE`) or with respect to the parameter (:code:`i == PARAMETER`).
+        """
         hpx.updateFromVector(self.xfun[hpx.STATE], x[hpx.STATE])
         u_fun = self.xfun[hpx.STATE]
 
@@ -69,6 +86,9 @@ class NonGaussianContinuousMisfit(object):
         self.gauss_newton_approx = gauss_newton_approx
 
     def apply_ij(self, i: int, j: int, dir: dlx.la.Vector, out: dlx.la.Vector) -> None:
+        """
+        Apply the second variation :math:`\delta_{ij}` (:code:`i,j = STATE,PARAMETER`) of the cost in direction :code:`dir`.
+        """
         form = self.form(*self.x_lin_fun)
         if j == hpx.STATE:
             dlx.fem.set_bc(dir.array, self.bc0)

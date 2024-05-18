@@ -16,16 +16,34 @@ from typing import Union
 
 
 class Random:
+    """
+    This class handles parallel generation of random numbers in hippylibX.
+    """
+
     def __init__(self, rank: int, nproc: int, seed=1) -> None:
+        """
+        Create a parallel random number number generator.
+
+        INPUTS:
+            - :code:`rank`: id of the calling process.
+            - :code:`nproc`: number of processor in the communicator.
+            - :code:`seed`: random seed to initialize the random engine.
+        """
         seed_sequence = np.random.SeedSequence(seed)
         self.child_seeds = seed_sequence.spawn(nproc)
         self.rank = rank
         self.rng = np.random.MT19937(self.child_seeds[self.rank])
 
     def replay(self) -> None:
+        """
+        Reinitialize seeds for each calling process.
+        """
         self.rng = np.random.MT19937(self.child_seeds[self.rank])
 
     def _normal_perturb_dlxVector(self, sigma: float, out: dlx.la.Vector) -> None:
+        """
+        Add a normal perturbation to a dolfinx Vector.
+        """
         num_local_values = out.index_map.size_local + out.index_map.num_ghosts
         loc_random_numbers = np.random.default_rng(self.rng).normal(
             loc=0, scale=sigma, size=num_local_values
@@ -34,6 +52,9 @@ class Random:
         out.scatter_forward()
 
     def _normal_perturb_multivec(self, sigma: float, out: MultiVector) -> None:
+        """
+        Add a normal perturbation to a MultiVector.
+        """
         num_local_values = out[0].getLocalSize()
         for i in range(out.nvec):
             loc_random_numbers = np.random.default_rng(self.rng).normal(
@@ -50,12 +71,18 @@ class Random:
     def normal_perturb(
         self, sigma: float, out: Union[dlx.la.Vector, MultiVector]
     ) -> None:
+        """
+        Add a normal perturbation to a dolfinx Vector or MultiVector object.
+        """
         if hasattr(out, "nvec"):
             self._normal_perturb_multivec(sigma, out)  # type: ignore
         else:
             self._normal_perturb_dlxVector(sigma, out)
 
     def normal(self, sigma: float, out: Union[dlx.la.Vector, MultiVector]) -> None:
+        """
+        Sample from a normal distribution.
+        """
         if hasattr(out, "scale"):
             out.scale(0.0)
         else:

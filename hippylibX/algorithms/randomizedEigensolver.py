@@ -23,6 +23,24 @@ def doublePassG(
     k: int,
     s=1,
 ) -> tuple[np.array, MultiVector]:
+    """
+    The double pass algorithm for the GHEP as presented in [2].
+
+    Inputs:
+
+    - :code:`A`: the operator for which we need to estimate the dominant generalized eigenpairs.
+    - :code:`B`: the right-hand side operator.
+    - :code:`Binv`: the inverse of the right-hand side operator.
+    - :code:`Omega`: a random gassian matrix with :math:`m \\geq k` columns.
+    - :code:`k`: the number of eigenpairs to extract.
+    - :code:`s`: the number of power iterations for selecting the subspace.
+
+    Outputs:
+
+    - :code:`d`: the estimate of the :math:`k` dominant eigenvalues of :math:`A`.
+    - :code:`U`: the estimate of the :math:`k` dominant eigenvectors of :math:`A,\\, U^T B U = I_k`.
+    """
+
     nvec = Omega.nvec
     assert nvec >= k
     Ybar = MultiVector.createFromVec(Omega[0], nvec)
