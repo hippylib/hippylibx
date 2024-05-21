@@ -46,18 +46,22 @@ class CGSolverSteihaug:
     """
     Solve the linear system :math:`A x = b` using preconditioned conjugate gradient ( :math:`B` preconditioner)
     and the Steihaug stopping criterion:
+
     - reason of termination 0: we reached the maximum number of iterations (no convergence)
     - reason of termination 1: we reduced the residual up to the given tolerance (convergence)
     - reason of termination 2: we reached a negative direction (premature termination due to not spd matrix)
     - reason of termination 3: we reached the boundary of the trust region
 
     The stopping criterion is based on either
+
     - the absolute preconditioned residual norm check: :math:`|| r^* ||_{B^{-1}} < atol`
     - the relative preconditioned residual norm check: :math:`|| r^* ||_{B^{-1}}/|| r^0 ||_{B^{-1}} < rtol,`
+
     where :math:`r^* = b - Ax^*` is the residual at convergence and :math:`r^0 = b - Ax^0` is the initial residual.
 
     The operator :code:`A` is set using the method :code:`set_operator(A)`.
     :code:`A` must provide the following two methods:
+
     - :code:`A.mult(x,y)`: `y = Ax`
     - :code:`A.init_vector(x, dim)`: initialize the vector `x` so that it is compatible with the range `(dim = 0)` or
       the domain `(dim = 1)` of :code:`A`.

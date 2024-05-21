@@ -23,5 +23,8 @@ def vector2Function(vec, Vh, **kwargs):
 
 
 def updateFromVector(fun: dlx.fem.Function, vec: dlx.la.Vector):
+    """
+    Assign values to underlying Vector of dolfinx function :code:`fun` from dolfinx Vector :code:`vec`.
+    """
     fun.x.array[:] = vec.array[:]
     fun.x.scatter_forward()

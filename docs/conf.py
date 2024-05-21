@@ -18,7 +18,7 @@ import sys
 sys.path.insert(
     0,
     os.path.join(
-        os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "hippylibX"
+        os.path.abspath(os.path.dirname(os.path.dirname(__file__))), "hippylibx"
     ),
 )
 sys.path.insert(0, os.path.abspath(".."))
@@ -32,6 +32,14 @@ autodoc_mock_imports = [
     "scipy",
     "numpy",
 ]
+
+autodoc_default_options = {
+    "members": True,
+    "private-members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
+}
+
 autodoc_default_flags = ["members", "private-members", "undoc-members"]
 autoclass_content = "both"
 
@@ -68,7 +76,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
-    # "m2r",
     "sphinx_mdinclude",
 ]
 

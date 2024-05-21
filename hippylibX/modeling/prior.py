@@ -81,6 +81,12 @@ class _BilaplacianRsolver:
 
 
 class SqrtPrecisionPDE_Prior:
+    """
+    This class implement a prior model with covariance matrix
+    :math:`C = A^{-1} M A^-1`,
+    where A is the finite element matrix arising from discretization of sqrt_precision_varf_handler
+    """
+
     def __init__(
         self,
         Vh: dlx.fem.FunctionSpace,
@@ -90,16 +96,12 @@ class SqrtPrecisionPDE_Prior:
         """
         Construct the prior model.
         Input:
+
         - :code:`Vh`:              the finite element space for the parameter
         - :code:sqrt_precision_varf_handler: the PDE representation of the  sqrt of the covariance operator
         - :code:`mean`:            the prior mean
         """
 
-        """
-        This class implement a prior model with covariance matrix
-        :math:`C = A^{-1} M A^-1`,
-        where A is the finite element matrix arising from discretization of sqrt_precision_varf_handler
-        """
         self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
         self.ds = ufl.Measure("ds", metadata={"quadrature_degree": 4})
 
@@ -202,7 +204,8 @@ class SqrtPrecisionPDE_Prior:
 
     def generate_parameter(self, dim: int) -> dlx.la.Vector:
         """
-        Inizialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
+        Initialize a vector :code:`x` to be compatible with the range/domain of :math:`R`.
+
         If :code:`dim == "noise"` inizialize :code:`x` to be compatible with the size of
         white noise used for sampling.
         """

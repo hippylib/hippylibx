@@ -310,6 +310,9 @@ class ReducedSpaceNewtonCG:
         return x
 
     def _solve_tr(self, x):
+        """
+        TR method has not been implemented in v0.1.0.
+        """
         rel_tol = self.parameters["rel_tolerance"]
         abs_tol = self.parameters["abs_tolerance"]
         max_iter = self.parameters["max_iter"]
