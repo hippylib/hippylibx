@@ -1,8 +1,11 @@
+#two things - downsampling and creating submesh
 import timeit
 import h5py
 from typing import Tuple
 import numpy as np
 from scipy.ndimage import zoom
+from skimage.transform import resize
+
 import time
 
 def label_maker(label_array: np.array, f:float )-> Tuple[np.array, np.array, np.array, np.array]:
@@ -17,7 +20,7 @@ def label_maker(label_array: np.array, f:float )-> Tuple[np.array, np.array, np.
     k_range = np.max(label_array, axis=(0, 1)) > 0
     tight_label = label_array[i_range, :, :]
     tight_label = tight_label[:, j_range, :]
-    tight_label = tight_label[:, :, k_range]
+    tight_label = tight_label[:, :, k_range]    
     reduced_labels = zoom(tight_label,(scale ,scale,scale), order=0)
     return [i_range, j_range, k_range, reduced_labels]
 
@@ -37,9 +40,11 @@ factor = 8
 execution_time, result = time_function(label_maker, data, factor)
 print(execution_time)
 i_range, j_range, k_range, reduced_labels = result
+offset_disp = np.array([np.sum(~i_range), np.sum(~j_range), np.sum(~k_range) ])
 np.save('i_range_factor_8_method_zoom',i_range)
 np.save('j_range_factor_8_method_zoom',j_range)
 np.save('k_range_factor_8_method_zoom',k_range)
 np.save('reduced_labels_factor_8_method_zoom',reduced_labels)
+np.save('offset_disp_factor_8_method_zoom',offset_disp)
 
-print(reduced_labels.shape)
+# print(reduced_labels.shape)
