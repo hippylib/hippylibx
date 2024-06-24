@@ -13,7 +13,6 @@ time_compute_cells_to_keep = 0.
 time_create_submesh = 0.
 
 for _ in range(num_times_to_run):
-    start_time = MPI.Wtime()
     reduced_labels = np.load('reduced_labels_factor_8_method_zoom.npy')
     offset_disp = np.load('offset_disp_factor_8_method_zoom.npy')
 
@@ -30,18 +29,16 @@ for _ in range(num_times_to_run):
     msh = dlx.mesh.create_box(MPI.COMM_WORLD, [offset, top_right_coordinates], num_cells_each_dimension, dlx.mesh.CellType.hexahedron)
     geometry = msh.geometry.x
     connectivity = msh.topology.connectivity(msh.topology.dim, 0)
-    cells = msh.topology.index_map(msh.topology.dim).size_local
-    cell_vertices = [connectivity.links(i) for i in range(cells)]
-    cell_centers = np.array([geometry[vertices].mean(axis=0) for vertices in cell_vertices])
+
+    start_time = MPI.Wtime()
+    cell_indices = np.arange(msh.topology.index_map(msh.topology.dim).size_local, dtype=np.int32)
+    cell_centers = dlx.mesh.compute_midpoints(msh, msh.topology.dim, cell_indices)
     end_time = MPI.Wtime()
     time_compute_cell_center += end_time - start_time
 
     start_time = MPI.Wtime()
-    cell_indices = np.arange(msh.topology.index_map(msh.topology.dim).size_local, dtype=np.int32)
-    midpoints = dlx.mesh.compute_midpoints(msh, msh.topology.dim, cell_indices)
-    ijk_indices = np.floor((midpoints - offset)/voxel_sizes).astype(int)
+    ijk_indices = np.floor((cell_centers - offset)/voxel_sizes).astype(int)
     cells_to_keep = cell_indices[np.where(reduced_labels[ijk_indices[:, 0], ijk_indices[:, 1], ijk_indices[:, 2]] != 0)[0]]
-
     end_time = MPI.Wtime()
     time_compute_cells_to_keep += end_time - start_time
     
