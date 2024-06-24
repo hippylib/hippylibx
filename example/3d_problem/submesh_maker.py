@@ -8,6 +8,7 @@ comm = MPI.COMM_WORLD
 
 num_times_to_run = 1
 
+time_create_brick_mesh = 0.
 time_compute_cell_center = 0.
 time_compute_cells_to_keep = 0.
 time_create_submesh = 0.
@@ -16,6 +17,7 @@ for _ in range(num_times_to_run):
     reduced_labels = np.load('reduced_labels_factor_8_method_zoom.npy')
     offset_disp = np.load('offset_disp_factor_8_method_zoom.npy')
 
+    start_time = MPI.Wtime()
     nx, ny, nz = reduced_labels.shape      
     num_cells_each_dimension = [nx, ny, nz]
     original_center = np.array([-85,-85,-85])
@@ -27,10 +29,12 @@ for _ in range(num_times_to_run):
 
     top_right_coordinates = [offset[i] + num_cells_each_dimension[i]*voxel_sizes[i] for i in range(3)] 
     msh = dlx.mesh.create_box(MPI.COMM_WORLD, [offset, top_right_coordinates], num_cells_each_dimension, dlx.mesh.CellType.hexahedron)
+    end_time = MPI.Wtime()
+    time_create_brick_mesh += end_time - start_time
+    
+    start_time = MPI.Wtime()
     geometry = msh.geometry.x
     connectivity = msh.topology.connectivity(msh.topology.dim, 0)
-
-    start_time = MPI.Wtime()
     cell_indices = np.arange(msh.topology.index_map(msh.topology.dim).size_local, dtype=np.int32)
     cell_centers = dlx.mesh.compute_midpoints(msh, msh.topology.dim, cell_indices)
     end_time = MPI.Wtime()
@@ -52,6 +56,7 @@ for _ in range(num_times_to_run):
     with dlx.io.XDMFFile(submesh.comm, "submesh_3d_factor_8_method_zoom.xdmf", "w") as xdmf:
         xdmf.write_mesh(submesh)
 
+print(f'Average time to create brick mesh for {num_times_to_run} runs = {time_create_brick_mesh/num_times_to_run} seconds')
 print(f'Average time to compute cell centers for {num_times_to_run} runs = {time_compute_cell_center/num_times_to_run} seconds')
 print(f'Average time to compute list of cells to keep for {num_times_to_run} runs = {time_compute_cells_to_keep/num_times_to_run} seconds')
 print(f'Average time to create submesh for {num_times_to_run} runs = {time_create_submesh/num_times_to_run} seconds')
