@@ -3,6 +3,7 @@ import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
 
+
 comm = MPI.COMM_WORLD
 
 num_times_to_run = 1
@@ -13,7 +14,6 @@ time_create_submesh = 0.
 
 for _ in range(num_times_to_run):
     start_time = MPI.Wtime()
-    # reduced_labels = np.load('reduced_labels_factor_4_method_resize.npy')
     reduced_labels = np.load('reduced_labels_factor_8_method_zoom.npy')
     offset_disp = np.load('offset_disp_factor_8_method_zoom.npy')
 
@@ -37,14 +37,11 @@ for _ in range(num_times_to_run):
     time_compute_cell_center += end_time - start_time
 
     start_time = MPI.Wtime()
-    cells_to_keep = []
-    for cell in range(cells):
-        center = cell_centers[cell]
-        i = int( (center[0] - offset[0])/voxel_sizes[0] )
-        j = int( (center[1] - offset[1])/voxel_sizes[1] )
-        k = int( (center[2] - offset[2])/voxel_sizes[2] )
-        if(reduced_labels[i, j, k] != 0):
-            cells_to_keep.append(cell)
+    cell_indices = np.arange(msh.topology.index_map(msh.topology.dim).size_local, dtype=np.int32)
+    midpoints = dlx.mesh.compute_midpoints(msh, msh.topology.dim, cell_indices)
+    ijk_indices = np.floor((midpoints - offset)/voxel_sizes).astype(int)
+    cells_to_keep = cell_indices[np.where(reduced_labels[ijk_indices[:, 0], ijk_indices[:, 1], ijk_indices[:, 2]] != 0)[0]]
+
     end_time = MPI.Wtime()
     time_compute_cells_to_keep += end_time - start_time
     
