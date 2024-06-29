@@ -81,7 +81,7 @@ def submesh_maker(downsample_label_file: str, submesh_file) -> None:
     cell_indices = np.arange(msh.topology.index_map(msh.topology.dim).size_local, dtype=np.int32)
     cell_centers = dlx.mesh.compute_midpoints(msh, msh.topology.dim, cell_indices)
     end_time = MPI.Wtime()
-    print(f'Time to create reduced labels = {end_time - start_time} seconds.')
+    print(f'Time to compute cell centers = {end_time - start_time} seconds.')
 
     start_time = MPI.Wtime()
     ijk_indices = np.floor((cell_centers - origin)/voxel_size).astype(int)
