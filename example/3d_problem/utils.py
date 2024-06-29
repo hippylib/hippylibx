@@ -53,6 +53,8 @@ def submesh_maker(downsample_label_file: str, submesh_file) -> None:
         downsample_label_file: path to downsampled label array constructed using function "downsample_labels"
         submesh_file: Name of submesh file to write submesh to 
     '''
+    
+    start_time =  MPI.Wtime()
     with h5py.File(f'{downsample_label_file}', 'r') as f:
         factor = f['factor'][:][0]
         origin = f['new_origin'][:]
@@ -64,27 +66,41 @@ def submesh_maker(downsample_label_file: str, submesh_file) -> None:
 
     top_right_coordinates = [origin[i] + num_cells_each_dimension[i]*voxel_size for i in range(3)] 
     msh = dlx.mesh.create_box(MPI.COMM_WORLD, [origin, top_right_coordinates], num_cells_each_dimension, dlx.mesh.CellType.hexahedron)
+    end_time = MPI.Wtime()
+    print(f'Time to create brick mesh = {end_time - start_time} seconds.')
 
-    msh.topology.create_connectivity(msh.topology.dim, 0)
-    msh.topology.create_connectivity(3, 2)
-    msh.topology.create_connectivity(3, 1)
-    msh.topology.create_connectivity(3, 3)
 
+    # msh.topology.create_connectivity(msh.topology.dim, 0)
+    # msh.topology.create_connectivity(3, 2)
+    # msh.topology.create_connectivity(3, 1)
+    # msh.topology.create_connectivity(3, 3)
+
+    start_time = MPI.Wtime()
     geometry = msh.geometry.x
     connectivity = msh.topology.connectivity(msh.topology.dim, 0)
     cell_indices = np.arange(msh.topology.index_map(msh.topology.dim).size_local, dtype=np.int32)
     cell_centers = dlx.mesh.compute_midpoints(msh, msh.topology.dim, cell_indices)
+    end_time = MPI.Wtime()
+    print(f'Time to create reduced labels = {end_time - start_time} seconds.')
+
+    start_time = MPI.Wtime()
     ijk_indices = np.floor((cell_centers - origin)/voxel_size).astype(int)
     cells_to_keep = cell_indices[np.where(reduced_labels[ijk_indices[:, 0], ijk_indices[:, 1], ijk_indices[:, 2]] != 0)[0]]
     cells_to_keep = np.array(cells_to_keep, dtype=np.int32)
+    end_time = MPI.Wtime()
+    print(f'Time to compute cells to keep = {end_time - start_time} seconds.')
 
+    start_time = MPI.Wtime()
     submesh, _, _, _ = dlx.mesh.create_submesh(msh, msh.topology.dim, cells_to_keep)
+    end_time = MPI.Wtime()
+    print(f'Time to create submesh = {end_time - start_time} seconds.')
+
 
     with dlx.io.XDMFFile(submesh.comm, f"{submesh_file}", "w") as xdmf:
         xdmf.write_mesh(submesh)
 
 
-def interpolate_optical_properties(downsampled_label_file, opt_file, downsampled_optical_file) -> None:
+def downsample_optical_properties(downsampled_label_file, opt_file, downsampled_optical_file) -> None:
   '''
   Function to downsample the optical properties array using the downsampled label array created using function
   "donwsample_labels".
