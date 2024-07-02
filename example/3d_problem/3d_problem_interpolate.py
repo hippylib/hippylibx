@@ -92,17 +92,34 @@ def run_inversion(
     hpx.master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
 
     # FORWARD MODEL
-    u0 = 1.0
+    # u0 = 1.0
  
-    # u0 = dlx.fem.Function(Vh[hpx.STATE])
-    # u0.x.array[:] = 0.
-    # u0.interpolate(lambda x: np.abs(x[0] + 0.375) > 1e-6)
-    # u0.x.scatter_forward()
+    u0 = dlx.fem.Function(Vh[hpx.STATE])
+    u0.x.array[:] = 0.
+    u0.interpolate(lambda x: np.abs(x[0] + 0.375) > 1e-6)
+    u0.x.scatter_forward()
  
     D = 1.0 / 24.0
     pde_handler = DiffusionApproximation(D, u0)
 
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [], is_fwd_linear=True)
+    
+    pde.petsc_options = {
+        "ksp_type": "cg",
+        "pc_type": "hypre",
+        "ksp_rtol": "1e-12",
+        "ksp_max_it": "1000",
+        "ksp_error_if_not_converged": "true",
+        "ksp_initial_guess_nonzero": "false",
+        "pc_hypre_type": "boomeramg",
+    }
+    
+    if pde.solver is None:
+        pde.solver = pde._createLUSolver()
+        pde.solver.setTolerances(rtol=1e-9)
+
+    print(pde.solver.view())
+
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)
         
@@ -122,7 +139,7 @@ def run_inversion(
         j = np.clip(np.floor((x[1] - origin[1]) / voxel_size).astype(int), 0, optical_arr.shape[1] - 1)
         k = np.clip(np.floor((x[2] - origin[2]) / voxel_size).astype(int), 0, optical_arr.shape[2] - 1)
         
-        return optical_arr[i, j, k]
+        return np.log(optical_arr[i, j, k])
 
     # Interpolate values
     # start_time = MPI.Wtime()
@@ -141,27 +158,21 @@ def run_inversion(
         file.write_mesh(msh)
         file.write_function(m_fun, 0)
 
-    # u0_vec = u0.x
+    u0_vec = u0.x
     V_P1 = dlx.fem.functionspace(msh, ("Lagrange", 1))
-    # u0_fun = dlx.fem.Function(V_P1, name="u0_map")
-    # u0_fun.interpolate(hpx.vector2Function(u0, Vh[hpx.STATE]))
-    # u0_fun.x.scatter_forward()
+    u0_fun = dlx.fem.Function(V_P1, name="u0_map")
+    u0_fun.interpolate(hpx.vector2Function(u0_vec, Vh[hpx.STATE]))
+    u0_fun.x.scatter_forward()
     
-    # with dlx.io.XDMFFile(msh.comm,"PACT_3D_problem_u0{0:d}.xdmf".format(nproc),"w",) as file:
-    #     file.write_mesh(msh)
-    #     file.write_function(u0_fun, 0)
+    with dlx.io.XDMFFile(msh.comm,"PACT_3D_problem_u0{0:d}.xdmf".format(nproc),"w",) as file:
+        file.write_mesh(msh)
+        file.write_function(u0_fun, 0)
 
-    # u_true_fun = dlx.fem.Function(V_P1, name="u_true_map")
-    # u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
-    # u_true_fun.x.scatter_forward()
-    
-    # with dlx.io.XDMFFile(msh.comm, "PACT_3D_problem_u_true{0:d}.xdmf".format(nproc),"w",) as file:
-    #     file.write_mesh(msh)
-    #     file.write_function(u_true_fun, 0)
-         
+    #******************************************
+        
     pde.solveFwd(u_true, x_true)
     
-    # # writing out u_true:
+    # # # writing out u_true:
     
     u_true_fun = dlx.fem.Function(V_P1, name="u_true_map")
     u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
