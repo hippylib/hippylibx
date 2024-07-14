@@ -7,103 +7,117 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-# qpact problem with BiLaplacian Prior.
+# Poisson example with DirichletBC on the 2d square mesh with
+# u_d = 1 on top, 0 on bottom using BiLaplacian Prior.
+
+import sys
+import os
+sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
+# import hippylibX as hpx
+
+try:
+    import hippylibX as hpx
+    print("Successfully imported 'hipyylibX'")
+except ModuleNotFoundError as e:
+    print(f"Error importing 'hippylibX': {e}")
+
+
 import ufl
 import dolfinx as dlx
 from mpi4py import MPI
 import numpy as np
-import sys
-import os
 import dolfinx.fem.petsc
 from matplotlib import pyplot as plt
-from typing import Dict
-import h5py
-sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
-import hippylibX as hpx
+from typing import Sequence, Dict
+
+# sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
+
+# experiment_base_dir = os.environ.get("HIPPYLIBX_BASE_DIR", "../")
+# sys.path.append(experiment_base_dir)
+# print(f"Appended path: {experiment_base_dir}")
+
+# try:
+#     import hippylibX as hpx
+#     print("Successfully imported 'experiment'")
+# except ModuleNotFoundError as e:
+#     print(f"Error importing 'experiment': {e}")
+
+# import hippylibX as hpx
 
 
-class DiffusionApproximation:
-    def __init__(self, D: float, u0: float):
-        """
-        Define the forward model for the diffusion approximation to radiative transfer equations
-
-        D: diffusion coefficient 1/mu_eff with mu_eff = sqrt(3 mu_a (mu_a + mu_ps) ), where mu_a
-           is the unknown absorption coefficient, and mu_ps is the reduced scattering coefficient
-
-        u0: Incident fluence (Robin condition)
-
-        ds: boundary integrator for Robin condition
-        """
-        self.D = D
-        self.u0 = u0
+class Poisson_Approximation:
+    def __init__(self, f: float):
+        self.f = f
         self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
-        self.ds = ufl.Measure("ds", metadata={"quadrature_degree": 4})
 
     def __call__(
         self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function
     ) -> ufl.form.Form:
         return (
-            ufl.inner(self.D * ufl.grad(u), ufl.grad(p))
-            * ufl.dx(metadata={"quadrature_degree": 4})
-            + ufl.exp(m) * ufl.inner(u, p) * self.dx
-            + 0.5 * ufl.inner(u - self.u0, p) * self.ds
+            ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p)) * self.dx
+            - self.f * p * self.dx
         )
 
 
-class PACTMisfitForm:
+class PoissonMisfitForm:
     def __init__(self, d: float, sigma2: float):
-        self.sigma2 = sigma2
         self.d = d
+        self.sigma2 = sigma2
         self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
 
     def __call__(self, u: dlx.fem.Function, m: dlx.fem.Function) -> ufl.form.Form:
-        return (
-            0.5
-            / self.sigma2
-            * ufl.inner(u * ufl.exp(m) - self.d, u * ufl.exp(m) - self.d)
-            * self.dx
-        )
+        return 0.5 / self.sigma2 * ufl.inner(u - self.d, u - self.d) * self.dx
 
 
 def run_inversion(
-    mesh_filename: str,
-    nx: int,
-    ny: int,
-    noise_variance: float,
-    prior_param: Dict[str, float],
+    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float]
 ) -> Dict[str, Dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
     nproc = comm.size
 
-    fname = mesh_filename
-    fid = dlx.io.XDMFFile(comm, fname, "r")
-    msh = fid.read_mesh(name="mesh")
+    msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
     Vh_phi = dlx.fem.functionspace(msh, ("Lagrange", 2))
     Vh_m = dlx.fem.functionspace(msh, ("Lagrange", 1))
+
     Vh = [Vh_phi, Vh_m, Vh_phi]
     ndofs = [
         Vh_phi.dofmap.index_map.size_global * Vh_phi.dofmap.index_map_bs,
         Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs,
     ]
-
     hpx.master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
     hpx.master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
 
-    # FORWARD MODEL
-    # u0 = 1.0
- 
-    u0 = dlx.fem.Function(Vh[hpx.STATE])
-    u0.x.array[:] = 0.
-    u0.interpolate(lambda x: np.abs(x[0] + 0.375) > 1e-6)
-    u0.x.scatter_forward()
- 
-    D = 1.0 / 24.0
-    pde_handler = DiffusionApproximation(D, u0)
+    # dirichlet B.C.
+    uD = dlx.fem.Function(Vh[hpx.STATE])
+    uD.interpolate(lambda x: x[1])
+    uD.x.scatter_forward()
 
-    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [], is_fwd_linear=True)
-    
+    def top_bottom_boundary(x: Sequence[float]) -> Sequence[bool]:
+        return np.logical_or(np.isclose(x[1], 1), np.isclose(x[1], 0))
+
+    fdim = msh.topology.dim - 1
+    top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(
+        msh, fdim, top_bottom_boundary
+    )
+    dirichlet_dofs = dlx.fem.locate_dofs_topological(
+        Vh[hpx.STATE], fdim, top_bottom_boundary_facets
+    )
+    bc = dlx.fem.dirichletbc(uD, dirichlet_dofs)
+
+    # bc0
+    uD_0 = dlx.fem.Function(Vh[hpx.STATE])
+    uD_0.interpolate(lambda x: 0.0 * x[0])
+    uD_0.x.scatter_forward()
+    bc0 = dlx.fem.dirichletbc(uD_0, dirichlet_dofs)
+
+    # # FORWARD MODEL
+    f = dlx.fem.Constant(msh, dlx.default_scalar_type(0.0))
+    pde_handler = Poisson_Approximation(f)
+    pde = hpx.PDEVariationalProblem(Vh, pde_handler, [bc], [bc0], is_fwd_linear=True)
+
+    # setting petsc options for timing purposes
     pde.petsc_options = {
         "ksp_type": "cg",
         "pc_type": "hypre",
@@ -113,265 +127,201 @@ def run_inversion(
         "ksp_initial_guess_nonzero": "false",
         "pc_hypre_type": "boomeramg",
     }
-    
-    if pde.solver is None:
-        pde.solver = pde._createLUSolver()
-        pde.solver.setTolerances(rtol=1e-9)
-
-    print(pde.solver.view())
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)
-        
-    with h5py.File('labels_optical_array/downsample_labels.h5', 'r') as f:
-            origin = f['new_origin'][:]
-            voxel_size = f['new_voxel_size'][:].flatten()[0]
-
-    with h5py.File('labels_optical_array/downsample_optical_properties.h5', 'r') as f:
-            optical_arr = f['reduced_opt_array'][:]
-
-    def interpolate_function(x):    
-        # clip is needed due to floating point precision:
-        # nearly 0 values obtained on subtraction of two 'equal' values
-        # for 0 index cell and last index cell fall on eithier side, giving '-1'
-        # and 'length' value 
-        i = np.clip(np.floor((x[0] - origin[0]) / voxel_size).astype(int), 0, optical_arr.shape[0] - 1)
-        j = np.clip(np.floor((x[1] - origin[1]) / voxel_size).astype(int), 0, optical_arr.shape[1] - 1)
-        k = np.clip(np.floor((x[2] - origin[2]) / voxel_size).astype(int), 0, optical_arr.shape[2] - 1)
-        
-        return np.log(optical_arr[i, j, k])
-
-    # Interpolate values
-    # start_time = MPI.Wtime()
-    m_true.interpolate(interpolate_function)
-    # end_time = MPI.Wtime()
-    # print(f'Time to interpolate optical properties over submesh = {end_time - start_time} seconds.')
+    m_true.interpolate(
+        lambda x: np.log(2 + 7 * (((x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2) ** 0.5 > 0.2))
+    )
     m_true.x.scatter_forward()
 
     m_true = m_true.x
-    u_true = pde.generate_state()        
+    u_true = pde.generate_state()
     x_true = [u_true, m_true, None]
-    
-    # writing out m_true, u_0 and u_true:
-    m_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER])    
-    with dlx.io.XDMFFile(msh.comm, "PACT_3D_problem_m_true{0:d}.xdmf".format(nproc),"w") as file:
-        file.write_mesh(msh)
-        file.write_function(m_fun, 0)
-
-    u0_vec = u0.x
-    V_P1 = dlx.fem.functionspace(msh, ("Lagrange", 1))
-    u0_fun = dlx.fem.Function(V_P1, name="u0_map")
-    u0_fun.interpolate(hpx.vector2Function(u0_vec, Vh[hpx.STATE]))
-    u0_fun.x.scatter_forward()
-    
-    with dlx.io.XDMFFile(msh.comm,"PACT_3D_problem_u0{0:d}.xdmf".format(nproc),"w",) as file:
-        file.write_mesh(msh)
-        file.write_function(u0_fun, 0)
-
-    #******************************************
-        
     pde.solveFwd(u_true, x_true)
-    
-    # # # writing out u_true:
-    
-    u_true_fun = dlx.fem.Function(V_P1, name="u_true_map")
-    u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
-    u_true_fun.x.scatter_forward()
-    
-    with dlx.io.XDMFFile(msh.comm, "PACT_3D_problem_u_true{0:d}.xdmf".format(nproc),"w",) as file:
-        file.write_mesh(msh)
-        file.write_function(u_true_fun, 0)
-    
-    # xfun = [dlx.fem.Function(Vhi) for Vhi in Vh]
+
     # # LIKELIHOOD
-    # hpx.updateFromVector(xfun[hpx.STATE], u_true)
-    # u_fun_true = xfun[hpx.STATE]
-    # hpx.updateFromVector(xfun[hpx.PARAMETER], m_true)
-    # m_fun_true = xfun[hpx.PARAMETER]
+    d = dlx.fem.Function(Vh[hpx.STATE])
+    d.x.array[:] = u_true.array[:]
+    hpx.parRandom.normal_perturb(np.sqrt(noise_variance), d.x)
+    d.x.scatter_forward()
+    misfit_form = PoissonMisfitForm(d, noise_variance)
+    misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form, [bc0])
+    prior_mean = dlx.fem.Function(Vh_m)
+    prior_mean.x.array[:] = np.log(2)
+    prior_mean = prior_mean.x
 
-    # d = dlx.fem.Function(Vh[hpx.STATE])
-    # expr = u_fun_true * ufl.exp(m_fun_true)
-    # hpx.projection(expr, d)
-    # hpx.parRandom.normal_perturb(np.sqrt(noise_variance), d.x)
-    # d.x.scatter_forward()
-    # misfit_form = PACTMisfitForm(d, noise_variance)
-    # misfit = hpx.NonGaussianContinuousMisfit(Vh, misfit_form)
-    # prior_mean = dlx.fem.Function(Vh_m)
-    # prior_mean.x.array[:] = np.log(0.01)
-    # prior_mean = prior_mean.x
+    prior = hpx.BiLaplacianPrior(
+        Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean
+    )
+    model = hpx.Model(pde, prior, misfit)
 
-    # prior = hpx.BiLaplacianPrior(
-    #     Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean
-    # )
+    noise = prior.generate_parameter("noise")
+    m0 = prior.generate_parameter(0)
+    hpx.parRandom.normal(1.0, noise)
+    prior.sample(noise, m0)
 
-    # model = hpx.Model(pde, prior, misfit)
-    # noise = prior.generate_parameter("noise")
-    # m0 = prior.generate_parameter(0)
-    # hpx.parRandom.normal(1.0, noise)
-    # prior.sample(noise, m0)
+    data_misfit_True = hpx.modelVerify(
+        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
+    )
 
-    # data_misfit_True = hpx.modelVerify(
-    #     model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
-    # )
-
-    # data_misfit_False = hpx.modelVerify(
-    #     model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
-    # )
+    data_misfit_False = hpx.modelVerify(
+        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
+    )
 
     # # #######################################
 
-    # intial_guess_m = prior.generate_parameter(0)
-    # intial_guess_m.array[:] = prior_mean.array[:]
-    # x = [
-    #     model.generate_vector(hpx.STATE),
-    #     intial_guess_m,
-    #     model.generate_vector(hpx.ADJOINT),
-    # ]
-    # if rank == 0:
-    #     print(sep, "Find the MAP point", sep)
+    initial_guess_m = prior.generate_parameter(0)
+    initial_guess_m.array[:] = prior_mean.array[:]
 
-    # parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
-    # parameters["rel_tolerance"] = 1e-6
-    # parameters["abs_tolerance"] = 1e-9
-    # parameters["max_iter"] = 500
-    # parameters["cg_coarse_tolerance"] = 5e-1
-    # parameters["globalization"] = "LS"
-    # parameters["GN_iter"] = 20
-    # if rank != 0:
-    #     parameters["print_level"] = -1
+    x = [
+        model.generate_vector(hpx.STATE),
+        initial_guess_m,
+        model.generate_vector(hpx.ADJOINT),
+    ]
+    if rank == 0:
+        print(sep, "Find the MAP point", sep)
 
-    # solver = hpx.ReducedSpaceNewtonCG(model, parameters)
+    parameters = hpx.ReducedSpaceNewtonCG_ParameterList()
+    parameters["rel_tolerance"] = 1e-6
+    parameters["abs_tolerance"] = 1e-9
+    parameters["max_iter"] = 500
+    parameters["cg_coarse_tolerance"] = 5e-1
+    parameters["globalization"] = "LS"
+    parameters["GN_iter"] = 20
+    if rank != 0:
+        parameters["print_level"] = -1
 
-    # x = solver.solve(x)
+    solver = hpx.ReducedSpaceNewtonCG(model, parameters)
 
-    # if solver.converged:
-    #     hpx.master_print(comm, "\nConverged in ", solver.it, " iterations.")
-    # else:
-    #     hpx.master_print(comm, "\nNot Converged")
-    # hpx.master_print(
-    #     comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    # )
-    # hpx.master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
-    # hpx.master_print(comm, "Final cost: ", solver.final_cost)
+    x = solver.solve(x)
 
-    # m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
-    # m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
+    if solver.converged:
+        hpx.master_print(comm, "\nConverged in ", solver.it, " iterations.")
+    else:
+        hpx.master_print(comm, "\nNot Converged")
 
-    # V_P1 = dlx.fem.functionspace(msh, ("Lagrange", 1))
+    hpx.master_print(
+        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
+    )
+    hpx.master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
+    hpx.master_print(comm, "Final cost: ", solver.final_cost)
 
-    # u_true_fun = dlx.fem.Function(V_P1, name="u_true")
-    # u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
-    # u_true_fun.x.scatter_forward()
+    m_fun = hpx.vector2Function(x[hpx.PARAMETER], Vh[hpx.PARAMETER], name="m_map")
+    m_true_fun = hpx.vector2Function(m_true, Vh[hpx.PARAMETER], name="m_true")
 
-    # u_map_fun = dlx.fem.Function(V_P1, name="u_map")
-    # u_map_fun.interpolate(hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE]))
-    # u_map_fun.x.scatter_forward()
+    V_P1 = dlx.fem.functionspace(msh, ("Lagrange", 1))
 
-    # d_fun = dlx.fem.Function(V_P1, name="data")
-    # d_fun.interpolate(d)
-    # d_fun.x.scatter_forward()
+    u_true_fun = dlx.fem.Function(V_P1, name="u_true")
+    u_true_fun.interpolate(hpx.vector2Function(u_true, Vh[hpx.STATE]))
+    u_true_fun.x.scatter_forward()
 
-    # with dlx.io.VTXWriter(
-    #     msh.comm,
-    #     "qpact_BiLaplacian_prior_np{0:d}_Prior.bp".format(nproc),
-    #     [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
-    # ) as vtx:
-    #     vtx.write(0.0)
+    u_map_fun = dlx.fem.Function(V_P1, name="u_map")
+    u_map_fun.interpolate(hpx.vector2Function(x[hpx.STATE], Vh[hpx.STATE]))
+    u_map_fun.x.scatter_forward()
 
-    # optimizer_results = {}
-    # if (
-    #     solver.termination_reasons[solver.reason]
-    #     == "Norm of the gradient less than tolerance"
-    # ):
-    #     optimizer_results["optimizer"] = True
-    # else:
-    #     optimizer_results["optimizer"] = False
+    d_fun = dlx.fem.Function(V_P1, name="data")
+    d_fun.interpolate(d)
+    d_fun.x.scatter_forward()
 
-    # Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
+    with dlx.io.VTXWriter(
+        msh.comm,
+        "poisson_Dirichlet_BiLaplacian_prior_np{0:d}.bp".format(nproc),
+        [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
+    ) as vtx:
+        vtx.write(0.0)
 
-    # k = 80
-    # p = 20
-    # if rank == 0:
-    #     print(
-    #         "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-    #             k, p
-    #         )
-    #     )
+    optimizer_results = {}
+    if (
+        solver.termination_reasons[solver.reason]
+        == "Norm of the gradient less than tolerance"
+    ):
+        optimizer_results["optimizer"] = True
+    else:
+        optimizer_results["optimizer"] = False
 
-    # Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
+    Hmisfit = hpx.ReducedHessian(model, misfit_only=True)
 
-    # hpx.parRandom.normal(1.0, Omega)
+    k = 80
+    p = 20
+    if rank == 0:
+        print(
+            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
+                k, p
+            )
+        )
 
-    # d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
+    Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 
-    # # generating prior and posterior samples
-    # lap_aprx = hpx.LaplaceApproximator(prior, d, U)
-    # lap_aprx.mean = prior.generate_parameter(0)
-    # lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
+    hpx.parRandom.normal(1.0, Omega)
 
-    # noise = prior.generate_parameter("noise")
+    d, U = hpx.doublePassG(Hmisfit.mat, prior.R, prior.Rsolver, Omega, k, s=1)
 
-    # num_samples_generate = 5
-    # use_vtx = False
-    # prior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="prior_sample")
-    # posterior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="posterior_sample")
-    # if use_vtx:
-    #     with dlx.io.VTXWriter(
-    #         msh.comm,
-    #         "pact_prior_Bilaplacian_samples_np{0:d}.bp".format(nproc),
-    #         [prior_sample, posterior_sample],
-    #     ) as vtx:
-    #         for i in range(num_samples_generate):
-    #             hpx.parRandom.normal(1.0, noise)
-    #             lap_aprx.sample(noise, prior_sample.x, posterior_sample.x)
-    #             prior_sample.x.scatter_forward()
-    #             posterior_sample.x.scatter_forward()
-    #             vtx.write(float(i))
-    # else:
-    #     ############################################
-    #     with dlx.io.XDMFFile(
-    #         msh.comm,
-    #         "pact_prior_Bilaplacian_samples_np{0:d}.xdmf".format(nproc),
-    #         "w",
-    #     ) as file:
-    #         file.write_mesh(msh)
-    #         for i in range(num_samples_generate):
-    #             hpx.parRandom.normal(1.0, noise)
-    #             lap_aprx.sample(noise, prior_sample.x, posterior_sample.x)
-    #             prior_sample.x.scatter_forward()
-    #             posterior_sample.x.scatter_forward()
-    #             file.write_function(prior_sample, float(i))
-    #             file.write_function(posterior_sample, float(i))
+    # generating prior and posterior samples
+    lap_aprx = hpx.LaplaceApproximator(prior, d, U)
+    lap_aprx.mean = prior.generate_parameter(0)
+    lap_aprx.mean.array[:] = x[hpx.PARAMETER].array[:]
 
-    # eigen_decomposition_results = {"A": Hmisfit, "B": prior, "k": k, "d": d, "U": U}
+    noise = prior.generate_parameter("noise")
 
-    # final_results = {
-    #     "data_misfit_True": data_misfit_True,
-    #     "data_misfit_False": data_misfit_False,
-    #     "optimizer_results": optimizer_results,
-    #     "eigen_decomposition_results": eigen_decomposition_results,
-    # }
+    num_samples_generate = 5
+    use_vtx = False
+    prior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="prior_sample")
+    posterior_sample = dlx.fem.Function(Vh[hpx.PARAMETER], name="posterior_sample")
+    if use_vtx:
+        with dlx.io.VTXWriter(
+            msh.comm,
+            "poisson_Dirichlet_prior_Bilaplacian_samples_np{0:d}.bp".format(nproc),
+            [prior_sample, posterior_sample],
+        ) as vtx:
+            for i in range(num_samples_generate):
+                hpx.parRandom.normal(1.0, noise)
+                lap_aprx.sample(noise, prior_sample.x, posterior_sample.x)
+                prior_sample.x.scatter_forward()
+                posterior_sample.x.scatter_forward()
+                vtx.write(float(i))
+    else:
+        ############################################
+        with dlx.io.XDMFFile(
+            msh.comm,
+            "poisson_Dirichlet_prior_Bilaplacian_samples_np{0:d}.xdmf".format(nproc),
+            "w",
+        ) as file:
+            file.write_mesh(msh)
+            for i in range(num_samples_generate):
+                hpx.parRandom.normal(1.0, noise)
+                lap_aprx.sample(noise, prior_sample.x, posterior_sample.x)
+                prior_sample.x.scatter_forward()
+                posterior_sample.x.scatter_forward()
+                file.write_function(prior_sample, float(i))
+                file.write_function(posterior_sample, float(i))
 
-    # return final_results
-    ######################################
+    eigen_decomposition_results = {"A": Hmisfit, "B": prior, "k": k, "d": d, "U": U}
+
+    final_results = {
+        "data_misfit_True": data_misfit_True,
+        "data_misfit_False": data_misfit_False,
+        "optimizer_results": optimizer_results,
+        "eigen_decomposition_results": eigen_decomposition_results,
+    }
+
+    return final_results
 
 
 if __name__ == "__main__":
     nx = 64
     ny = 64
-    noise_variance = 1e-6
-    prior_param = {"gamma": 0.040, "delta": 0.8}
-    # mesh_filename = "./meshes/circle.xdmf"
-    mesh_filename = 'meshes/submesh_3d_problem.xdmf'
-    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
-    # k, d = (
-    #     final_results["eigen_decomposition_results"]["k"],
-    #     final_results["eigen_decomposition_results"]["d"],
-    # )
-    # comm = MPI.COMM_WORLD
-    # if comm.rank == 0:
-    #     plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
-    #     plt.figure()
-    #     plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
-    #     plt.yscale("log")
-    #     plt.savefig("qpact_Eigen_Decomposition_results.png")
+    noise_variance = 1e-4
+    prior_param = {"gamma": 0.03, "delta": 0.3}
+    final_results = run_inversion(nx, ny, noise_variance, prior_param)
+    k, d = (
+        final_results["eigen_decomposition_results"]["k"],
+        final_results["eigen_decomposition_results"]["d"],
+    )
+    comm = MPI.COMM_WORLD
+    if comm.rank == 0:
+        plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
+        plt.figure()
+        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.yscale("log")
+        plt.savefig("poisson_Eigen_Decomposition_results.png")
