@@ -1,6 +1,7 @@
 import h5py
 import numpy as np
-from scipy.ndimage import zoom
+# from scipy.ndimage import zoom
+import skimage.measure
 import dolfinx as dlx
 from mpi4py import MPI
 
@@ -18,14 +19,15 @@ def downsample_labels(factor:float, labels_file: str, downsampled_label_file: st
         voxel_size = f['voxel_size'][:]
 
     #read in original center and voxel sizes
-    scale = 1/factor
+    # scale = 1/factor
     i_range = np.max(data, axis=(1, 2)) > 0
     j_range = np.max(data, axis=(0, 2)) > 0
     k_range = np.max(data, axis=(0, 1)) > 0
     tight_label = data[i_range, :, :]
     tight_label = tight_label[:, j_range, :]
     tight_label = tight_label[:, :, k_range]    
-    reduced_labels = zoom(tight_label,(scale ,scale,scale), order=0)
+    # reduced_labels = zoom(tight_label,(scale ,scale,scale), order=0)
+    reduced_labels = skimage.measure.block_reduce(tight_label,(factor,factor,factor),np.max)
 
     # first non-zero value in i, j, k_range:
     i_offset = np.where(i_range == True)[0][0]
@@ -123,8 +125,9 @@ def downsample_optical_properties(downsampled_label_file, opt_file, downsampled_
   tight_opt_array = tight_opt_array[:,j_range,:]
   tight_opt_array = tight_opt_array[:,:,k_range]
 
-  scale = 1/factor
-  reduced_opt_array  = zoom(tight_opt_array,(scale ,scale,scale), order=0)
+  # scale = 1/factor
+  # reduced_opt_array  = zoom(tight_opt_array,(scale ,scale,scale), order=0)
+  reduced_opt_array = skimage.measure.block_reduce(tight_opt_array,(factor,factor,factor),np.max)
 
   with h5py.File(f'{downsampled_optical_file}', 'w') as h5f:
     h5f.create_dataset('reduced_opt_array', data=reduced_opt_array)

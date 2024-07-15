@@ -4,9 +4,9 @@
 
 from utils import downsample_labels, downsample_optical_properties
 from mpi4py import MPI
-factor = 2
-labels_file =  'A40210923l_label.mat'
-optical_props_file = 'A40210923l_opt.mat'
+factor = 4
+labels_file =  'example/3d_problem/A40210923l_label.mat'
+optical_props_file = 'example/3d_problem/A40210923l_opt.mat'
 
 #file to write the downsampled label array to
 downsample_label_file = 'downsample_labels.h5' 
@@ -27,7 +27,6 @@ start_time = MPI.Wtime()
 downsample_optical_properties(downsample_label_file, optical_props_file, downsample_optical_file)
 end_time = MPI.Wtime()
 print(f'Time to create reduced optical properties = {end_time - start_time} seconds.')
-
 
 
 
