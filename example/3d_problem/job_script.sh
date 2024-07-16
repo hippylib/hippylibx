@@ -25,9 +25,9 @@
 #SBATCH -o PACT_3D_problem.o%j       # Name of stdout output file
 #SBATCH -e PACT_3D_problem.e%j       # Name of stderr error file
 #SBATCH -p development         # Queue (partition) name
-#SBATCH -N 2               # Total # of nodes (must be 1 for serial)
-#SBATCH -n 12               # Total # of mpi tasks (should be 1 for serial)
-#SBATCH -t 00:10:00        # Run time (hh:mm:ss)
+#SBATCH -N 1               # Total # of nodes (must be 1 for serial)
+#SBATCH -n 16               # Total # of mpi tasks (should be 1 for serial)
+#SBATCH -t 02:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A CDA23008       # Project/Allocation name (req'd if you have more than 1)
 #SBATCH --mail-user=venu22@tacc.utexas.edu
@@ -37,6 +37,7 @@ pwd
 date
 
 # Launch code...
-cd /work/09052/venurang/ls6/PACT_study/hippylibx/example
+cd /work/09052/venurang/ls6/PACT_study/hippylibx/
 module load tacc-apptainer
-ibrun apptainer exec main_image_latest.sif python3 -u 3d_problem_interpolate.py
+module load mvapich2
+ibrun apptainer run example/main_image_latest.sif python3 -u example/3d_problem_interpolate.py
