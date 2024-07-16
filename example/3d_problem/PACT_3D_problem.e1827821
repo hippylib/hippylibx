@@ -1,0 +1,1093 @@
+
+Lmod is automatically replacing "impi/19.0.9" with "mvapich2/2.3.7".
+
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: [unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: [unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: [unset]: send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: [unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: [unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: [unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get_maxes
+got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+send to fd=5 pmi: cmd=get_maxes
+send to fd=5 pmi: cmd=init pmi_version=1 pmi_subversion=1
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: [unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: [unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+send to fd=5 pmi: cmd=get_appnum
+[unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: send to fd=5 pmi: cmd=get_appnum
+[unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+send to fd=5 pmi: cmd=get_appnum
+[unset]: send to fd=5 pmi: cmd=get_appnum
+[unset]: send to fd=5 pmi: cmd=get_appnum
+[unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: [unset]: send to fd=5 pmi: cmd=get_appnum
+send to fd=5 pmi: cmd=get_appnum
+[unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: [unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+got pmi response: cmd=response_to_init pmi_version=1 pmi_subversion=1 rc=0
+[unset]: [unset]: send to fd=5 pmi: cmd=get_maxes
+[unset]: got pmi response: cmd=appnum appnum=0
+send to fd=5 pmi: cmd=get_maxes
+[unset]: send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: [unset]: [unset]: got pmi response: cmd=appnum appnum=0
+send to fd=5 pmi: cmd=get_my_kvsname
+got pmi response: cmd=appnum appnum=0
+[unset]: [unset]: send to fd=5 pmi: cmd=get_my_kvsname
+send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: send to fd=5 pmi: cmd=get_appnum
+[unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+send to fd=5 pmi: cmd=get_appnum
+[unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+send to fd=5 pmi: cmd=get_appnum
+[unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: send to fd=5 pmi: cmd=get_appnum
+send to fd=5 pmi: cmd=get_appnum
+[unset]: [unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+send to fd=5 pmi: cmd=get_appnum
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: [unset]: got pmi response: cmd=appnum appnum=0
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: [unset]: send to fd=5 pmi: cmd=get_my_kvsname
+send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: [unset]: got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+send to fd=5 pmi: cmd=get_appnum
+[unset]: send to fd=5 pmi: cmd=get_appnum
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10] value=c305-005.ls6.tacc.utexas.edu
+[unset]: ERROR: PMI_KVS_Get (469)
+ERROR: PMI_KVS_Get (469)
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1] value=c305-005.ls6.tacc.utexas.edu
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14] value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8] value=c305-005.ls6.tacc.utexas.edu
+ERROR: PMI_KVS_Get (469)
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3] value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=appnum appnum=0
+[unset]: send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: [unset]: got pmi response: cmd=appnum appnum=0
+[unset]: send to fd=5 pmi: cmd=get_my_kvsname
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15] value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get_my_kvsname
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2] value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=appnum appnum=0
+[unset]: got pmi response: cmd=put_result rc=0
+got pmi response: cmd=maxes kvsname_max=64 keylen_max=64 vallen_max=128
+[unset]: [unset]: send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: send to fd=5 pmi: cmd=barrier_in
+got pmi response: cmd=put_result rc=0
+[unset]: [unset]: got pmi response: cmd=put_result rc=0
+[unset]: got pmi response: cmd=put_result rc=0
+send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: send to fd=5 pmi: cmd=barrier_in
+send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: got pmi response: cmd=appnum appnum=0
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+got pmi response: cmd=appnum appnum=0
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: [unset]: send to fd=5 pmi: cmd=get_my_kvsname
+send to fd=5 pmi: cmd=get_my_kvsname
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6] value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get_appnum
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: [unset]: [unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+send to fd=5 pmi: cmd=barrier_in
+send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12] value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: [unset]: got pmi response: cmd=appnum appnum=0
+[unset]: got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get_my_kvsname
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+got pmi response: cmd=get_result rc=1 value=NOTFOUND
+ERROR: PMI_KVS_Get (469)
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5] value=c305-005.ls6.tacc.utexas.edu
+ERROR: PMI_KVS_Get (469)
+[unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4] value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11] value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0] value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: [unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13] value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=my_kvsname kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: got pmi response: cmd=put_result rc=0
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7] value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_process_mapping
+got pmi response: cmd=put_result rc=0
+send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: [unset]: send to fd=5 pmi: cmd=barrier_in
+send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9] value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: [unset]: got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: [unset]: got pmi response: cmd=barrier_out
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: [unset]: got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[0]
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[1]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[2]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[3]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[4]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[5]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[7]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[6]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[8]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[9]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[10]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[11]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[12]
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[13]
+got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[14]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=hostname[15]
+[unset]: got pmi response: cmd=get_result rc=0 value=c305-005.ls6.tacc.utexas.edu
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+ERROR: PMI_KVS_Get (469)
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: [unset]: ERROR: PMI_KVS_Get (469)
+ERROR: PMI_KVS_Get (469)
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=PMI_hwloc_xmlfile
+[unset]: got pmi response: cmd=get_result rc=1 value=NOTFOUND
+[unset]: ERROR: server responded with rc=1 - (null)
+ in PMIU_cmd_get_response (981)
+[unset]: ERROR: PMI_KVS_Get (469)
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: [unset]: got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: send to fd=5 pmi: cmd=barrier_in
+send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+got pmi response: cmd=barrier_out
+[unset]: [unset]: got pmi response: cmd=barrier_out
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=barrier_out
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-bcast-1-0
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: [unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: got pmi response: cmd=get_result rc=0 value=2F6465762F73686D2F6D706963685F736861725F746D705641724F525100
+[unset]: [unset]: [unset]: [unset]: [unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-1 value=0200904FC0A829650000000000000000
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-11 value=0200AC91C0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-14 value=02008497C0A829650000000000000000
+[unset]: [unset]: [unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-2 value=0200AC13C0A829650000000000000000
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-9 value=02009C1FC0A829650000000000000000
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-6 value=02008989C0A829650000000000000000
+[unset]: [unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-15 value=02009843C0A829650000000000000000
+[unset]: send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-10 value=020083B7C0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-0 value=020093FFC0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-7 value=0200AD8BC0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-8 value=0200ABABC0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-12 value=0200A071C0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-4 value=0200B367C0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-5 value=02008707C0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-3 value=02009725C0A829650000000000000000
+send to fd=5 pmi: cmd=put kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-13 value=0200ACF3C0A829650000000000000000
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: [unset]: got pmi response: cmd=put_result rc=0
+send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: [unset]: send to fd=5 pmi: cmd=barrier_in
+got pmi response: cmd=put_result rc=0
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: [unset]: send to fd=5 pmi: cmd=barrier_in
+send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: got pmi response: cmd=put_result rc=0
+got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: [unset]: got pmi response: cmd=put_result rc=0
+send to fd=5 pmi: cmd=barrier_in
+[unset]: [unset]: got pmi response: cmd=put_result rc=0
+send to fd=5 pmi: cmd=barrier_in
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=put_result rc=0
+[unset]: send to fd=5 pmi: cmd=barrier_in
+[unset]: got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: got pmi response: cmd=barrier_out
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-10
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-14
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-3
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: got pmi response: cmd=barrier_out
+got pmi response: cmd=barrier_out
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-15
+got pmi response: cmd=barrier_out
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-1
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-2
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-8
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-13
+got pmi response: cmd=barrier_out
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-12
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-6
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-11
+got pmi response: cmd=barrier_out
+[unset]: got pmi response: cmd=barrier_out
+[unset]: [unset]: [unset]: got pmi response: cmd=barrier_out
+send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-9
+got pmi response: cmd=barrier_out
+[unset]: [unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-4
+[unset]: got pmi response: cmd=get_result rc=0 value=020083B7C0A829650000000000000000
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-0
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-7
+got pmi response: cmd=get_result rc=0 value=02008497C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=02009725C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200904FC0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200ABABC0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=02009843C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200AC13C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200AC91C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=02008989C0A829650000000000000000
+[unset]: got pmi response: cmd=barrier_out
+[unset]: send to fd=5 pmi: cmd=get kvsname=kvs_351_c305-005.ls6.tacc.utexas.edu_1928065_0 key=-allgather-shm-1-5
+[unset]: got pmi response: cmd=get_result rc=0 value=02008707C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200A071C0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200AD8BC0A829650000000000000000
+[unset]: got pmi response: cmd=get_result rc=0 value=0200B367C0A829650000000000000000
+[unset]: [unset]: [unset]: got pmi response: cmd=get_result rc=0 value=0200ACF3C0A829650000000000000000
+got pmi response: cmd=get_result rc=0 value=02009C1FC0A829650000000000000000
+got pmi response: cmd=get_result rc=0 value=020093FFC0A829650000000000000000
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 369, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 216, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 71, in modelVerify
+    model.solveFwd(x_plus[STATE], x_plus)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 369, in <module>
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 216, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 71, in modelVerify
+    model.solveFwd(x_plus[STATE], x_plus)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 369, in <module>
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 216, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 71, in modelVerify
+    model.solveFwd(x_plus[STATE], x_plus)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 369, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 216, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 71, in modelVerify
+    model.solveFwd(x_plus[STATE], x_plus)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+        A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)  File "/usr/lib/python3.10/functools.py", line 889, in wrapper
+
+
+  File "/usr/lib/python3.10/functools.py", line 889, in wrapper
+  File "/usr/lib/python3.10/functools.py", line 889, in wrapper
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/usr/lib/python3.10/functools.py", line 889, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python3.10/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+      File "/usr/local/dolfinx-real/lib/python3.10/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python3.10/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python3.10/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+RuntimeError: Failed to successfully call PETSc function 'MatXIJSetPreallocation'. PETSc error code is: 55, Out of memory
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+RuntimeError: Failed to successfully call PETSc function 'MatXIJSetPreallocation'. PETSc error code is: 55, Out of memory
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+RuntimeError: Failed to successfully call PETSc function 'MatXIJSetPreallocation'. PETSc error code is: 55, Out of memory
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+RuntimeError: Failed to successfully call PETSc function 'MatXIJSetPreallocation'. PETSc error code is: 55, Out of memory
+slurmstepd: error: *** JOB 1827821 ON c305-005 CANCELLED AT 2024-07-15T19:15:02 DUE TO TIME LIMIT ***
+[c305-005.ls6.tacc.utexas.edu:mpirun_rsh][signal_processor] Caught signal 15, killing job
