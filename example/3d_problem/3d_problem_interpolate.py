@@ -19,6 +19,7 @@ from matplotlib import pyplot as plt
 from typing import Dict
 import h5py
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
+
 import hippylibX as hpx
 
 
@@ -100,7 +101,7 @@ def run_inversion(
     u0.interpolate(lambda x: np.abs(x[0] - 0.375) > 1e-6)
     u0.x.scatter_forward()
  
-    D = 1.0 / 24.0
+    D = 10.0 / 24.0
     pde_handler = DiffusionApproximation(D, u0)
 
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [], is_fwd_linear=True)
@@ -119,7 +120,7 @@ def run_inversion(
         pde.solver = pde._createLUSolver()
         pde.solver.setTolerances(rtol=1e-9)
 
-    print(pde.solver.view())
+    # print(pde.solver.view())
 
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)
@@ -363,7 +364,8 @@ if __name__ == "__main__":
     nx = 64
     ny = 64
     noise_variance = 1e-6
-    prior_param = {"gamma": 0.040, "delta": 0.8}
+    # prior_param = {"gamma": 0.040, "delta": 0.8}
+    prior_param = {"gamma": 0.40, "delta": 0.8}
     # mesh_filename = "./meshes/circle.xdmf"
     mesh_filename = 'example/meshes/submesh_3d_problem.xdmf'
     final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
