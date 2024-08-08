@@ -21,12 +21,12 @@
 #       followed by "module help launcher".
 #----------------------------------------------------
 
-#SBATCH -J PACT_3D_problem           # Job name
-#SBATCH -o PACT_3D_problem.o%j       # Name of stdout output file
-#SBATCH -e PACT_3D_problem.e%j       # Name of stderr error file
+#SBATCH -J PACT_3D_problem_factor_8           # Job name
+#SBATCH -o PACT_3D_problem_factor_8.o%j       # Name of stdout output file
+#SBATCH -e PACT_3D_problem_factor_8.e%j       # Name of stderr error file
 #SBATCH -p development         # Queue (partition) name
-#SBATCH -N 1               # Total # of nodes (must be 1 for serial)
-#SBATCH -n 16               # Total # of mpi tasks (should be 1 for serial)
+#SBATCH -N 4               # Total # of nodes (must be 1 for serial)
+#SBATCH -n 128               # Total # of mpi tasks (should be 1 for serial)
 #SBATCH -t 02:00:00        # Run time (hh:mm:ss)
 #SBATCH --mail-type=all    # Send email at begin and end of job
 #SBATCH -A CDA23008       # Project/Allocation name (req'd if you have more than 1)
@@ -38,6 +38,6 @@ date
 
 # Launch code...
 cd /work/09052/venurang/ls6/PACT_study/hippylibx/
-module load tacc-apptainer
-module load mvapich2
-ibrun apptainer run example/main_image_latest.sif python3 -u example/3d_problem_interpolate.py
+module load tacc-apptainer/1.1.8
+module load mvapich2/2.3.7
+MV2_SMP_USE_CMA=0 MV2_USE_ALIGNED_ALLOC=1 ibrun apptainer run $SCRATCH/revised_dolfinx_image_tacc_v3.sif python -u example/3d_problem_interpolate.py
