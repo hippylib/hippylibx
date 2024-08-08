@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-# qpact problem with BiLaplacian Prior.
+# qpact 3d problem with BiLaplacian Prior.
 import ufl
 import dolfinx as dlx
 from mpi4py import MPI
@@ -15,7 +15,7 @@ import numpy as np
 import sys
 import os
 import dolfinx.fem.petsc
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 from typing import Dict
 import h5py
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
@@ -97,11 +97,12 @@ def run_inversion(
  
     u0 = dlx.fem.Function(Vh[hpx.STATE])
     u0.x.array[:] = 0.
-    # u0.interpolate(lambda x: np.abs(x[0] + 0.375) > 1e-6)
-    u0.interpolate(lambda x: np.abs(x[0] - 0.375) > 1e-6)
+    u0.interpolate(lambda x: np.abs(x[0] - 0.375) > 1e-6) #for factor 4, 8
+    # u0.interpolate(lambda x: np.abs(x[0] - 0.125) > 1e-6) #for factor 2 
     u0.x.scatter_forward()
  
     D = 10.0 / 24.0
+    # D = 1./240.   
     pde_handler = DiffusionApproximation(D, u0)
 
     pde = hpx.PDEVariationalProblem(Vh, pde_handler, [], [], is_fwd_linear=True)
@@ -113,7 +114,7 @@ def run_inversion(
         "ksp_max_it": "1000",
         "ksp_error_if_not_converged": "true",
         "ksp_initial_guess_nonzero": "false",
-        "pc_hypre_type": "boomeramg",
+        "pc_hypre_type": "boomeramg"
     }
     
     if pde.solver is None:
@@ -365,8 +366,7 @@ if __name__ == "__main__":
     ny = 64
     noise_variance = 1e-6
     # prior_param = {"gamma": 0.040, "delta": 0.8}
-    prior_param = {"gamma": 0.40, "delta": 0.8}
-    # mesh_filename = "./meshes/circle.xdmf"
+    prior_param = {"gamma": 0.4, "delta": 0.8}
     mesh_filename = 'example/meshes/submesh_3d_problem.xdmf'
     final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
     k, d = (
