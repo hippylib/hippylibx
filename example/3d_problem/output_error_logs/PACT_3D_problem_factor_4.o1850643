@@ -1,0 +1,20 @@
+/work/09052/venurang/ls6/PACT_study/hippylibx
+Fri Jul 26 01:51:18 CDT 2024
+TACC:  Starting up job 1850643 
+TACC:  Setting up parallel environment for MVAPICH2+mpispawn. 
+TACC:  Starting parallel tasks... 
+
+################################################################################
+ Set up the mesh and finite element spaces 
+################################################################################
+
+Number of dofs: STATE=15649711, PARAMETER=1986696
+(yy, H xx) - (xx, H yy) =  8.377595965480572e-16
+(yy, H xx) - (xx, H yy) =  -5.733094854478429e-14
+
+################################################################################
+ Find the MAP point 
+################################################################################
+
+TACC:  MPI job exited with code: 1 
+TACC:  Shutdown complete. Exiting. 

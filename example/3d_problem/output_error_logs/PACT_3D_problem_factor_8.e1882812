@@ -1,0 +1,2533 @@
+
+Lmod is automatically replacing "impi/19.0.9" with "mvapich2/2.3.7".
+
+WARNING: Error in initializing MVAPICH2 ptmalloc library.Continuing without InfiniBand registration cache support.
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+            final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+            final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)x = solver.solve(x)    
+
+x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    x = solver.solve(x)
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+x = solver.solve(x)        x = solver.solve(x)
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)        x = solver.solve(x)
+
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+x = solver.solve(x)    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)x = solver.solve(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)x = solver.solve(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+            x = solver.solve(x)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+                return self._solve_ls(x)return self._solve_ls(x)return self._solve_ls(x)return self._solve_ls(x)
+    
+return self._solve_ls(x)    
+    
+        return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+            
+return self._solve_ls(x)return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+return self._solve_ls(x)    
+
+
+    
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+    return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    
+
+
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+        x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+return self._solve_ls(x)    
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+            x = solver.solve(x)    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)x = solver.solve(x)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)    x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)    x = solver.solve(x)
+
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    
+    x = solver.solve(x)x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+x = solver.solve(x)
+    x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)    
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)x = solver.solve(x)x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+    
+
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)    x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+            return self._solve_ls(x)return self._solve_ls(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+x = solver.solve(x)
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+            x = solver.solve(x)x = solver.solve(x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)x = solver.solve(x)
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+        return self._solve_ls(x)return self._solve_ls(x)return self._solve_ls(x)
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+        return self._solve_ls(x)        x = solver.solve(x)return self._solve_ls(x)return self._solve_ls(x)
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+            x = solver.solve(x)x = solver.solve(x)x = solver.solve(x)
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        return self._solve_ls(x)return self._solve_ls(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)x = solver.solve(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+            final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)x = solver.solve(x)
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        x = solver.solve(x)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)    
+
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+    x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+        x = solver.solve(x)x = solver.solve(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 250, in run_inversion
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+            self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+                    self.model.solveFwd(x_star[STATE], x_star)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    self.model.solveFwd(x_star[STATE], x_star)
+    self.model.solveFwd(x_star[STATE], x_star)                                        self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    
+
+    
+self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    self.model.solveFwd(x_star[STATE], x_star)
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+        
+self.model.solveFwd(x_star[STATE], x_star)    
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+        return self._solve_ls(x)return self._solve_ls(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)    
+return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+                    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+                        self.model.solveFwd(x_star[STATE], x_star)    
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)    
+self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+return self._solve_ls(x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+return self._solve_ls(x)return self._solve_ls(x)
+return self._solve_ls(x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)    return self._solve_ls(x)    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+return self._solve_ls(x)    return self._solve_ls(x)        return self._solve_ls(x)    
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+
+return self._solve_ls(x)
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+        x = solver.solve(x)
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)
+x = solver.solve(x)    
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    
+        x = solver.solve(x)x = solver.solve(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.model.solveFwd(x_star[STATE], x_star)
+    self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+        self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)
+    self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+            x = solver.solve(x)x = solver.solve(x)x = solver.solve(x)
+
+x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+                self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    x = solver.solve(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 172, in solve
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)return self._solve_ls(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+        self.problem.solveFwd(out, x)self.model.solveFwd(x_star[STATE], x_star)    
+    self.problem.solveFwd(out, x)
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+            return self._solve_ls(x)return self._solve_ls(x)return self._solve_ls(x)
+
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+        return self._solve_ls(x)return self._solve_ls(x)
+    
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)return self._solve_ls(x)
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    
+    return self._solve_ls(x)    return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)    
+return self._solve_ls(x)    
+return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)    
+    return self._solve_ls(x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    return self._solve_ls(x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/algorithms/NewtonCG.py", line 251, in _solve_ls
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+            self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)    self.model.solveFwd(x_star[STATE], x_star)        
+self.model.solveFwd(x_star[STATE], x_star)    
+self.model.solveFwd(x_star[STATE], x_star)
+        self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    
+            self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+        self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    
+    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    
+    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)    
+    
+
+        
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+            self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+    
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+self.model.solveFwd(x_star[STATE], x_star)
+self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.model.solveFwd(x_star[STATE], x_star)    
+self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)                    self.model.solveFwd(x_star[STATE], x_star)    self.model.solveFwd(x_star[STATE], x_star)    self.model.solveFwd(x_star[STATE], x_star)
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+            self.model.solveFwd(x_star[STATE], x_star)    
+        
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+          File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)            
+self.model.solveFwd(x_star[STATE], x_star)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+                    self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)        self.model.solveFwd(x_star[STATE], x_star)
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+
+
+
+self.model.solveFwd(x_star[STATE], x_star)self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.model.solveFwd(x_star[STATE], x_star)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+        self.problem.solveFwd(out, x)
+self.problem.solveFwd(out, x)    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+        self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+        self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+self.problem.solveFwd(out, x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+self.problem.solveFwd(out, x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)        
+self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)
+
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+petsc4py.PETScpetsc4py.PETSc..ErrorErrorpetsc4py.PETSc.Error: error code 91
+[  6] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  6] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  6] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  6] KSPSolve has not converged due to Nan or Inf norm: 
+error code 91
+[  4] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  4] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  4] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  4] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[  2] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  2] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  2] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  2] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    : error code 91
+[ 24] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 24] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 24] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 24] KSPSolve has not converged due to Nan or Inf norm
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)
+
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+        self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)    
+
+self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    
+self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+            self.solver.solve(b, state.petsc_vec)self.problem.solveFwd(out, x)self.solver.solve(b, state.petsc_vec)
+
+
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.solver.solve(b, state.petsc_vec)
+
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+petsc4py.PETScpetsc4py.PETSc.Error.Error: error code 91
+[ 53] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 53] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 53] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 53] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 38] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 38] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 38] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 38] KSPSolve has not converged due to Nan or Inf norm
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)
+    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)    
+self.problem.solveFwd(out, x)    
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    petsc4py.PETScpetsc4py.PETSc..ErrorError: error code 91
+[ 35] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 35] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 35] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 35] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 58] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 58] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 58] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 58] KSPSolve has not converged due to Nan or Inf norm
+
+self.problem.solveFwd(out, x)    self.problem.solveFwd(out, x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+    self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+        self.problem.solveFwd(out, x)
+self.problem.solveFwd(out, x)  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+        self.problem.solveFwd(out, x)self.problem.solveFwd(out, x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)    self.solver.solve(b, state.petsc_vec)
+
+
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)    
+self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)
+self.solver.solve(b, state.petsc_vec)
+
+
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)    
+self.solver.solve(b, state.petsc_vec)
+    self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+petsc4py.PETSc.Error: error code 91
+[ 98] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 98] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 98] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 98] KSPSolve has not converged due to Nan or Inf normpetsc4py.PETSc
+.Errorpetsc4py.PETSc.Error: petsc4py.PETScerror code 91
+[105] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[105] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[105] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[105] KSPSolve has not converged due to Nan or Inf norm.
+Error: error code 91
+[126] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[126] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[126] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[126] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[100] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[100] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[100] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[100] KSPSolve has not converged due to Nan or Inf norm
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 141, in solveFwd
+petsc4py.PETScpetsc4py.PETSc..ErrorError: error code 91
+[102] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[102] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[102] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[102] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[103] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[103] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[103] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[103] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[101] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[101] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[101] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[101] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[114] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[114] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[114] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[114] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 71] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 71] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 71] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 71] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[  7] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  7] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  7] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  7] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 12] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 12] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 12] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 12] KSPSolve has not converged due to Nan or Inf norm
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)
+
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)
+
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)    
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)
+
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)
+
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+    self.solver.solve(b, state.petsc_vec)    
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    
+
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+    
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+petsc4py.PETSc.Error: error code 91
+[115] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[115] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[115] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[115] KSPSolve has not converged due to Nan or Inf norm
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+petsc4py.PETSc.Error: error code 91
+[ 61] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 61] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 61] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 61] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 96] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 96] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 96] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 96] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 60] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 60] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 60] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 60] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 51] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 51] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 51] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 51] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 50] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 50] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 50] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 50] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 47] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 47] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 47] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 47] KSPSolve has not converged due to Nan or Inf norm
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+        self.solver.solve(b, state.petsc_vec)self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+
+
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+    self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+        self.solver.solve(b, state.petsc_vec)
+self.solver.solve(b, state.petsc_vec)    
+self.solver.solve(b, state.petsc_vec)  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+      File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+petsc4py.PETSc.Error: error code 91
+[ 55] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 55] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 55] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 55] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 42] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 42] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 42] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 42] KSPSolve has not converged due to Nan or Inf norm
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+: error code 91
+[ 59] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 59] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 59] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 59] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 36] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 36] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 36] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 36] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 33] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 33] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 33] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 33] KSPSolve has not converged due to Nan or Inf norm
+    self.solver.solve(b, state.petsc_vec)
+  File "petsc4py/PETSc/KSP.pyx", line 1774, in petsc4py.PETSc.KSP.solve
+petsc4py.PETSc.Errorpetsc4py.PETSc.Errorpetsc4py.PETSc: .error code 91
+[ 37] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 37] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 37] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 37] KSPSolve has not converged due to Nan or Inf normError
+: error code 91
+[ 40] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 40] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 40] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 40] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 46] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 46] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 46] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 46] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 45] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 45] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 45] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 45] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 34] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 34] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 34] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 34] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETScpetsc4py.PETSc..ErrorError: error code 91
+[ 39] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 39] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 39] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 39] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 43] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 43] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 43] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 43] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: petsc4py.PETScerror code 91
+[ 56] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 56] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 56] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 56] KSPSolve has not converged due to Nan or Inf norm
+.Error: error code 91
+[ 49] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 49] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 49] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 49] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 48] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 48] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 48] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 48] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETScpetsc4py.PETSc.Error.Errorpetsc4py.PETSc.Error: error code 91
+[ 54] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 54] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 54] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 54] KSPSolve has not converged due to Nan or Inf norm: 
+error code 91
+[ 41] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 41] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 41] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 41] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 62] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 62] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 62] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 62] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 63] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 63] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 63] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 63] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 32] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 32] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 32] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 32] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 52] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 52] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 52] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 52] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 57] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 57] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 57] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 57] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 44] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 44] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 44] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 44] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 64] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 64] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 64] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 64] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 25] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 25] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 25] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 25] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 67] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 67] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 67] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 67] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[110] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[110] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[110] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[110] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[108] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[108] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[108] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[108] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETScpetsc4py.PETSc..ErrorError: error code 91
+[127] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[127] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[127] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[127] KSPSolve has not converged due to Nan or Inf norm: 
+error code 91
+[122] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[122] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[122] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[122] KSPSolve has not converged due to Nan or Inf normpetsc4py.PETSc.Error: error code 91
+[ 94] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 94] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 94] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 94] KSPSolve has not converged due to Nan or Inf norm
+
+petsc4py.PETSc.Error: error code 91
+[124] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[124] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[124] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[124] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 79] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 79] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 79] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 79] KSPSolve has not converged due to Nan or Inf norm: 
+error code 91
+[ 82] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 82] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 82] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 82] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[113] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[113] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[113] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[113] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[123] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[123] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[123] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[123] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc: .Errorerror code 91
+[107] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[107] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[107] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[107] KSPSolve has not converged due to Nan or Inf normpetsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 84] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 84] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 84] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 84] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 83] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 83] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 83] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 83] KSPSolve has not converged due to Nan or Inf norm
+
+petsc4py.PETSc.Error: error code 91
+[116] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[116] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[116] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[116] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[111] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[111] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[111] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[111] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 20] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 20] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 20] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 20] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETScpetsc4py.PETSc..ErrorError: petsc4py.PETScerror code 91
+[118] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[118] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[118] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[118] KSPSolve has not converged due to Nan or Inf norm.
+Error: error code 91
+[109] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[109] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[109] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[109] KSPSolve has not converged due to Nan or Inf norm: error code 91
+[106] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[106] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[106] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[106] KSPSolve has not converged due to Nan or Inf norm
+
+: error code 91
+[121] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[121] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[121] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[121] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[120] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[120] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[120] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[120] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc: .Errorerror code 91
+[ 97] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 97] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 97] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 97] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 99] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 99] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 99] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 99] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[119] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[119] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[119] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[119] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[104] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[104] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[104] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[104] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: petsc4py.PETScerror code 91
+[125] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[125] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[125] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[125] KSPSolve has not converged due to Nan or Inf norm.
+Errorpetsc4py.PETSc.Error: : error code 91
+[112] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[112] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[112] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[112] KSPSolve has not converged due to Nan or Inf normerror code 91
+[117] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[117] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[117] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[117] KSPSolve has not converged due to Nan or Inf norm
+
+petsc4py.PETScpetsc4py.PETSc..ErrorError: error code 91
+[ 11] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 11] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 11] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 11] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 10] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 10] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 10] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 10] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 22] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 22] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 22] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 22] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 13] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 13] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 13] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 13] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 15] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 15] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 15] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 15] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[  9] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  9] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  9] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  9] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 14] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 14] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 14] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 14] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 27] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 27] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 27] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 27] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[  3] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  3] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  3] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  3] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 26] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 26] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 26] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 26] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 28] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 28] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 28] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 28] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 65] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 65] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 65] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 65] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 93] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 93] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 93] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 93] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Errorpetsc4py.PETSc: .error code 91
+[ 86] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 86] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 86] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 86] KSPSolve has not converged due to Nan or Inf normError: 
+error code 91
+[ 88] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 88] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 88] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 88] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 69] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 69] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 69] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 69] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 66] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 66] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 66] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 66] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 91] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 91] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 91] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 91] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Errorpetsc4py.PETSc: .error code 91
+[ 78] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 78] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 78] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 78] KSPSolve has not converged due to Nan or Inf normError
+: error code 91
+[ 92] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 92] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 92] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 92] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 80] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 80] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 80] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 80] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 89] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 89] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 89] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 89] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 77] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 77] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 77] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 77] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 76] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 76] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 76] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 76] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 95] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 95] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 95] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 95] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 70] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 70] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 70] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 70] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[  8] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  8] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  8] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  8] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 19] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 19] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 19] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 19] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 68] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 68] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 68] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 68] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 29] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 29] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 29] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 29] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 85] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 85] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 85] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 85] KSPSolve has not converged due to Nan or Inf norm: petsc4py.PETSc.Error: error code 91
+[ 23] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 23] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 23] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 23] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error
+error code 91
+[ 74] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 74] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 74] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 74] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETScpetsc4py.PETScpetsc4py.PETSc..Error.ErrorError: : : error code 91
+[ 87] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 87] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 87] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 87] KSPSolve has not converged due to Nan or Inf normerror code 91
+[ 81] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 81] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 81] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 81] KSPSolve has not converged due to Nan or Inf normerror code 91
+[ 73] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 73] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 73] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 73] KSPSolve has not converged due to Nan or Inf norm
+
+
+: error code 91
+[ 30] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 30] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 30] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 30] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 90] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 90] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 90] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 90] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[  5] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  5] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  5] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  5] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 75] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 75] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 75] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 75] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 72] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 72] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 72] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 72] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 17] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 17] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 17] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 17] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[ 31] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 31] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 31] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 31] KSPSolve has not converged due to Nan or Inf normpetsc4py.PETSc
+.Error: error code 91
+[ 21] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 21] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 21] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 21] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Errorpetsc4py.PETSc.Error: error code 91
+[ 18] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 18] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 18] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 18] KSPSolve has not converged due to Nan or Inf norm
+: error code 91
+[ 16] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[ 16] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[ 16] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[ 16] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[  0] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  0] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  0] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  0] KSPSolve has not converged due to Nan or Inf norm
+petsc4py.PETSc.Error: error code 91
+[  1] KSPSolve() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:1078
+[  1] KSPSolve_Private() at /usr/local/petsc/src/ksp/ksp/interface/itfunc.c:905
+[  1] KSPSolve_CG() at /usr/local/petsc/src/ksp/ksp/impls/cg/cg.c:163
+[  1] KSPSolve has not converged due to Nan or Inf norm
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 62, pid: 3562434) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 26, pid: 1571996) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 49, pid: 3562421) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 63, pid: 3562435) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 23, pid: 1571993) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 53, pid: 3562425) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 85, pid: 558548) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 22, pid: 1571992) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 17, pid: 1571987) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 24, pid: 1571994) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 48, pid: 3562420) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 47, pid: 3562419) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 20, pid: 1571990) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 13, pid: 1571983) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 14, pid: 1571984) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 45, pid: 3562417) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 1571973) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 9, pid: 1571979) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 8, pid: 1571978) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 27, pid: 1571997) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 32, pid: 3562404) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 37, pid: 3562409) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 38, pid: 3562410) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 39, pid: 3562411) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 43, pid: 3562415) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 50, pid: 3562422) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 18, pid: 1571988) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 11, pid: 1571981) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 15, pid: 1571985) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 16, pid: 1571986) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 21, pid: 1571991) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 25, pid: 1571995) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 30, pid: 1572000) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 42, pid: 3562414) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 34, pid: 3562406) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 59, pid: 3562431) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 41, pid: 3562413) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 33, pid: 3562405) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 35, pid: 3562407) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 36, pid: 3562408) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 40, pid: 3562412) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 81, pid: 558544) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 44, pid: 3562416) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 51, pid: 3562423) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 52, pid: 3562424) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 56, pid: 3562428) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 57, pid: 3562429) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 12, pid: 1571982) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 1571971) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 1571975) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 1571976) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 10, pid: 1571980) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 19, pid: 1571989) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 29, pid: 1571999) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 31, pid: 1572001) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 58, pid: 3562430) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 1571974) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 1571970) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 54, pid: 3562426) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 1571972) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 1571977) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 46, pid: 3562418) exited with status 1
+[c302-005.ls6.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 28, pid: 1571998) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 55, pid: 3562427) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 60, pid: 3562432) exited with status 1
+[c302-006.ls6.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 61, pid: 3562433) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 91, pid: 558554) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 92, pid: 558555) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 93, pid: 558556) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 86, pid: 558549) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 90, pid: 558553) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 68, pid: 558531) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 65, pid: 558528) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 75, pid: 558538) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 94, pid: 558557) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 88, pid: 558551) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 82, pid: 558545) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 66, pid: 558529) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 67, pid: 558530) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 70, pid: 558533) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 72, pid: 558535) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 84, pid: 558547) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 89, pid: 558552) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 87, pid: 558550) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 71, pid: 558534) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 80, pid: 558543) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 95, pid: 558558) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 76, pid: 558539) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 64, pid: 558527) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 69, pid: 558532) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 73, pid: 558536) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 74, pid: 558537) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 77, pid: 558540) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 78, pid: 558541) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 79, pid: 558542) exited with status 1
+[c303-005.ls6.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 83, pid: 558546) exited with status 1
+[c303-006.ls6.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 118, pid: 1231070) exited with status 1

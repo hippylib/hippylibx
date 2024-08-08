@@ -1,0 +1,1129 @@
+
+Lmod is automatically replacing "impi/19.0.9" with "mvapich2/2.3.7".
+
+WARNING: Error in initializing MVAPICH2 ptmalloc library.Continuing without InfiniBand registration cache support.
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+        A = _cpp.fem.petsc.create_matrix(a._cpp_object)A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+
+MemoryErrorMemoryError: : std::bad_allocstd::bad_alloc
+
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+        final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)model.solveFwd(x[STATE], x)
+
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+      File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+Traceback (most recent call last):
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 371, in <module>
+    final_results = run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/example/3d_problem_interpolate.py", line 217, in run_inversion
+    data_misfit_True = hpx.modelVerify(
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/modelVerify.py", line 42, in modelVerify
+    model.solveFwd(x[STATE], x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/model.py", line 116, in solveFwd
+    self.problem.solveFwd(out, x)
+  File "/work/09052/venurang/ls6/PACT_study/hippylibx/hippylibX/modeling/PDEProblem.py", line 130, in solveFwd
+    A = dlx.fem.petsc.assemble_matrix(dlx.fem.form(A_form), bcs=self.bc)
+  File "/opt/conda/lib/python3.9/functools.py", line 888, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/usr/local/dolfinx-real/lib/python/dist-packages/dolfinx/fem/petsc.py", line 424, in assemble_matrix
+    A = _cpp.fem.petsc.create_matrix(a._cpp_object)
+MemoryError: std::bad_alloc
+slurmstepd: error: *** JOB 1852392 ON c302-005 CANCELLED AT 2024-07-26T18:30:12 DUE TO TIME LIMIT ***
+[c302-005.ls6.tacc.utexas.edu:mpirun_rsh][signal_processor] Caught signal 15, killing job
+Connection to c309-006 closed by remote host.
+Connection to c309-005 closed by remote host.
+Connection to c302-006 closed by remote host.
