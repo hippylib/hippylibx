@@ -35,7 +35,7 @@ class ParameterList(object):
     def showMe(self, indent=""):
         for k in sorted(self.data.keys()):
             print(indent, "---")
-            if type(self.data[k][0]) == ParameterList:
+            if hasattr(self.data[k][0], "showMe"):
                 print(indent, k, "(ParameterList):", self.data[k][1])
                 self.data[k][0].showMe(indent + "    ")
             else:
