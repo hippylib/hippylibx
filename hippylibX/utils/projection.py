@@ -42,4 +42,4 @@ def projection(v, target_func, bcs=[]):
 
     solver = petsc4py.PETSc.KSP().create()
     solver.setOperators(A)
-    solver.solve(b, target_func.vector)
+    solver.solve(b, target_func.x.petsc_vec)
