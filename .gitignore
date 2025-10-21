@@ -1,3 +1,7 @@
+*.bp
+*.h5
+*.xdmf
+*.png
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
