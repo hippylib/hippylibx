@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import dolfinx as dlx
 import math
-from .variables import STATE, PARAMETER, ADJOINT
 from typing import Any
+
+import dolfinx as dlx
+
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final
@@ -51,16 +53,16 @@ class Model:
     def generate_vector(self, component="ALL"):
         """
         By default, return the list :code:`[u,m,p]` where:
-        
+
             - :code:`u` is any object that describes the state variable
             - :code:`m` is a :code:`dolfin.Vector` object that describes the parameter variable. \
             (Needs to support linear algebra operations)
             - :code:`p` is any object that describes the adjoint variable
-        
+
         If :code:`component = STATE` return only :code:`u`
-            
+
         If :code:`component = PARAMETER` return only :code:`m`
-            
+
         If :code:`component = ADJOINT` return only :code:`p`
         """
         if component == "ALL":

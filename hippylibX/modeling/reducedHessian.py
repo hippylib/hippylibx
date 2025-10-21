@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import petsc4py.PETSc
-from .variables import STATE, PARAMETER, ADJOINT
-import dolfinx as dlx
 import petsc4py
+import petsc4py.PETSc
+
+import dolfinx as dlx
+
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final
@@ -47,7 +49,7 @@ class ReducedHessian:
         self.yhelp = model.generate_vector(PARAMETER)
 
         self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(
-            self.model.prior.M.getSizes(), comm=self.model.prior.Vh.mesh.comm
+            self.model.prior.M.getSizes(), comm=self.model.prior.Vh.mesh.comm,
         )
         self.petsc_wrapper.setPythonContext(self)
         self.petsc_wrapper.setUp()

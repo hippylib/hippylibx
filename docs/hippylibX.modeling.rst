@@ -19,7 +19,7 @@ hippylibX.modeling.laplaceApproximation module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 hippylibX.modeling.misfit module
 --------------------------------
 
@@ -43,7 +43,7 @@ hippylibX.modeling.modelVerify module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 hippylibX.modeling.prior module
 -------------------------------
 
@@ -51,7 +51,7 @@ hippylibX.modeling.prior module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 hippylibX.modeling.reducedHessian module
 ----------------------------------------
 
@@ -76,7 +76,7 @@ hippylibX.modeling.variables module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 Module contents
 ---------------
 
@@ -84,8 +84,3 @@ Module contents
     :members:
     :undoc-members:
     :show-inheritance:
-
-
-
-
-

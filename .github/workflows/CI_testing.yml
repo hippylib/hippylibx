@@ -1,25 +1,28 @@
-name: CI
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+name: Test package
 
-defaults:
-  run:
-    shell: bash -l {0}
+on:
+  pull_request:
+  push:
+    branches: [main]
 
 jobs:
-  style:
-    runs-on: ubuntu-22.04
-    container:
-      image: dolfinx/dolfinx:v0.9.0r1
-      options: --privileged 
-    name: CI test
+  test-code:
+    name: Test on ${{ matrix.container }}
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.container }}
+    env:
+      DEB_PYTHON_INSTALL_LAYOUT: deb_system
+
+    strategy:
+      fail-fast: false
+      matrix:
+        container: [
+          "ghcr.io/fenics/dolfinx/dolfinx:stable",
+          "ghcr.io/fenics/dolfinx/dolfinx:nightly"
+        ]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v5
 
       - name: ruff file checks
         run: |
@@ -52,13 +55,10 @@ jobs:
 
       - name: run serial check
         run: |
-          cd ./hippylibX/test && 
-          mpirun -n 1 python3 test_model.py 
+          cd ./hippylibX/test &&
+          mpirun -n 1 python3 test_model.py
 
       - name: run parallel check
         run: |
-          cd ./hippylibX/test && 
-          mpirun -n 2 python3 test_model.py 
-
-      
-
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_model.py

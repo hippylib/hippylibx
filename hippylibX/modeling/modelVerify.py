@@ -7,13 +7,15 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import numpy as np
-from .variables import STATE, PARAMETER, ADJOINT
-from .reducedHessian import ReducedHessian
-from ..utils.random import parRandom
-import dolfinx as dlx
 import petsc4py
+
+import dolfinx as dlx
+import numpy as np
+
 from ..algorithms import linalg
+from ..utils.random import parRandom
+from .reducedHessian import ReducedHessian
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 def modelVerify(
@@ -124,7 +126,7 @@ def modelVerify(
 
 
 def modelVerifyPlotErrors(
-    is_quadratic: bool, eps: np.ndarray, err_grad: np.ndarray, err_H: np.ndarray
+    is_quadratic: bool, eps: np.ndarray, err_grad: np.ndarray, err_H: np.ndarray,
 ) -> None:
     try:
         import matplotlib.pyplot as plt

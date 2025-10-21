@@ -4,15 +4,15 @@
                                         Inverse Problem Python library
 ```
 ```
- __        ______  _______   _______   __      __  __  __  __     ______       _____  
-/  |      /      |/       \ /       \ /  \    /  |/  |/  |/  |    \    \      /    /     
-$$ |____  $$$$$$/ $$$$$$$  |$$$$$$$  |$$  \  /$$/ $$ |$$/ $$ |____ \ $$ \    / $$ /   
-$$      \   $$ |  $$ |__$$ |$$ |__$$ | $$  \/$$/  $$ |/  |$$      \ \ $$ \  / $$ /    
-$$$$$$$  |  $$ |  $$    $$/ $$    $$/   $$  $$/   $$ |$$ |$$$$$$$  | | $$$$$$$$ /     
-$$ |  $$ |  $$ |  $$$$$$$/  $$$$$$$/     $$$$/    $$ |$$ |$$ |  $$ | | $$$$$$$$ |     
-$$ |  $$ | _$$ |_ $$ |      $$ |          $$ |    $$ |$$ |$$ |__$$ |/ $$ /  \ $$ \    
-$$ |  $$ |/ $$   |$$ |      $$ |          $$ |    $$ |$$ |$$    $$/  $$ /    \ $$ \   
-$$/   $$/ $$$$$$/ $$/       $$/           $$/     $$/ $$/ $$$$$$$/_ $$_/      \_$$_\  
+ __        ______  _______   _______   __      __  __  __  __     ______       _____
+/  |      /      |/       \ /       \ /  \    /  |/  |/  |/  |    \    \      /    /
+$$ |____  $$$$$$/ $$$$$$$  |$$$$$$$  |$$  \  /$$/ $$ |$$/ $$ |____ \ $$ \    / $$ /
+$$      \   $$ |  $$ |__$$ |$$ |__$$ | $$  \/$$/  $$ |/  |$$      \ \ $$ \  / $$ /
+$$$$$$$  |  $$ |  $$    $$/ $$    $$/   $$  $$/   $$ |$$ |$$$$$$$  | | $$$$$$$$ /
+$$ |  $$ |  $$ |  $$$$$$$/  $$$$$$$/     $$$$/    $$ |$$ |$$ |  $$ | | $$$$$$$$ |
+$$ |  $$ | _$$ |_ $$ |      $$ |          $$ |    $$ |$$ |$$ |__$$ |/ $$ /  \ $$ \
+$$ |  $$ |/ $$   |$$ |      $$ |          $$ |    $$ |$$ |$$    $$/  $$ /    \ $$ \
+$$/   $$/ $$$$$$/ $$/       $$/           $$/     $$/ $$/ $$$$$$$/_ $$_/      \_$$_\
 
 ```
 ```
@@ -169,7 +169,7 @@ Before a PR can be merged, it should satisfy the following:
 
 ### Automated Testing
 
-We use Github Actions CI to drive the default tests on the main and feature branches. See the `.yml` file at [CI_testing.yml](https://github.com/hippylib/hippylibx/blob/main/.github/workflows/CI_testing.yml) 
+We use Github Actions CI to drive the default tests on the main and feature branches. See the `.yml` file at [CI_testing.yml](https://github.com/hippylib/hippylibx/blob/main/.github/workflows/CI_testing.yml)
 
 - Tests on the `main` branch are triggered whenever a push is issued on this branch.
 
@@ -185,7 +185,7 @@ The hIPPYlib slack channel is a good resource to request and receive help with u
 
 By making a contribution to this project, I certify that:
 
-(a) The contribution was created in whole or in part by me and I have the right to submit it under the open source license indicated in the file; 
+(a) The contribution was created in whole or in part by me and I have the right to submit it under the open source license indicated in the file;
 
 or
 

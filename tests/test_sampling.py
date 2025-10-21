@@ -15,13 +15,16 @@
 # Hlr.solve(x, y)
 # assert x3 == y
 
-import unittest
-import sys
 import os
-import dolfinx as dlx
+import sys
+import unittest
+
 import petsc4py
+
+import dolfinx as dlx
 import dolfinx.fem.petsc
 import numpy as np
+
 import hippylibX as hpx
 
 sys.path.append(os.path.abspath("../../example"))

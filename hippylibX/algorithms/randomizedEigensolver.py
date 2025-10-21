@@ -7,12 +7,15 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import numpy as np
-import petsc4py.PETSc
-from .multivector import MultiVector, MatMvMult, MvDSmatMult
-from .linalg import Solver2Operator
-import petsc4py
 from typing import Any
+
+import petsc4py
+import petsc4py.PETSc
+
+import numpy as np
+
+from .linalg import Solver2Operator
+from .multivector import MatMvMult, MultiVector, MvDSmatMult
 
 
 def doublePassG(

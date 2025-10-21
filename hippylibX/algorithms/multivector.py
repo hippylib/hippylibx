@@ -7,11 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import numpy as np
+from typing import Type, Union
+
 import petsc4py
-from typing import Union
-from typing import Type
 import petsc4py.PETSc
+
+import numpy as np
 
 
 class MultiVector:
@@ -129,19 +130,19 @@ class MultiVector:
         return self._mgs_stable(B)
 
     def _mgs_stable(self, B: petsc4py.PETSc.Mat) -> tuple[Type["MultiVector"], np.array]:
-        """ 
+        """
         Returns :math:`QR` decomposition of self, which satisfies conditions (1)--(4).
         Uses Modified Gram-Schmidt with re-orthogonalization (Rutishauser variant)
         for computing the :math:`B`-orthogonal :math:`QR` factorization.
-        
+
         References:
             1. `A.K. Saibaba, J. Lee and P.K. Kitanidis, Randomized algorithms for Generalized \
             Hermitian Eigenvalue Problems with application to computing \
             Karhunen-Loe've expansion http://arxiv.org/abs/1307.6885`
             2. `W. Gander, Algorithms for the QR decomposition. Res. Rep, 80(02), 1980`
-        
+
         https://github.com/arvindks/kle
-        
+
         """
 
         n = self.nvec

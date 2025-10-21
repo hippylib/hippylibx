@@ -11,11 +11,13 @@
 # in modeling/prior.py:
 # sqrtM . sqrtM.T . x == M . x
 
-import dolfinx as dlx
-from mpi4py import MPI
-import dolfinx.fem.petsc
-import petsc4py
 import unittest
+
+import petsc4py
+from mpi4py import MPI
+
+import dolfinx as dlx
+import dolfinx.fem.petsc
 import numpy as np
 
 import hippylibX as hpx

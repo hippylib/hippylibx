@@ -11,7 +11,7 @@ hippylibX.algorithms.NewtonCG module
     :members:
     :undoc-members:
     :show-inheritance:
-       
+
 hippylibX.algorithms.cgsolverSteihaug module
 --------------------------------------------
 
@@ -19,7 +19,7 @@ hippylibX.algorithms.cgsolverSteihaug module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 
 hippylibX.algorithms.linalg module
 ----------------------------------
@@ -45,7 +45,7 @@ hippylibX.algorithms.multivector module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 
 hippylibX.algorithms.randomizedEigensolver module
 -------------------------------------------------
@@ -54,7 +54,7 @@ hippylibX.algorithms.randomizedEigensolver module
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 Module contents
 ---------------
 

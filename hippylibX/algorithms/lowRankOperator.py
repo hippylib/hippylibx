@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import petsc4py.PETSc
-from .multivector import MultiVector, MatMvMult
-import numpy as np
 import petsc4py
+import petsc4py.PETSc
+
+import numpy as np
+
+from .multivector import MatMvMult, MultiVector
 
 
 class LowRankOperator:

@@ -7,12 +7,14 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
+import petsc4py
 import petsc4py.PETSc
+
+import dolfinx as dlx
+import numpy as np
+
 from ..algorithms.lowRankOperator import LowRankOperator
 from ..algorithms.multivector import MultiVector
-import numpy as np
-import petsc4py
-import dolfinx as dlx
 
 
 def not_implemented(func):
@@ -189,7 +191,7 @@ class LaplaceApproximator:
             raise NameError("Invalid number of parameters in Posterior::sample")
 
     def _sample_given_white_noise(
-        self, noise: dlx.la.Vector, s_prior: dlx.la.Vector, s_post: dlx.la.Vector
+        self, noise: dlx.la.Vector, s_prior: dlx.la.Vector, s_post: dlx.la.Vector,
     ):
         self.prior.sample(noise, s_prior, add_mean=False)
         self.sampler.mult(s_prior, s_post)

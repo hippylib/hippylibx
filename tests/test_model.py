@@ -7,9 +7,10 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import unittest
-import sys
 import os
+import sys
+import unittest
+
 import numpy as np
 
 import hippylibX as hpx
@@ -17,11 +18,13 @@ import hippylibX as hpx
 sys.path.append(os.path.abspath("../../example"))
 
 
-from example import poisson_example, sfsi_toy_gaussian, poisson_dirichlet_example
 from example import (
-    poisson_example_reg,
-    sfsi_toy_gaussian_reg,
+    poisson_dirichlet_example,
     poisson_dirichlet_example_reg,
+    poisson_example,
+    poisson_example_reg,
+    sfsi_toy_gaussian,
+    sfsi_toy_gaussian_reg,
 )
 
 
@@ -122,7 +125,7 @@ class Testing_Execution(unittest.TestCase):
         mesh_filename = "../../example/meshes/circle.xdmf"
 
         out = sfsi_toy_gaussian_reg.run_inversion(
-            mesh_filename, nx, ny, noise_variance, prior_param
+            mesh_filename, nx, ny, noise_variance, prior_param,
         )
         check_output(self, out)
 

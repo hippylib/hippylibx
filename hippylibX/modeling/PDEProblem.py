@@ -7,11 +7,13 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
+import petsc4py
+
 import dolfinx as dlx
 import ufl
-import petsc4py
-from .variables import STATE, PARAMETER, ADJOINT
+
 from ..utils.vector2function import updateFromVector
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final
@@ -94,7 +96,7 @@ class PDEVariationalProblem:
     def generate_parameter(self) -> dlx.la.Vector:
         """Return a vector in the shape of the parameter."""
         return dlx.la.vector(
-            self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs
+            self.Vh[PARAMETER].dofmap.index_map, self.Vh[PARAMETER].dofmap.index_map_bs,
         )
 
     def solveFwd(self, state: dlx.la.Vector, x: list) -> None:
@@ -190,7 +192,7 @@ class PDEVariationalProblem:
 
         dlx.fem.petsc.assemble_vector(out.petsc_vec, dlx.fem.form(ufl.derivative(res_form, m, dm)))
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
+            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
         )
 
     def _createLUSolver(self) -> petsc4py.PETSc.KSP:
@@ -233,7 +235,7 @@ class PDEVariationalProblem:
 
         if self.A is None:
             self.A = dlx.fem.petsc.create_matrix(
-                dlx.fem.form(ufl.derivative(g_form[ADJOINT], x_fun[STATE], x_fun_trial[STATE]))
+                dlx.fem.form(ufl.derivative(g_form[ADJOINT], x_fun[STATE], x_fun_trial[STATE])),
             )
 
         self.A.zeroEntries()
@@ -246,7 +248,7 @@ class PDEVariationalProblem:
 
         if self.At is None:
             self.At = dlx.fem.petsc.create_matrix(
-                dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[ADJOINT], x_fun_trial[ADJOINT]))
+                dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[ADJOINT], x_fun_trial[ADJOINT])),
             )
 
         self.At.zeroEntries()
@@ -260,8 +262,8 @@ class PDEVariationalProblem:
         if self.C is None:
             self.C = dlx.fem.petsc.create_matrix(
                 dlx.fem.form(
-                    ufl.derivative(g_form[ADJOINT], x_fun[PARAMETER], x_fun_trial[PARAMETER])
-                )
+                    ufl.derivative(g_form[ADJOINT], x_fun[PARAMETER], x_fun_trial[PARAMETER]),
+                ),
             )
 
         self.C.zeroEntries()
@@ -300,7 +302,7 @@ class PDEVariationalProblem:
         else:
             if self.Wuu is None:
                 self.Wuu = dlx.fem.petsc.create_matrix(
-                    dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE]))
+                    dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE])),
                 )
 
             self.Wuu.zeroEntries()
@@ -315,15 +317,15 @@ class PDEVariationalProblem:
             if self.Wum is None:
                 self.Wum = dlx.fem.petsc.create_matrix(
                     dlx.fem.form(
-                        ufl.derivative(g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER])
-                    )
+                        ufl.derivative(g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER]),
+                    ),
                 )
 
             self.Wum.zeroEntries()
             dlx.fem.petsc.assemble_matrix(
                 self.Wum,
                 dlx.fem.form(
-                    ufl.derivative(g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER])
+                    ufl.derivative(g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER]),
                 ),
                 self.bc0,
             )
@@ -338,15 +340,15 @@ class PDEVariationalProblem:
             if self.Wmm is None:
                 self.Wmm = dlx.fem.petsc.create_matrix(
                     dlx.fem.form(
-                        ufl.derivative(g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER])
-                    )
+                        ufl.derivative(g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER]),
+                    ),
                 )
 
             self.Wmm.zeroEntries()
             dlx.fem.petsc.assemble_matrix(
                 self.Wmm,
                 dlx.fem.form(
-                    ufl.derivative(g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER])
+                    ufl.derivative(g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER]),
                 ),
             )
             self.Wmm.assemble()

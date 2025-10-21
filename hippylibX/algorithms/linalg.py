@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import dolfinx as dlx
-from mpi4py import MPI
-import petsc4py
 from typing import Any
+
+import petsc4py
+from mpi4py import MPI
+
+import dolfinx as dlx
 
 
 def inner(x: dlx.la.Vector, y: dlx.la.Vector) -> float:

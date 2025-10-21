@@ -2,15 +2,15 @@
                                         Inverse Problem Python library
 ```
 ```
-         __        ______  _______   _______   __      __  __  __  __     ______       _____  
-        /  |      /      |/       \ /       \ /  \    /  |/  |/  |/  |    \    \      /    /     
-        $$ |____  $$$$$$/ $$$$$$$  |$$$$$$$  |$$  \  /$$/ $$ |$$/ $$ |____ \ $$ \    / $$ /   
-        $$      \   $$ |  $$ |__$$ |$$ |__$$ | $$  \/$$/  $$ |/  |$$      \ \ $$ \  / $$ /    
-        $$$$$$$  |  $$ |  $$    $$/ $$    $$/   $$  $$/   $$ |$$ |$$$$$$$  | | $$$$$$$$ /     
-        $$ |  $$ |  $$ |  $$$$$$$/  $$$$$$$/     $$$$/    $$ |$$ |$$ |  $$ | | $$$$$$$$ |     
-        $$ |  $$ | _$$ |_ $$ |      $$ |          $$ |    $$ |$$ |$$ |__$$ |/ $$ /  \ $$ \    
-        $$ |  $$ |/ $$   |$$ |      $$ |          $$ |    $$ |$$ |$$    $$/  $$ /    \ $$ \   
-        $$/   $$/ $$$$$$/ $$/       $$/           $$/     $$/ $$/ $$$$$$$/_ $$_/      \_$$_\  
+         __        ______  _______   _______   __      __  __  __  __     ______       _____
+        /  |      /      |/       \ /       \ /  \    /  |/  |/  |/  |    \    \      /    /
+        $$ |____  $$$$$$/ $$$$$$$  |$$$$$$$  |$$  \  /$$/ $$ |$$/ $$ |____ \ $$ \    / $$ /
+        $$      \   $$ |  $$ |__$$ |$$ |__$$ | $$  \/$$/  $$ |/  |$$      \ \ $$ \  / $$ /
+        $$$$$$$  |  $$ |  $$    $$/ $$    $$/   $$  $$/   $$ |$$ |$$$$$$$  | | $$$$$$$$ /
+        $$ |  $$ |  $$ |  $$$$$$$/  $$$$$$$/     $$$$/    $$ |$$ |$$ |  $$ | | $$$$$$$$ |
+        $$ |  $$ | _$$ |_ $$ |      $$ |          $$ |    $$ |$$ |$$ |__$$ |/ $$ /  \ $$ \
+        $$ |  $$ |/ $$   |$$ |      $$ |          $$ |    $$ |$$ |$$    $$/  $$ /    \ $$ \
+        $$/   $$/ $$$$$$/ $$/       $$/           $$/     $$/ $$/ $$$$$$$/_ $$_/      \_$$_\
 
 ```
 ```
@@ -30,7 +30,7 @@ We recommend using their prebuilt `Docker` images.
 ## Run FEniCSx from Docker (Linux, MacOS, Windows)
 First you will need to install [Docker](https://www.docker.com/) on your system. MacOS and Windows users should preferably use Docker for Mac or Docker for Windows --- if it is compatible with their system --- instead of the legacy version Docker Toolbox.
 
-For `FEniCSx` version 0.8.0, the Docker image is pulled using 
+For `FEniCSx` version 0.8.0, the Docker image is pulled using
 ```
 docker pull dolfinx/dolfinx:v0.8.0
 ```

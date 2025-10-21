@@ -8,11 +8,12 @@
 # --------------------------------------------------------------------------ec-
 
 import math
-from ..utils.parameterList import ParameterList
-from ..modeling.reducedHessian import ReducedHessian
-from ..modeling.variables import STATE, PARAMETER, ADJOINT
-from .cgsolverSteihaug import CGSolverSteihaug
+
 from ..algorithms.linalg import inner
+from ..modeling.reducedHessian import ReducedHessian
+from ..modeling.variables import ADJOINT, PARAMETER, STATE
+from ..utils.parameterList import ParameterList
+from .cgsolverSteihaug import CGSolverSteihaug
 
 
 def LS_ParameterList():
@@ -270,7 +271,7 @@ class ReducedSpaceNewtonCG:
                         "||g||L2",
                         "alpha",
                         "tolcg",
-                    )
+                    ),
                 )
 
             if print_level >= 0:
@@ -285,7 +286,7 @@ class ReducedSpaceNewtonCG:
                         gradnorm,
                         alpha,
                         tolcg,
-                    )
+                    ),
                 )
             if self.callback:
                 self.callback(self.it, x)
@@ -420,7 +421,7 @@ class ReducedSpaceNewtonCG:
                         "rho_TR",
                         "Accept Step",
                         "tolcg",
-                    )
+                    ),
                 )
 
             if print_level >= 0:
@@ -437,7 +438,7 @@ class ReducedSpaceNewtonCG:
                         rho_TR,
                         accept_step,
                         tolcg,
-                    )
+                    ),
                 )
 
             # TR radius can make this term arbitrarily small and prematurely exit.

@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import dolfinx as dlx
-import ufl
 import petsc4py
 from mpi4py import MPI
+
+import dolfinx as dlx
+import ufl
+
 import hippylibX as hpx
 
 
@@ -73,7 +75,7 @@ class VariationalRegularization:
             self.setLinearizationPoint(tmp)
 
         self.M = dlx.fem.petsc.assemble_matrix(
-            dlx.fem.form(ufl.inner(self.mtrial, self.mtest) * self.dx)
+            dlx.fem.form(ufl.inner(self.mtrial, self.mtest) * self.dx),
         )
         self.M.assemble()
 
@@ -124,7 +126,7 @@ class VariationalRegularization:
         )
 
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
+            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
         )
 
     def setLinearizationPoint(self, m: dlx.la.Vector, gauss_newton_approx=False) -> None:

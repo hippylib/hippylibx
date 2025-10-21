@@ -7,9 +7,10 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
+import petsc4py
+
 import dolfinx as dlx
 import ufl  # type: ignore
-import petsc4py
 
 
 def projection(v, target_func, bcs=[]):

@@ -8,15 +8,17 @@
 # --------------------------------------------------------------------------ec-
 
 # qpact problem with Variational Regularization Prior.
-import ufl
-import dolfinx as dlx
-from mpi4py import MPI
-import numpy as np
-import sys
 import os
-import dolfinx.fem.petsc
-from matplotlib import pyplot as plt
+import sys
 from typing import Dict
+
+from mpi4py import MPI
+
+import dolfinx as dlx
+import dolfinx.fem.petsc
+import numpy as np
+import ufl
+from matplotlib import pyplot as plt
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
@@ -40,7 +42,7 @@ class DiffusionApproximation:
         self.ds = ufl.Measure("ds", metadata={"quadrature_degree": 4})
 
     def __call__(
-        self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function
+        self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function,
     ) -> ufl.form.Form:
         return (
             ufl.inner(self.D * ufl.grad(u), ufl.grad(p)) * ufl.dx(metadata={"quadrature_degree": 4})
@@ -99,7 +101,7 @@ def run_inversion(
     m_true = dlx.fem.Function(Vh_m)
     m_true.interpolate(
         lambda x: np.log(0.01)
-        + 3.0 * (((x[0] - 2.0) * (x[0] - 2.0) + (x[1] - 2.0) * (x[1] - 2.0)) < 1.0)
+        + 3.0 * (((x[0] - 2.0) * (x[0] - 2.0) + (x[1] - 2.0) * (x[1] - 2.0)) < 1.0),
     )
 
     m_true.x.scatter_forward()
@@ -137,17 +139,17 @@ def run_inversion(
 
     m0 = dlx.fem.Function(Vh_m)
     m0.interpolate(
-        lambda x: (2 * np.log(0.01) + 3) / 2 + 3 / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
+        lambda x: (2 * np.log(0.01) + 3) / 2 + 3 / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1]),
     )
     m0.x.scatter_forward()
     m0 = m0.x
 
     data_misfit_True = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0)
+        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0),
     )
 
     data_misfit_False = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0)
+        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0),
     )
 
     # # # #######################################

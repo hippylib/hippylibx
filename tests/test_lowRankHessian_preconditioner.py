@@ -10,9 +10,10 @@
 # Low rank Hessian should be a very good preconditioner for the data
 # misfit Hessian.
 
-import unittest
-import sys
 import os
+import sys
+import unittest
+
 import dolfinx as dlx
 
 import hippylibX as hpx

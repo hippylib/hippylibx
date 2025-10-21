@@ -7,11 +7,13 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import hippylibX as hpx
+import petsc4py
+from mpi4py import MPI
+
 import dolfinx as dlx
 import ufl
-from mpi4py import MPI
-import petsc4py
+
+import hippylibX as hpx
 
 
 class NonGaussianContinuousMisfit(object):
@@ -73,7 +75,7 @@ class NonGaussianContinuousMisfit(object):
             dlx.fem.form(ufl.derivative(self.form(*x_fun), x_fun[i], self.x_test[i])),
         )
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
+            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
         )
         dlx.fem.petsc.set_bc(out.petsc_vec, self.bc0)
 
@@ -99,12 +101,12 @@ class NonGaussianContinuousMisfit(object):
                 ufl.derivative(form, self.x_lin_fun[i], self.x_test[i]),
                 self.x_lin_fun[j],
                 dir_fun,
-            )
+            ),
         )
         out.array[:] = 0.0
         dlx.fem.petsc.assemble_vector(out.petsc_vec, action)
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
+            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
         )
         if i == hpx.STATE:
             dlx.fem.petsc.set_bc(out.petsc_vec, self.bc0)
