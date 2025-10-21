@@ -43,8 +43,7 @@ class DiffusionApproximation:
         self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function
     ) -> ufl.form.Form:
         return (
-            ufl.inner(self.D * ufl.grad(u), ufl.grad(p))
-            * ufl.dx(metadata={"quadrature_degree": 4})
+            ufl.inner(self.D * ufl.grad(u), ufl.grad(p)) * ufl.dx(metadata={"quadrature_degree": 4})
             + ufl.exp(m) * ufl.inner(u, p) * self.dx
             + 0.5 * ufl.inner(u - self.u0, p) * self.ds
         )
@@ -128,9 +127,7 @@ def run_inversion(
     prior_mean.x.array[:] = np.log(0.01)
     prior_mean = prior_mean.x
 
-    prior = hpx.BiLaplacianPrior(
-        Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean
-    )
+    prior = hpx.BiLaplacianPrior(Vh_m, prior_param["gamma"], prior_param["delta"], mean=prior_mean)
     model = hpx.Model(pde, prior, misfit)
 
     noise = prior.generate_parameter("noise")
@@ -176,9 +173,7 @@ def run_inversion(
         hpx.master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
         hpx.master_print(comm, "\nNot Converged")
-    hpx.master_print(
-        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    )
+    hpx.master_print(comm, "Termination reason: ", solver.termination_reasons[solver.reason])
     hpx.master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
     hpx.master_print(comm, "Final cost: ", solver.final_cost)
 
@@ -207,10 +202,7 @@ def run_inversion(
         vtx.write(0.0)
 
     optimizer_results = {}
-    if (
-        solver.termination_reasons[solver.reason]
-        == "Norm of the gradient less than tolerance"
-    ):
+    if solver.termination_reasons[solver.reason] == "Norm of the gradient less than tolerance":
         optimizer_results["optimizer"] = True
     else:
         optimizer_results["optimizer"] = False
@@ -220,11 +212,7 @@ def run_inversion(
     k = 80
     p = 20
     if rank == 0:
-        print(
-            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-                k, p
-            )
-        )
+        print("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k, p))
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 

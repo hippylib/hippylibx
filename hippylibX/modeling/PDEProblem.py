@@ -89,9 +89,7 @@ class PDEVariationalProblem:
 
     def generate_state(self) -> dlx.la.Vector:
         """Return a vector in the shape of the state."""
-        return dlx.la.vector(
-            self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs
-        )
+        return dlx.la.vector(self.Vh[STATE].dofmap.index_map, self.Vh[STATE].dofmap.index_map_bs)
 
     def generate_parameter(self) -> dlx.la.Vector:
         """Return a vector in the shape of the parameter."""
@@ -134,18 +132,14 @@ class PDEVariationalProblem:
             self.solver.setOperators(A)
             b = dlx.fem.petsc.assemble_vector(dlx.fem.form(b_form))
             dlx.fem.petsc.apply_lifting(b, [dlx.fem.form(A_form)], [self.bc])
-            b.ghostUpdate(
-                petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
-            )
+            b.ghostUpdate(petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE)
             dlx.fem.petsc.set_bc(b, self.bc)
             self.solver.solve(b, state.petsc_vec)
 
             A.destroy()
             b.destroy()
 
-    def solveAdj(
-        self, adj: dlx.la.Vector, x: dlx.la.Vector, adj_rhs: dlx.la.Vector
-    ) -> None:
+    def solveAdj(self, adj: dlx.la.Vector, x: dlx.la.Vector, adj_rhs: dlx.la.Vector) -> None:
         """Solve the linear adjoint problem:
         Given :math:`m, u`; find :math:`p` such that
         .. math:: \\delta_u F(u, m, p;\\hat{u}) = 0, \\quad \\forall \\hat{u}.
@@ -194,9 +188,7 @@ class PDEVariationalProblem:
 
         out.array[:] = 0.0
 
-        dlx.fem.petsc.assemble_vector(
-            out.petsc_vec, dlx.fem.form(ufl.derivative(res_form, m, dm))
-        )
+        dlx.fem.petsc.assemble_vector(out.petsc_vec, dlx.fem.form(ufl.derivative(res_form, m, dm)))
         out.petsc_vec.ghostUpdate(
             petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
         )
@@ -241,34 +233,26 @@ class PDEVariationalProblem:
 
         if self.A is None:
             self.A = dlx.fem.petsc.create_matrix(
-                dlx.fem.form(
-                    ufl.derivative(g_form[ADJOINT], x_fun[STATE], x_fun_trial[STATE])
-                )
+                dlx.fem.form(ufl.derivative(g_form[ADJOINT], x_fun[STATE], x_fun_trial[STATE]))
             )
 
         self.A.zeroEntries()
         dlx.fem.petsc.assemble_matrix(
             self.A,
-            dlx.fem.form(
-                ufl.derivative(g_form[ADJOINT], x_fun[STATE], x_fun_trial[STATE])
-            ),
+            dlx.fem.form(ufl.derivative(g_form[ADJOINT], x_fun[STATE], x_fun_trial[STATE])),
             self.bc0,
         )
         self.A.assemble()
 
         if self.At is None:
             self.At = dlx.fem.petsc.create_matrix(
-                dlx.fem.form(
-                    ufl.derivative(g_form[STATE], x_fun[ADJOINT], x_fun_trial[ADJOINT])
-                )
+                dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[ADJOINT], x_fun_trial[ADJOINT]))
             )
 
         self.At.zeroEntries()
         dlx.fem.petsc.assemble_matrix(
             self.At,
-            dlx.fem.form(
-                ufl.derivative(g_form[STATE], x_fun[ADJOINT], x_fun_trial[ADJOINT])
-            ),
+            dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[ADJOINT], x_fun_trial[ADJOINT])),
             self.bc0,
         )
         self.At.assemble()
@@ -276,20 +260,14 @@ class PDEVariationalProblem:
         if self.C is None:
             self.C = dlx.fem.petsc.create_matrix(
                 dlx.fem.form(
-                    ufl.derivative(
-                        g_form[ADJOINT], x_fun[PARAMETER], x_fun_trial[PARAMETER]
-                    )
+                    ufl.derivative(g_form[ADJOINT], x_fun[PARAMETER], x_fun_trial[PARAMETER])
                 )
             )
 
         self.C.zeroEntries()
         dlx.fem.petsc.assemble_matrix(
             self.C,
-            dlx.fem.form(
-                ufl.derivative(
-                    g_form[ADJOINT], x_fun[PARAMETER], x_fun_trial[PARAMETER]
-                )
-            ),
+            dlx.fem.form(ufl.derivative(g_form[ADJOINT], x_fun[PARAMETER], x_fun_trial[PARAMETER])),
             bcs=self.bc0,
             diagonal=0.0,
         )
@@ -322,17 +300,13 @@ class PDEVariationalProblem:
         else:
             if self.Wuu is None:
                 self.Wuu = dlx.fem.petsc.create_matrix(
-                    dlx.fem.form(
-                        ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE])
-                    )
+                    dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE]))
                 )
 
             self.Wuu.zeroEntries()
             dlx.fem.petsc.assemble_matrix(
                 self.Wuu,
-                dlx.fem.form(
-                    ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE])
-                ),
+                dlx.fem.form(ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE])),
                 self.bc0,
                 diagonal=0.0,
             )
@@ -341,9 +315,7 @@ class PDEVariationalProblem:
             if self.Wum is None:
                 self.Wum = dlx.fem.petsc.create_matrix(
                     dlx.fem.form(
-                        ufl.derivative(
-                            g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER]
-                        )
+                        ufl.derivative(g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER])
                     )
                 )
 
@@ -351,9 +323,7 @@ class PDEVariationalProblem:
             dlx.fem.petsc.assemble_matrix(
                 self.Wum,
                 dlx.fem.form(
-                    ufl.derivative(
-                        g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER]
-                    )
+                    ufl.derivative(g_form[STATE], x_fun[PARAMETER], x_fun_trial[PARAMETER])
                 ),
                 self.bc0,
             )
@@ -368,9 +338,7 @@ class PDEVariationalProblem:
             if self.Wmm is None:
                 self.Wmm = dlx.fem.petsc.create_matrix(
                     dlx.fem.form(
-                        ufl.derivative(
-                            g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER]
-                        )
+                        ufl.derivative(g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER])
                     )
                 )
 
@@ -378,9 +346,7 @@ class PDEVariationalProblem:
             dlx.fem.petsc.assemble_matrix(
                 self.Wmm,
                 dlx.fem.form(
-                    ufl.derivative(
-                        g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER]
-                    )
+                    ufl.derivative(g_form[PARAMETER], x_fun[PARAMETER], x_fun_trial[PARAMETER])
                 ),
             )
             self.Wmm.assemble()
@@ -411,9 +377,7 @@ class PDEVariationalProblem:
             else:
                 KKT[j, i].multTranspose(dir.petsc_vec, out.petsc_vec)
 
-    def solveIncremental(
-        self, out: dlx.la.Vector, rhs: dlx.la.Vector, is_adj: bool
-    ) -> None:
+    def solveIncremental(self, out: dlx.la.Vector, rhs: dlx.la.Vector, is_adj: bool) -> None:
         """If :code:`is_adj == False`:
 
         Solve the forward incremental system:

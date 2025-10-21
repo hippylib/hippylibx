@@ -39,9 +39,7 @@ class H1TikhonvFunctional:
 
 
 class VariationalRegularization:
-    def __init__(
-        self, Vh: dlx.fem.FunctionSpace, functional_handler, isQuadratic=False
-    ):
+    def __init__(self, Vh: dlx.fem.FunctionSpace, functional_handler, isQuadratic=False):
         self.Vh = Vh
         self.functional_handler = functional_handler  # a function or a functor that takes as input m (as dlx.Function) and evaluates the regularization functional
         self.isQuadratic = isQuadratic  # Whether the functional is a quadratic form (i.e. the Hessian is constant) or not (the Hessian depends on m
@@ -122,20 +120,14 @@ class VariationalRegularization:
 
         dlx.fem.petsc.assemble_vector(
             out.petsc_vec,
-            dlx.fem.form(
-                ufl.derivative(
-                    self.functional_handler(self.mfun), self.mfun, self.mtest
-                )
-            ),
+            dlx.fem.form(ufl.derivative(self.functional_handler(self.mfun), self.mfun, self.mtest)),
         )
 
         out.petsc_vec.ghostUpdate(
             petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE
         )
 
-    def setLinearizationPoint(
-        self, m: dlx.la.Vector, gauss_newton_approx=False
-    ) -> None:
+    def setLinearizationPoint(self, m: dlx.la.Vector, gauss_newton_approx=False) -> None:
         if self.isQuadratic and (self.R is not None):
             return
         hpx.updateFromVector(self.mfun, m)

@@ -13,14 +13,10 @@
 
 import dolfinx as dlx
 from mpi4py import MPI
-import sys
-import os
 import dolfinx.fem.petsc
 import petsc4py
 import unittest
 import numpy as np
-
-sys.path.append(os.path.abspath("../.."))
 
 import hippylibX as hpx
 
@@ -33,9 +29,7 @@ class Testing_Execution(unittest.TestCase):
         msh = dlx.mesh.create_unit_square(comm, nx, ny, dlx.mesh.CellType.quadrilateral)
         Vh = dlx.fem.functionspace(msh, ("Lagrange", 1))
 
-        prior = hpx.BiLaplacianPrior(
-            Vh, prior_param["gamma"], prior_param["delta"], mean=None
-        )
+        prior = hpx.BiLaplacianPrior(Vh, prior_param["gamma"], prior_param["delta"], mean=None)
 
         x = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
         hpx.parRandom.replay()
@@ -44,6 +38,7 @@ class Testing_Execution(unittest.TestCase):
         y2 = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
         tmp = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
 
+        breakpoint()
         prior.sqrtM.multTranspose(x.petsc_vec, tmp.petsc_vec)
         prior.sqrtM.mult(tmp.petsc_vec, y1.petsc_vec)
 

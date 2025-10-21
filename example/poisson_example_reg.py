@@ -151,9 +151,7 @@ def run_inversion(
         hpx.master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
         hpx.master_print(comm, "\nNot Converged")
-    hpx.master_print(
-        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    )
+    hpx.master_print(comm, "Termination reason: ", solver.termination_reasons[solver.reason])
     hpx.master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
     hpx.master_print(comm, "Final cost: ", solver.final_cost)
 
@@ -182,10 +180,7 @@ def run_inversion(
         vtx.write(0.0)
 
     optimizer_results = {}
-    if (
-        solver.termination_reasons[solver.reason]
-        == "Norm of the gradient less than tolerance"
-    ):
+    if solver.termination_reasons[solver.reason] == "Norm of the gradient less than tolerance":
         optimizer_results["optimizer"] = True
     else:
         optimizer_results["optimizer"] = False
@@ -195,11 +190,7 @@ def run_inversion(
     k = 80
     p = 20
     if rank == 0:
-        print(
-            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-                k, p
-            )
-        )
+        print("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k, p))
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 

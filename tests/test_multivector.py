@@ -19,8 +19,6 @@ from mpi4py import MPI
 import ufl
 import dolfinx.fem.petsc
 
-sys.path.append(os.path.abspath("../.."))
-
 import hippylibX as hpx
 
 
@@ -30,9 +28,7 @@ def multi_vector_testing(nx: int, ny: int, nvec: int) -> np.array:
     Vh = dlx.fem.functionspace(msh, ("Lagrange", 1))
     trial = ufl.TrialFunction(Vh)
     test = ufl.TestFunction(Vh)
-    varfM = ufl.inner(trial, test) * ufl.Measure(
-        "dx", metadata={"quadrature_degree": 4}
-    )
+    varfM = ufl.inner(trial, test) * ufl.Measure("dx", metadata={"quadrature_degree": 4})
     M = dlx.fem.petsc.assemble_matrix(dlx.fem.form(varfM))
     M.assemble()
     sample_petsc_vec = dlx.fem.petsc.create_vector(dlx.fem.form(test * ufl.dx))

@@ -32,10 +32,7 @@ class Poisson_Approximation:
     def __call__(
         self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function
     ) -> ufl.form.Form:
-        return (
-            ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p)) * self.dx
-            - self.f * p * self.dx
-        )
+        return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p)) * self.dx - self.f * p * self.dx
 
 
 class PoissonMisfitForm:
@@ -76,9 +73,7 @@ def run_inversion(
         return np.logical_or(np.isclose(x[1], 1), np.isclose(x[1], 0))
 
     fdim = msh.topology.dim - 1
-    top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(
-        msh, fdim, top_bottom_boundary
-    )
+    top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(msh, fdim, top_bottom_boundary)
     dirichlet_dofs = dlx.fem.locate_dofs_topological(
         Vh[hpx.STATE], fdim, top_bottom_boundary_facets
     )
@@ -176,9 +171,7 @@ def run_inversion(
         hpx.master_print(comm, "\nConverged in ", solver.it, " iterations.")
     else:
         hpx.master_print(comm, "\nNot Converged")
-    hpx.master_print(
-        comm, "Termination reason: ", solver.termination_reasons[solver.reason]
-    )
+    hpx.master_print(comm, "Termination reason: ", solver.termination_reasons[solver.reason])
     hpx.master_print(comm, "Final gradient norm: ", solver.final_grad_norm)
     hpx.master_print(comm, "Final cost: ", solver.final_cost)
 
@@ -201,18 +194,13 @@ def run_inversion(
 
     with dlx.io.VTXWriter(
         msh.comm,
-        "poisson_Dirichlet_Variational_Regularization_prior_np{0:d}_Prior.bp".format(
-            nproc
-        ),
+        "poisson_Dirichlet_Variational_Regularization_prior_np{0:d}_Prior.bp".format(nproc),
         [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
     ) as vtx:
         vtx.write(0.0)
 
     optimizer_results = {}
-    if (
-        solver.termination_reasons[solver.reason]
-        == "Norm of the gradient less than tolerance"
-    ):
+    if solver.termination_reasons[solver.reason] == "Norm of the gradient less than tolerance":
         optimizer_results["optimizer"] = True
     else:
         optimizer_results["optimizer"] = False
@@ -222,11 +210,7 @@ def run_inversion(
     k = 80
     p = 20
     if rank == 0:
-        print(
-            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-                k, p
-            )
-        )
+        print("Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(k, p))
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 

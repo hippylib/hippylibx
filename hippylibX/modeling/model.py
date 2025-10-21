@@ -136,9 +136,7 @@ class Model:
         rhs.array[:] *= -1.0
         self.problem.solveAdj(out, x, rhs)
 
-    def evalGradientParameter(
-        self, x: list, mg: dlx.la.Vector, misfit_only=False
-    ) -> float:
+    def evalGradientParameter(self, x: list, mg: dlx.la.Vector, misfit_only=False) -> float:
         """
         Evaluate the gradient for the variational parameter equation at the point :code:`x=[u,m,p]`.
 

@@ -10,8 +10,6 @@
 import petsc4py
 import sys
 import os
-
-sys.path.append(os.path.abspath("../.."))
 import hippylibX as hpx
 import numpy as np
 import unittest
@@ -83,9 +81,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out = poisson_dirichlet_example.run_inversion(
-            nx, ny, noise_variance, prior_param
-        )
+        out = poisson_dirichlet_example.run_inversion(nx, ny, noise_variance, prior_param)
         A, B, d, U = (
             out["eigen_decomposition_results"]["A"],
             out["eigen_decomposition_results"]["B"],

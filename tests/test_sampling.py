@@ -22,9 +22,6 @@ import dolfinx as dlx
 import petsc4py
 import dolfinx.fem.petsc
 import numpy as np
-
-sys.path.append(os.path.abspath("../.."))
-
 import hippylibX as hpx
 
 sys.path.append(os.path.abspath("../../example"))
@@ -39,9 +36,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out = poisson_dirichlet_example.run_inversion(
-            nx, ny, noise_variance, prior_param
-        )
+        out = poisson_dirichlet_example.run_inversion(nx, ny, noise_variance, prior_param)
         prior, d, U = (
             out["eigen_decomposition_results"]["B"],
             out["eigen_decomposition_results"]["d"],

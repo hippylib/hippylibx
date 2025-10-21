@@ -154,9 +154,7 @@ class SqrtPrecisionPDE_Prior:
         num_sub_spaces = Vh.num_sub_spaces
 
         if num_sub_spaces <= 1:  # SCALAR PARAMETER
-            element = basix.ufl.quadrature_element(
-                Vh.mesh.topology.cell_name(), degree=qdegree
-            )
+            element = basix.ufl.quadrature_element(Vh.mesh.topology.cell_name(), degree=qdegree)
 
         else:  # Vector FIELD PARAMETER
             element = basix.ufl.element(
@@ -266,9 +264,7 @@ class SqrtPrecisionPDE_Prior:
         self.R.mult(d, out.petsc_vec)
         d.destroy()
 
-    def setLinearizationPoint(
-        self, m: dlx.la.Vector, gauss_newton_approx=False
-    ) -> None:
+    def setLinearizationPoint(self, m: dlx.la.Vector, gauss_newton_approx=False) -> None:
         return
 
     def __del__(self):

@@ -25,18 +25,13 @@ import dolfinx as dlx
 import dolfinx.fem.petsc
 import petsc4py
 from typing import Any
-
-sys.path.append(os.path.abspath("../.."))
-
 import hippylibX as hpx
 
 sys.path.append(os.path.abspath("../../example"))
 from example import poisson_dirichlet_example
 
 
-def low_Rank_Hessian_mult_solve(
-    prior: Any, d: np.array, U: hpx.MultiVector
-) -> tuple[float, float]:
+def low_Rank_Hessian_mult_solve(prior: Any, d: np.array, U: hpx.MultiVector) -> tuple[float, float]:
     Hlr = hpx.LowRankHessian(prior, d, U)
     vec1 = dlx.la.vector(prior.Vh.dofmap.index_map)
     vec2 = dlx.la.vector(prior.Vh.dofmap.index_map)
@@ -82,9 +77,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out = poisson_dirichlet_example.run_inversion(
-            nx, ny, noise_variance, prior_param
-        )
+        out = poisson_dirichlet_example.run_inversion(nx, ny, noise_variance, prior_param)
         prior, d, U = (
             out["eigen_decomposition_results"]["B"],
             out["eigen_decomposition_results"]["d"],

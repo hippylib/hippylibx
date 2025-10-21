@@ -126,9 +126,7 @@ class ReducedSpaceNewtonCG:
         "Norm of (g, dm) less than tolerance",  # 3
     ]
 
-    def __init__(
-        self, model, parameters=ReducedSpaceNewtonCG_ParameterList(), callback=None
-    ):
+    def __init__(self, model, parameters=ReducedSpaceNewtonCG_ParameterList(), callback=None):
         """
         Initialize the ReducedSpaceNewtonCG.
         Type :code:`ReducedSpaceNewtonCG_ParameterList().showMe()` for list of default parameters
@@ -207,9 +205,7 @@ class ReducedSpaceNewtonCG:
         while (self.it < max_iter) and (not self.converged):
             self.model.solveAdj(x[ADJOINT], x)
 
-            self.model.setPointForHessianEvaluations(
-                x, gauss_newton_approx=(self.it < GN_iter)
-            )
+            self.model.setPointForHessianEvaluations(x, gauss_newton_approx=(self.it < GN_iter))
             gradnorm = self.model.evalGradientParameter(x, mg)
 
             if self.it == 0:
@@ -342,9 +338,7 @@ class ReducedSpaceNewtonCG:
         while (self.it < max_iter) and (not self.converged):
             self.model.solveAdj(x[ADJOINT], x)
 
-            self.model.setPointForHessianEvaluations(
-                x, gauss_newton_approx=(self.it < GN_iter)
-            )
+            self.model.setPointForHessianEvaluations(x, gauss_newton_approx=(self.it < GN_iter))
             gradnorm = self.model.evalGradientParameter(x, mg)
 
             if self.it == 0:

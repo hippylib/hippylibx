@@ -20,9 +20,7 @@ class LowRankOperator:
     in some weighted inner-product.
     """
 
-    def __init__(
-        self, d: np.array, U: MultiVector, createVecLeft=None, createVecRight=None
-    ):
+    def __init__(self, d: np.array, U: MultiVector, createVecLeft=None, createVecRight=None):
         """
         Construct the low rank operator given :code:`d` and :code:`U`.
         """

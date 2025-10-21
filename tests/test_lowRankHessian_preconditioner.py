@@ -15,8 +15,6 @@ import sys
 import os
 import dolfinx as dlx
 
-sys.path.append(os.path.abspath("../.."))
-
 import hippylibX as hpx
 
 sys.path.append(os.path.abspath("../../example"))
@@ -30,9 +28,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out = poisson_dirichlet_example.run_inversion(
-            nx, ny, noise_variance, prior_param
-        )
+        out = poisson_dirichlet_example.run_inversion(nx, ny, noise_variance, prior_param)
         Hmisfit, prior, d, U = (
             out["eigen_decomposition_results"]["A"],
             out["eigen_decomposition_results"]["B"],
@@ -49,9 +45,7 @@ class Testing_Execution(unittest.TestCase):
 
         vec2 = dlx.la.vector(prior.Vh.dofmap.index_map)
         parameters = hpx.algorithms.cgsolverSteihaug.CGSolverSteihaug_ParameterList()
-        solver = hpx.algorithms.cgsolverSteihaug.CGSolverSteihaug(
-            parameters, prior.Vh.mesh.comm
-        )
+        solver = hpx.algorithms.cgsolverSteihaug.CGSolverSteihaug(parameters, prior.Vh.mesh.comm)
         solver.set_operator(matr)
 
         solver.set_preconditioner(prior.Rsolver)

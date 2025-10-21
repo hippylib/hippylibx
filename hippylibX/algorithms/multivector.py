@@ -26,9 +26,7 @@ class MultiVector:
             self.data.append(example_vec.duplicate())
 
     @classmethod
-    def createFromVec(
-        cls, example_vec: petsc4py.PETSc.Vec, nvec: int
-    ) -> Type["MultiVector"]:
+    def createFromVec(cls, example_vec: petsc4py.PETSc.Vec, nvec: int) -> Type["MultiVector"]:
         """
         Create multivector from sample petsc4py vector whose parallel distribution is to be replicated.
         """
@@ -130,9 +128,7 @@ class MultiVector:
 
         return self._mgs_stable(B)
 
-    def _mgs_stable(
-        self, B: petsc4py.PETSc.Mat
-    ) -> tuple[Type["MultiVector"], np.array]:
+    def _mgs_stable(self, B: petsc4py.PETSc.Mat) -> tuple[Type["MultiVector"], np.array]:
         """ 
         Returns :math:`QR` decomposition of self, which satisfies conditions (1)--(4).
         Uses Modified Gram-Schmidt with re-orthogonalization (Rutishauser variant)
@@ -210,12 +206,8 @@ def MatMvTranspmult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector) -> No
 
 
 def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector) -> None:
-    assert (
-        X.nvec == A.shape[0]
-    ), "X Number of vecs incompatible with number of rows in A"
-    assert (
-        Y.nvec == A.shape[1]
-    ), "Y Number of vecs incompatible with number of cols in A"
+    assert X.nvec == A.shape[0], "X Number of vecs incompatible with number of rows in A"
+    assert Y.nvec == A.shape[1], "Y Number of vecs incompatible with number of cols in A"
     for j in range(Y.nvec):
         Y[j].scale(0.0)
         X.reduce(Y[j], A[:, j].flatten())

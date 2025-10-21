@@ -83,9 +83,7 @@ class CGSolverSteihaug:
         "Reached trust region boundary",
     ]
 
-    def __init__(
-        self, parameters=CGSolverSteihaug_ParameterList(), comm=mpi4py.MPI.Intracomm
-    ):
+    def __init__(self, parameters=CGSolverSteihaug_ParameterList(), comm=mpi4py.MPI.Intracomm):
         self.parameters = parameters
 
         self.A = None
@@ -123,9 +121,7 @@ class CGSolverSteihaug:
         self.B_op = B_op
         self.B_op.init_vector(self.Bx, 0)
 
-    def update_x_without_TR(
-        self, x: petsc4py.PETSc.Vec, alpha: float, d: petsc4py.PETSc.Vec
-    ):
+    def update_x_without_TR(self, x: petsc4py.PETSc.Vec, alpha: float, d: petsc4py.PETSc.Vec):
         x.axpy(alpha, self.d)
         return False
 
@@ -151,9 +147,7 @@ class CGSolverSteihaug:
             b_tau_half = alpha * d_Bx
             c_tau = x_Bnorm2 - self.TR_radius_2
             # Solve quadratic for :code:`tau`
-            tau = (
-                -b_tau_half + math.sqrt(b_tau_half * b_tau_half - a_tau * c_tau)
-            ) / a_tau
+            tau = (-b_tau_half + math.sqrt(b_tau_half * b_tau_half - a_tau * c_tau)) / a_tau
             x.zero()
             x.axpy(1, x_bk)
             x.axpy(tau * alpha, d)
@@ -196,9 +190,7 @@ class CGSolverSteihaug:
         if self.parameters["print_level"] == 1:
             print(" Iterartion : ", 0, " (B r, r) = ", nom)
 
-        rtol2 = (
-            nom * self.parameters["rel_tolerance"] * self.parameters["rel_tolerance"]
-        )
+        rtol2 = nom * self.parameters["rel_tolerance"] * self.parameters["rel_tolerance"]
         atol2 = self.parameters["abs_tolerance"] * self.parameters["abs_tolerance"]
         r0 = max(rtol2, atol2)
 

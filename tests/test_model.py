@@ -12,8 +12,6 @@ import sys
 import os
 import numpy as np
 
-sys.path.append(os.path.abspath("../.."))
-
 import hippylibX as hpx
 
 sys.path.append(os.path.abspath("../../example"))
@@ -94,9 +92,7 @@ class Testing_Execution(unittest.TestCase):
         noise_variance = 1e-6
         prior_param = {"gamma": 0.1, "delta": 2.0}
         mesh_filename = "../../example/meshes/circle.xdmf"
-        out = sfsi_toy_gaussian.run_inversion(
-            mesh_filename, nx, ny, noise_variance, prior_param
-        )
+        out = sfsi_toy_gaussian.run_inversion(mesh_filename, nx, ny, noise_variance, prior_param)
         check_output(self, out)
 
     def test_poisson_robin_bilap_prior_execution(self):
@@ -114,9 +110,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out = poisson_dirichlet_example.run_inversion(
-            nx, ny, noise_variance, prior_param
-        )
+        out = poisson_dirichlet_example.run_inversion(nx, ny, noise_variance, prior_param)
         check_output(self, out)
 
     def test_qpact_var_reg_prior_execution(self):
@@ -147,9 +141,7 @@ class Testing_Execution(unittest.TestCase):
         ny = 64
         noise_variance = 1e-4
         prior_param = {"gamma": 0.1, "delta": 1.0}
-        out = poisson_dirichlet_example_reg.run_inversion(
-            nx, ny, noise_variance, prior_param
-        )
+        out = poisson_dirichlet_example_reg.run_inversion(nx, ny, noise_variance, prior_param)
         check_output(self, out)
 
 
