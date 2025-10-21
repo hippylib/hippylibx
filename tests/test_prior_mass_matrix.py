@@ -40,7 +40,6 @@ class Testing_Execution(unittest.TestCase):
         y2 = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
         tmp = dlx.la.vector(Vh.dofmap.index_map, Vh.dofmap.index_map_bs)
 
-        breakpoint()
         prior.sqrtM.multTranspose(x.petsc_vec, tmp.petsc_vec)
         prior.sqrtM.mult(tmp.petsc_vec, y1.petsc_vec)
 

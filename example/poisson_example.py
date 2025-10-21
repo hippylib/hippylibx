@@ -8,8 +8,6 @@
 # --------------------------------------------------------------------------ec-
 
 # poisson example with Robin BC using BiLaplacian prior
-import os
-import sys
 from typing import Dict
 
 from mpi4py import MPI
@@ -20,7 +18,6 @@ import numpy as np
 import ufl
 from matplotlib import pyplot as plt
 
-sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
 
 
@@ -32,7 +29,10 @@ class Poisson_Approximation:
         self.ds = ufl.Measure("ds", metadata={"quadrature_degree": 4})
 
     def __call__(
-        self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function,
+        self,
+        u: dlx.fem.Function,
+        m: dlx.fem.Function,
+        p: dlx.fem.Function,
     ) -> ufl.form.Form:
         return (
             ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p)) * self.dx
@@ -52,7 +52,10 @@ class PoissonMisfitForm:
 
 
 def run_inversion(
-    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float],
+    nx: int,
+    ny: int,
+    noise_variance: float,
+    prior_param: Dict[str, float],
 ) -> Dict[str, Dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
@@ -110,11 +113,19 @@ def run_inversion(
     prior.sample(noise, m0)
 
     data_misfit_True = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=True, verbose=(rank == 0),
+        model,
+        m0,
+        is_quadratic=False,
+        misfit_only=True,
+        verbose=(rank == 0),
     )
 
     data_misfit_False = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=False, verbose=(rank == 0),
+        model,
+        m0,
+        is_quadratic=False,
+        misfit_only=False,
+        verbose=(rank == 0),
     )
 
     # # #######################################

@@ -17,13 +17,16 @@ import numpy as np
 
 import hippylibX as hpx
 
-sys.path.append(os.path.abspath("../../example"))
+sys.path.append(os.path.abspath("../example"))
 
-from example import poisson_dirichlet_example
+import poisson_dirichlet_example
 
 
 def check_g(
-    A: petsc4py.PETSc.Mat, B: petsc4py.PETSc.Mat, U: hpx.MultiVector, d: np.array,
+    A: petsc4py.PETSc.Mat,
+    B: petsc4py.PETSc.Mat,
+    U: hpx.MultiVector,
+    d: np.array,
 ) -> tuple[float, float, np.array]:
     nvec = U.nvec
     AU = hpx.MultiVector.createFromVec(U[0], nvec)

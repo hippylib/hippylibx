@@ -126,7 +126,10 @@ def modelVerify(
 
 
 def modelVerifyPlotErrors(
-    is_quadratic: bool, eps: np.ndarray, err_grad: np.ndarray, err_H: np.ndarray,
+    is_quadratic: bool,
+    eps: np.ndarray,
+    err_grad: np.ndarray,
+    err_H: np.ndarray,
 ) -> None:
     try:
         import matplotlib.pyplot as plt

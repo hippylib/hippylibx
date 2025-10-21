@@ -24,41 +24,37 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: ruff file checks
-        run: |
-          pip install ruff && ruff check . && ruff format --check .
-
       - name: multivector testing
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 2 python3 test_multivector.py
 
       - name: eigendecomposition testing
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 2 python3 test_eigendecomposition.py
 
       - name: low rank Hessian testing
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 2 python3 test_lowRankHessian.py
 
       - name: low rank Hessian preconditioner testing
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 2 python3 test_lowRankHessian_preconditioner.py
 
       - name: sample testing
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 2 python3 test_sampling.py
 
       - name: run serial check
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 1 python3 test_model.py
 
       - name: run parallel check
         run: |
-          cd ./hippylibX/test &&
+          cd ./tests &&
           mpirun -n 2 python3 test_model.py

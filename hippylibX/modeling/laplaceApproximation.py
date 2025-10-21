@@ -104,7 +104,7 @@ class LowRankPosteriorSampler:
 
 
 class LaplaceApproximator:
-    """
+    r"""
     Class for the low rank Gaussian Approximation of the Posterior.
     This class provides functionality for approximate Hessian
     apply, solve, and Gaussian sampling based on the low rank
@@ -116,7 +116,8 @@ class LaplaceApproximator:
 
     - low rank Hessian apply: :math:`y = ( R + RU D U^{T}) x.`
     - low rank Hessian solve: :math:`y = (R^-1 - U (I + D^{-1})^{-1} U^T) x.`
-    - low rank Hessian Gaussian sampling: :math:`y = ( I - U S U^{T}) x`, where :math:`S = I - (I + D)^{-1/2}` and :math:`x \\sim \\mathcal{N}(0, R^{-1}).`
+    - low rank Hessian Gaussian sampling: :math:`y = ( I - U S U^{T}) x`,
+    where :math:`S = I - (I + D)^{-1/2}` and :math:`x \\sim \\mathcal{N}(0, R^{-1}).`
     """
 
     def __init__(self, prior, d: np.array, U: MultiVector, mean=None):
@@ -191,7 +192,10 @@ class LaplaceApproximator:
             raise NameError("Invalid number of parameters in Posterior::sample")
 
     def _sample_given_white_noise(
-        self, noise: dlx.la.Vector, s_prior: dlx.la.Vector, s_post: dlx.la.Vector,
+        self,
+        noise: dlx.la.Vector,
+        s_prior: dlx.la.Vector,
+        s_post: dlx.la.Vector,
     ):
         self.prior.sample(noise, s_prior, add_mean=False)
         self.sampler.mult(s_prior, s_post)

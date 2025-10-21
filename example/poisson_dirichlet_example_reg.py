@@ -9,8 +9,6 @@
 
 # Poisson example with DirichletBC on the 2d square mesh with
 # u_d=1 on top, 0 on bottom using Variational Regularization Prior.
-import os
-import sys
 from typing import Dict, Sequence
 
 from mpi4py import MPI
@@ -21,7 +19,6 @@ import numpy as np
 import ufl
 from matplotlib import pyplot as plt
 
-sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
 
 
@@ -31,7 +28,10 @@ class Poisson_Approximation:
         self.dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
 
     def __call__(
-        self, u: dlx.fem.Function, m: dlx.fem.Function, p: dlx.fem.Function,
+        self,
+        u: dlx.fem.Function,
+        m: dlx.fem.Function,
+        p: dlx.fem.Function,
     ) -> ufl.form.Form:
         return ufl.exp(m) * ufl.inner(ufl.grad(u), ufl.grad(p)) * self.dx - self.f * p * self.dx
 
@@ -47,7 +47,10 @@ class PoissonMisfitForm:
 
 
 def run_inversion(
-    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float],
+    nx: int,
+    ny: int,
+    noise_variance: float,
+    prior_param: Dict[str, float],
 ) -> Dict[str, Dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
@@ -76,7 +79,9 @@ def run_inversion(
     fdim = msh.topology.dim - 1
     top_bottom_boundary_facets = dlx.mesh.locate_entities_boundary(msh, fdim, top_bottom_boundary)
     dirichlet_dofs = dlx.fem.locate_dofs_topological(
-        Vh[hpx.STATE], fdim, top_bottom_boundary_facets,
+        Vh[hpx.STATE],
+        fdim,
+        top_bottom_boundary_facets,
     )
     bc = dlx.fem.dirichletbc(uD, dirichlet_dofs)
 
@@ -126,18 +131,25 @@ def run_inversion(
 
     m0 = dlx.fem.Function(Vh_m)
     m0.interpolate(
-        lambda x: (np.log(2) + np.log(9)) / 2
-        + (np.log(9) - np.log(2)) / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1]),
+        lambda x: (np.log(2) + np.log(9)) / 2 + (np.log(9) - np.log(2)) / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1]),
     )
     m0.x.scatter_forward()
     m0 = m0.x
 
     data_misfit_True = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=True, verbose=rank == 0,
+        model,
+        m0,
+        is_quadratic=False,
+        misfit_only=True,
+        verbose=rank == 0,
     )
 
     data_misfit_False = hpx.modelVerify(
-        model, m0, is_quadratic=False, misfit_only=False, verbose=rank == 0,
+        model,
+        m0,
+        is_quadratic=False,
+        misfit_only=False,
+        verbose=rank == 0,
     )
 
     # # # #######################################

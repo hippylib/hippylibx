@@ -49,7 +49,9 @@ class Random:
         """
         num_local_values = out.index_map.size_local + out.index_map.num_ghosts
         loc_random_numbers = np.random.default_rng(self.rng).normal(
-            loc=0, scale=sigma, size=num_local_values,
+            loc=0,
+            scale=sigma,
+            size=num_local_values,
         )
         out.array[:] += loc_random_numbers
         out.scatter_forward()
@@ -61,7 +63,9 @@ class Random:
         num_local_values = out[0].getLocalSize()
         for i in range(out.nvec):
             loc_random_numbers = np.random.default_rng(self.rng).normal(
-                loc=0, scale=sigma, size=num_local_values,
+                loc=0,
+                scale=sigma,
+                size=num_local_values,
             )
             with out[i].localForm() as v_array:
                 v_array[0:num_local_values] += loc_random_numbers

@@ -34,17 +34,16 @@ class H1TikhonvFunctional:
         else:
             dm = m - self.m0
 
-        return (
-            ufl.inner(self.gamma * ufl.grad(dm), ufl.grad(dm)) * self.dx
-            + ufl.inner(self.delta * dm, dm) * self.dx
-        )
+        return ufl.inner(self.gamma * ufl.grad(dm), ufl.grad(dm)) * self.dx + ufl.inner(self.delta * dm, dm) * self.dx
 
 
 class VariationalRegularization:
     def __init__(self, Vh: dlx.fem.FunctionSpace, functional_handler, isQuadratic=False):
         self.Vh = Vh
-        self.functional_handler = functional_handler  # a function or a functor that takes as input m (as dlx.Function) and evaluates the regularization functional
-        self.isQuadratic = isQuadratic  # Whether the functional is a quadratic form (i.e. the Hessian is constant) or not (the Hessian depends on m
+        # a function or a functor that takes as input m (as dlx.Function) and evaluates the regularization functional
+        self.functional_handler = functional_handler
+        # Whether the functional is a quadratic form (i.e. the Hessian is constant) or not (the Hessian depends on m
+        self.isQuadratic = isQuadratic
         self.mfun = dlx.fem.Function(Vh)
         self.mtest = ufl.TestFunction(Vh)
         self.mtrial = ufl.TrialFunction(Vh)
@@ -126,7 +125,8 @@ class VariationalRegularization:
         )
 
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
+            petsc4py.PETSc.InsertMode.ADD_VALUES,
+            petsc4py.PETSc.ScatterMode.REVERSE,
         )
 
     def setLinearizationPoint(self, m: dlx.la.Vector, gauss_newton_approx=False) -> None:

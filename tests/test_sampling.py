@@ -27,8 +27,8 @@ import numpy as np
 
 import hippylibX as hpx
 
-sys.path.append(os.path.abspath("../../example"))
-from example import poisson_dirichlet_example
+sys.path.append(os.path.abspath("../example"))
+import poisson_dirichlet_example
 
 
 class Testing_Execution(unittest.TestCase):

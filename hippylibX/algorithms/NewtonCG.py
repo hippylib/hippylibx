@@ -249,9 +249,7 @@ class ReducedSpaceNewtonCG:
 
                 cost_new, reg_new, misfit_new = self.model.cost(x_star)
                 # Check if armijo conditions are satisfied
-                if (cost_new < cost_old + alpha * c_armijo * mg_mhat) or (
-                    -mg_mhat <= self.parameters["gdm_tolerance"]
-                ):
+                if (cost_new < cost_old + alpha * c_armijo * mg_mhat) or (-mg_mhat <= self.parameters["gdm_tolerance"]):
                     cost_old = cost_new
                     descent = 1
                     x[PARAMETER].array[:] = x_star[PARAMETER].array

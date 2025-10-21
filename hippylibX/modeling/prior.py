@@ -37,7 +37,8 @@ class _BilaplacianR:
         self.help2 = self.A.createVecRight()
 
         self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(
-            self.A.getSizes(), comm=self.A.getComm(),
+            self.A.getSizes(),
+            comm=self.A.getComm(),
         )
         self.petsc_wrapper.setPythonContext(self)
         self.petsc_wrapper.setUp()
@@ -305,7 +306,8 @@ def BiLaplacianPrior(
     """
 
     def sqrt_precision_varf_handler(
-        trial: ufl.TrialFunction, test: ufl.TestFunction,
+        trial: ufl.TrialFunction,
+        test: ufl.TestFunction,
     ) -> ufl.form.Form:
         if Theta is None:
             varfL = ufl.inner(ufl.grad(trial), ufl.grad(test)) * ufl.dx(

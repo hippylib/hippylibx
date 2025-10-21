@@ -15,17 +15,15 @@ import numpy as np
 
 import hippylibX as hpx
 
-sys.path.append(os.path.abspath("../../example"))
+sys.path.append(os.path.abspath("../example"))
 
 
-from example import (
-    poisson_dirichlet_example,
-    poisson_dirichlet_example_reg,
-    poisson_example,
-    poisson_example_reg,
-    sfsi_toy_gaussian,
-    sfsi_toy_gaussian_reg,
-)
+import poisson_dirichlet_example
+import poisson_dirichlet_example_reg
+import poisson_example
+import poisson_example_reg
+import sfsi_toy_gaussian
+import sfsi_toy_gaussian_reg
 
 
 def data_parser(data: dict) -> tuple[float, float, float]:
@@ -125,7 +123,11 @@ class Testing_Execution(unittest.TestCase):
         mesh_filename = "../../example/meshes/circle.xdmf"
 
         out = sfsi_toy_gaussian_reg.run_inversion(
-            mesh_filename, nx, ny, noise_variance, prior_param,
+            mesh_filename,
+            nx,
+            ny,
+            noise_variance,
+            prior_param,
         )
         check_output(self, out)
 

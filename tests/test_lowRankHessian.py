@@ -30,8 +30,8 @@ import numpy as np
 
 import hippylibX as hpx
 
-sys.path.append(os.path.abspath("../../example"))
-from example import poisson_dirichlet_example
+sys.path.append(os.path.abspath("../example"))
+import poisson_dirichlet_example
 
 
 def low_Rank_Hessian_mult_solve(prior: Any, d: np.array, U: hpx.MultiVector) -> tuple[float, float]:

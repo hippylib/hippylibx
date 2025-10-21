@@ -27,7 +27,8 @@ class ReducedHessian:
     The constructor takes the following parameters:
 
     - :code:`model`:               the object which contains the description of the problem.
-    - :code:`misfit_only`:         a boolean flag that describes whenever the full Hessian or only the misfit component of the Hessian is used.
+    - :code:`misfit_only`:         a boolean flag that describes whenever the full
+         Hessian or only the misfit component of the Hessian is used.
 
     Type :code:`help(modelTemplate)` for more information on which methods model should implement.
     """
@@ -49,7 +50,8 @@ class ReducedHessian:
         self.yhelp = model.generate_vector(PARAMETER)
 
         self.petsc_wrapper = petsc4py.PETSc.Mat().createPython(
-            self.model.prior.M.getSizes(), comm=self.model.prior.Vh.mesh.comm,
+            self.model.prior.M.getSizes(),
+            comm=self.model.prior.Vh.mesh.comm,
         )
         self.petsc_wrapper.setPythonContext(self)
         self.petsc_wrapper.setUp()

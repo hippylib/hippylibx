@@ -75,7 +75,8 @@ class NonGaussianContinuousMisfit(object):
             dlx.fem.form(ufl.derivative(self.form(*x_fun), x_fun[i], self.x_test[i])),
         )
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
+            petsc4py.PETSc.InsertMode.ADD_VALUES,
+            petsc4py.PETSc.ScatterMode.REVERSE,
         )
         dlx.fem.petsc.set_bc(out.petsc_vec, self.bc0)
 
@@ -88,7 +89,7 @@ class NonGaussianContinuousMisfit(object):
         self.gauss_newton_approx = gauss_newton_approx
 
     def apply_ij(self, i: int, j: int, dir: dlx.la.Vector, out: dlx.la.Vector) -> None:
-        """
+        r"""
         Apply the second variation :math:`\delta_{ij}` (:code:`i,j = STATE,PARAMETER`) of the cost in direction :code:`dir`.
         """
         form = self.form(*self.x_lin_fun)
@@ -106,7 +107,8 @@ class NonGaussianContinuousMisfit(object):
         out.array[:] = 0.0
         dlx.fem.petsc.assemble_vector(out.petsc_vec, action)
         out.petsc_vec.ghostUpdate(
-            petsc4py.PETSc.InsertMode.ADD_VALUES, petsc4py.PETSc.ScatterMode.REVERSE,
+            petsc4py.PETSc.InsertMode.ADD_VALUES,
+            petsc4py.PETSc.ScatterMode.REVERSE,
         )
         if i == hpx.STATE:
             dlx.fem.petsc.set_bc(out.petsc_vec, self.bc0)
