@@ -86,7 +86,7 @@ class NonGaussianContinuousMisfit(object):
         self.gauss_newton_approx = gauss_newton_approx
 
     def apply_ij(self, i: int, j: int, dir: dlx.la.Vector, out: dlx.la.Vector) -> None:
-        """
+        r"""
         Apply the second variation :math:`\delta_{ij}` (:code:`i,j = STATE,PARAMETER`) of the cost in direction :code:`dir`.
         """
         form = self.form(*self.x_lin_fun)

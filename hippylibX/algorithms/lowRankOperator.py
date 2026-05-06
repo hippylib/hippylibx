@@ -41,7 +41,7 @@ class LowRankOperator:
         self.U.reduce(y, dUtx)
 
     def solve(self, rhs: petsc4py.PETSc.Vec, sol: petsc4py.PETSc.Vec) -> None:
-        """
+        r"""
         Compute :math:`\mbox{sol} = U D^-1 U^T x`
         """
         Utr = self.U.dot(rhs)
@@ -60,7 +60,7 @@ class LowRankOperator:
             diag.axpy(self.d[i], tmp)
 
     def trace(self, W=None) -> float:
-        """
+        r"""
         Compute the trace of :code:`A`.
         If the weight :code:`W` is given, compute the trace of :math:`W^{1/2} A W^{1/2}`.
         This is equivalent to :math:`\mbox{tr}_W(A) = \sum_i \lambda_i`,
