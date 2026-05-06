@@ -91,7 +91,7 @@ class NonGaussianContinuousMisfit(object):
         """
         form = self.form(*self.x_lin_fun)
         if j == hpx.STATE:
-            dlx.fem.set_bc(dir.array, self.bc0)
+            dlx.fem.petsc.set_bc(dir.petsc_vec, self.bc0)
 
         dir_fun = hpx.vector2Function(dir, self.Vh[j])
         action = dlx.fem.form(
