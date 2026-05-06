@@ -210,12 +210,12 @@ def MatMvTranspmult(A: petsc4py.PETSc.Mat, x: MultiVector, y: MultiVector) -> No
 
 
 def MvDSmatMult(X: MultiVector, A: np.array, Y: MultiVector) -> None:
-    assert (
-        X.nvec == A.shape[0]
-    ), "X Number of vecs incompatible with number of rows in A"
-    assert (
-        Y.nvec == A.shape[1]
-    ), "Y Number of vecs incompatible with number of cols in A"
+    assert X.nvec == A.shape[0], (
+        "X Number of vecs incompatible with number of rows in A"
+    )
+    assert Y.nvec == A.shape[1], (
+        "Y Number of vecs incompatible with number of cols in A"
+    )
     for j in range(Y.nvec):
         Y[j].scale(0.0)
         X.reduce(Y[j], A[:, j].flatten())

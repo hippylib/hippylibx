@@ -106,8 +106,10 @@ def run_inversion(
 
     m0 = dlx.fem.Function(Vh_m)
     m0.interpolate(
-        lambda x: (np.log(2) + np.log(9)) / 2
-        + (np.log(9) - np.log(2)) / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
+        lambda x: (
+            (np.log(2) + np.log(9)) / 2
+            + (np.log(9) - np.log(2)) / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
+        )
     )
     m0.x.scatter_forward()
     m0 = m0.x

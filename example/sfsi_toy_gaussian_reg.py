@@ -99,8 +99,10 @@ def run_inversion(
     # GROUND TRUTH
     m_true = dlx.fem.Function(Vh_m)
     m_true.interpolate(
-        lambda x: np.log(0.01)
-        + 3.0 * (((x[0] - 2.0) * (x[0] - 2.0) + (x[1] - 2.0) * (x[1] - 2.0)) < 1.0)
+        lambda x: (
+            np.log(0.01)
+            + 3.0 * (((x[0] - 2.0) * (x[0] - 2.0) + (x[1] - 2.0) * (x[1] - 2.0)) < 1.0)
+        )
     )
 
     m_true.x.scatter_forward()
@@ -138,8 +140,10 @@ def run_inversion(
 
     m0 = dlx.fem.Function(Vh_m)
     m0.interpolate(
-        lambda x: (2 * np.log(0.01) + 3) / 2
-        + 3 / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
+        lambda x: (
+            (2 * np.log(0.01) + 3) / 2
+            + 3 / 2 * np.sin(np.pi * x[0]) * np.cos(np.pi * x[1])
+        )
     )
     m0.x.scatter_forward()
     m0 = m0.x
