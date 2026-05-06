@@ -334,7 +334,7 @@ class PDEVariationalProblem:
                     ufl.derivative(g_form[STATE], x_fun[STATE], x_fun_trial[STATE])
                 ),
                 self.bc0,
-                diagonal=0.0,
+                diag=0.0,
             )
             self.Wuu.assemble()
 
