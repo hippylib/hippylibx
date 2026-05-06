@@ -291,7 +291,7 @@ class PDEVariationalProblem:
                 )
             ),
             bcs=self.bc0,
-            diagonal=0.0,
+            diag=0.0,
         )
         self.C.assemble()
 
