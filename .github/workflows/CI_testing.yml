@@ -11,7 +11,7 @@ defaults:
 
 jobs:
   style:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container:
       image: dolfinx/dolfinx:stable
       options: --privileged 
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Print dolfinx version
         run: |
