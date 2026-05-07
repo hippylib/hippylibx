@@ -86,12 +86,13 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     bs = V.dofmap.bs
 
     ndofs_global = index_map.size_global * bs
+    ndofs_local = index_map.size_local * bs
     nrows_global = x.shape[0]
 
     nrows_local = len(point_owner_rows)
 
     P = PETSc.Mat().createAIJ(
-        size=((nrows_local, nrows_global), (ndofs_global, ndofs_global)),
+        size=((nrows_local, nrows_global), (ndofs_local, ndofs_global)),
         comm=comm,
     )
 
