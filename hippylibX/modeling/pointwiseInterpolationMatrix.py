@@ -86,14 +86,28 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
 
     ndofs_global = index_map.size_global * bs
     ndofs_local = index_map.size_local * bs
+    
     nrows_global = x.shape[0]
-
     nrows_local = len(point_owner_rows)
 
     P = PETSc.Mat().createAIJ(
         size=((nrows_local, nrows_global), (ndofs_local, ndofs_global)),
         comm=comm,
     )
+
+    local_dofs = np.arange(index_map.size_local + index_map.num_ghosts,
+                       dtype=np.int32)
+
+    global_dofs = index_map.local_to_global(local_dofs)
+
+    lgmap_dofs = PETSc.LGMap().create(global_dofs, comm=comm)
+
+    row_lgmap = PETSc.LGMap().create(
+        np.array(point_owner_rows, dtype=np.int32),
+        comm=comm
+    )
+
+    P.setLGMap(row_lgmap, lgmap_dofs )
 
     # ------------------------------------------------------------
     # Tabulate basis functions at interpolation points
@@ -132,7 +146,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
             values = basis.reshape(-1)
             cols = np.repeat(cell_dofs, basis.shape[1])
 
-        P.setValues(
+        P.setValuesLocal(
             [row_local],
             cols,
             values,
