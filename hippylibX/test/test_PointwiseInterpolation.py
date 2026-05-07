@@ -1,9 +1,14 @@
 from mpi4py import MPI
 import dolfinx as dlx
 import numpy as np
-
-import hippylibX as hpx
 import unittest
+
+import sys
+import os
+
+sys.path.append(os.path.abspath("../.."))
+import hippylibX as hpx
+
 
 class Testing_Execution(unittest.TestCase):
     def test(self):
