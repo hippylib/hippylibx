@@ -98,7 +98,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     local_dofs = np.arange(index_map.size_local + index_map.num_ghosts,
                        dtype=np.int32)
 
-    global_dofs = index_map.local_to_global(local_dofs)
+    global_dofs = index_map.local_to_global(local_dofs).astype(np.int32)
 
     lgmap_dofs = PETSc.LGMap().create(global_dofs, comm=comm)
 
