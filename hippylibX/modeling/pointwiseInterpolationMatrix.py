@@ -117,7 +117,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         )
 
         # Evaluate basis functions on reference cell
-        basis = element.tabulate(0, x_ref)[0, 0, :, :]
+        basis = element.basix_element.tabulate(0, x_ref)[0, 0, :, :]
 
         # Cell dofs
         cell_dofs = V.dofmap.cell_dofs(cell)
