@@ -11,7 +11,7 @@ import hippylibX as hpx
 
 
 class Testing_Execution(unittest.TestCase):
-    def test(self):
+    def test2d_scalar_CG1(self):
         # Mesh and function space
         domain = dlx.mesh.create_unit_square(MPI.COMM_WORLD, 8, 8)
         V = dlx.fem.functionspace(domain, ("Lagrange", 1))
@@ -36,7 +36,33 @@ class Testing_Execution(unittest.TestCase):
         y = P.createVecLeft()
         P.mult(u_vec, y)
 
+        # ------------------------------------------------------------
+        # Gather interpolated values on rank 0
+        # ------------------------------------------------------------
+        comm = MPI.COMM_WORLD
+        rank = comm.rank
+
+        y_local = y.array
+
+        gathered = comm.gather(y_local, root=0)
+
+        if rank == 0:
+            # Concatenate contributions from all ranks
+            y_global = np.concatenate(gathered)
+
+            # True values
+            y_true = x[:, 0] + 2.0 * x[:, 1]
+
+            print("Interpolated values:", y_global)
+            print("True values:        ", y_true)
+            print("Error:              ", np.abs(y_global - y_true))
+
+            np.testing.assert_allclose(
+                y_global,
+                y_true,
+                rtol=1e-12,
+                atol=1e-12,
+            )
+
 if __name__ == "__main__":
     unittest.main()
-
-    print(y.array)
