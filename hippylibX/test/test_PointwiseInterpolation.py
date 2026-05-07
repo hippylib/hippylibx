@@ -24,7 +24,7 @@ class Testing_Execution(unittest.TestCase):
         ])
 
         # Build interpolation matrix
-        P = hpx.point_interpolation_matrix(V, x)
+        P = hpx.pointwiseInterpolationMatrix(V, x)
 
         # Example function
         u = dlx.fem.Function(V)
