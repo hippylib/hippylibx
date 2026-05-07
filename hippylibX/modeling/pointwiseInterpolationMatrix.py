@@ -41,9 +41,19 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     gdim = mesh.geometry.dim
 
     x = np.asarray(x, dtype=np.float64)
+    # DOLFINx geometry routines expect 3D coordinates
+    if x.ndim == 1:
+        x = x.reshape(1, -1)
 
-    if x.ndim != 2 or x.shape[1] != gdim:
-        raise ValueError(f"x must have shape (npoints, {gdim})")
+    if x.shape[1] == 2:
+        x3 = np.zeros((x.shape[0], 3), dtype=np.float64)
+        x3[:, :2] = x
+        x = x3
+    elif x.shape[1] != 3:
+        raise ValueError("Points must have shape (N,2) or (N,3)")
+
+    if x.ndim != 2 or x.shape[1] != 3:
+        raise ValueError(f"x must have shape (npoints, 3)")
 
     # ------------------------------------------------------------
     # Find which cells contain the interpolation points
