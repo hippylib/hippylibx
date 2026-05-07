@@ -112,7 +112,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
 
         # Pull physical point back to reference cell
         x_ref = cmap.pull_back(
-            xp.reshape(1, gdim),
+            xp.reshape(1, 3),
             cell_geometry
         )
 
