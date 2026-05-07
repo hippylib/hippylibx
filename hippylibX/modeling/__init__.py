@@ -20,4 +20,4 @@ from .laplaceApproximation import (
     LowRankPosteriorSampler,  # noqa
     LaplaceApproximator,  # noqa
 )
-from .pointwiseInterpolationMatrix import pointwiseInterpolationMatrix
+from .pointwiseInterpolationMatrix import pointwiseInterpolationMatrix #noqa
