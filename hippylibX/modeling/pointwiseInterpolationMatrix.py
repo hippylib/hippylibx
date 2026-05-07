@@ -83,7 +83,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     # Prepare PETSc matrix
     # ------------------------------------------------------------
     index_map = V.dofmap.index_map
-    bs = index_map.bs
+    bs = V.dofmap.bs
 
     ndofs_global = index_map.size_global * bs
     nrows_global = x.shape[0]
