@@ -54,6 +54,17 @@ def dofLGmap(comm, index_map, bs):
 
     return lgmap
 
+def valLGmap(comm, point_owner_rows, bs_val):
+    row_l2g = np.empty(len(point_owner_rows) * bs_val, dtype=np.int32)
+
+    for i, p in enumerate(point_owner_rows):
+        for b in range(bs_val):
+            row_l2g[i * bs_val + b] = p * bs_val + b
+
+    row_lgmap = PETSc.LGMap().create(row_l2g, comm=comm)
+
+    return row_lgmap
+
 def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.Mat:
     """
     Build a PETSc sparse matrix P such that
@@ -107,13 +118,18 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     # ------------------------------------------------------------
     index_map = V.dofmap.index_map
     bs_dofs = V.dofmap.bs
+
+    if len(V.element.value_shape) == 0: 
+        bs_val = 1
+    else:
+        bs_val = int( np.prod(V.element.value_shape) )
   
 
     ndofs_global = index_map.size_global * bs_dofs
     ndofs_local = index_map.size_local * bs_dofs
     
-    nrows_global = x.shape[0]
-    nrows_local = len(point_owner_rows)
+    nrows_global = x.shape[0] * bs_val
+    nrows_local = len(point_owner_rows) * bs_val
 
     P = PETSc.Mat().createAIJ(
         size=((nrows_local, nrows_global), (ndofs_local, ndofs_global)),
@@ -122,10 +138,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
 
     lgmap_dofs = dofLGmap(comm, index_map, bs_dofs) 
 
-    row_lgmap = PETSc.LGMap().create(
-        np.array(point_owner_rows, dtype=np.int32),
-        comm=comm
-    )
+    row_lgmap = valLGmap(comm, point_owner_rows, bs_val)
 
     P.setLGMap(row_lgmap, lgmap_dofs )
 
@@ -156,22 +169,16 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         # Cell dofs
         cell_dofs = V.dofmap.cell_dofs(cell)
 
-        # Scalar FE space
-        if basis.shape[1] == 1:
-            values = basis[:, 0]
-            cols = cell_dofs
-
-        # Vector/tensor FE space
-        else:
-            values = basis.reshape(-1)
-            cols = np.repeat(cell_dofs, basis.shape[1])
-
-        P.setValuesLocal(
-            [row_local],
-            cols,
-            values,
-            addv=PETSc.InsertMode.ADD_VALUES,
-        )
+        for b in range(bs_val):
+            row = row_local * bs_val + b
+            vals_b = basis[:, min([b,basis.shape[1]-1])] # 0 for lagrangian elements, b for RT/ND
+            
+            P.setValuesLocal(
+                [row],
+                cell_dofs * bs_dofs + b,
+                vals_b,
+                addv=PETSc.InsertMode.ADD_VALUES,
+            )
 
     P.assemblyBegin()
     P.assemblyEnd()
