@@ -15,20 +15,22 @@ class Testing_Execution(unittest.TestCase):
         # Mesh and function space
         domain = dlx.mesh.create_unit_square(MPI.COMM_WORLD, 8, 8)
         V = dlx.fem.functionspace(domain, ("Lagrange", 1))
-    
+
         # Interpolation points
-        x = np.array([
-            [0.2, 0.3],
-            [0.7, 0.4],
-            [0.9, 0.8],
-        ])
+        x = np.array(
+            [
+                [0.2, 0.3],
+                [0.7, 0.4],
+                [0.9, 0.8],
+            ]
+        )
 
         # Build interpolation matrix
         P = hpx.pointwiseInterpolationMatrix(V, x)
 
         # Example function
         u = dlx.fem.Function(V)
-        u.interpolate(lambda x: x[0] + 2*x[1])
+        u.interpolate(lambda x: x[0] + 2 * x[1])
 
         # Apply interpolation matrix
         u_vec = u.x.petsc_vec
@@ -70,11 +72,14 @@ class Testing_Execution(unittest.TestCase):
         V = dlx.fem.functionspace(domain, ("Lagrange", 1, (2,)))
 
         # Interpolation points
-        x = np.array([
-            [0.2, 0.3],
-            [0.7, 0.4],
-            [0.9, 0.8],
-        ], dtype=np.float64)
+        x = np.array(
+            [
+                [0.2, 0.3],
+                [0.7, 0.4],
+                [0.9, 0.8],
+            ],
+            dtype=np.float64,
+        )
 
         # Build interpolation matrix
         P = hpx.pointwiseInterpolationMatrix(V, x)
@@ -86,12 +91,7 @@ class Testing_Execution(unittest.TestCase):
         #
         u = dlx.fem.Function(V)
 
-        u.interpolate(
-            lambda x: np.vstack((
-                x[0] + 2.0 * x[1],
-                3.0 * x[0] - x[1]
-            ))
-        )
+        u.interpolate(lambda x: np.vstack((x[0] + 2.0 * x[1], 3.0 * x[0] - x[1])))
 
         # Apply interpolation matrix
         u_vec = u.x.petsc_vec
@@ -117,10 +117,7 @@ class Testing_Execution(unittest.TestCase):
             y_global = y_global.reshape(len(x), 2)
 
             # True values
-            y_true = np.column_stack((
-                x[:, 0] + 2.0 * x[:, 1],
-                3.0 * x[:, 0] - x[:, 1]
-            ))
+            y_true = np.column_stack((x[:, 0] + 2.0 * x[:, 1], 3.0 * x[:, 0] - x[:, 1]))
 
             print("Interpolated values:")
             print(y_global)
@@ -137,6 +134,7 @@ class Testing_Execution(unittest.TestCase):
                 rtol=1e-12,
                 atol=1e-12,
             )
+
 
 if __name__ == "__main__":
     unittest.main()

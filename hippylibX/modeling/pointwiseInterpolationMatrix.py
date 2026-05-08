@@ -1,12 +1,10 @@
 import numpy as np
 from petsc4py import PETSc
 
-import dolfinx
 from dolfinx import fem, geometry
 
 
-
-def findPoints(mesh,x):
+def findPoints(mesh, x):
     # ------------------------------------------------------------
     # Find which cells contain the interpolation points
     # ------------------------------------------------------------
@@ -14,9 +12,7 @@ def findPoints(mesh,x):
     bb_tree = geometry.bb_tree(mesh, tdim)
 
     candidate_cells = geometry.compute_collisions_points(bb_tree, x)
-    colliding_cells = geometry.compute_colliding_cells(
-        mesh, candidate_cells, x
-    )
+    colliding_cells = geometry.compute_colliding_cells(mesh, candidate_cells, x)
 
     local_points = []
     local_cells = []
@@ -33,6 +29,7 @@ def findPoints(mesh,x):
     local_points = np.array(local_points, dtype=np.float64)
 
     return local_points, local_cells, point_owner_rows
+
 
 def dofLGmap(comm, index_map, bs):
     nlocal = index_map.size_local
@@ -54,6 +51,7 @@ def dofLGmap(comm, index_map, bs):
 
     return lgmap
 
+
 def valLGmap(comm, point_owner_rows, bs_val):
     row_l2g = np.empty(len(point_owner_rows) * bs_val, dtype=np.int32)
 
@@ -64,6 +62,7 @@ def valLGmap(comm, point_owner_rows, bs_val):
     row_lgmap = PETSc.LGMap().create(row_l2g, comm=comm)
 
     return row_lgmap
+
 
 def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.Mat:
     """
@@ -109,9 +108,9 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         raise ValueError("Points must have shape (N,2) or (N,3)")
 
     if x.ndim != 2 or x.shape[1] != 3:
-        raise ValueError(f"x must have shape (npoints, 3)")
+        raise ValueError("x must have shape (npoints, 3)")
 
-    local_points, local_cells, point_owner_rows = findPoints(mesh,x)
+    local_points, local_cells, point_owner_rows = findPoints(mesh, x)
 
     # ------------------------------------------------------------
     # Prepare PETSc matrix
@@ -119,15 +118,14 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     index_map = V.dofmap.index_map
     bs_dofs = V.dofmap.bs
 
-    if len(V.element.value_shape) == 0: 
+    if len(V.element.value_shape) == 0:
         bs_val = 1
     else:
-        bs_val = int( np.prod(V.element.value_shape) )
-  
+        bs_val = int(np.prod(V.element.value_shape))
 
     ndofs_global = index_map.size_global * bs_dofs
     ndofs_local = index_map.size_local * bs_dofs
-    
+
     nrows_global = x.shape[0] * bs_val
     nrows_local = len(point_owner_rows) * bs_val
 
@@ -136,11 +134,11 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         comm=comm,
     )
 
-    lgmap_dofs = dofLGmap(comm, index_map, bs_dofs) 
+    lgmap_dofs = dofLGmap(comm, index_map, bs_dofs)
 
     row_lgmap = valLGmap(comm, point_owner_rows, bs_val)
 
-    P.setLGMap(row_lgmap, lgmap_dofs )
+    P.setLGMap(row_lgmap, lgmap_dofs)
 
     # ------------------------------------------------------------
     # Tabulate basis functions at interpolation points
@@ -158,10 +156,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         cell_geometry = x_g[geom_dofs]
 
         # Pull physical point back to reference cell
-        x_ref = cmap.pull_back(
-            xp.reshape(1, 3),
-            cell_geometry
-        )
+        x_ref = cmap.pull_back(xp.reshape(1, 3), cell_geometry)
 
         # Evaluate basis functions on reference cell
         basis = element.basix_element.tabulate(0, x_ref)[0, 0, :, :]
@@ -171,8 +166,10 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
 
         for b in range(bs_val):
             row = row_local * bs_val + b
-            vals_b = basis[:, min([b,basis.shape[1]-1])] # 0 for lagrangian elements, b for RT/ND
-            
+            vals_b = basis[
+                :, min([b, basis.shape[1] - 1])
+            ]  # 0 for lagrangian elements, b for RT/ND
+
             P.setValuesLocal(
                 [row],
                 cell_dofs * bs_dofs + b,
