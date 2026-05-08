@@ -3,8 +3,56 @@ from petsc4py import PETSc
 
 import dolfinx
 from dolfinx import fem, geometry
-from ufl import TrialFunction
 
+
+
+def findPoints(mesh,x):
+    # ------------------------------------------------------------
+    # Find which cells contain the interpolation points
+    # ------------------------------------------------------------
+    tdim = mesh.topology.dim
+    bb_tree = geometry.bb_tree(mesh, tdim)
+
+    candidate_cells = geometry.compute_collisions_points(bb_tree, x)
+    colliding_cells = geometry.compute_colliding_cells(
+        mesh, candidate_cells, x
+    )
+
+    local_points = []
+    local_cells = []
+    point_owner_rows = []
+
+    for i in range(x.shape[0]):
+        cells = colliding_cells.links(i)
+
+        if len(cells) > 0:
+            local_points.append(x[i])
+            local_cells.append(cells[0])
+            point_owner_rows.append(i)
+
+    local_points = np.array(local_points, dtype=np.float64)
+
+    return local_points, local_cells, point_owner_rows
+
+def dofLGmap(comm, index_map, bs):
+    nlocal = index_map.size_local
+    nghost = index_map.num_ghosts
+
+    # Block dofs
+    local_blocks = np.arange(nlocal + nghost, dtype=np.int32)
+
+    global_blocks = index_map.local_to_global(local_blocks)
+
+    # Expand block -> scalar numbering
+    local_to_global = np.empty((nlocal + nghost) * bs, dtype=np.int32)
+
+    for i, g in enumerate(global_blocks):
+        for b in range(bs):
+            local_to_global[i * bs + b] = g * bs + b
+
+    lgmap = PETSc.LGMap().create(local_to_global, comm=comm)
+
+    return lgmap
 
 def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.Mat:
     """
@@ -36,8 +84,6 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
 
     mesh = V.mesh
     comm = mesh.comm
-    tdim = mesh.topology.dim
-    gdim = mesh.geometry.dim
 
     x = np.asarray(x, dtype=np.float64)
     # DOLFINx geometry routines expect 3D coordinates
@@ -54,38 +100,17 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     if x.ndim != 2 or x.shape[1] != 3:
         raise ValueError(f"x must have shape (npoints, 3)")
 
-    # ------------------------------------------------------------
-    # Find which cells contain the interpolation points
-    # ------------------------------------------------------------
-    bb_tree = geometry.bb_tree(mesh, tdim)
-
-    candidate_cells = geometry.compute_collisions_points(bb_tree, x)
-    colliding_cells = geometry.compute_colliding_cells(
-        mesh, candidate_cells, x
-    )
-
-    local_points = []
-    local_cells = []
-    point_owner_rows = []
-
-    for i in range(x.shape[0]):
-        cells = colliding_cells.links(i)
-
-        if len(cells) > 0:
-            local_points.append(x[i])
-            local_cells.append(cells[0])
-            point_owner_rows.append(i)
-
-    local_points = np.array(local_points, dtype=np.float64)
+    local_points, local_cells, point_owner_rows = findPoints(mesh,x)
 
     # ------------------------------------------------------------
     # Prepare PETSc matrix
     # ------------------------------------------------------------
     index_map = V.dofmap.index_map
-    bs = V.dofmap.bs
+    bs_dofs = V.dofmap.bs
+  
 
-    ndofs_global = index_map.size_global * bs
-    ndofs_local = index_map.size_local * bs
+    ndofs_global = index_map.size_global * bs_dofs
+    ndofs_local = index_map.size_local * bs_dofs
     
     nrows_global = x.shape[0]
     nrows_local = len(point_owner_rows)
@@ -95,12 +120,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         comm=comm,
     )
 
-    local_dofs = np.arange(index_map.size_local + index_map.num_ghosts,
-                       dtype=np.int32)
-
-    global_dofs = index_map.local_to_global(local_dofs).astype(np.int32)
-
-    lgmap_dofs = PETSc.LGMap().create(global_dofs, comm=comm)
+    lgmap_dofs = dofLGmap(comm, index_map, bs_dofs) 
 
     row_lgmap = PETSc.LGMap().create(
         np.array(point_owner_rows, dtype=np.int32),

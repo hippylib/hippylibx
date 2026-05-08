@@ -25,7 +25,7 @@ jobs:
         run: |
           python3 -c "import dolfinx; print(dolfinx.__version__)"
 
-      - name: multivector testing
+      - name: pointwise interpolation testing
         run: |
           cd ./hippylibX/test &&
           mpirun -n 2 python3 test_PointwiseInterpolation.py
