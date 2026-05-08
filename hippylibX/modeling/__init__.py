@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------ec-
 
 from .PDEProblem import PDEVariationalProblem  # noqa
-from .misfit import NonGaussianContinuousMisfit  # noqa
+from .misfit import DiscreteStateObservationMisfit, NonGaussianContinuousMisfit  # noqa
 from .prior import BiLaplacianPrior  # noqa
 from .model import Model  # noqa
 from .modelVerify import modelVerify  # noqa

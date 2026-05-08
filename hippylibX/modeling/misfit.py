@@ -14,6 +14,56 @@ from mpi4py import MPI
 import petsc4py
 
 
+class DiscreteStateObservationMisfit(object):
+    r"""
+    This class define a misfit function for a discrete linear observation operator B
+    math: 1/(2\sigma^2) || B u - d ||^2
+    """
+
+    def __init__(self, B: petsc4py.PETSc.Mat, d: petsc4py.PETSc.Mat, sigma2: float):
+        r"""
+        Constructor:
+        :code:`B` is the observation operator
+        :code:`d` is the data
+        :code:`sigma2` is the variance of the noise
+        """
+        self.B = B
+        self.d = d
+        self.sigma2 = sigma2
+        self.y = self.B.createVecLeft()
+        self.s = self.B.createVecRight()
+
+    def cost(self, x: list) -> float:
+        self.B.mult(x[hpx.STATE].petsc_vec, self.y)
+        self.y.axpy(-1.0, self.d)
+        return (0.5 / self.sigma2) * self.y.dot(self.y)
+
+    def grad(self, i: int, x: list, out: dlx.la.Vector) -> None:
+        if i == hpx.STATE:
+            self.B.mult(x[hpx.STATE].petsc_vec, self.y)
+            self.y.axpy(-1.0, self.d)
+            self.y.scale(1.0 / self.sigma2)
+            self.B.multTranspose(self.y, out.petsc_vec)
+        elif i == hpx.PARAMETER:
+            out.petsc_vec.zeroEntries()
+        else:
+            raise (i)
+
+    def setLinearizationPoint(self, x: list, gauss_newton_approx=False) -> None:
+        pass
+
+    def apply_ij(self, i: int, j: int, dir: dlx.la.Vector, out: dlx.la.Vector) -> None:
+        r"""
+        Apply the second variation :math:`\delta_{ij}` (:code:`i,j = STATE,PARAMETER`) of the cost in direction :code:`dir`.
+        """
+        if i == hpx.STATE and j == hpx.STATE:
+            self.B.mult(dir.petsc_vec, self.y)
+            self.y.scale(1.0 / self.sigma2)
+            self.B.multTranspose(self.y, out.petsc_vec)
+        else:
+            out.petsc_vec.zeroEntries()
+
+
 class NonGaussianContinuousMisfit(object):
     """
     Abstract class to model the misfit component of the cost functional.
