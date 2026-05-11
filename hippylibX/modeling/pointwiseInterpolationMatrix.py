@@ -95,6 +95,10 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     mesh = V.mesh
     comm = mesh.comm
 
+    family = V.element.basix_element.family.name
+    if family in ["RT", "BDM", "N1E", "N2F"]:
+        raise ValueError(f"Unsupported finite element family {family}")
+
     x = np.asarray(x, dtype=np.float64)
     # DOLFINx geometry routines expect 3D coordinates
     if x.ndim == 1:
@@ -158,21 +162,27 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         # Pull physical point back to reference cell
         x_ref = cmap.pull_back(xp.reshape(1, 3), cell_geometry)
 
-        # Evaluate basis functions on reference cell
+        # Evaluate basis functions on reference cell and pull back
         basis = element.basix_element.tabulate(0, x_ref)[0, 0, :, :]
 
         # Cell dofs
         cell_dofs = V.dofmap.cell_dofs(cell)
 
-        for b in range(bs_val):
-            row = row_local * bs_val + b
-            vals_b = basis[
-                :, min([b, basis.shape[1] - 1])
-            ]  # 0 for lagrangian elements, b for RT/ND
+        for comp in range(bs_val):
+            row = row_local * bs_val + comp
+
+            if bs_dofs == bs_val:  # Lagrangian elements
+                cols = cell_dofs * bs_dofs + comp
+                vals_b = basis[:, 0]
+            elif bs_dofs == 1:  # RT/ND
+                cols = cell_dofs
+                vals_b = basis[:, comp]
+            else:
+                raise ValueError(f"Unsupported block size bs={bs_dofs}")
 
             P.setValuesLocal(
                 [row],
-                cell_dofs * bs_dofs + b,
+                cols,
                 vals_b,
                 addv=PETSc.InsertMode.ADD_VALUES,
             )

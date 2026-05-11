@@ -135,6 +135,25 @@ class Testing_Execution(unittest.TestCase):
                 atol=1e-12,
             )
 
+    def test2d_RT(self):
+        # Mesh and vector function space
+        domain = dlx.mesh.create_unit_square(MPI.COMM_WORLD, 8, 8)
+        V = dlx.fem.functionspace(domain, ("RT", 2))
+
+        # Interpolation points
+        x = np.array(
+            [
+                [0.2, 0.3],
+                [0.7, 0.4],
+                [0.9, 0.8],
+            ],
+            dtype=np.float64,
+        )
+
+        with self.assertRaises(ValueError):
+            # Build interpolation matrix
+            _ = hpx.pointwiseInterpolationMatrix(V, x)
+
 
 if __name__ == "__main__":
     unittest.main()
