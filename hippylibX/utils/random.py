@@ -51,6 +51,34 @@ class Random:
         out.array[:] += loc_random_numbers
         out.scatter_forward()
 
+    def _normal_perturb_petsc(self, sigma: float, out: petsc4py.PETSc.Vec) -> None:
+        """
+        Add a normal perturbation to a PETSc Vec (MPI-safe).
+
+        Parameters
+        ----------
+        sigma : float
+            Standard deviation of the Gaussian noise.
+        out : PETSc.Vec
+            Vector to perturb (modified in-place).
+        """
+
+        rng = np.random.default_rng(self.rng)
+
+        # Local + ghost size (consistent with PETSc layout in DOLFINx)
+        nlocal = out.getLocalSize()
+
+        # Generate perturbation ONLY for local portion
+        noise_local = rng.normal(loc=0.0, scale=sigma, size=nlocal)
+
+        # Add to local entries
+        with out.localForm() as loc:
+            loc.array[:] += noise_local
+
+        # Ensure ghost consistency (important in parallel)
+        out.assemblyBegin()
+        out.assemblyEnd()
+
     def _normal_perturb_multivec(self, sigma: float, out: MultiVector) -> None:
         """
         Add a normal perturbation to a MultiVector.
@@ -72,12 +100,16 @@ class Random:
         self, sigma: float, out: Union[dlx.la.Vector, MultiVector]
     ) -> None:
         """
-        Add a normal perturbation to a dolfinx Vector or MultiVector object.
+        Add a normal perturbation to a dolfinx Vector, petcs vec or MultiVector object.
         """
         if hasattr(out, "nvec"):
             self._normal_perturb_multivec(sigma, out)  # type: ignore
-        else:
+
+        elif hasattr(out, "petsc_vec"):
             self._normal_perturb_dlxVector(sigma, out)
+
+        else:
+            self._normal_perturb_petsc(sigma, out)
 
     def normal(self, sigma: float, out: Union[dlx.la.Vector, MultiVector]) -> None:
         """

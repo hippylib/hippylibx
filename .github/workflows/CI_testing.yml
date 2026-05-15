@@ -25,9 +25,10 @@ jobs:
         run: |
           python3 -c "import dolfinx; print(dolfinx.__version__)"
 
-      - name: ruff file checks
+      - name: pointwise interpolation testing
         run: |
-          pip install ruff && ruff check . && ruff format --check .
+          cd ./hippylibX/test &&
+          mpirun -n 2 python3 test_PointwiseInterpolation.py
 
       - name: multivector testing
         run: |
@@ -63,6 +64,10 @@ jobs:
         run: |
           cd ./hippylibX/test && 
           mpirun -n 2 python3 test_model.py 
+
+      - name: ruff file checks
+        run: |
+          pip install ruff && ruff check . && ruff format --diff .
 
       
 
