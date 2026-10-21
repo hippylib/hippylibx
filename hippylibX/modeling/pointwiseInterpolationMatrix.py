@@ -1,67 +1,72 @@
 import numpy as np
+from mpi4py import MPI
 from petsc4py import PETSc
 
 from dolfinx import fem, geometry
 
 
 def findPoints(mesh, x):
-    # ------------------------------------------------------------
-    # Find which cells contain the interpolation points
-    # ------------------------------------------------------------
+    """
+    Locate the points :code:`x` in the cells owned by this process.
+
+    A point that lies on the interface between processes (or in a ghost cell)
+    may be found by several processes; it is assigned to the lowest rank that
+    owns a cell containing it, so that every point is handled exactly once.
+    Points that are not found by any process (outside the mesh) are assigned
+    to rank 0, with cell -1.
+
+    Returns the local points, the cells containing them, and the indices of
+    these points in :code:`x` (in increasing order).
+    """
+    comm = mesh.comm
     tdim = mesh.topology.dim
+    num_owned_cells = mesh.topology.index_map(tdim).size_local
     bb_tree = geometry.bb_tree(mesh, tdim)
 
     candidate_cells = geometry.compute_collisions_points(bb_tree, x)
     colliding_cells = geometry.compute_colliding_cells(mesh, candidate_cells, x)
 
-    local_points = []
-    local_cells = []
-    point_owner_rows = []
+    npoints = x.shape[0]
+    found_cell = np.full(npoints, -1, dtype=np.int32)
+    for i in range(npoints):
+        owned = colliding_cells.links(i)
+        owned = owned[owned < num_owned_cells]
+        if len(owned) > 0:
+            found_cell[i] = owned[0]
 
-    for i in range(x.shape[0]):
-        cells = colliding_cells.links(i)
+    # Lowest rank that found the point wins
+    candidate_rank = np.where(found_cell >= 0, comm.rank, comm.size).astype(np.int32)
+    owner_rank = np.empty_like(candidate_rank)
+    comm.Allreduce(candidate_rank, owner_rank, op=MPI.MIN)
 
-        if len(cells) > 0:
-            local_points.append(x[i])
-            local_cells.append(cells[0])
-            point_owner_rows.append(i)
+    # Points outside the mesh go to rank 0
+    owner_rank[owner_rank == comm.size] = 0
 
-    local_points = np.array(local_points, dtype=np.float64)
+    point_ids = np.flatnonzero(owner_rank == comm.rank).astype(np.int32)
+    local_cells = found_cell[point_ids]
+    local_points = x[point_ids]
 
-    return local_points, local_cells, point_owner_rows
+    return local_points, local_cells, point_ids
 
 
 def dofLGmap(comm, index_map, bs):
-    nlocal = index_map.size_local
-    nghost = index_map.num_ghosts
-
-    # Block dofs
-    local_blocks = np.arange(nlocal + nghost, dtype=np.int32)
-
-    global_blocks = index_map.local_to_global(local_blocks)
-
-    # Expand block -> scalar numbering
-    local_to_global = np.empty((nlocal + nghost) * bs, dtype=np.int32)
-
-    for i, g in enumerate(global_blocks):
-        for b in range(bs):
-            local_to_global[i * bs + b] = g * bs + b
-
-    lgmap = PETSc.LGMap().create(local_to_global, comm=comm)
-
-    return lgmap
+    """Block local-to-global map of the (owned + ghost) dofs of a dofmap."""
+    nlocal = index_map.size_local + index_map.num_ghosts
+    global_blocks = index_map.local_to_global(np.arange(nlocal, dtype=np.int32))
+    return PETSc.LGMap().create(
+        global_blocks.astype(PETSc.IntType), bsize=bs, comm=comm
+    )
 
 
-def valLGmap(comm, point_owner_rows, bs_val):
-    row_l2g = np.empty(len(point_owner_rows) * bs_val, dtype=np.int32)
-
-    for i, p in enumerate(point_owner_rows):
-        for b in range(bs_val):
-            row_l2g[i * bs_val + b] = p * bs_val + b
-
-    row_lgmap = PETSc.LGMap().create(row_l2g, comm=comm)
-
-    return row_lgmap
+def pointLGmap(comm, point_ids, bs_val):
+    """
+    Block local-to-global map of the rows of the interpolation matrix: local
+    row block j corresponds to the point x[point_ids[j]], whose global row
+    block is point_ids[j] (the same numbering as in serial).
+    """
+    return PETSc.LGMap().create(
+        np.asarray(point_ids, dtype=PETSc.IntType), bsize=bs_val, comm=comm
+    )
 
 
 def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.Mat:
@@ -79,14 +84,25 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         DOLFINx function space.
     x
         Array of shape (npoints, gdim) containing spatial coordinates.
+        The same array must be passed on every process.
 
     Returns
     -------
     P : PETSc.Mat
         Parallel PETSc AIJ matrix of shape
-            (npoints_global, V.dofmap.index_map.size_global * bs)
+            (npoints * value_size, V.dofmap.index_map.size_global * bs)
 
         where bs = V.dofmap.index_map_bs.
+
+        Row i * value_size + comp is component comp of the value at x[i],
+        as in serial. Each process computes the rows of the points that lie
+        in its owned cells (a point on an interface between processes goes to
+        the lowest rank; points outside the mesh give zero rows and go to
+        rank 0), and inserts them through the row local-to-global map
+        ``P.getLGMap()[0]``, which maps local row block j to point_ids[j].
+        Each process has as many local rows as points it computes; PETSc
+        stores the rows in contiguous ranges of the global (x) ordering, so
+        rows computed on one process may be stored on another.
 
         Multiplying P by the global coefficient vector of a function in V
         gives the interpolated values at the requested points.
@@ -114,7 +130,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     if x.ndim != 2 or x.shape[1] != 3:
         raise ValueError("x must have shape (npoints, 3)")
 
-    local_points, local_cells, point_owner_rows = findPoints(mesh, x)
+    local_points, local_cells, point_ids = findPoints(mesh, x)
 
     # ------------------------------------------------------------
     # Prepare PETSc matrix
@@ -131,18 +147,20 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     ndofs_local = index_map.size_local * bs_dofs
 
     nrows_global = x.shape[0] * bs_val
-    nrows_local = len(point_owner_rows) * bs_val
+    nrows_local = len(point_ids) * bs_val
+
+    ndofs_per_cell = V.dofmap.dof_layout.num_dofs
 
     P = PETSc.Mat().createAIJ(
         size=((nrows_local, nrows_global), (ndofs_local, ndofs_global)),
+        nnz=(ndofs_per_cell, ndofs_per_cell),
         comm=comm,
     )
+    P.setOption(PETSc.Mat.Option.NEW_NONZERO_ALLOCATION_ERR, False)
 
-    lgmap_dofs = dofLGmap(comm, index_map, bs_dofs)
-
-    row_lgmap = valLGmap(comm, point_owner_rows, bs_val)
-
-    P.setLGMap(row_lgmap, lgmap_dofs)
+    row_lgmap = pointLGmap(comm, point_ids, bs_val)
+    col_lgmap = dofLGmap(comm, index_map, bs_dofs)
+    P.setLGMap(row_lgmap, col_lgmap)
 
     # ------------------------------------------------------------
     # Tabulate basis functions at interpolation points
@@ -152,9 +170,10 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
     x_g = mesh.geometry.x
     x_dofs = mesh.geometry.dofmap
 
-    for row_local, (row_global, cell, xp) in enumerate(
-        zip(point_owner_rows, local_cells, local_points)
-    ):
+    for row_block, (cell, xp) in enumerate(zip(local_cells, local_points)):
+        if cell < 0:  # point outside the mesh: zero row
+            continue
+
         # Geometry dofs for this cell
         geom_dofs = x_dofs[cell]
         cell_geometry = x_g[geom_dofs]
@@ -165,11 +184,11 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
         # Evaluate basis functions on reference cell and pull back
         basis = element.basix_element.tabulate(0, x_ref)[0, 0, :, :]
 
-        # Cell dofs
-        cell_dofs = V.dofmap.cell_dofs(cell)
+        # Cell dofs (local block indices)
+        cell_dofs = V.dofmap.cell_dofs(cell).astype(PETSc.IntType)
 
         for comp in range(bs_val):
-            row = row_local * bs_val + comp
+            row = row_block * bs_val + comp
 
             if bs_dofs == bs_val:  # Lagrangian elements
                 cols = cell_dofs * bs_dofs + comp
@@ -184,7 +203,7 @@ def pointwiseInterpolationMatrix(V: fem.FunctionSpace, x: np.ndarray) -> PETSc.M
                 [row],
                 cols,
                 vals_b,
-                addv=PETSc.InsertMode.ADD_VALUES,
+                addv=PETSc.InsertMode.INSERT_VALUES,
             )
 
     P.assemblyBegin()
