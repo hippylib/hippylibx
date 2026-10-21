@@ -142,6 +142,34 @@ class PDEVariationalProblem:
 
             A.destroy()
             b.destroy()
+        else:
+            # The input state is used as initial guess for the Newton solver
+            u = dlx.fem.Function(self.Vh[STATE])
+            updateFromVector(u, state)
+            p = ufl.TestFunction(self.Vh[ADJOINT])
+
+            res_form = self.varf_handler(u, mfun, p)
+
+            petsc_options = {
+                "snes_type": "newtonls",
+                "snes_linesearch_type": "bt",
+                "snes_rtol": 1e-9,
+                "snes_atol": 1e-12,
+                "snes_error_if_not_converged": True,
+                "ksp_error_if_not_converged": True,
+                **self.petsc_options,
+            }
+
+            problem = dlx.fem.petsc.NonlinearProblem(
+                res_form,
+                u,
+                bcs=self.bc,
+                petsc_options_prefix="hippylibx_fwd_",
+                petsc_options=petsc_options,
+            )
+            problem.solve()
+
+            state.array[:] = u.x.array
 
     def solveAdj(
         self, adj: dlx.la.Vector, x: dlx.la.Vector, adj_rhs: dlx.la.Vector
