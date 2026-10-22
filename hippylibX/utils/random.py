@@ -44,7 +44,7 @@ class Random:
         """
         Add a normal perturbation to a dolfinx Vector.
         """
-        num_local_values = out.index_map.size_local + out.index_map.num_ghosts
+        num_local_values = (out.index_map.size_local + out.index_map.num_ghosts) * out.block_size
         loc_random_numbers = np.random.default_rng(self.rng).normal(
             loc=0, scale=sigma, size=num_local_values
         )

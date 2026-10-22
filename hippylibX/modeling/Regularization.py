@@ -91,7 +91,7 @@ class VariationalRegularization:
         self.M.destroy()
 
     def generate_parameter(self, dim: int) -> dlx.la.Vector:
-        return dlx.la.Vector(self.Vh.dofmap.index_map)
+        return dlx.la.vector(self.Vh.dofmap.index_map, self.Vh.dofmap.index_map_bs)
 
     def _createsolver(self, petsc_options: dict) -> petsc4py.PETSc.KSP:
         ksp = petsc4py.PETSc.KSP().create(self.Vh.mesh.comm)
