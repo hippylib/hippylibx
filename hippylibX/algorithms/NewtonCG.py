@@ -244,10 +244,7 @@ class ReducedSpaceNewtonCG:
             HessApply.ncalls = 0
 
             solver.parameters["rel_tolerance"] = tolcg
-            if hasattr(self.model.prior, "Psolver"):
-                solver.set_preconditioner(self.model.Psolver())
-            else:
-                solver.set_preconditioner(self.model.Rsolver())
+            solver.set_preconditioner(self.model.Psolver())
 
             solver.solve(mg, mhat)
             self.total_cg_iter += HessApply.ncalls
@@ -391,12 +388,10 @@ class ReducedSpaceNewtonCG:
 
             HessApply.gauss_newton_approx = (self.it <= GN_iter)
             HessApply.ncalls = 0
-            if hasattr(self.model.prior, "Psolver"):
-                solver.set_preconditioner(self.model.Psolver())
-            else:
-                solver.set_preconditioner(self.model.Rsolver())
-            solver.parameters["rel_tolerance"] = tolcg
 
+            solver.parameters["rel_tolerance"] = tolcg
+            solver.set_preconditioner(self.model.Psolver())
+        
             solver.solve(mg, mhat)
             self.total_cg_iter += HessApply.ncalls
             alpha = 1.0
