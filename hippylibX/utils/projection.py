@@ -66,4 +66,3 @@ def projection(v, target_func, bcs=None):
     """
     projector = L2Projector(target_func.function_space, bcs)
     projector.project(v, target_func)
-    del projector
