@@ -133,7 +133,7 @@ class ReducedSpaceNewtonCG:
     
 
     def __init__(
-        self, model, parameters=ReducedSpaceNewtonCG_ParameterList()):
+        self, model, parameters=ReducedSpaceNewtonCG_ParameterList(), callback = None):
         """
         Initialize the ReducedSpaceNewtonCG.
         Type :code:`ReducedSpaceNewtonCG_ParameterList().showMe()` for list of default parameters
@@ -155,6 +155,8 @@ class ReducedSpaceNewtonCG:
         self.ncalls = 0
         self.reason = 0
         self.final_grad_norm = 0
+
+        self.callback = callback
 
     def solve(self, x: list) -> list:
         """
@@ -314,6 +316,8 @@ class ReducedSpaceNewtonCG:
                         tolcg,
                     )
                 )
+            if self.callback:
+                self.callback(self.it, x)
 
         self.final_grad_norm = gradnorm
         self.final_cost = cost_new
@@ -459,6 +463,9 @@ class ReducedSpaceNewtonCG:
                         tolcg,
                     )
                 )
+                
+            if self.callback:
+                self.callback(self.it, x)
 
             alpha_w = 1.0
             descent_w = 0
@@ -608,21 +615,7 @@ class ReducedSpaceNewtonCG:
                 accept_step = False
 
             if self.callback:
-                self.callback(
-                    self.it,
-                    x,
-                    cg_it=HessApply.ncalls,
-                    cost=cost_old,
-                    misfit=misfit_old,
-                    reg=reg_old,
-                    gdm=mg_mhat,
-                    gradnorm=gradnorm,
-                    alpha=1.0,
-                    tolcg=tolcg,
-                    fwd_solve=self.model.n_fwd_solve,
-                    adj_solve=self.model.n_adj_solve,
-                    inc_solve=self.model.n_inc_solve,
-                )
+                self.callback(self.it, x)
 
             if (print_level >= 0) and (self.it == 1):
                 print(
