@@ -325,7 +325,10 @@ class Model:
 
         The preconditioner object should implement the method :code:`Psolver.solve(z,r)` 
         """
-        return self.prior.Psolver
+        if hasattr(self.prior, "Psolver"):
+            return self.prior.Psolver
+        else
+            return self.prior.Rsolver
 
     def applyWmm(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
