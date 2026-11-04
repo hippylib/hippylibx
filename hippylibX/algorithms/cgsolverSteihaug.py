@@ -100,6 +100,12 @@ class CGSolverSteihaug:
 
         self.comm = comm
 
+    def destroy(self):
+        for v in ("r", "z", "d", "Ad", "Bx"):
+            obj = getattr(self, v, None)
+            if obj is not None:
+                obj.destroy()
+                
     def set_operator(self, A: petsc4py.PETSc.Mat):
         """
         Set the operator :math:`A`.
@@ -265,7 +271,7 @@ class CGSolverSteihaug:
             betanom = self.r.dot(self.z)
             if self.parameters["print_level"] == 1:
                 print(" Iteration : ", self.iter, " (B r, r) = ", betanom)
-
+                
             if betanom < r0:
                 self.converged = True
                 self.reasonid = 1
