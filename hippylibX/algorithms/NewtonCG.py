@@ -569,7 +569,6 @@ class ReducedSpaceNewtonCG:
             HessApply.gauss_newton_approx = (self.it <= GN_iter)
             HessApply.ncalls = 0
 
-            if hasattr(self.model.prior, "Psolver"):
             solver.set_preconditioner(self.model.Psolver())
             else:
                 solver.set_preconditioner(self.model.Rsolver())
