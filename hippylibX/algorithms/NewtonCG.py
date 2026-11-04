@@ -570,7 +570,6 @@ class ReducedSpaceNewtonCG:
             HessApply.ncalls = 0
 
             solver.set_preconditioner(self.model.Psolver())
-            else:
                 solver.set_preconditioner(self.model.Rsolver())
             if self.it > 1:
                 solver.set_TR(delta_TR, self.model.prior.R)
