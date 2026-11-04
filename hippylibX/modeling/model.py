@@ -327,7 +327,7 @@ class Model:
         """
         if hasattr(self.prior, "Psolver"):
             return self.prior.Psolver
-        else
+        else:
             return self.prior.Rsolver
 
     def applyWmm(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
