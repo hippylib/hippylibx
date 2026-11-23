@@ -123,18 +123,8 @@ class ReducedSpaceNewtonCG:
 
     Type :code:`help(Model)` for additional information
     """
-
-    termination_reasons = [
-        "Maximum number of Iteration reached",  # 0
-        "Norm of the gradient less than tolerance",  # 1
-        "Maximum number of backtracking reached",  # 2
-        "Norm of (g, dm) less than tolerance",  # 3
-        "Maximum backtracking reached for w",         # 4
-    ]
-    
-
     def __init__(
-        self, model, parameters=ReducedSpaceNewtonCG_ParameterList(), callback = None):
+        self, model, parameters=None, callback = None):
         """
         Initialize the ReducedSpaceNewtonCG.
         Type :code:`ReducedSpaceNewtonCG_ParameterList().showMe()` for list of default parameters
@@ -148,7 +138,11 @@ class ReducedSpaceNewtonCG:
                 the list of vectors for the state, parameter, adjoint.
         """
         self.model = model
-        self.parameters = parameters
+
+        if parameters == None:
+            self.parameters = ReducedSpaceNewtonCG_ParameterList()
+        else:
+            self.parameters = parameters
 
         self.it = 0
         self.converged = False
@@ -158,6 +152,17 @@ class ReducedSpaceNewtonCG:
         self.final_grad_norm = 0
 
         self.callback = callback
+
+    @property
+    def termination_reasons(self):
+        termination_reasons = [
+            "Maximum number of Iteration reached",  # 0
+            "Norm of the gradient less than tolerance",  # 1
+            "Maximum number of backtracking reached",  # 2
+            "Norm of (g, dm) less than tolerance",  # 3
+            "Maximum backtracking reached for w",         # 4
+        ]
+        return termination_reasons
 
     def solve(self, x: list) -> list:
         """
@@ -287,7 +292,7 @@ class ReducedSpaceNewtonCG:
 
             if (print_level >= 0) and (self.it == 1):
                 print(
-                    "\n{0:3} {1:3} {2:15} {3:15} {4:15} {5:15} {6:14} {7:14} {8:14}".format(
+                    "\n{:3} {:3} {:15} {:15} {:15} {:15} {:14} {:14} {:14}".format(
                         "It",
                         "cg_it",
                         "cost",
@@ -422,7 +427,7 @@ class ReducedSpaceNewtonCG:
 
             if (print_level >= 0) and (self.it == 1):
                 print(
-                    "\n{0:3} {1:3} {2:15} {3:15} {4:15} {5:15} {6:14} {7:14} {8:14}".format(
+                    "\n{:3} {:3} {:15} {:15} {:15} {:15} {:14} {:14} {:14}".format(
                         "It",
                         "cg_it",
                         "cost",
@@ -592,7 +597,7 @@ class ReducedSpaceNewtonCG:
 
             if (print_level >= 0) and (self.it == 1):
                 print(
-                    "\n{0:3} {1:3} {2:15} {3:15} {4:15} {5:15} {6:14} {7:14} {8:14} {9:11} {10:14}".format(
+                    "\n{:3} {:3} {:15} {:15} {:15} {:15} {:14} {:14} {:14} {:11} {:14}".format(
                         "It",
                         "cg_it",
                         "cost",

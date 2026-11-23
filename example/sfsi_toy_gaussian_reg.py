@@ -89,7 +89,7 @@ def run_inversion(
         Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs,
     ]
     hpx.master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
-    hpx.master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
+    hpx.master_print(comm, "Number of dofs: STATE={}, PARAMETER={}".format(*ndofs))
     # FORWARD MODEL
     u0 = 1.0
     D = 1.0 / 24.0

@@ -78,17 +78,13 @@ class CGSolverSteihaug:
     Type :code:`CGSolverSteihaug_ParameterList().showMe()` for default parameters and their descriptions
     """
 
-    reason = [
-        "Maximum Number of Iterations Reached",
-        "Relative/Absolute residual less than tol",
-        "Reached a negative direction",
-        "Reached trust region boundary",
-    ]
-
     def __init__(
-        self, parameters=CGSolverSteihaug_ParameterList(), comm=mpi4py.MPI.Intracomm
+        self, parameters=None, comm=mpi4py.MPI.Intracomm
     ):
-        self.parameters = parameters
+        if parameters == None:
+            self.parameters = CGSolverSteihaug_ParameterList()
+        else:
+            self.parameters = parameters
 
         self.A = None
         self.B_solver = None
@@ -101,6 +97,16 @@ class CGSolverSteihaug:
         self.update_x = self.update_x_without_TR
 
         self.comm = comm
+
+    @property
+    def reason(self):
+        reason = [
+            "Maximum Number of Iterations Reached",
+            "Relative/Absolute residual less than tol",
+            "Reached a negative direction",
+            "Reached trust region boundary",
+        ]
+        return reason
 
     def destroy(self):
         for v in ("r", "z", "d", "Ad", "Bx"):
