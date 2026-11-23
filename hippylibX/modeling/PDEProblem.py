@@ -8,10 +8,11 @@
 # --------------------------------------------------------------------------ec-
 
 import dolfinx as dlx
-import ufl
 import petsc4py
-from .variables import STATE, PARAMETER, ADJOINT
+import ufl
+
 from ..utils.vector2function import updateFromVector
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final

@@ -7,10 +7,9 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
+
 import numpy as np
 import petsc4py
-from typing import Union
-from typing import Type
 import petsc4py.PETSc
 
 
@@ -28,14 +27,14 @@ class MultiVector:
     @classmethod
     def createFromVec(
         cls, example_vec: petsc4py.PETSc.Vec, nvec: int
-    ) -> Type["MultiVector"]:
+    ) -> type["MultiVector"]:
         """
         Create multivector from sample petsc4py vector whose parallel distribution is to be replicated.
         """
         return cls(example_vec, nvec)
 
     @classmethod
-    def createFromMultiVec(cls, mv: Type["MultiVector"]) -> Type["MultiVector"]:
+    def createFromMultiVec(cls, mv: type["MultiVector"]) -> type["MultiVector"]:
         """
         Create multivector from another MultiVector whose parallel distribution is to be replicated.
         """
@@ -52,7 +51,7 @@ class MultiVector:
     def __getitem__(self, k: int) -> petsc4py.PETSc.Vec:
         return self.data[k]
 
-    def scale(self, alpha: Union[float, np.ndarray]) -> None:
+    def scale(self, alpha: float | np.ndarray) -> None:
         """
         Scale each value in the Multivector - either by a single float value or a numpy array of float values.
         """
@@ -63,7 +62,7 @@ class MultiVector:
             for i, d in enumerate(self.data):
                 d.scale(alpha[i])
 
-    def dot(self, v: Union[petsc4py.PETSc.Vec, Type["MultiVector"]]) -> np.array:
+    def dot(self, v: petsc4py.PETSc.Vec | type["MultiVector"]) -> np.array:
         """
         Perform dot product of a MultiVector object and petsc4py Vec object, store result in numpy array.
         """
@@ -87,7 +86,7 @@ class MultiVector:
         for i in range(self.nvec):
             y.axpy(alpha[i], self[i])
 
-    def axpy(self, alpha: Union[float, np.array], Y: Type["MultiVector"]) -> None:
+    def axpy(self, alpha: float | np.array, Y: type["MultiVector"]) -> None:
         """
         Reduction of MultiVector object with a float or values in a numpy array stored in another MultiVector object.
         """
@@ -132,7 +131,7 @@ class MultiVector:
 
     def _mgs_stable(
         self, B: petsc4py.PETSc.Mat
-    ) -> tuple[Type["MultiVector"], np.array]:
+    ) -> tuple[type["MultiVector"], np.array]:
         """ 
         Returns :math:`QR` decomposition of self, which satisfies conditions (1)--(4).
         Uses Modified Gram-Schmidt with re-orthogonalization (Rutishauser variant)

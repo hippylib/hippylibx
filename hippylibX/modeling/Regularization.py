@@ -8,9 +8,10 @@
 # --------------------------------------------------------------------------ec-
 
 import dolfinx as dlx
-import ufl
 import petsc4py
+import ufl
 from mpi4py import MPI
+
 import hippylibX as hpx
 
 

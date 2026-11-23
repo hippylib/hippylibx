@@ -1,7 +1,6 @@
 import numpy as np
-from petsc4py import PETSc
-
 from dolfinx import fem, geometry
+from petsc4py import PETSc
 
 
 def findPoints(mesh, x):

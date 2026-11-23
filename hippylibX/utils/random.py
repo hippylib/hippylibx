@@ -7,12 +7,13 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
+
+import dolfinx as dlx
 import numpy as np
 import petsc4py
 from mpi4py import MPI
-import dolfinx as dlx
+
 from ..algorithms.multivector import MultiVector
-from typing import Union
 
 
 class Random:
@@ -97,7 +98,7 @@ class Random:
             )
 
     def normal_perturb(
-        self, sigma: float, out: Union[dlx.la.Vector, MultiVector]
+        self, sigma: float, out: dlx.la.Vector | MultiVector
     ) -> None:
         """
         Add a normal perturbation to a dolfinx Vector, petcs vec or MultiVector object.
@@ -111,7 +112,7 @@ class Random:
         else:
             self._normal_perturb_petsc(sigma, out)
 
-    def normal(self, sigma: float, out: Union[dlx.la.Vector, MultiVector]) -> None:
+    def normal(self, sigma: float, out: dlx.la.Vector | MultiVector) -> None:
         """
         Sample from a normal distribution.
         """

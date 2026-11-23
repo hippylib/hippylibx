@@ -7,12 +7,13 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import petsc4py.PETSc
-from ..algorithms.lowRankOperator import LowRankOperator
-from ..algorithms.multivector import MultiVector
+import dolfinx as dlx
 import numpy as np
 import petsc4py
-import dolfinx as dlx
+import petsc4py.PETSc
+
+from ..algorithms.lowRankOperator import LowRankOperator
+from ..algorithms.multivector import MultiVector
 
 
 def not_implemented(func):

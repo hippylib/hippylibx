@@ -15,13 +15,14 @@
 # Hlr.solve(x, y)
 # assert x3 == y
 
-import unittest
-import sys
 import os
+import sys
+import unittest
+
 import dolfinx as dlx
-import petsc4py
 import dolfinx.fem.petsc
 import numpy as np
+import petsc4py
 
 sys.path.append(os.path.abspath("../.."))
 

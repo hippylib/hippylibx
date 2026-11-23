@@ -8,15 +8,15 @@
 # --------------------------------------------------------------------------ec-
 
 # qpact problem with Variational Regularization Prior.
-import ufl
-import dolfinx as dlx
-from mpi4py import MPI
-import numpy as np
-import sys
 import os
+import sys
+
+import dolfinx as dlx
 import dolfinx.fem.petsc
+import numpy as np
+import ufl
 from matplotlib import pyplot as plt
-from typing import Dict
+from mpi4py import MPI
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
@@ -70,8 +70,8 @@ def run_inversion(
     nx: int,
     ny: int,
     noise_variance: float,
-    prior_param: Dict[str, float],
-) -> Dict[str, Dict[str, float]]:
+    prior_param: dict[str, float],
+) -> dict[str, dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -211,7 +211,7 @@ def run_inversion(
 
     with dlx.io.VTXWriter(
         msh.comm,
-        "qpact_Variational_Regularization_prior_np{0:d}_Prior.bp".format(nproc),
+        f"qpact_Variational_Regularization_prior_np{nproc:d}_Prior.bp",
         [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
     ) as vtx:
         vtx.write(0.0)
@@ -231,9 +231,7 @@ def run_inversion(
     p = 20
     if rank == 0:
         print(
-            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-                k, p
-            )
+            f"Double Pass Algorithm. Requested eigenvectors: {k}; Oversampling {p}."
         )
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
@@ -271,6 +269,6 @@ if __name__ == "__main__":
     if comm.rank == 0:
         plt.savefig("qpact_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.plot(range(k), d, "b*", range(k), np.ones(k), "-r")
         plt.yscale("log")
         plt.savefig("qpact_Eigen_Decomposition_results.png")

@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import dolfinx as dlx
 import math
-from .variables import STATE, PARAMETER, ADJOINT
 from typing import Any
+
+import dolfinx as dlx
+
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final

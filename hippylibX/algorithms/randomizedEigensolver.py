@@ -7,12 +7,14 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import numpy as np
-import petsc4py.PETSc
-from .multivector import MultiVector, MatMvMult, MvDSmatMult
-from .linalg import Solver2Operator
-import petsc4py
 from typing import Any
+
+import numpy as np
+import petsc4py
+import petsc4py.PETSc
+
+from .linalg import Solver2Operator
+from .multivector import MatMvMult, MultiVector, MvDSmatMult
 
 
 def doublePassG(
@@ -48,7 +50,7 @@ def doublePassG(
     # Bringing the orthogonalization inside of the power iteration could improve accuracy
     for i in range(s):
         MatMvMult(A, Q, Ybar)
-        MatMvMult(Solver2Operator(Binv), Ybar, Q)  # noqa
+        MatMvMult(Solver2Operator(Binv), Ybar, Q)
 
     Q.Borthogonalize(B)
     AQ = MultiVector.createFromVec(Omega[0], nvec)

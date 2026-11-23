@@ -17,14 +17,15 @@
 # y = Hlr(-1)x
 # z = Hlr(y) => z == x
 
-import unittest
-import sys
 import os
-import numpy as np
+import sys
+import unittest
+from typing import Any
+
 import dolfinx as dlx
 import dolfinx.fem.petsc
+import numpy as np
 import petsc4py
-from typing import Any
 
 sys.path.append(os.path.abspath("../.."))
 

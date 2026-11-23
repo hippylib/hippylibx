@@ -7,14 +7,15 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import hippylibX as hpx
 import dolfinx as dlx
+import petsc4py
 import ufl
 from mpi4py import MPI
-import petsc4py
+
+import hippylibX as hpx
 
 
-class DiscreteStateObservationMisfit(object):
+class DiscreteStateObservationMisfit:
     r"""
     This class define a misfit function for a discrete linear observation operator B
     math: 1/(2\sigma^2) || B u - d ||^2
@@ -64,7 +65,7 @@ class DiscreteStateObservationMisfit(object):
             out.petsc_vec.zeroEntries()
 
 
-class NonGaussianContinuousMisfit(object):
+class NonGaussianContinuousMisfit:
     """
     Abstract class to model the misfit component of the cost functional.
     In the following :code:`x` will denote the variable :code:`[u, m, p]`, denoting respectively

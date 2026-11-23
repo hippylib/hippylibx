@@ -7,13 +7,15 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import dolfinx as dlx
-import petsc4py.PETSc
-from ..utils.parameterList import ParameterList
 import math
+from typing import Any
+
+import dolfinx as dlx
 import mpi4py
 import petsc4py
-from typing import Any
+import petsc4py.PETSc
+
+from ..utils.parameterList import ParameterList
 
 
 def CGSolverSteihaug_ParameterList():

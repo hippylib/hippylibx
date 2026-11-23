@@ -1,10 +1,10 @@
-from mpi4py import MPI
-import dolfinx as dlx
-import numpy as np
+import os
+import sys
 import unittest
 
-import sys
-import os
+import dolfinx as dlx
+import numpy as np
+from mpi4py import MPI
 
 sys.path.append(os.path.abspath("../.."))
 import hippylibX as hpx

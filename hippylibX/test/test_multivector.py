@@ -10,14 +10,15 @@
 # script to perform B-Orthogonalization of a multivector - Omega and return the result
 # Omega.dot(Bq) which is expected to be an identity matrix of the order Omega.nvec.
 
-import unittest
-import sys
 import os
-import numpy as np
+import sys
+import unittest
+
 import dolfinx as dlx
-from mpi4py import MPI
-import ufl
 import dolfinx.fem.petsc
+import numpy as np
+import ufl
+from mpi4py import MPI
 
 sys.path.append(os.path.abspath("../.."))
 

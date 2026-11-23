@@ -7,10 +7,11 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import petsc4py.PETSc
-from .variables import STATE, PARAMETER, ADJOINT
 import dolfinx as dlx
 import petsc4py
+import petsc4py.PETSc
+
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final

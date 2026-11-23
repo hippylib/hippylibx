@@ -8,15 +8,16 @@
 # --------------------------------------------------------------------------ec-
 
 import math
-from mpi4py import MPI
+
 import dolfinx as dlx
 import numpy as np
+from mpi4py import MPI
 
-from ..utils.parameterList import ParameterList
-from ..modeling.reducedHessian import ReducedHessian
-from ..modeling.variables import STATE, PARAMETER, ADJOINT
-from .cgsolverSteihaug import CGSolverSteihaug
 from ..algorithms.linalg import inner
+from ..modeling.reducedHessian import ReducedHessian
+from ..modeling.variables import ADJOINT, PARAMETER, STATE
+from ..utils.parameterList import ParameterList
+from .cgsolverSteihaug import CGSolverSteihaug
 
 
 def LS_ParameterList():
@@ -301,17 +302,7 @@ class ReducedSpaceNewtonCG:
 
             if print_level >= 0:
                 print(
-                    "{0:3d} {1:3d} {2:15e} {3:15e} {4:15e} {5:15e} {6:14e} {7:14e} {8:14e}".format(
-                        self.it,
-                        HessApply.ncalls,
-                        cost_new,
-                        misfit_new,
-                        reg_new,
-                        mg_mhat,
-                        gradnorm,
-                        alpha,
-                        tolcg,
-                    )
+                    f"{self.it:3d} {HessApply.ncalls:3d} {cost_new:15e} {misfit_new:15e} {reg_new:15e} {mg_mhat:15e} {gradnorm:14e} {alpha:14e} {tolcg:14e}"
                 )
             if self.callback:
                 self.callback(self.it, x)
@@ -446,17 +437,7 @@ class ReducedSpaceNewtonCG:
 
             if print_level >= 0:
                 print(
-                    "{0:3d} {1:3d} {2:15e} {3:15e} {4:15e} {5:15e} {6:14e} {7:14e} {8:14e}".format(
-                        self.it,
-                        HessApply.ncalls,
-                        cost_new,
-                        misfit_new,
-                        reg_new,
-                        mg_mhat,
-                        gradnorm,
-                        alpha,
-                        tolcg,
-                    )
+                    f"{self.it:3d} {HessApply.ncalls:3d} {cost_new:15e} {misfit_new:15e} {reg_new:15e} {mg_mhat:15e} {gradnorm:14e} {alpha:14e} {tolcg:14e}"
                 )
                 
             if self.callback:
@@ -628,19 +609,7 @@ class ReducedSpaceNewtonCG:
 
             if print_level >= 0:
                 print(
-                    "{0:3d} {1:3d} {2:15e} {3:15e} {4:15e} {5:15e} {6:14e} {7:14e} {8:14e} {9:11} {10:14e}".format(
-                        self.it,
-                        HessApply.ncalls,
-                        cost_old,
-                        misfit_old,
-                        reg_old,
-                        mg_mhat,
-                        gradnorm,
-                        delta_TR,
-                        rho_TR,
-                        accept_step,
-                        tolcg,
-                    )
+                    f"{self.it:3d} {HessApply.ncalls:3d} {cost_old:15e} {misfit_old:15e} {reg_old:15e} {mg_mhat:15e} {gradnorm:14e} {delta_TR:14e} {rho_TR:14e} {accept_step:11} {tolcg:14e}"
                 )
 
             if -mg_mhat <= self.parameters["gdm_tolerance"]:

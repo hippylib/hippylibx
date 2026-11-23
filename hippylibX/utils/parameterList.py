@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------ec-
 
 
-class ParameterList(object):
+class ParameterList:
     """
     A small abstract class for storing parameters and their description.
     This class will raise an exception if the key one tries to access is not present.
@@ -39,6 +39,6 @@ class ParameterList(object):
                 print(indent, k, "(ParameterList):", self.data[k][1])
                 self.data[k][0].showMe(indent + "    ")
             else:
-                print(indent, k, "({0}):".format(self.data[k][0]), self.data[k][1])
+                print(indent, k, f"({self.data[k][0]}):", self.data[k][1])
 
         print(indent, "---")
