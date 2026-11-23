@@ -86,7 +86,7 @@ class MultiVector:
         for i in range(self.nvec):
             y.axpy(alpha[i], self[i])
 
-    def axpy(self, alpha: float | np.array, Y: type["MultiVector"]) -> None:
+    def axpy(self, alpha: float | np.ndarray, Y: type["MultiVector"]) -> None:
         """
         Reduction of MultiVector object with a float or values in a numpy array stored in another MultiVector object.
         """
