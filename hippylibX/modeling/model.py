@@ -319,6 +319,17 @@ class Model:
         """
         return self.prior.Rsolver
 
+    def Psolver(self) -> Any:
+        """
+        Return an object :code:`Psolver` that is a suitable preconditioner for the reduced Hessian in the inverse problem.
+
+        The preconditioner object should implement the method :code:`Psolver.solve(z,r)` 
+        """
+        if hasattr(self.prior, "Psolver"):
+            return self.prior.Psolver
+        else:
+            return self.prior.Rsolver
+
     def applyWmm(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """
         Apply the :math:`W_{mm}` block of the Hessian to a (incremental) parameter variable.
