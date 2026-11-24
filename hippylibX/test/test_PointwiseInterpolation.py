@@ -149,7 +149,9 @@ class Testing_Execution(unittest.TestCase):
         comm = domain.comm
         gdim = domain.geometry.dim
         g = np.linspace(0.0, 1.0, ngrid)
-        x = np.stack([c.ravel() for c in np.meshgrid(*([g] * gdim), indexing="ij")], axis=1)
+        x = np.stack(
+            [c.ravel() for c in np.meshgrid(*([g] * gdim), indexing="ij")], axis=1
+        )
         x_out = np.full((2, gdim), 1.5)
         x_out[1, 0] = -0.5
         x = np.vstack([x, x_out])
@@ -157,7 +159,11 @@ class Testing_Execution(unittest.TestCase):
         n_inside = npoints - x_out.shape[0]
 
         P = hpx.pointwiseInterpolationMatrix(V, x)
-        bs_val = 1 if len(V.element.value_shape) == 0 else int(np.prod(V.element.value_shape))
+        bs_val = (
+            1
+            if len(V.element.value_shape) == 0
+            else int(np.prod(V.element.value_shape))
+        )
         self.assertEqual(P.getSize()[0], npoints * bs_val)
 
         # Points computed on this process
@@ -173,7 +179,9 @@ class Testing_Execution(unittest.TestCase):
         # ... in a cell it owns (or on rank 0 if outside the mesh)
         num_owned_cells = domain.topology.index_map(domain.topology.dim).size_local
         inside = point_ids < n_inside
-        self.assertTrue(np.all((cells[inside] >= 0) & (cells[inside] < num_owned_cells)))
+        self.assertTrue(
+            np.all((cells[inside] >= 0) & (cells[inside] < num_owned_cells))
+        )
         if np.any(~inside):
             self.assertEqual(comm.rank, 0)
             self.assertTrue(np.all(cells[~inside] == -1))
@@ -193,7 +201,9 @@ class Testing_Execution(unittest.TestCase):
         P.mult(ones, rs)
         expected = np.zeros(npoints * bs_val)
         expected[: n_inside * bs_val] = 1.0
-        np.testing.assert_allclose(gather_global(rs, comm), expected, rtol=0, atol=1e-12)
+        np.testing.assert_allclose(
+            gather_global(rs, comm), expected, rtol=0, atol=1e-12
+        )
 
         # Exact interpolation of a function in V, same ordering as in serial
         u = dlx.fem.Function(V)
