@@ -11,8 +11,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import ast
 import os
+import runpy
 import sys
 
 sys.path.insert(
@@ -49,21 +49,12 @@ project = "hIPPYlibX"
 copyright = "2024, Umberto Villa, Venugopal Ranganathan"
 author = "Umberto Villa, Venugopal Ranganathan"
 
-version = {}
-root_directory = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+root_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 version_path = os.path.join(root_directory, "hippylibX/version.py")
 
-with open(version_path) as f:
-    tree = ast.parse(f.read(), filename=version_path)
-
-version = {}
-for node in tree.body:
-    if isinstance(node, ast.Assign):
-        for target in node.targets:
-            if isinstance(target, ast.Name) and target.id == "__version__":
-                version["__version__"] = ast.literal_eval(node.value)
-
-VERSION = version["__version__"]
+# version.py computes __version__ from version_info, so execute it
+# (without importing the hippylibX package) rather than parsing literals.
+VERSION = runpy.run_path(version_path)["__version__"]
 
 # The short X.Y version
 version = ""
