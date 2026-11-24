@@ -97,9 +97,7 @@ class Random:
                 mode=petsc4py.PETSc.ScatterMode.FORWARD,  # type: ignore
             )
 
-    def normal_perturb(
-        self, sigma: float, out: dlx.la.Vector | MultiVector
-    ) -> None:
+    def normal_perturb(self, sigma: float, out: dlx.la.Vector | MultiVector) -> None:
         """
         Add a normal perturbation to a dolfinx Vector, petcs vec or MultiVector object.
         """

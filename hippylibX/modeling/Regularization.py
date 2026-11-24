@@ -145,7 +145,7 @@ class VariationalRegularization:
             self.mfun,
             self.mtrial,
         )
-        
+
         if self.Rsolver is not None:
             self.Rsolver.destroy()
             self.Rsolver = None

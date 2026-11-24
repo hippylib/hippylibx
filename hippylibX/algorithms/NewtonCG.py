@@ -123,8 +123,8 @@ class ReducedSpaceNewtonCG:
 
     Type :code:`help(Model)` for additional information
     """
-    def __init__(
-        self, model, parameters=None, callback = None):
+
+    def __init__(self, model, parameters=None, callback=None):
         """
         Initialize the ReducedSpaceNewtonCG.
         Type :code:`ReducedSpaceNewtonCG_ParameterList().showMe()` for list of default parameters
@@ -160,7 +160,7 @@ class ReducedSpaceNewtonCG:
             "Norm of the gradient less than tolerance",  # 1
             "Maximum number of backtracking reached",  # 2
             "Norm of (g, dm) less than tolerance",  # 3
-            "Maximum backtracking reached for w",         # 4
+            "Maximum backtracking reached for w",  # 4
         ]
         return termination_reasons
 
@@ -246,7 +246,7 @@ class ReducedSpaceNewtonCG:
             self.it += 1
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
 
-            HessApply.gauss_newton_approx = (self.it <= GN_iter)
+            HessApply.gauss_newton_approx = self.it <= GN_iter
             HessApply.ncalls = 0
 
             solver.parameters["rel_tolerance"] = tolcg
@@ -270,8 +270,9 @@ class ReducedSpaceNewtonCG:
                 self.model.solveFwd(x_star[STATE], x_star)
 
                 cost_new, reg_new, misfit_new = self.model.cost(x_star)
-                if (cost_new < cost_old - alpha * c_armijo * mg_mhat) or \
-                   (mg_mhat <= self.parameters["gdm_tolerance"]):
+                if (cost_new < cost_old - alpha * c_armijo * mg_mhat) or (
+                    mg_mhat <= self.parameters["gdm_tolerance"]
+                ):
                     cost_old = cost_new
                     descent = 1
                     x[PARAMETER].array[:] = x_star[PARAMETER].array
@@ -382,12 +383,12 @@ class ReducedSpaceNewtonCG:
             self.it += 1
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
 
-            HessApply.gauss_newton_approx = (self.it <= GN_iter)
+            HessApply.gauss_newton_approx = self.it <= GN_iter
             HessApply.ncalls = 0
 
             solver.parameters["rel_tolerance"] = tolcg
             solver.set_preconditioner(self.model.Psolver())
-        
+
             solver.solve(mg, mhat)
             self.total_cg_iter += HessApply.ncalls
             alpha = 1.0
@@ -404,8 +405,9 @@ class ReducedSpaceNewtonCG:
                 self.model.solveFwd(x_star[STATE], x_star)
 
                 cost_new, reg_new, misfit_new = self.model.cost(x_star)
-                if (cost_new < cost_old - alpha * c_armijo * mg_mhat) or \
-                   (mg_mhat <= self.parameters["gdm_tolerance"]):
+                if (cost_new < cost_old - alpha * c_armijo * mg_mhat) or (
+                    mg_mhat <= self.parameters["gdm_tolerance"]
+                ):
                     cost_old = cost_new
                     descent = 1
                     x[PARAMETER].array[:] = x_star[PARAMETER].array
@@ -444,7 +446,7 @@ class ReducedSpaceNewtonCG:
                 print(
                     f"{self.it:3d} {HessApply.ncalls:3d} {cost_new:15e} {misfit_new:15e} {reg_new:15e} {mg_mhat:15e} {gradnorm:14e} {alpha:14e} {tolcg:14e}"
                 )
-                
+
             if self.callback:
                 self.callback(self.it, x)
 
@@ -552,7 +554,7 @@ class ReducedSpaceNewtonCG:
             self.it += 1
             tolcg = min(cg_coarse_tolerance, math.sqrt(gradnorm / gradnorm_ini))
 
-            HessApply.gauss_newton_approx = (self.it <= GN_iter)
+            HessApply.gauss_newton_approx = self.it <= GN_iter
             HessApply.ncalls = 0
 
             solver.set_preconditioner(self.model.Psolver())

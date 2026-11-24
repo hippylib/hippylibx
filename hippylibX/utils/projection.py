@@ -36,7 +36,7 @@ class L2Projector:
 
     def project(self, v, target_func):
         """Project ``v`` onto the space of ``target_func`` in-place."""
-        L = dlx.fem.form(ufl.inner(v, self.w ) * self.dx)
+        L = dlx.fem.form(ufl.inner(v, self.w) * self.dx)
         b = dlx.fem.petsc.assemble_vector(L)
 
         try:

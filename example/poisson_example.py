@@ -192,9 +192,7 @@ def run_inversion(
     k = 80
     p = 20
     if rank == 0:
-        print(
-            f"Double Pass Algorithm. Requested eigenvectors: {k}; Oversampling {p}."
-        )
+        print(f"Double Pass Algorithm. Requested eigenvectors: {k}; Oversampling {p}.")
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 

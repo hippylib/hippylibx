@@ -78,9 +78,7 @@ class CGSolverSteihaug:
     Type :code:`CGSolverSteihaug_ParameterList().showMe()` for default parameters and their descriptions
     """
 
-    def __init__(
-        self, parameters=None, comm=mpi4py.MPI.Intracomm
-    ):
+    def __init__(self, parameters=None, comm=mpi4py.MPI.Intracomm):
         if parameters == None:
             self.parameters = CGSolverSteihaug_ParameterList()
         else:
@@ -113,7 +111,7 @@ class CGSolverSteihaug:
             obj = getattr(self, v, None)
             if obj is not None:
                 obj.destroy()
-                
+
     def set_operator(self, A: petsc4py.PETSc.Mat):
         """
         Set the operator :math:`A`.
@@ -279,7 +277,7 @@ class CGSolverSteihaug:
             betanom = self.r.dot(self.z)
             if self.parameters["print_level"] == 1:
                 print(" Iteration : ", self.iter, " (B r, r) = ", betanom)
-                
+
             if betanom < r0:
                 self.converged = True
                 self.reasonid = 1
