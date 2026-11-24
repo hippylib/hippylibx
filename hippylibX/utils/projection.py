@@ -21,10 +21,10 @@ class L2Projector:
         self.comm = self.V.mesh.comm
         self.dx = ufl.dx(domain=self.V.mesh)
 
-        w = ufl.TestFunction(self.V)
+        self.w = ufl.TestFunction(self.V)
         Pv = ufl.TrialFunction(self.V)
 
-        self.a = dlx.fem.form(ufl.inner(Pv, w) * self.dx)
+        self.a = dlx.fem.form(ufl.inner(Pv, self.w) * self.dx)
         self.A = dlx.fem.petsc.assemble_matrix(self.a, self.bcs)
         self.A.assemble()
 
@@ -36,7 +36,7 @@ class L2Projector:
 
     def project(self, v, target_func):
         """Project ``v`` onto the space of ``target_func`` in-place."""
-        L = dlx.fem.form(ufl.inner(v, w := ufl.TestFunction(self.V)) * self.dx)
+        L = dlx.fem.form(ufl.inner(v, self.w ) * self.dx)
         b = dlx.fem.petsc.assemble_vector(L)
 
         try:

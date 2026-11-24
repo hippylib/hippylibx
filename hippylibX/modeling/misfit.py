@@ -75,10 +75,13 @@ class NonGaussianContinuousMisfit:
     parameter :code:`m`. The adjoint variables will never be accessed.
     """
 
-    def __init__(self, Vh: list, form, bc0=[]):
+    def __init__(self, Vh: list, form, bc0=None):
         self.Vh = Vh
         self.form = form
-        self.bc0 = bc0
+        if bc0 == None:
+            self.bc0 = []
+        else:
+            self.bc0 = bc0
 
         self.x_lin_fun = None
         self.x_test = [
