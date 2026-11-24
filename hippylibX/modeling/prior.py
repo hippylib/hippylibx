@@ -151,20 +151,15 @@ class SqrtPrecisionPDE_Prior:
         qdegree = 2 * Vh._ufl_element.degree
         metadata = {"quadrature_degree": qdegree}
 
-        num_sub_spaces = Vh.num_sub_spaces
+        element = basix.ufl.quadrature_element(
+            Vh.mesh.topology.cell_name(), degree=qdegree
+        )
 
-        if num_sub_spaces <= 1:  # SCALAR PARAMETER
-            element = basix.ufl.quadrature_element(
-                Vh.mesh.topology.cell_name(), degree=qdegree
-            )
-
-        else:  # Vector FIELD PARAMETER
-            element = basix.ufl.element(
-                "Lagrange",
-                Vh.mesh.topology.cell_name(),
-                degree=qdegree,
-                shape=(num_sub_spaces,),
-            )
+        value_shape = Vh.element.value_shape
+        if len(value_shape) > 0:  # Vector FIELD PARAMETER
+            # Use a blocked quadrature space so that the quadrature mass
+            # matrix Mqh remains diagonal (with positive entries)
+            element = basix.ufl.blocked_element(element, shape=tuple(value_shape))
 
         self.Qh = dlx.fem.functionspace(Vh.mesh, element)
 
@@ -210,9 +205,9 @@ class SqrtPrecisionPDE_Prior:
         white noise used for sampling.
         """
         if dim == "noise":
-            return dlx.la.vector(self.Qh.dofmap.index_map)
+            return dlx.la.vector(self.Qh.dofmap.index_map, self.Qh.dofmap.index_map_bs)
         else:
-            return dlx.la.vector(self.Vh.dofmap.index_map)
+            return dlx.la.vector(self.Vh.dofmap.index_map, self.Vh.dofmap.index_map_bs)
 
     def sample(self, noise: dlx.la.Vector, s: dlx.la.Vector, add_mean=True) -> None:
         """
