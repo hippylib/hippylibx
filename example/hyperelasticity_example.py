@@ -14,15 +14,15 @@
 # The inversion parameter is m = log(E), where E is the Young modulus.
 # The Poisson ratio is known. Displacement data are collected on a uniform
 # grid of points in the interior of the domain. H1 Tikhonov regularization.
-import ufl
-import dolfinx as dlx
-from mpi4py import MPI
-import numpy as np
-import sys
 import os
+import sys
+
+import dolfinx as dlx
 import dolfinx.fem.petsc
+import numpy as np
+import ufl
 from matplotlib import pyplot as plt
-from typing import Dict
+from mpi4py import MPI
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
@@ -50,8 +50,8 @@ class StVenantKirchhoffElasticity:
 
 
 def run_inversion(
-    nx: int, ny: int, n_obs_1d: int, noise_level: float, reg_param: Dict[str, float]
-) -> Dict[str, Dict[str, float]]:
+    nx: int, ny: int, n_obs_1d: int, noise_level: float, reg_param: dict[str, float]
+) -> dict[str, dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -103,7 +103,7 @@ def run_inversion(
     nloc = Vh_u.dofmap.index_map.size_local
     u_mag = np.linalg.norm(u_true.array[: nloc * gdim].reshape(-1, gdim), axis=1)
     u_max = comm.allreduce(np.max(u_mag, initial=0.0), op=MPI.MAX)
-    hpx.master_print(comm, "Maximum displacement: {0:.4e}".format(u_max))
+    hpx.master_print(comm, f"Maximum displacement: {u_max:.4e}")
 
     # LIKELIHOOD
     # n_obs_1d x n_obs_1d grid of points that does not touch the boundary
@@ -116,7 +116,7 @@ def run_inversion(
 
     noise_std_dev = noise_level * u_max
     noise_variance = noise_std_dev**2
-    hpx.master_print(comm, "Noise standard deviation: {0:.4e}".format(noise_std_dev))
+    hpx.master_print(comm, f"Noise standard deviation: {noise_std_dev:.4e}")
     hpx.parRandom.normal_perturb(noise_std_dev, data)
     misfit = hpx.DiscreteStateObservationMisfit(B, data, noise_variance)
 
@@ -198,7 +198,7 @@ def run_inversion(
 
     with dlx.io.VTXWriter(
         msh.comm,
-        "hyperelasticity_np{0:d}.bp".format(nproc),
+        f"hyperelasticity_np{nproc:d}.bp",
         [m_fun, m_true_fun, u_map_fun, u_true_fun],
     ) as vtx:
         vtx.write(0.0)
@@ -220,9 +220,7 @@ def run_inversion(
     p = 20
     hpx.master_print(
         comm,
-        "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-            k, p
-        ),
+        f"Double Pass Algorithm. Requested eigenvectors: {k}; Oversampling {p}.",
     )
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
@@ -263,7 +261,7 @@ if __name__ == "__main__":
     if comm.rank == 0:
         plt.savefig("hyperelasticity_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.plot(range(k), d, "b*", range(k), np.ones(k), "-r")
         plt.yscale("log")
         plt.xlabel("index")
         plt.ylabel("eigenvalue")

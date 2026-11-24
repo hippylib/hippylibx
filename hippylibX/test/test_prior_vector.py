@@ -9,15 +9,16 @@
 
 # BiLaplacian prior on a blocked (vector-valued) parameter space
 
-import dolfinx as dlx
-from mpi4py import MPI
-import sys
 import os
-import warnings
-import dolfinx.fem.petsc
-import petsc4py
+import sys
 import unittest
+import warnings
+
+import dolfinx as dlx
+import dolfinx.fem.petsc
 import numpy as np
+import petsc4py
+from mpi4py import MPI
 
 sys.path.append(os.path.abspath("../.."))
 
