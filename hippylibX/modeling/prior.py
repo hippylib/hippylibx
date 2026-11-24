@@ -7,13 +7,13 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
+import basix.ufl
 import dolfinx as dlx
-import petsc4py.PETSc
-import ufl
 import numpy as np
 import petsc4py
+import petsc4py.PETSc
+import ufl
 from mpi4py import MPI
-import basix.ufl
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final

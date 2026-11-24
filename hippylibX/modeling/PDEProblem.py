@@ -8,10 +8,11 @@
 # --------------------------------------------------------------------------ec-
 
 import dolfinx as dlx
-import ufl
 import petsc4py
-from .variables import STATE, PARAMETER, ADJOINT
+import ufl
+
 from ..utils.vector2function import updateFromVector
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final
@@ -21,7 +22,7 @@ def unused_function(func):
 
 
 class PDEVariationalProblem:
-    def __init__(self, Vh: list, varf_handler, bc=[], bc0=[], is_fwd_linear=False):
+    def __init__(self, Vh: list, varf_handler, bc=None, bc0=None, is_fwd_linear=False):
         self.Vh = Vh
         self.varf_handler = varf_handler
 
@@ -31,8 +32,15 @@ class PDEVariationalProblem:
 
         self.xfun_test = [ufl.TestFunction(Vhi) for Vhi in Vh]
 
-        self.bc = bc
-        self.bc0 = bc0
+        if bc == None:
+            self.bc = []
+        else:
+            self.bc = bc
+
+        if bc0 == None:
+            self.bc0 = None
+        else:
+            self.bc0 = bc0
 
         self.Wuu = None
         self.Wmu = None

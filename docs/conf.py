@@ -11,6 +11,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import ast
 import os
 import sys
 
@@ -50,8 +51,17 @@ author = "Umberto Villa, Venugopal Ranganathan"
 
 version = {}
 root_directory = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-with open(os.path.join(root_directory, "hippylibX/version.py")) as f:
-    exec(f.read(), version)
+version_path = os.path.join(root_directory, "hippylibX/version.py")
+
+with open(version_path) as f:
+    tree = ast.parse(f.read(), filename=version_path)
+
+version = {}
+for node in tree.body:
+    if isinstance(node, ast.Assign):
+        for target in node.targets:
+            if isinstance(target, ast.Name) and target.id == "__version__":
+                version["__version__"] = ast.literal_eval(node.value)
 
 VERSION = version["__version__"]
 

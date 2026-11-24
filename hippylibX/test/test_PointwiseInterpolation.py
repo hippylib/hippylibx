@@ -1,11 +1,11 @@
-from mpi4py import MPI
-import dolfinx as dlx
-import numpy as np
-from petsc4py import PETSc
+import os
+import sys
 import unittest
 
-import sys
-import os
+import dolfinx as dlx
+import numpy as np
+from mpi4py import MPI
+from petsc4py import PETSc
 
 sys.path.append(os.path.abspath("../.."))
 import hippylibX as hpx

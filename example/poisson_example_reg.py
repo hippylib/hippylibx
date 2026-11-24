@@ -8,15 +8,15 @@
 # --------------------------------------------------------------------------ec-
 
 # poisson example with Robin BC using VariationalRegularization prior
-import ufl
-import dolfinx as dlx
-from mpi4py import MPI
-import numpy as np
-import sys
 import os
+import sys
+
+import dolfinx as dlx
 import dolfinx.fem.petsc
+import numpy as np
+import ufl
 from matplotlib import pyplot as plt
-from typing import Dict
+from mpi4py import MPI
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
@@ -50,8 +50,8 @@ class PoissonMisfitForm:
 
 
 def run_inversion(
-    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float]
-) -> Dict[str, Dict[str, float]]:
+    nx: int, ny: int, noise_variance: float, prior_param: dict[str, float]
+) -> dict[str, dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -65,7 +65,7 @@ def run_inversion(
         Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs,
     ]
     hpx.master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
-    hpx.master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
+    hpx.master_print(comm, "Number of dofs: STATE={}, PARAMETER={}".format(*ndofs))
     # FORWARD MODEL
     alpha = 100.0
     f = 1.0
@@ -178,7 +178,7 @@ def run_inversion(
 
     with dlx.io.VTXWriter(
         msh.comm,
-        "poisson_Robin_Variational_Regularization_prior_np{0:d}_Prior.bp".format(nproc),
+        f"poisson_Robin_Variational_Regularization_prior_np{nproc:d}_Prior.bp",
         [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
     ) as vtx:
         vtx.write(0.0)
@@ -197,11 +197,7 @@ def run_inversion(
     k = 80
     p = 20
     if rank == 0:
-        print(
-            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-                k, p
-            )
-        )
+        print(f"Double Pass Algorithm. Requested eigenvectors: {k}; Oversampling {p}.")
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 
@@ -236,6 +232,6 @@ if __name__ == "__main__":
     if comm.rank == 0:
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.plot(range(k), d, "b*", range(k), np.ones(k), "-r")
         plt.yscale("log")
         plt.savefig("poisson_Eigen_Decomposition_results.png")

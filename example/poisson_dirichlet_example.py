@@ -9,15 +9,16 @@
 
 # Poisson example with DirichletBC on the 2d square mesh with
 # u_d = 1 on top, 0 on bottom using BiLaplacian Prior.
-import ufl
-import dolfinx as dlx
-from mpi4py import MPI
-import numpy as np
-import sys
 import os
+import sys
+from collections.abc import Sequence
+
+import dolfinx as dlx
 import dolfinx.fem.petsc
+import numpy as np
+import ufl
 from matplotlib import pyplot as plt
-from typing import Sequence, Dict
+from mpi4py import MPI
 
 sys.path.append(os.environ.get("HIPPYLIBX_BASE_DIR", "../"))
 import hippylibX as hpx
@@ -48,8 +49,8 @@ class PoissonMisfitForm:
 
 
 def run_inversion(
-    nx: int, ny: int, noise_variance: float, prior_param: Dict[str, float]
-) -> Dict[str, Dict[str, float]]:
+    nx: int, ny: int, noise_variance: float, prior_param: dict[str, float]
+) -> dict[str, dict[str, float]]:
     sep = "\n" + "#" * 80 + "\n"
     comm = MPI.COMM_WORLD
     rank = comm.rank
@@ -65,7 +66,7 @@ def run_inversion(
         Vh_m.dofmap.index_map.size_global * Vh_m.dofmap.index_map_bs,
     ]
     hpx.master_print(comm, sep, "Set up the mesh and finite element spaces", sep)
-    hpx.master_print(comm, "Number of dofs: STATE={0}, PARAMETER={1}".format(*ndofs))
+    hpx.master_print(comm, "Number of dofs: STATE={}, PARAMETER={}".format(*ndofs))
 
     # dirichlet B.C.
     uD = dlx.fem.Function(Vh[hpx.STATE])
@@ -204,7 +205,7 @@ def run_inversion(
 
     with dlx.io.VTXWriter(
         msh.comm,
-        "poisson_Dirichlet_BiLaplacian_prior_np{0:d}.bp".format(nproc),
+        f"poisson_Dirichlet_BiLaplacian_prior_np{nproc:d}.bp",
         [m_fun, m_true_fun, u_map_fun, u_true_fun, d_fun],
     ) as vtx:
         vtx.write(0.0)
@@ -223,11 +224,7 @@ def run_inversion(
     k = 80
     p = 20
     if rank == 0:
-        print(
-            "Double Pass Algorithm. Requested eigenvectors: {0}; Oversampling {1}.".format(
-                k, p
-            )
-        )
+        print(f"Double Pass Algorithm. Requested eigenvectors: {k}; Oversampling {p}.")
 
     Omega = hpx.MultiVector(x[hpx.PARAMETER].petsc_vec, k + p)
 
@@ -249,7 +246,7 @@ def run_inversion(
     if use_vtx:
         with dlx.io.VTXWriter(
             msh.comm,
-            "poisson_Dirichlet_prior_Bilaplacian_samples_np{0:d}.bp".format(nproc),
+            f"poisson_Dirichlet_prior_Bilaplacian_samples_np{nproc:d}.bp",
             [prior_sample, posterior_sample],
         ) as vtx:
             for i in range(num_samples_generate):
@@ -262,7 +259,7 @@ def run_inversion(
         ############################################
         with dlx.io.XDMFFile(
             msh.comm,
-            "poisson_Dirichlet_prior_Bilaplacian_samples_np{0:d}.xdmf".format(nproc),
+            f"poisson_Dirichlet_prior_Bilaplacian_samples_np{nproc:d}.xdmf",
             "w",
         ) as file:
             file.write_mesh(msh)
@@ -300,6 +297,6 @@ if __name__ == "__main__":
     if comm.rank == 0:
         plt.savefig("poisson_result_FD_Gradient_Hessian_Check")
         plt.figure()
-        plt.plot(range(0, k), d, "b*", range(0, k), np.ones(k), "-r")
+        plt.plot(range(k), d, "b*", range(k), np.ones(k), "-r")
         plt.yscale("log")
         plt.savefig("poisson_Eigen_Decomposition_results.png")

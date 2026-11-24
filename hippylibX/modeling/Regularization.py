@@ -8,9 +8,10 @@
 # --------------------------------------------------------------------------ec-
 
 import dolfinx as dlx
-import ufl
 import petsc4py
+import ufl
 from mpi4py import MPI
+
 import hippylibX as hpx
 
 
@@ -144,6 +145,13 @@ class VariationalRegularization:
             self.mfun,
             self.mtrial,
         )
+
+        if self.Rsolver is not None:
+            self.Rsolver.destroy()
+            self.Rsolver = None
+        if self.R is not None:
+            self.R.destroy()
+            self.R = None
         self.R = dlx.fem.petsc.assemble_matrix(dlx.fem.form(L))
         self.R.assemble()
         self.Rsolver = self._createsolver(self.petsc_options_R)

@@ -7,10 +7,12 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import dolfinx as dlx
 import math
-from .variables import STATE, PARAMETER, ADJOINT
 from typing import Any
+
+import dolfinx as dlx
+
+from .variables import ADJOINT, PARAMETER, STATE
 
 
 # decorator for functions in classes that are not used -> may not be needed in the final
@@ -318,6 +320,17 @@ class Model:
         :math: `Rz approx r`
         """
         return self.prior.Rsolver
+
+    def Psolver(self) -> Any:
+        """
+        Return an object :code:`Psolver` that is a suitable preconditioner for the reduced Hessian in the inverse problem.
+
+        The preconditioner object should implement the method :code:`Psolver.solve(z,r)`
+        """
+        if hasattr(self.prior, "Psolver"):
+            return self.prior.Psolver
+        else:
+            return self.prior.Rsolver
 
     def applyWmm(self, dm: dlx.la.Vector, out: dlx.la.Vector) -> None:
         """

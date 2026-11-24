@@ -7,14 +7,17 @@
 # SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------------------------ec-
 
-import petsc4py
-import sys
 import os
+import sys
+
+import petsc4py
 
 sys.path.append(os.path.abspath("../.."))
-import hippylibX as hpx
-import numpy as np
 import unittest
+
+import numpy as np
+
+import hippylibX as hpx
 
 sys.path.append(os.path.abspath("../../example"))
 
